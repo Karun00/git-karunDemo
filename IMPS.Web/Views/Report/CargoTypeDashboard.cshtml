@@ -1,0 +1,406 @@
+﻿@{
+   
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+<head>
+
+    @section scripts
+   {
+        <script src="~/Scripts/Lib/moment.js"></script>
+   
+        <script src="~/Scripts/Application/ViewModel/CargoTypeDashBoardViewModel.js"></script>
+    <script src="~/Scripts/Application/Model/CargoTypeDashBoardModel.js"></script>
+   
+        <style>
+            input {
+                border: 1px solid #CCCCCC;
+                padding: 2px;
+                font-family: Arial;
+                size: 12px;
+            }
+
+            #sortable {
+                list-style-type: none;
+                margin: 0 auto;
+                padding: 15px 0;
+                display: inline-block;
+            }
+
+                #sortable li {
+                    margin: 0 10px 10px 0;
+                    padding: 1px;
+                    float: left;
+                    width: 300px;
+                    height: 290px;
+                    text-align: center;
+                    cursor: move;
+                    border: 1px solid #037ab5;
+                    -moz-border-radius: 21px;
+                    -webkit-border-radius: 21px;
+                    border-radius: 21px;
+                }
+
+                #sortable span {
+                    font-family: Verdana;
+                    font-size: 10px;
+                    font-weight: bold;
+                    float: right;
+                    cursor: pointer;
+                    color: #FFF;
+                    width: 15px;
+                    height: 15px;
+                    background: #515151;
+                    -moz-border-radius: 15px;
+                    -webkit-border-radius: 15px;
+                    border-radius: 15px;
+                    margin: -2px;
+                    -webkit-margin: -10px;
+                    position: relative;
+                }
+
+                    #sortable span:hover {
+                        background: red;
+                    }
+
+            header, hgroup, nav, section, article, aside, footer {
+                display: block;
+            }
+
+            section {
+                margin-left: 10px;
+            }
+
+            hgroup {
+                font-family: Arial;
+                font-size: 13px;
+                font-weight: bold;
+                padding: 5px 15px;
+                border: 1px solid #bad1e5;
+                background-color: #f0f8fc;
+                background: -moz-linear-gradient(top, #fff 3%, #edf7fe 5%, #cbe3f5 100%); /* FF3.6+ */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#fff), color-stop(5%,#edf7fe), color-stop(100%,#cbe3f5));
+                width: 575px;
+                -moz-border-radius: 10px;
+                -webkit-border-radius: 10px;
+                border-radius: 10px;
+                position: relative;
+            }
+
+            #gobutton {
+                background: #3D8DCE; /* Old browsers */
+                background: -moz-linear-gradient(top, rgb(177,202,225) 3%, rgb(115,166,209) 5%, rgb(6,111,204) 100%); /* FF3.6+ */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,rgb(177,202,225)), color-stop(5%,rgb(115,166,209)), color-stop(100%,rgb(6,111,204)));
+                font-family: Arial;
+                font-size: 13px;
+                font-weight: bold;
+                color: #fff;
+                height: 25px;
+                border: 1px solid #0561b5;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                border-radius: 5px;
+            }
+
+            input#gobutton:hover, input#gobutton:focus {
+                background-color: #066fcc;
+                -webkit-box-shadow: 0 0 1px rgba(0,0,0, .75);
+                -moz-box-shadow: 0 0 1px rgba(0,0,0, .75);
+                box-shadow: 0 0 1px rgba(0,0,0, .75);
+            }
+
+            article {
+                font-family: Arial;
+                font-size: 12px;
+                margin: 10px;
+                height: 250px;
+            }
+
+                article h1 {
+                    font-size: 22px;
+                    font-weight: 900;
+                    line-height: 22px;
+                    margin: 0px;
+                    padding-top: 10px;
+                    display: block;
+                }
+
+                article hr {
+                    background: #000;
+                    height: 1px;
+                    border: none;
+                    clear: both;
+                    text-align: right;
+                }
+                /*article p{ padding-top:5px;}*/
+                article div a {
+                    font-weight: bold;
+                    font-size: 16px;
+                    line-height: 10px;
+                    color: #00b0ff;
+                    text-decoration: none;
+                    float: right;
+                    margin-right: 15px;
+                    display: block;
+                }
+
+                    article div a:hover {
+                        border-bottom: 1px solid #00b0ff;
+                    }
+
+                    article div a div {
+                        font-size: 11px;
+                        color: #fff;
+                        background-color: #00b0ff;
+                        padding: 0;
+                        width: 10px;
+                        text-indent: 1px;
+                        cursor: pointer;
+                        display: inline-block;
+                        zoom: 1;
+                    }
+
+            .left {
+                float: left;
+            }
+
+            #drDisp {
+                font-size: 50px;
+                font-weight: bold;
+                color: #ed3325;
+                letter-spacing: -3px;
+                height: 180px;
+                padding-top: 15px;
+            }
+
+                #drDisp div {
+                    font-size: 12px;
+                    font-weight: normal;
+                    color: #fff;
+                    letter-spacing: 0;
+                    text-align: right;
+                    background-color: #000;
+                    padding: 3px;
+                    margin: 0 25px 0 150px;
+                    padding-right: 5px;
+                }
+
+            #drBoxDisp {
+                font-size: 38px;
+                font-weight: bold;
+                color: #fff;
+                letter-spacing: -3px;
+                padding: 7px;
+                margin: 3px;
+                margin-top: 15px;
+                display: inline-block;
+                zoom: 1;
+                -moz-border-radius: 10px;
+                -webkit-border-radius: 10px;
+                border-radius: 10px;
+                position: relative;
+            }
+
+                #drBoxDisp div {
+                    font-size: 12px;
+                    font-weight: normal;
+                    letter-spacing: 0;
+                    line-height: 9px;
+                    height: 21px;
+                }
+
+                    #drBoxDisp div.txt {
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        color: #000;
+                    }
+
+            .dispdata {
+                height: 180px;
+            }
+
+            .red {
+                background-color: #f13325;
+            }
+
+            .orange {
+                background-color: #ff6600;
+            }
+
+            .green {
+                background-color: #669900;
+            }
+
+            .blue {
+                background-color: #00b0ff;
+            }
+
+            .txt {
+                display: block;
+            }
+
+            #gauge {
+                width: 150px;
+                height: 150px;
+                margin: 0 auto 0;
+            }
+
+
+            .page-content {
+                display: -webkit-flex;
+                margin-bottom: 20px;
+                display: flex;
+                display: -ms-flexbox;
+            }
+
+            .page-title {
+                margin-top: -75px !important;
+            }
+
+            .page-content .page-breadcrumb.breadcrumb {
+                margin-top: -40px !important;
+            }
+        </style>
+    }
+    @section ko_apply
+{
+    var viewModel = new IPMSROOT.CargoTypeDashBoardViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#CargoDashBoard")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+
+    }
+
+</head>
+<div id="CargoDashBoard" style="width: 100%">
+    <div>
+        <div class="row" data-bind="with: CargoDashboardModel">
+           <div class="row">
+            <div class="col-md-12">
+                <div data-bind="visible: dashboadPrivilege() == true">
+                    <div class="portlet portlet-body form">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <div>
+                                        <label class="control-label">From Date : <span class="required">*</span></label>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-control wdate">
+                                        <input id="fromdateid" type="text" title="StartDate" style="width:95%;" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FromDate, max: new Date(), format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="StartDate" maxlength="10" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div>
+                                        <label class="control-label ">To Date : <span class="required">*</span></label>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-control wdate">
+                                        <input id="todateid" type="text" title="EndDate" style="width:95%;" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: ToDate, max: new Date(), open: SearchToDate, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="EndDate" maxlength="10" />
+
+                                    </div>
+
+                                </div>
+
+                             </div>
+                        </div>
+@*Added DropDownlist Portwise Start here*@
+ <div class="col-md-3">
+                                    <div>
+                                        <label class="control-label ">Port Name : <span class="required">*</span></label>
+<select id="ddlport" >
+
+                                        </select>
+
+                                    </div>
+
+                                        
+
+                                </div>
+ @* Added DropDownlist Portwise End here*@
+                     
+                                <div class="col-md-1">
+                                    <button type="submit" class="btn btn-sm green" data-bind="click: $parent.getData">Get Data</button>
+                                </div>
+                            
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="page-title wego-title">Cargo Type Dashboard</h3>
+                            <ul class="page-breadcrumb breadcrumb"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+             
+
+           <div class="row">
+<div class="gridhead" style="visibility:hidden;">Wego</div>
+            <div class="table-scrollable">
+
+                <table cellpadding="0" cellspacing="0" border="0" id="tblQualities" class="tinytable wego-dashboard">
+                    <thead style="color:red">
+                        <tr>
+                            <th>CARGO TYPE</th>
+                             <th>ON BERTH</th>
+                            <th>ANCHORAGE</th>
+                            <th>PLANNED MOVEMENTS</th>
+                           @* <th>Mossel Bay</th>
+                            <th>Ngqura</th>
+                            <th>Port Elizabeth</th>
+                            <th>Richards Bay</th>
+                            <th>Saldanha Bay</th>
+                             <th>Total</th>*@
+                            
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: CargoDashboardDetail">
+                        <tr>
+
+                            <td><label data-bind="text: SubCatName, style: { 'font-weight': SubCatName() == 'TOTAL' ? 'bold' : '' }"></label>
+                              </td>
+                            <td><label data-bind="text: ONBERTH, style: { 'font-weight': SubCatName() == 'TOTAL' ? 'bold' : '' }"></label>
+                               </td>
+                            <td><label data-bind="text: ANCHORAGE, style: { 'font-weight': SubCatName() == 'TOTAL' ? 'bold' : '' }"></label>
+                              </td>
+                            <td><label data-bind="text: PLANNEDMOVEMENTS, style: { 'font-weight': SubCatName() == 'TOTAL' ? 'bold' : '' }"></label>
+                              </td>
+                           @* <td><label data-bind="text: MosselBay"></label></td>
+                            <td><label data-bind="text: Ngqura"></label></td>
+                             <td><label data-bind="text: PortElizabeth"></label></td>
+                             <td><label data-bind="text: RichardsBay"></label></td>
+                             <td><label data-bind="text: SaldanhaBay"></label></td>
+                             <td><label data-bind="text: Total"></label></td>*@
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+        <script>
+            var fd = $("#fromdateid").val();
+            var ed = $("#todateid").val();
+        </script>
+
+        
+    </div>
+</div>
+
+
+<script>
+    jQuery(document).ready(function () {
+        $("#fromdateid, #todateid").kendoDateTimePicker();
+    });
+</script>
+

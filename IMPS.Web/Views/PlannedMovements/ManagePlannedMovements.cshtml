@@ -1,0 +1,170 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Planned Movements";
+    Layout = "~/Views/Shared/_IPMSPlannedMovements.cshtml";
+
+    var PortCode = "";
+    var showViewOnLoad = false;
+    if (ViewBag.PortCode != null)
+    {
+        PortCode = ViewBag.PortCode;
+        showViewOnLoad = true;
+    }
+}
+
+<script src="~/Scripts/jquery.signalR-2.1.1.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script src="~/Scripts/Application/ViewModel/PlannedMovementsViewModel.js"></script>
+<script src="~/Scripts/Application/Model/PlannedMovementsModel.js"></script>
+<style>
+    .stasks table {
+        font-size: 16px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    /* Zebra striping */
+    .stasks tr:nth-of-type(odd) {
+        background: #333;
+    }
+
+    .stasks tr:nth-of-type(even) {
+        background: #555;
+    }
+
+    .stasks th {
+        background: #e02222;
+        color: white;
+        font-weight: bold;
+        padding: 8px;
+        border: 1px solid #a6a6a6;
+        text-align: left;
+    }
+
+    .stasks td {
+        padding: 8px;
+        border: 1px solid #a6a6a6;
+        text-align: left;
+        color: white;
+        font-size: 15PX;
+    }
+
+    .stasks {
+        margin: 15px;
+        color: #FFF;
+    }
+
+    .stasks1 tr td:first-child {
+        color: white;
+        font-weight: bold;
+    }
+</style>
+<script type="text/javascript">
+
+    $(function () {
+
+        // Proxy created on the fly
+        var plan = $.connection.chatHub;
+
+        // Declare a function on the job hub so the server can invoke it
+        plan.client.BrodcastNews = function () {
+            planData();
+        };
+
+        // Start the connection
+        if (!($.connection.hub.start())) {
+            $.connection.hub.start();
+            planData();
+        }
+        else {
+            planData();
+        }
+
+    });
+
+
+
+
+    function planData() {
+
+        $('#planedid').hide();
+
+        var $tbl = $('#divplaned');
+
+        if ("@showViewOnLoad" == "True") {
+            debugger;
+            $.ajax({
+
+                url: '../api/GetPlannedMovementsForAnonymous/' + "@PortCode",
+                type: 'GET',
+                datatype: 'json',
+                success: function (data) {
+
+                    $("#planedid").show();
+                    $tbl.empty();
+                    $tbl.append("<thead><tr><th>Scheduled Time</th>"
+                                + "<th>Requested Time</th>"
+                                + "<th>Vessel Name</th>"
+                                + "<th>Movement Type</th>"
+                                + "<th>Planned Berth</th>"
+                                + "<th>Vessel Agent Name</th>"
+                                + "<th>Reason for visit</th>"
+                                + "<th>LOA</th>"
+                                + "<th>GRT</th>"
+                                + "<th>Vessel Draft</th>"
+                                + "<th>Status</th></tr></thead>")
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            {
+                                $tbl.append("<tr><td>" + (data[i].ScheduledTime != null ? moment(data[i].ScheduledTime).format('YYYY-MM-DD HH:mm') : null) + "</td><td>" + moment(data[i].MovementDateTime).format('YYYY-MM-DD HH:mm') + "</td><td>" + data[i].VesselName + "</td><td>" + data[i].MovementType + "</td><td>" + data[i].BerthName + "</td><td>" + data[i].RegisteredName + "</td><td>" + data[i].ReasonforvisitName + "</td><td>" + data[i].LOA + "</td><td>" + data[i].GRT + "</td><td>" + data[i].Draft + "</td><td>" + data[i].Status + "</td></tr>")
+                            };
+                        }
+
+                    }
+                }
+            });
+        } else {
+            var decryptresult = "";
+            var portcode = $.cookie('Port');
+          for (var i = 0; i < portcode.length; i++) {
+                decryptresult += String.fromCharCode(portcode.charCodeAt(i) ^ 6);
+           }
+            PortCode = decryptresult;
+            $.ajax({
+                url: '/api/Mobile/GetPlannedMovementsForDesktop/' + PortCode,
+                type: 'GET',
+                datatype: 'json',
+                success: function (data) {
+
+                    $("#planedid").show();
+                    $tbl.empty();
+                    $tbl.append("<thead><tr><th>Scheduled Time</th>"
+                                + "<th>Requested Time</th>"
+                                + "<th>Vessel Name</th>"
+                                + "<th>Movement Type</th>"
+                                + "<th>Planned Berth</th>"
+                                + "<th>Vessel Agent Name</th>"                                
+                                + "<th>Reason for visit</th>"
+                                + "<th>LOA</th>"
+                                + "<th>GRT</th>"
+                                + "<th>Vessel Draft</th>"
+                                + "<th>Status</th></tr></thead>")
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            {
+                                $tbl.append("<tr><td>" + (data[i].ScheduledTime != null ? moment(data[i].ScheduledTime).format('YYYY-MM-DD HH:mm') : null) + "</td><td>" + moment(data[i].MovementDateTime).format('YYYY-MM-DD HH:mm') + "</td><td>" + data[i].VesselName + "</td><td>" + data[i].MovementType + "</td><td>" + data[i].BerthName + "</td><td>" + data[i].RegisteredName +  "</td><td>" + data[i].ReasonforvisitName + "</td><td>" + data[i].LOA + "</td><td>" + data[i].GRT + "</td><td>" + data[i].Draft + "</td><td>" + data[i].Status + "</td></tr>")
+                                
+                            };
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+
+<div class="stasks stasks1">
+    <h3 class="page-title">Planned Movements</h3>
+    <table id="divplaned" style="width: 100%; color: #000000;"></table>
+</div>
+

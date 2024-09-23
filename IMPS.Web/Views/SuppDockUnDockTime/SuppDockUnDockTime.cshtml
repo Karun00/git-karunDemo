@@ -1,0 +1,307 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{   
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/SuppDockUnDockTimeModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/SuppDockUnDockTimeViewModel.js"></script>
+    <script src="~/Scripts/Lib/jspdf.min.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.SuppDockUnDockTimeViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#SuppDockUnDockTime")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<!-- Main body content starts here for developers-->
+
+<div id="SuppDockUnDockTime">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'SuppDockUnDockTimeList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'SuppDockUnDockTimeForm-template' }"></div>
+</div>
+<div class="clearfix"></div>
+
+<!-- Grid / List Starts here -->
+<script type="text/html" id="SuppDockUnDockTimeList-template">
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+            <div id="tablewrapper15">
+                @*<div id="tableheader">
+                    <a class="button gbtngreen" data-bind="click: $root.addSuppDockUnDockTime">Add New <i class="fa fa-plus"></i></a>
+                </div>*@
+                <div data-bind="kendoGrid: {
+    data: SuppDockUnDockTimeList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'VCNSort', title: 'VCN', width: '80px' },
+                        { field: 'VesselNameSort', title: 'Vessel Name', width: '120px' },
+                        { field: 'RequestDtAndTimeSort', title: 'Request From', width: '120px' },
+                        { field: 'ToDateSort', title: 'Request To', width: '120px' },
+                        { field: 'Status', title: 'Status', width: '120px' , filterable: false},
+                        { title: 'Actions', filterable: false, width: '150px' }]
+}">
+                </div>
+
+
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: VCN"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: VesselName"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: FromDate"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: ToDate"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: PermitStatust"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewSuppDockUnDockTime" title="View"><i class="fa fa-eye"></i></a>
+                                }&nbsp; &nbsp; 
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editSuppDockUnDockTime, visible: (PermitStatust() != 'Undocked') ? true : false" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+
+
+</script>
+<!-- Grid / List Endss here -->
+
+<!-- Form / Details Starts here -->
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind="validationMessage: field"></span>
+</script>
+
+<script type="text/html" id="SuppDockUnDockTimeForm-template">
+
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: suppDockUnDockTimeModel">
+                    @*<div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>*@
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="form-group" id="divReqdtls">
+                        <fieldset>
+                            <legend>Docking Undocking Time Details </legend>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">VCN:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: VCN"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Vessel Name:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: VesselName "></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Current Berth:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: BerthName "></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Request From:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: FromDate "></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Service Req. at Berth:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: BerthName "></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Request To:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: ToDate "></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Schedule From:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: ScheduleFromDate "></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Schedule To:</label>
+                                        <div>
+                                            <label class="control-label displaytxt" data-bind="text: ScheduleToDate "></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Chamber:<span class="required">*</span></label>
+                                    <div class="col-md-3">
+                                        <input type="text" id="Chamber" name="code" maxlength="50" class="form-control" data-bind="value: Chamber, event: { keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }, enable: $parent.editableView">
+                                        <span id="spanpagechamber" class="validationError" data-bind="validationMessage: Chamber "></span>
+                                        @*<input type="text" id="Chamber" name="code" maxlength="50" class="form-control" data-bind="value: Chamber, event : { keypress: $parent.validationHelper.ValidateAlphaNumeric} ">
+                                           <span id="spanEntcode" class="validationError" data-bind="visible: $parent.UniqueCodeVisible">This Entity Code already exists</span>*@
+                                    </div>
+                                </div>
+                                @*</div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-md-6 control-label"></div>
+                                    </div>
+                                </div>*@
+                            </div>
+                            <fieldset id="docking">
+                                <legend>Docking</legend>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Vessel entered dock at:<span class="required">*</span></label>
+                                        <div class="col-md-5">
+                                            <input id="EnteredDockDateTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: EnteredDockDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm' , month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } , enabled: $root.IsDocking }" name="EnteredDockDateTime" maxlength="10" />
+                                            <span id="spanEnteredDockDateTime" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">On Blocks:<span class="required">*</span></label>
+                                        <div class="col-md-5">
+                                            <input id="OnBlocksDateTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: OnBlocksDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } , enabled: $root.IsDocking }" name="OnBlocksDateTime" maxlength="10" />
+                                            <span id="spanOnBlocksDateTime" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Dock Dry at:<span class="required">*</span></label>
+                                        <div class="col-md-5">
+                                            <input id="DryDockDateTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: DryDockDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm' , month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } , enabled: $root.IsDocking}" name="DryDockDateTime" maxlength="10" />
+                                            <span id="spanDryDockDateTime" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Undocking</legend>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Finished with dock at:<span class="required">*</span></label>
+                                        <div class="col-md-5">
+                                            <input id="FinishedDockDateTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FinishedDockDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm' , month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsUnDocking}" name="FinishedDockDateTime" maxlength="10" />
+                                            <span id="spanFinishedDockDateTime" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Off Blocks:<span class="required">*</span></label>
+                                        <div class="col-md-5">
+                                            <input id="OffBlocksDateTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: OffBlocksDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm' , month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsUnDocking }" name="OffBlocksDateTime" maxlength="10" />
+                                            <span id="spanOffBlocksDateTime" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Vessel left dock at:<span class="required">*</span></label>
+                                        <div class="col-md-5">
+                                            <input id="LeftDockDateTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: LeftDockDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm' , month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsUnDocking }" name="LeftDockDateTime" maxlength="10" />
+                                            <span id="spanLeftDockDateTime" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </fieldset>
+
+                    </div>
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" id="Update" class="btn green" data-bind="click: $parent.ModifySuppDockUnDockTime, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                        <button type="submit" id="Reset" class="btn blue" data-bind="click: $parent.ResetSuppDockUnDockTime, visible: $parent.IsReset ">Reset</button>
+                        <button type="button" id="Cancel" class="btn red" data-bind="click: $parent.cancel">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+</script>
+
+<!-- Form / Details ends here -->
+
+
+

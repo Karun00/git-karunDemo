@@ -1,0 +1,590 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "DeploymentPlan";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/DeploymentPlanModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/DeploymentPlanViewModel.js"></script>
+ <script src="~/Scripts/Lib/bootbox.min.js"></script>
+}
+<style type="text/css">
+    .legend-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid #666;
+    }
+
+        .legend-icon span {
+            margin-left: 15px;
+            margin-top: -4px !important;
+            display: block;
+        }
+
+    .td-width {
+        width: 230px;
+    }
+</style>
+@section ko_apply
+{
+
+    var viewModel = new IPMSROOT.DeploymentPlanViewModel();
+  
+ko.applyBindingsWithValidation(viewModel, $("#DeploymentPlan")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="DeploymentPlan">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+<div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <div id="tableheader">
+               <a class="button gbtngreen" data-bind="click: $root.adddeploymentplan">Add New <i class="fa fa-plus"></i></a>
+               
+            </div>
+            <div data-bind="kendoGrid: {
+            data: DeploymentPlanList,
+            groupable: false,
+            sortable: true,
+            scrollable: true,
+            filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+            rowTemplate: 'rowTmpl',
+            pageable: { pageSize: 5, pageSizes: 5 },
+            useKOTemplates: true, columns: [{ field: 'DateNameSort', title: 'Financial Year', width: '80', filterable: true }
+                       ,{ field: 'PortNameSort', title: 'Port Name', width: '80', filterable: true }
+                       , { field: 'DescriptionSort', title: 'Description', width: '80', filterable: true },
+                       { title: 'Status', filterable: false }, { title: 'Actions', filterable: false }]
+
+            }">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td><span data-bind="text: DateName"></span></td>
+                      <td>
+                        <div class="nowrap"><span data-bind="text: PortName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Description"></span></div>
+                    </td>
+                  
+                    <td>
+                        <div class="nowrap">
+                            <span data-bind="text: Statust"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                        
+                            <a href="#" data-bind="click: $parent.editdeploymentplan, visible: EditPending " title="Edit"><i class="fa fa-edit"></i></a>
+                           
+                            <a href="#" data-bind="click: $parent.viewdeploymentplan" title="View"><i class="fa fa-eye"></i></a>  
+                            
+                        </div>
+                    </td>
+                </tr>
+            </script>
+</div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form">
+
+                <form action="#" id="form_sample_1" class="form-horizontal" data-bind="    loadingWhen: $root.viewModelHelper.isLoading">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: deploymentplanModel">
+                            <div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+
+
+                 @* <div  style="float: right;width:auto;height:auto;">
+                    <fieldset>
+                        <table border='0' width="100%" cellpadding='3' cellspacing='3'>
+                            <tr data-bind="foreach: $parent.craftDredgerList">
+                                <td class='td-width'>
+                                    <div class='legend-icon' data-bind="style: { backgroundColor: DredgerColorCode}"><span style="width:400px;" class='left-span' data-bind="text:CraftName"></span></div>
+                                </td>
+                               
+                            </tr>
+                        </table>
+                    </fieldset>
+
+                </div>*@
+<div  style="float: right;width:auto;height:auto;">
+                    <fieldset>
+                        <div border='0' width="100%" cellpadding='3' cellspacing='3'>
+                            <div data-bind="foreach: $parent.craftDredgerList">
+                                <div class='td-width'style="float: left;margin-bottom:3px;">
+                                    <div class='legend-icon' data-bind="style: { backgroundColor: DredgerColorCode}"><span style="width:400px;"  class='left-span' data-bind="text:CraftName"></span></div><br />
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </fieldset>
+
+                </div>
+<div class="col-md-12"></div>
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <div id="stack1" class="modal fade" tabindex="-1" data-width="50">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content" style="height: 150px">
+                                                <div class="modal-body">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                    <div class="scroller" style="height: 70px" data-always-visible="1" data-rail-visible1="1">
+                                                        <fieldset>
+                                                            <legend id="spnTitile1">Allocate Dredger</legend>
+
+                                                            <div class="form-group row">
+                                                                <label class="control-label col-md-4">Dredger:</label>
+                                                                <div class="col-md-8">
+                                                                    <div class="form-control">
+                                                                        <input id="Craftname" name="Craftname" title="Craftname" data-bind="kendoDropDownList: { data: $parent.craftDredgerList, value: CraftID, dataTextField: 'CraftName', dataValueField: 'CraftID', optionLabel: 'Select Dredger Name' } " />
+                                                                       @* <span id="spancraft" class="validationError" data-bind="validationMessage: CraftID "></span>*@
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                           <div class="btns-group ">
+                                            <button type="submit" data-bind="click: $parent.SaveDredger" class="btn green">Save</button>                                          
+                                         @*   <button type="button" data-dismiss="modal" class="btn blue" data-bind="click: $parent.Cancel">Cancel</button>*@
+                                         </div>
+                                                <br>
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <fieldset>
+                                        <legend>Deployment Plan Details</legend>
+                                        <div class="row">
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Financial Year:
+                                                   <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6 ">
+                                                        @*<input id="FinancialYear" name="FinancialYear" title="FinancialYear" data-bind="kendoDropDownList: { data:  $root.deploymentplanReferenceData().FinancialYears, value: FinancialYearCode, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select Financial Year', enable: $parent.editableView  }" />*@
+                                                         <input id="FinancialYear" data-bind="kendoDropDownList: { data: $root.deploymentplanReferenceData().FinancialYears, value: FinancialYearID, dataTextField: 'FinancialYear', dataValueField: 'FinancialYearID', optionLabel: 'Select Financial Year', enabled: $parent.IsCodeEnable }, event: { change: Velidport }" />    
+                                                        <span id="spanfinancialyear" class="validationError" data-bind="validationMessage: FinancialYearID"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Port Name:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                       <input id="PortName" name="PortName" title="PortName" data-bind="kendoDropDownList: { data:  $root.deploymentplanReferenceData().PortTypes, value: PortCode, dataTextField: 'PortName', dataValueField: 'PortCode', optionLabel: 'Select Port Name', enabled: $parent.IsCodeEnable  }, event: { change: Velidport }" />
+                                                        <span id="spanPortName" class="validationError" data-bind="validationMessage: PortCode">This Port is already planed for this financialyear</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Description:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="Description" name="name" maxlength="50" data-required="1" class="form-control" data-bind="value: Description, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }">
+                                                        <span id="spanDescription" class="validationError" data-bind="validationMessage: Description"></span>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                            
+                                            @*<div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        <table cellpadding="0" cellspacing="0" border="0" id="table2" width="100%" class="tinytable">
+                                                            <tbody>
+                                                                <div class="table-scrollable">
+                                                                    <table width="100%" id="tblKey" class="table1 table-striped table-bordered table-hover" data-bind="foreach:  $root.deploymentplanReferenceData().DredgingTypes">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="nowrap"><span data-bind="text: SubCatName"></span></div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="nowrap"><span data-bind="text: SubCatName"></span></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        </div>
+                                        &nbsp;
+                                         <table cellpadding="0" cellspacing="0" border="0" id="table3" width="100%" class="tinytable" data-bind="    loadingWhen: $root.viewModelHelper.isLoading">
+                                             <thead>
+                                                 <tr>
+                                                     <th width="6.5%">
+                                                         <h5>Budget</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>Plan</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>Dredging Material</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>April</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>May</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>June</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>July</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>August</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>September</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>October</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>November</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>December</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>January</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>February</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>March</h5>
+                                                     </th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody>
+                                                 <div class="table-scrollable" id="dpgrid">
+                                                     <table width="100%" id="tblKey" class="table1 table-striped table-bordered table-hover" data-bind="foreach: $parent.masterDeploymentPlanTypes">
+                                                         <tr>
+                                                             <td width="6.5%">
+                                                                 <input type="text" class="form-control"  data-bind="value: $data.Budget , enable : $root.IsBudgetEnable, event: { keypress:ValidateNumeric}" maxlength="8">                                                                 
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input type="text" readonly class="form-control" onkeypress="return false;" data-bind="value: $data.DredgPlan, enable : $root.IsBudgetEnable, event: { keypress: ValidateNumeric}">
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <div class="nowrap"><span data-bind="text: SubCatName"></span></div>
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="AprId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Apr, style: { backgroundColor: AprColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric,contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.AprCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="MayId" maxlength="7" type="text" class="form-control" data-bind="value: $data.May, style: { backgroundColor: MayColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric, contextmenu: AssignDredger }">
+                                                              @*   <input type="text" class="form-control" data-bind="value: $data.MayCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="JunId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Jun, style: { backgroundColor: JunColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric, contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.JunCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="JulId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Jul, style: { backgroundColor: JulColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric, contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.JulCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="AugId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Aug, style: { backgroundColor: AugColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric, contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.AugCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="SepId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Sep, style: { backgroundColor: SepColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric, contextmenu: AssignDredger }">
+                                                              @*   <input type="text" class="form-control" data-bind="value: $data.SepCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="OctId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Oct, style: { backgroundColor: OctColor}, enable : $root.IsBudgetEnable,  event: { change: CalculatePlan, keypress: ValidateNumeric , contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.OctCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="NovId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Nov, style: { backgroundColor: NovColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric, contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.NovCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="DecId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Dec, style: { backgroundColor: DecColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric , contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.DecCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="JanId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Jan, style: { backgroundColor: JanColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric , contextmenu: AssignDredger }">
+                                                                 @*<input type="text" class="form-control" data-bind="value: $data.JanCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="FebId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Feb, style: { backgroundColor: FebColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric, contextmenu: AssignDredger }">
+                                                               @*  <input type="text" class="form-control" data-bind="value: $data.FebCraftID">*@
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <input id="MarId" maxlength="7" type="text" class="form-control" data-bind="value: $data.Mar, style: { backgroundColor: MarColor}, enable : $root.IsBudgetEnable, event: { change: CalculatePlan, keypress: ValidateNumeric , contextmenu: AssignDredger }">
+                                                                @* <input type="text" class="form-control" data-bind="value: $data.MarCraftID">*@
+                                                             </td>
+                                                         </tr>
+                                                     </table>
+                                                     <span id="spankeydatetime" class="validationError">
+                                                 </div>
+                                             </tbody>
+                                         </table>
+                                        <br>
+                                    </fieldset>
+
+                                    <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                        <button type="Plan" id="Save" class="btn green" value="POST VAL"
+                                            data-bind="click: $parent.SaveDeploymentPlan, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">
+                                            Plan</button>
+                                            <button type="submit" id="Update" class="btn green" data-bind="click: $parent.ModifyDeploymentPlan, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                            <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                    </div>
+                                 @*<table cellpadding="0" cellspacing="0" border="0" id="table3" width="100%" class="tinytable">
+                                             <thead>
+                                                 <tr>
+                                                     <th width="6.5%">
+                                                         <h5>Budget</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>Plan</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>Dredging Material</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>April</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>May</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>June</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>July</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>August</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>September</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>October</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>November</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>December</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>January</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>February</h5>
+                                                     </th>
+                                                     <th width="6.5%">
+                                                         <h5>March</h5>
+                                                     </th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody>
+                                                 <div class="table-scrollable" id="dpgrid">
+                                                     <table width="100%" id="tblKey" class="table1 table-striped table-bordered table-hover" data-bind="foreach: $parent.masterDeploymentPlanType">
+                                                         <tr>
+                                                             <td width="6.5%">
+                                                                 
+                                                                    <div class="nowrap"><span data-bind="text: Budget"></span></div>  
+                                                                                  
+                                                             </td>
+                                                             <td width="6.5%">
+                                                               <div class="nowrap"><span data-bind="text: DredgPlan"></span></div>
+                                                             </td>
+                                                             <td width="6.5%">
+                                                                 <div class="nowrap"><span data-bind="text: SubCatName"></span></div>
+                                                             </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: AprColor}">                                                                 
+                                                                <div class="nowrap"><span data-bind="text: Apr"></span></div>
+                                                             </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: MayColor}">    
+                                                                 
+                                                             <div class="nowrap"><span data-bind="text: May"></span></div>
+                                                             </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: JunColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Jun"></span></div>
+                                                              </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: JulColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Jul"></span></div>
+                                                               
+                                                             </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: AugColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Aug"></span></div>
+                                                                
+                                                             </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: SepColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Sep"></span></div>
+                                                              
+                                                             </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: OctColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Oct"></span></div>
+                                                                
+                                                             </td>
+                                                            <td width="6.5%" data-bind="style: { backgroundColor: NovColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Nov"></span></div>
+                                                             </td>
+                                                            <td width="6.5%" data-bind="style: { backgroundColor: DecColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Dec"></span></div>
+                                                             </td>
+                                                            <td width="6.5%" data-bind="style: { backgroundColor: JanColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Jan"></span></div>
+                                                             </td>
+                                                            <td width="6.5%" data-bind="style: { backgroundColor: FebColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Feb"></span></div>
+                                                             </td>
+                                                             <td width="6.5%" data-bind="style: { backgroundColor: MarColor}">    
+                                                                  <div class="nowrap"><span data-bind="text: Mar"></span></div>
+                                                             </td>
+                                                         </tr>
+                                                     </table>                                                    
+                                                 </div>
+                                             </tbody>
+                                         </table>*@
+                                </div>
+                            </div> 
+ 
+
+
+                        </div>
+                    </div>
+
+                </form>
+
+              
+
+            </div>
+             
+                
+        
+             @*   <div data-bind="kendoGrid: {
+            data: PlannedDeploymentList,
+            groupable: false,
+            sortable: true,
+            scrollable: true,
+            filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+            rowTemplate: 'rowTmpl1',
+            pageable: { pageSize: 5, pageSizes: 5 },
+            useKOTemplates: true, columns: [{ field: 'PortSort', title: 'Port', width: '80', filterable: false }
+                       , { field: 'BudgetSort', title: 'Budget', width: '80', filterable: false }
+                       , { field: 'DredgPlanSort', title: 'Plan', width: '80', filterable: false }
+                       , { field: 'TypeSort', title: 'Dredging Material', width: '80', filterable: false }
+                       , { field: 'AprSort', title: 'April', width: '80', filterable: false }
+                       , { field: 'MaySort', title: 'May', width: '80', filterable: false }
+                       , { field: 'JunSort', title: 'June', width: '80', filterable: false }
+                       , { field: 'JulSort', title: 'July', width: '80', filterable: false }
+                       , { field: 'AugSort', title: 'August', width: '80', filterable: false }
+                       , { field: 'SepSort', title: 'September', width: '80', filterable: false }
+                       , { field: 'OctSort', title: 'October', width: '80', filterable: false }
+                       , { field: 'NovSort', title: 'November', width: '80', filterable: false }
+                       , { field: 'DecSort', title: 'December', width: '80', filterable: false }
+                       , { field: 'JanSort', title: 'January', width: '80', filterable: false }
+                       , { field: 'FebSort', title: 'February', width: '80', filterable: false }
+                      , { field: 'MarSort', title: 'March', width: '80', filterable: false }]
+
+            }">
+            </div>
+            <script id="rowTmpl1" type="text/html">
+                 <tr >
+                    <td><span data-bind="text: PortCode"></span></td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Budget"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: DredgPlan"></span></div>
+                    </td>
+                     <td>
+                        <div class="nowrap"><span data-bind="text: SubCatCode"></span></div>
+                    </td>
+                    <td data-bind="style: { backgroundColor: AprCraftID == 16 ? '#c5c5c5' : AprCraftID == 'SCH''#c5c5c5' }">
+                        <div class="nowrap"><span data-bind="text: Apr"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: May"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Jun"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Jul"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Aug"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Sep"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Oct"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Nov"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Dec"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Jan"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Feb"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Mar"></span></div>
+                    </td>
+
+                </tr>
+            </script>*@
+
+
+        </script>
+    </div>
+</div>

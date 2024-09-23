@@ -1,0 +1,501 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "Employee";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/EmployeeModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/EmployeeViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.EmployeeViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#EmployeeMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="EmployeeTitle">Employee</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="EmployeeMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'EmployeeList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'EmployeeForm-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+
+
+<!-- EmployeeMaster List and Serach content starts here-->
+<script type="text/html" id="EmployeeList-template">
+    <div>
+        <div class="portlet box advbg">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-reorder"></i>Search
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"></a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="form-wizard form-horizontal">
+                    <div class="form-body" data-bind="with: employeeModel">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Designation : </label>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <select id="searchDesignation" name="Designation" class="form-control" data-bind="enable: $parent.editableView, options: $parent.designationValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: DesignationCode"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Name / SAP Number : </label>
+                                        <div class="col-md-5">
+                                            <div>
+                                                <input id="EMPSAPid" name="UserName" class="form-control" data-bind="value: searchText" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-6 fluid">
+                                            <button type="submit" class="btn btn-sm green" data-bind="click: $root.LoadEmployeeList">Get Data</button>
+                                            <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ResetData">Reset</button>
+</div>
+                                        <div class="col-md-5"></div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="clearfix"></div>
+
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+            <div id="tableheader">
+                @if (Model.HasAddPrivilege)
+                {
+                    <a class="button gbtngreen" data-bind="click: $root.addEmployee ">Add New <i class="fa fa-plus"></i></a>
+                }
+                <div class="search" style="border: none; padding: 0; margin-top: 5px;">
+                    <select id="columns" onchange="sorter.search('query')" style="display: none;"></select>
+                </div>
+            </div>
+            <div data-bind="kendoGrid: {
+    data: employeeList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'NameSort', title: 'Name', filterable: true },
+        { field: 'DepartmentNameSort', title: 'Department', filterable: true },
+        { field: 'BusinessUnitNameSort', title: 'Business Unit', filterable: true },
+        { field: 'IDNoSort', title: 'ID No.', filterable: true },
+        { field: 'StatusSort', title: 'Status', filterable: true },
+        { title: 'Actions', filterable: true }]
+}">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Name" style="text-transform: capitalize;"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: DepartmentName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: BusinessUnitName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: IDNo"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: RecordStatust"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            &nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.ViewEmployee" title="View"><i class="fa fa-eye"></i></a>
+                            }&nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.EditEmployee" title="Edit"><i class="fa fa-edit"></i></a>
+                            }&nbsp; &nbsp;
+                        </div>
+                    </td>
+                </tr>
+            </script>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<!-- Add Employee form content starts here-->
+
+<script type="text/html" id="EmployeeForm-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" id="EmployeeForm" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+
+                <div class="form-body" data-bind="with: employeeModel">
+                    <div class="form-group">
+                        <fieldset>
+                            <legend>Employee Details</legend>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            SAP Number:
+                                                        <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                           <input id="SAPNumber" type="text" autofocus="autofocus" data-bind="value: SAPNumber, enable: $parent.editableView, enable: $parent.IsCodeEnable, event: { change: ValidEvent }" class="form-control" name="SAPNumber" />
+                                            <span id="spanvsap" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Department:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="Department" name="Department" class="form-control" data-bind="enable: $parent.editableView, options: $parent.departmentValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: DepartmentCode, event: { change: ChangeDepartmentCode }"></select>
+                                            <span id="spanvdeptcode" class="validationError" data-bind="visible: $parent.UniqueCodeVisible">SAP Number already exists></span>
+                                            <span id="spanvdeptcode1" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            First Name:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="FirstName" type="text" style="text-transform: capitalize;" class="form-control" data-bind="value: FirstName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.editableView " name="FirstName" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Designation:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="Designation" name="Designation" class="form-control" data-bind="enable: $parent.editableView, options: $parent.designationValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: DesignationCode, event: { change: ChangeDesignation }"></select>
+                                            <span id="spanvdesgcode" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Surname:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="LastName" type="text" style="text-transform: capitalize;" class="form-control" data-bind="value: LastName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.editableView" name="LastName" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            License Capability:
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="licensecap" type="text" style="text-transform: capitalize;" class="form-control" data-bind="value: DeadWeightTonnage, event: { keypress: Validatenumeric }, enable: $parent.editableView" name="licensecap" maxlength="8" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">
+                                            Initials:                                                    	
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="Initials" type="text" class="form-control" data-bind="value: Initials, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.editableView" name="Initials" maxlength="10" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Business Unit:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            @*<select id="BusinessUnit" name="BusinessUnit" class="form-control" data-bind="enable: $parent.editableView, options: $parent.businessunitsValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: BusinessUnitCode, event: { change: ChangeBusinessUnit }"></select>*@
+                                            <select id="BusinessUnit" name="BusinessUnit" class="form-control" data-bind="enable: $parent.editableView, options: $parent.businessunitsValues, optionsText: 'PortName', optionsCaption: 'Select...', optionsValue: 'PortCode', value: PortCode, event: { change: ChangeBusinessUnit }"></select>
+                                            <span id="spanvbucode" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">
+                                            Birth Date:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-3">
+
+                                            <input id="BirthDate" type="text" class="form-control date-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: BirthDate, format: 'yyyy-MM-dd', change: CalcAge, open: calmaxtoday18, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.editableView" name="BirthDate" maxlength="10" />
+                                            <span class="validationError" data-bind="validationMessage: BirthDate"></span>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Cost Center:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="CostCenter" name="CostCenter" class="form-control" data-bind="enable: $parent.editableView, options: $parent.costcentersValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: CostCenterCode, event: { change: ChangeCostCenter }"></select>
+                                            <span id="spanvcccode" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">Age:</label>
+                                        <div class="col-md-1">
+                                            <input id="Age" type="text" class="form-control" data-bind="value: Age, event: { keypress: Validatenumeric }, enable: $parent.editableView" name="Age" maxlength="3" readonly="true" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Payroll Area:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="PayrollArea" name="PayrollArea" class="form-control" data-bind="enable: $parent.editableView, options: $parent.payrollareasValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: PayrollAreaCode, event: { change: ChangePayrollArea }"></select>
+                                            <span id="spanpacode" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">
+                                            Date of Joining:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-3">
+                                            <input id="JoiningDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control date-picker" data-bind="kendoDatePicker: { value: JoiningDate, format: 'yyyy-MM-dd', change: CalcYOS, open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.editableView" name="JoiningDate" maxlength="10" />
+                                            <span class="validationError" data-bind="validationMessage: JoiningDate"></span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            ID No.:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="IDNo" type="text" class="form-control" data-bind="value: IDNo, enable: $parent.IsCodeEnable, event: { change: ValidIDNO }" name="IDNo" maxlength="20" />
+                                            <span id="spanvidno" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">Years of Service:</label>
+                                        <div class="col-md-1">
+                                            <input id="YearsofService" type="text" class="form-control" data-bind="value: YearsofService, event: { keypress: Validatenumeric }, enable: $parent.editableView" name="YearsofService" maxlength="2" readonly="readonly" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            PS Group:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="PSGroup" name="PSGroup" class="form-control" data-bind="enable: $parent.editableView, options: $parent.psgroupsValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: PSGroupCode, event: { change: ChangePSGroup }"></select>
+                                            <span id="spanpsgcode" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">
+                                            Official Mobile No.:
+                                                    	@*<span class="required">*</span>*@
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="OfficialMobileNo" type="text" class="form-control" data-bind="value: OfficialMobileNo, event: { keypress: Validatenumeric }, enable: $parent.editableView" name="OfficialMobileNo" maxlength="17" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Personal Sub Area:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="PersonalSubArea" name="PersonalSubArea" class="form-control" data-bind="enable: $parent.editableView, options: $parent.personalsubareasValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: PersonalSubAreaCode, event: { change: ChangePersonalSubArea }"></select>
+                                            <span id="spanpsacode" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">
+                                            Personal Mobile No.:
+                                                    	@*<span class="required">*</span>*@
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="PersonalMobileNo" type="text" class="form-control" data-bind="value: PersonalMobileNo, event: { keypress: Validatenumeric }, enable: $parent.editableView" name="PersonalMobileNo" maxlength="17" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Organizational Unit:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="OrganizationalUnit" name="OrganizationalUnit" class="form-control" data-bind="enable: $parent.editableView, options: $parent.organizationalunitsValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: OrganizationalUnitCode, event: { change: ChangeOrganizationalUnit }"></select>
+                                            <span id="spanpoucode" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Gender:
+                                                	<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <div class="radio-list">
+                                                <input type="radio" name="Gender" value="GENM" checked="checked" data-bind="checked: GenderCode, enable: $parent.editableView">
+                                                <label class="radio-inline">Male</label>
+                                                <input name="Gender" type="radio" value="GENF" data-bind="checked: GenderCode, enable: $parent.editableView">
+                                                <label class="radio-inline">Female</label>
+                                                <span id="spangender" class="validationError"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">
+                                            Email Address:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="EmailID" type="text" class="form-control" data-bind="value: EmailID, event: { keypress: ValidateAlphanumeric }, enable: $parent.editableView" name="EmailID" maxlength="60" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Status:<span class="required"></span>
+
+                                        </label>
+                                        <div class="col-md-6">
+                                            <div class="radio-list">
+                                                <input type="radio" name="Status" value="A" data-bind="checked: RecordStatus, enable: $parent.editableView">
+                                                <label class="radio-inline">Active</label>
+                                                <input name="Status" type="radio" value="I" data-bind="checked: RecordStatus, enable: $parent.editableView">
+                                                <label class="radio-inline">Inactive</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                        <div class="col-md-6">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </fieldset>
+                    </div>
+
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" class="btn green" title="Save" data-bind="click: $root.SaveEmployee, visible: $parent.IsSave">Save</button>
+                        <button type="submit" class="btn green" title="Update" data-bind="click: $parent.ModifyEmployee, visible: $parent.IsUpdate">Update</button>
+                        <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetEmployee, visible: $parent.IsReset">Reset</button>
+                        <button type="submit" class="btn red" title="Cancel" data-bind="click: $parent.Cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+

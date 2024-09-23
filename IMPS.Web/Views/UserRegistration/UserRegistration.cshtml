@@ -1,0 +1,254 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/UserRegistrationModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/UserRegistrationViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.UserRegistrationViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#UserRegistration")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#txtCaptachCode").val('');
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">User Registration</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<link href="~/Content/Styles/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/Styles/kendo.default.min.css" rel="stylesheet" />
+
+<div id="UserRegistration">
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<!-- Main body content starts here for developers-->
+
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: userRegistrationModel">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 alert alert-info">
+
+                                        <div data-bind="foreach: $parent.UserTypeList">
+                                            <div class="col-md-2">
+                                                <input name="UserType" type="radio" class="radio-inline" data-bind="value: TypeUser, checked: selected, event: { change: LoadUserType }" />
+                                                <span data-bind="text: name"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend><span id="Title"></span>Registration</legend>
+                                    <div class="row">
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Port Name:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+
+                                                    <input id="MultiSelectPort" class="form-control" data-bind="kendoMultiSelect: { dataTextField: 'PortName', dataValueField: 'PortCode', data: $parent.portCodeList, value: PortList, enabled: $parent.IsPortEnabled, change: ChangePortCode, }" />
+                                                    <span id="spanPortCode" class="validationError" style="display: none"></span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6"><span id="SAPTitle">SAP Number:</span><span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input id="SAPNumber" type="text" autofocus="autofocus" data-bind="value: ReferenceNo, event: { change: ValidateNumber }, enable: $parent.IsEnabled" maxlength="30" class="form-control" />
+                                                    <span id="spanvsap" class="validationError" style="display: none"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6"><span id="spnDesignation">Designation:</span></label>
+                                                <div class="col-md-6">
+                                                    <input id="Desig" type="text" class="form-control" name="intcharacter" readonly="readonly" data-bind="value: Designation" />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    First Name:
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input id="FN" type="text" class="form-control" name="intcharacter" maxlength="50" data-bind="value: FirstName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEnabled">
+                                                    <span id="userid" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Surname:</label>
+                                                <div class="col-md-6">
+                                                    <input id="LN" type="text" class="form-control" name="intcharacter" maxlength="50" data-bind="value: LastName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEnabled">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    User Name:
+                                                  <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" name="intcharacter" maxlength="15" data-bind="value: UserName, event: { change: ValidEvent, keypress: $parent.validationHelper.ValidateAlphaNumeric }, enable: $parent.isUserNameEnable" />
+
+                                                    <span id="spanusername" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Email Address:
+                                                 <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" name="intcharacter" maxlength="50" data-bind="value: EmailID, event: { keypress: ValidateAlphanumeric }, enable: $parent.IsEnabled">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Contact No.:
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="ContactNo" class="form-control" name="intcharacter" maxlength="10" data-bind="value: ContactNo, event: { keypress: Validatenumeric }, enable: $parent.IsEnabled">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Reason For Access :
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="ReasonForAccess" class="form-control" name="Reason For Access" maxlength="100" data-bind="value: ReasonForAccess, enable: $parent.IsEnabled">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                     <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Valid From Date:
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                     <input id="ValidFromDate" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: ValidFromDate, format: 'yyyy-MM-dd', enabled: $parent.IsEnabled, min: new Date(), readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: ValidDate }" name="Valid From Date" maxlength="10" />
+                                                    <span id="spanValidFromDate" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Valid To Date:
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input id="ValidToDate" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: ValidToDate, format: 'yyyy-MM-dd', enabled: $parent.IsEnabled, min: ValidFromDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }," name="Valid To Date" maxlength="10" />
+                                                    
+                                                    <span id="spanValidToDate" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label>&nbsp;</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                        </div>
+                                        <div class="col-md-9">
+                                            <label id="lblCaptach" class="col-md-11" style="font-family: Zapf Chancery, cursive; text-align: center; padding-top: 8px; width: 180px; height: 30px; border: 1px solid #f00; color: #060; background: url(../../Content/Images/Background/texture-bg.jpg); font-size: 18px;" data-bind="text: $root.CaptachText">sample text </label>
+                                            <i class=" fa fa-refresh" title="Refresh" data-bind="click: RefreshCaptach" style="font-size: 20px; margin-top: 7px; margin-left: 7px;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Enter Above Code:
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="txtCaptachCode" class="form-control" name="intcharacter" maxlength="6" data-bind="enable: $parent.IsEnabled" onchange="ChangeCaptachCode();">
+                                                    <span id="spanCaptachCode" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </div>
+                            <div class="btns-group form-actions fluid">
+                                <button type="submit" class="btn green" title="Save" data-bind="click: $parent.SaveUser">Save</button>
+                                <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetUser">Reset</button>
+                                <button type="button" class="btn red" title="Cancel" data-bind="click: $parent.cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+    </div>
+</div>

@@ -1,0 +1,153 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Module Master";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/ViewModel/ModuleMasterViewModel.js"></script>
+    <script src="~/Scripts/Application/Model/ModuleMasterModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ModuleMasterViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#ModuleMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+    <div id="ModuleMaster">
+        <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+        <div class="portlet portlet-body form">
+            <form action="#" id="form_sample_1" class="form-horizontal">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body">
+                        <div class="tab-pane active" id="tab1">
+                            <div class="form-group">
+                                <div id="stack1" class="modal fade" data-bind="with: moduleMasterModel" data-width="400">
+                                    <div class="modal-dialog" style="width: 500px;">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                <div style="min-height:145px; height:auto;" data-always-visible="1" data-rail-visible1="1">
+                                                    <fieldset>
+                                                        <legend id="spnTitile1">Add Module</legend>
+                                                        <div class="form-group row">
+                                                            <div class="col-md-6"></div>
+                                                            <div class="col-md-5">
+                                                                <div class="radio-list">
+                                                                    <input type="radio" onchange="ChangeModuleLableNames();" name="module" data-bind="checked: Module, enable: $parent.editableView, disable: $parent.isModuleEditable" value="True" checked>
+                                                                    <label class="radio-inline">Module</label>
+                                                                    <input type="radio" onchange="ChangeSubModuleLableNames();" name="module" data-bind="checked: Module, enable: $parent.editableView, disable: $parent.isSubModuleEditable" value="False">
+                                                                    <label class="radio-inline">Sub Module</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row" data-bind="visible: Module() == 'False'">
+                                                            <label class="control-label col-md-6">
+                                                                Parent Module:<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <div class="form-control">
+                                                                    <input data-bind="kendoDropDownList: { data: $parent.ParentList, dataTextField: 'ModuleName', optionLabel: 'Select...', dataValueField: 'ModuleID', value: ParentModuleID, enabled: $parent.editableView }" />
+                                                                    <span id="spanparentid" class="validationError"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                <span id="moduleLable">Module Name:<span class="required">*</span></span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input type="text" maxlength="20" id="ModuleName" data-bind="value: ModuleName, event: { keypress: $parent.ValidateAlphabetsWithSpaces, change: $parent.ValidEvent }, enable: $parent.editableView " class="form-control">
+                                                                <span id="spanModuleName" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                Order No.:<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input type="text" maxlength="10" id="OrderNo" data-bind="value: OrderNo, enable: $parent.editableView, event: { keypress: $parent.ValidateNumeric }" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">Status:</label>
+                                                            <div class="col-md-5">
+                                                                <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView } " />
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <div class="btns-group form-actions fluid">
+                                                <button type="submit" class="btn green" data-bind="click: $parent.SaveModule, visible: $parent.IsSave">Save</button>
+                                                <button type="submit" class="btn green" data-bind="click: $parent.ModifyModule, visible: $parent.IsUpdate">Update</button>
+                                                <button type="submit" class="btn blue" data-bind="click: $parent.ResetModule, visible: $parent.IsReset">Reset</button>
+                                                <button type="button" class="btn red" data-dismiss="modal" data-bind="click: $parent.Cancel">Cancel</button>
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <script type="text/html" id="List-template">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-toggle="modal" href="#" data-bind="click: $root.addModule">Add New <i class="fa fa-plus"></i></a>
+                    }
+                    @if (Model.HasEditPrivilege)
+                    {               
+                        <a class="button gbtngreen" data-toggle="modal" href="#" data-bind="click: $root.editModule">Edit <i class="fa fa-edit"></i></a>
+                    }
+                    @if (Model.HasViewPrivilege)
+                    {
+                        <a class="button gbtngreen" data-toggle="modal" href="#" data-bind="click: $root.viewModule">View <i class="fa fa-eye"></i></a>
+                    }
+                </div>
+
+                <ul data-bind="kendoTreeView: {}, foreach: $root.ModuledataTreeView">
+                    <li>
+                        <a href="javascript:;">
+                            <a href="#" data-bind="click: $root.moduleSelected">
+                                <span data-bind="text: ModuleName"></span>
+                            </a>
+                        </a>
+                        <ul class="sub-menu" data-bind="foreach: Module1">
+                            <li>
+                                <a href="javascript:;">
+                                    <a href="#" data-bind="click: $root.moduleSelected">
+                                        <span data-bind="text: ModuleName"></span>
+                                    </a>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </script>
+        </div>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+    </div>
+</div>

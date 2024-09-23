@@ -1,0 +1,100 @@
+﻿<footer class="footer" id="divFooter">
+    <div class="">
+        <div id="newsData" class="row newsCss"></div>
+     <script src="~/Scripts/jquery.signalR-2.1.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+        <script type="text/javascript">
+
+            $(function () {
+
+                // Proxy created on the fly
+                var chat = $.connection.chatHub;
+
+                // Declare a function on the job hub so the server can invoke it
+                chat.client.BrodcastNews = function () {
+                    getData();
+                    getDivingData();
+                };
+
+                // Start the connection
+              //  $.connection.hub.start();
+                getData();
+                getDivingData();
+            });
+
+            function getData() {
+                $('#divNews').hide();
+                var $tbl = $('#tblJobInfo');
+                $.ajax({
+                    url: '../api/NewsScroll',
+                    type: 'GET',
+                    datatype: 'json',
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $("#divNews").show();
+                            $tbl.empty();                           
+                            var rows = [];
+                            for (var i = 0; i < data.length; i++) {
+                                rows.push(' <tr><td><a href="http://' + data[i].NewsUrl + '" target="_blank" style="color:#00ff00;">' + $('<div/>').text(data[i].NewsContent).html() + '</a></td></tr>');
+                            }
+                            $tbl.append('<marquee scrolldelay="150" onmouseover="this.stop();" onmouseout="this.start();">' + rows.join('&nbsp;&nbsp;&nbsp;&nbsp;') + '</marquee>'); 
+
+                        }
+                    }
+                });
+            }
+            function getDivingData() {
+         
+                $('#divDivingRequest').hide();
+
+                var $tbl = $('#tblDivReq');
+                $.ajax({
+                   
+                    url: '../api/DivingRequestsForScroll',
+                    type: 'GET',
+                    datatype: 'json',
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $("#divDivingRequest").show();
+                            $tbl.empty();
+                            var rows = [];
+                            for (var i = 0; i < data.length; i++) {
+                                rows.push(' <tr><td> Diving Activity At ' + data[i].LocationorQuay + ' Will Be Stop By  ' + data[i].OcupationToDate + '</td></tr> ');
+                            }
+                            $tbl.append('<marquee scrolldelay="150" onmouseover="this.stop();" onmouseout="this.start();">' + rows.join('&nbsp;&nbsp;&nbsp;&nbsp;') + '</marquee>');
+
+                        }
+                    }
+                });
+            }
+
+        </script>
+    
+<div>      
+<div class="col-xs-12 col-sm-6  col-md-5" style="float:left">
+      	    <div id ="divNews" class="col-xs-1 col-sm-1 col-md-1 footer-inner" ><strong>News: </strong></div>
+            <div class="col-xs-6 col-sm-6 col-md-9">
+       	        <span ><table id="tblJobInfo" style="width:100%"></table></span>
+       	      </div>
+   	    </div>
+        <div class="col-xs-12 col-sm-5 col-md-4" >
+      	    <div id ="divDivingRequest" class="col-xs-3 col-sm-4 col-md-3 footer-inner"><strong>Diving Request: </strong></div>
+            <div class="col-xs-6 col-sm-5 col-md-9">
+       	        <span ><table id="tblDivReq" style="width:100%; color:#ffff00;"></table></span>
+       	    </div>
+        </div>
+									<div class="col-xs-12 col-sm-5 col-md-2" style="color: #fff; float:right; text-align: right;">Powered by: &nbsp; <img src="/Content/Images/nav-icon.png"> Navayuga Infotech</div>
+</div>  
+    </div>
+</footer>
+<script>
+    $(function () {
+        $('#newsList').newsTicker();
+    });
+</script>
+
+
+
+
+
+

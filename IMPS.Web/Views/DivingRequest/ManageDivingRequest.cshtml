@@ -1,0 +1,263 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/DivingRequestModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/DivingRequestViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.DivingRequestViewModel();
+   ko.applyBindingsWithValidation(viewModel, $("#divManageDivingRequest")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div id="divManageDivingRequest">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<script type="text/html" id="List-template">
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <div id="tablewrapper15" data-bind=" loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addDivingRequest">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: DivingRequestList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'DRNSort', title: 'DRN', width: '150px', filterable: true },
+                                    { field: 'QuayLocationSort', title: 'Location', width: '150px', filterable: true },
+                                    { field: 'LocationTypeSort', title: 'Location Type', width: '150px', filterable: true },
+                                    { field: 'FromBerthNameSort', title: 'Berth Name', width: '150px', filterable: true },
+                                    { field: 'FromBollardNameSort', title: 'From Bollard', width: '150px', filterable: true },
+                                    { field: 'ToBollardNameSort', title: 'To Bollard', width: '150px', filterable: true },
+                                    { field: 'RequiredByDateSort', title: 'Required By Date', width: '150px', filterable: true },
+                                    { field: 'ReasonsSort', title: 'Reason', width: '150px', filterable: true },
+                                    { title: 'Actions', filterable: false, width: '150px' }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap" data-bind="text: DRN"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: QuayLocation"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: LocationType"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: FromBerthName"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: FromBollardName"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: ToBollardName"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: RequiredByDate"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: Reason"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $root.viewDivingRequest" title="View"><i class="fa fa-eye"></i></a>         
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="Form-template">
+
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: divingmodel">
+                    @*<div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>*@
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="form-group" id="divReqdtls">
+                        <fieldset>
+                            <legend>Diving Request Details</legend>
+
+                            <div class="row form-group">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">
+                                            <input type="radio" name="r1" id="OL" value="O" data-bind="checked: LocationType, event: { change: $parent.radLocation }">
+                                            Other
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">
+                                            <input type="radio" name="r1" id="QL" value="Q" data-bind="checked: LocationType, event: { change: $parent.radQuayLocation }" checked />
+                                            Quay
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="divOtherLocation">
+
+                                        <div class="row">
+                                            <div class="form-group" id="divLocationddl">
+                                                <label class="control-label col-md-4">Location:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <select id="Otherlocation" name="otherlocationname" style="text-transform: capitalize;" data-bind="kendoDropDownList: { data: $parent.LocationList, value: OtherLocation, dataTextField: 'LocationName', dataValueField: 'LocationID', optionLabel: 'Select Other Location', enabled: $parent.IsOtherLocation }, event: { change: ChangeOtherLocationCode }"></select>
+                                                        <span id="Oloc" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Required by Date:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="RequiredByDate" type="text" class="form-control datetime-picker" data-bind="kendoDatePicker: { value: RequiredByDate, format: 'yyyy-MM-dd', min: new Date(), enabled: $parent.IsCodeEnable, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateDate }" name="Datepicker" maxlength="10" />
+                                                        <span class="validationError" id="QlReqdate" data-bind="validationMessage: RequiredByDate"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Reason:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        @* <input type="text" class="form-control" data-bind="value: OccupationReason, enable: $parent.editableView" maxlength="200" />*@
+                                                        <select id="OccupationReason" name="OccupationReason" class="form-control" style="text-transform: capitalize;" data-bind="kendoDropDownList: { data: $parent.divingRequestReasonsList, value: OccupationReason, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select Reason', enabled: $parent.IsCodeEnable }, event: { change: ChangeReason }"></select>
+                                                        <span id="QlReason" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Remarks:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <textarea class="form-control" rows="2" data-bind="value: Remarks, enable: $parent.editableView" maxlength="2000"></textarea>
+                                                        <span id="QlRemarks" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="divQuayLocation" style="display: none;">
+                                        <div class="row">
+                                            <div class="row">
+                                                <div class="form-group ">
+                                                    <label class="control-label col-md-3">Quay Location:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <select id="location" name="quayname" style="text-transform: capitalize;" data-bind="kendoDropDownList: { data: $parent.QuayList, value: FromQuayCode, dataTextField: 'QuayName', dataValueField: 'QuayCode', optionLabel: 'Select Quay Location', enable: $parent.editableView, enabled: $parent.IsCodeEnable }, event: { change: $parent.LoadBerths }" />
+                                                            <span id="Qloc" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">Berth Name: <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <select id="berthno" name="Berthname" style="text-transform: capitalize;" data-bind="kendoDropDownList: { data: $parent.BerthList, value: FromBerthCode, dataTextField: 'BerthName', dataValueField: 'BerthCode', optionLabel: 'Select Berth', enabled: $parent.isQuayChanged }, event: { change: $parent.LoadBollards }" />
+                                                        <span id="QlocBerth" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">From Bollard: <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <select id="frombollard" name="FromBollardname" style="text-transform: capitalize;" data-bind="kendoDropDownList: { data: $parent.BollardList, value: FromBollardCode, dataTextField: 'BollardName', dataValueField: 'BollardCode', optionLabel: 'Select Bollard', enabled: $parent.isBerthChanged }, event: { change: ChangeBollardfromCode }, enable: $parent.IsCodeEnable" />
+                                                        <span id="QlocFromBol" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group ">
+                                                <label class="control-label col-md-3">To Bollard: <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <select id="tobollard" name="ToBollardname" style="text-transform: capitalize;" data-bind="kendoDropDownList: { data: $parent.BollardList, value: ToBollardCode, dataTextField: 'BollardName', dataValueField: 'BollardCode', optionLabel: 'Select Bollard', enabled: $parent.isBerthChanged }, event: { change: ChangeBollardtoCode }, enable: $parent.IsCodeEnable" />
+                                                        <span id="QlocToBol" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                            </div>
+
+                            <div class="row">
+                            </div>
+
+                            <br>
+                        </fieldset>
+                    </div>
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" class="btn green" data-bind=" click: $parent.SaveDivingRequest, visible: $parent.IsSave, enable: $parent.IsSave, loadingWhen: $root.viewModelHelper.isLoading ">Save</button>
+                        <button type="submit" class="btn blue" data-bind=" click: $parent.Reset, visible: $parent.IsReset, enable: $parent.IsReset ">Reset</button>
+                        <button type="button" class="btn red" data-bind=" click: $parent.Cancel ">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+

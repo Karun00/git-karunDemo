@@ -1,0 +1,1 @@
+alter  table FuelRequisition alter column FuelRequistionType nvarchar(6) null;

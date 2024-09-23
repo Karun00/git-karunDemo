@@ -1,0 +1,233 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Resource Allocation Rules";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";  
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ResourceAllocationConfigRuleModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ResourceAllocationConfigRuleViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ResourceAllocationConfigRuleViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#ResourceAllocationConfigRule")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="ResourceAllocationConfigRule">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<div class="clearfix"></div>
+
+<script type="text/html" id="List-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div id="tableheader">
+            @if (Model.HasAddPrivilege)
+            {
+                <a class="button gbtngreen" data-bind="click: $root.addResourceAllocationConfigRule">Add New <i class="fa fa-plus"></i></a>
+            }
+        </div>
+
+        <div data-bind="kendoGrid: {
+    data: resourceallocationconfigruleList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' }, number: { eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'EffectedFrom', title: 'Effected From', width: 150, filterable: false },
+                        { field: 'PilotCapacitySort', title: 'Pilot Capacity', width: 150, filterable: true },
+                        { field: 'TotalTugsSort', title: 'No. of Tugs', width: 150, filterable: true, type: 'number' },
+                        { title: 'Actions', filterable: false, width: 150 }]
+}">
+        </div>
+
+        <script id="rowTmpl" type="text/html">
+            <tr>
+                <td>
+                    <div class="nowrap"><span data-bind="text: EffectedFrom"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: PilotCapacity"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: TotalTugs"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap">
+                        @if (Model.HasViewPrivilege)
+                        {
+                            <a href="#" title="View" data-bind="click: $root.viewResourceAllocationConfigRule"><i class="fa fa-eye"></i></a>
+                        }
+                        @if (Model.HasEditPrivilege)
+                        {
+                            <a href="#" title="Edit" data-bind="click: $root.EditResourceAllocationConfigRule, visible: IsEdit"><i class="fa fa-edit"></i></a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </script>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind="validationMessage: field"></span>
+</script>
+
+<script type="text/html" id="Form-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="clearfix"></div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet" id="form_wizard_1">
+                        <div class="portlet-body form">
+                            <form action="#" class="form-horizontal" id="submit_form" data-bind="with: resourceallocationconfigruleModel ">
+                                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                                    <div class="form-body">
+                                        <div class="tab-content">
+                                            @*<div id="divValidationError1" class="alert alert-danger display-none">
+                                                <button class="close" data-dismiss="alert"></button>
+                                                You have some form errors. Please check below.
+                                            </div>*@
+                                            <div class="alert alert-success display-none">
+                                                <button class="close" data-dismiss="alert"></button>
+                                                Your form validation is successful!
+                                            </div>
+                                            <div class="form-group">
+                                                <fieldset>
+                                                    <legend>Rule Details</legend>
+                                                    <div class="clearfix">
+                                                        <br>
+                                                    </div>
+                                                    <div class="row col-md-12">
+                                                        <div class="col-md-6">
+                                                            <label class="control-label col-md-6">Pilot Capacity Based On:<span class="required">*</span></label>
+                                                            <div class="col-md-5 form-group ">
+                                                                <div class="form-control">
+                                                                    <select id="PilotCapacity" class="form-control" data-bind="options: $root.referenceData().pilotcapacities, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: PilotCapacity, event: { change: ChangePilotCapacity }"></select>
+                                                                    <span id="spanPilotCapacity" class="validationError"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="control-label col-md-4">No. of Tugs:<span class="required">*</span></label>
+                                                            <div class="col-md-5 form-group">
+                                                                <input type="text" class="form-control" onkeydown="PreventBackSpace();" id="TotalTugs" data-bind="value: TotalTugs, event: { keypress: ValidateNumeric }" name="TotalTugs" maxlength="4">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row col-md-12">
+                                                        <div class="col-md-6">
+                                                            <label class="control-label col-md-6">Effected From:<span class="required">*</span></label>
+                                                            <div class="col-md-5 form-group">
+                                                                <input type="text" id="EffectiveFrm" class="date-picker" onkeypress="return false;" data-bind="kendoDatePicker: { value: EffectedFrom, open: calmintoday, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="EffectiveFrm" />
+                                                                <span id="spanEffectiveFrm" class="validationError" data-bind="value: EffectedFrom"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <fieldset>
+                                                                <legend>Movement Types</legend>
+                                                                <div class="row col-md-12">
+                                                                    <div class="col-md-6">
+                                                                        <label class="control-label col-md-6">Arrival:</label>
+                                                                        <div class="col-md-5 form-group ">
+                                                                            <div class="form-control">
+                                                                                <input id="ArrivalMultiSelect" data-bind="kendoMultiSelect: { dataTextField: 'ServiceTypeName', dataValueField: 'ServiceTypeID', data: $root.referenceData().serviceTypes, value: arrivalservicetype }" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="control-label col-md-4">Shifting:</label>
+                                                                        <div class="col-md-5 form-group">
+                                                                            <input id="shiftingservicetype" data-bind="kendoMultiSelect: { dataTextField: 'ServiceTypeName', dataValueField: 'ServiceTypeID', data: $root.referenceData().serviceTypes, value: shiftingservicetype }" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row col-md-12">
+                                                                    <div class="col-md-6">
+                                                                        <label class="control-label col-md-6">Warping:</label>
+                                                                        <div class="col-md-5 form-group ">
+                                                                            <div class="form-control">
+                                                                                <input id="warpingservicetype" data-bind="kendoMultiSelect: { dataTextField: 'ServiceTypeName', dataValueField: 'ServiceTypeID', data: $root.referenceData().serviceTypes, value: warpingservicetype }" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="control-label col-md-4">Sailing:</label>
+                                                                        <div class="col-md-5 form-group ">
+                                                                            <div class="form-control">
+                                                                                <input id="sailingservicetype" data-bind="kendoMultiSelect: { dataTextField: 'ServiceTypeName', dataValueField: 'ServiceTypeID', data: $root.referenceData().serviceTypes, value: sailingservicetype }" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </fieldset>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="table-toolbar">
+                                                    <div id="tableheader1">
+                                                        <a class="button gbtngreen" id="AddSlotPriorityConfig" data-bind="click: $root.AddNewRowtotable, visible: $parent.isview">Add New <i class="fa fa-plus"></i></a>
+                                                    </div>
+                                                    <div class="gridhead">Vessel Length - Gang Configuration</div>
+                                                    <div class="table-scrollable" id="SlotPriorityConfig">
+                                                        <table cellpadding="0" cellspacing="0" border="0" id="tblQualities" class="tinytable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>From mt</th>
+                                                                    <th>To mt</th>
+                                                                    <th>No. of Gangs</th>
+                                                                    <th></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody data-bind="foreach: ResourceGangConfigsVO">
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" id="FromMeter" data-bind="value: FromMeter, event: { keypress: ValidateNumeric }" maxlength="9" />
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" id="ToMeter" data-bind="value: ToMeter, event: { keypress: ValidateNumeric }" maxlength="9" />
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" id="NoOfGangs" data-bind="value: NoOfGangs, event: { keypress: ValidateNumeric }" maxlength="4" />
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href='#' id="RemoveResourceGangConfig" data-bind="click: RemoveResourceGangConfig, visible: $root.isview" title="Delete"><i class="fa fa-ban"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btns-group form-actions fluid">
+                                        <button type="submit" class="btn green" id="Savebutton" data-bind="click: $root.UpdateResourceAllocationConfigRule, visible: $parent.isSave">Save</button>
+                                        <button type="submit" class="btn green" id="Updatebutton" data-bind="click: $root.UpdateResourceAllocationConfigRule, visible: $parent.isUpdate">Update</button>
+                                        <button type="submit" class="btn blue" id="Resetbutton" data-bind="click: $root.reset, visible: $parent.isview ">Reset</button>
+                                        <button type="button" class="btn red" id="Cancelbutton" data-bind="click: $root.cancle">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

@@ -1,0 +1,440 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Capture Arrival/Departure";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var vcn = "";
+    var showViewOnLoad = false;
+    if (!string.IsNullOrEmpty(ViewBag.VCN))
+    {
+        vcn = ViewBag.VCN;
+        showViewOnLoad = true;
+    }
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/VesselCallAnchorageModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/VesselCallAnchorageViewModel.js"></script>
+}
+
+@section ko_apply
+{
+    var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+    var viewModel = new IPMSROOT.VesselCallAnchorageViewModel("@vcn", showOnLoad);	   	
+     ko.applyBindingsWithValidation(viewModel, $("#VesselCallAnchorage")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="VesselCallAnchorageTitle">Capture Arrival/Departure</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="VesselCallAnchorage">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'VesselCallAnchorageList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'VesselCallAnchorageForm-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+
+
+<!-- VesselCallAnchorage List and Serach content starts here-->
+<script type="text/html" id="VesselCallAnchorageList-template">
+    @* <div class="clearfix"></div>*@
+    <div class="portlet-body">
+
+
+        <div>
+            <div class="portlet box advbg">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-reorder"></i>Advanced Search
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-wizard form-horizontal">
+                        <div class="form-body">
+
+                            <div class="form-group" data-bind="with: vesselCallAnchorageModel">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">ETA From :</label>
+                                            <div class="col-md-6">
+                                                <div>
+                                                    <input id="ETAFrom" name="ETA From" class="form-control" onkeydown="" onblur=" checkDate(this) " onfocus=" OnfocusDate(this) " data-bind="kendoDatePicker: { value: ETAFrom, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: ValidDate, keypress: ValidateNumeric }" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">ETA To :</label>
+                                            <div class="col-md-6">
+                                                <div>
+                                                    <input id="ETATo" name="ETA To" class="form-control" onkeydown="" onblur=" checkDate(this) " onfocus=" OnfocusDate(this) " data-bind="kendoDatePicker: { value: ETATo, format: 'yyyy-MM-dd', readonly: true, min: ETAFrom, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">VCN :</label>
+                                            <div class="col-md-6">
+                                                <div>
+                                                    @*<input id="VCN" name="VCN" class="form-control" data-bind="value: VCNSearch" />*@
+                                                    
+                                               
+                                                        <input id="VCNName" name="VCNName" onblur ="VCNonblur();"  onkeydown="SerchVCNBackSpace();" onkeypress="return SerchVCNBackSpaceNumValid(event)" data-bind="kendoAutoComplete: {
+    dataTextField: 'vcn', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/VesselCallVcnDetailsforAutocomplete', dataType: 'json' }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VCNSearch, select: $root.VCNSelectSearch
+}" />
+
+                                            <span id="spanVCNSearchValid" class="validationError" data-bind="visible: $root.isspanVCNSearchValid"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Vessel Name/IMO No. :</label>
+                                            <div class="col-md-6">
+                                                <div>
+                                                    @*<input id="VesselName" name="Vessel Name" class="form-control" data-bind="value: VesselNameSearch" />*@
+                                               
+                                                    <input id="VesselName1" name="VesselName1" onblur ="Vesselonblur();"  onkeydown="SerchVesselBackSpace();"  @*onkeypress="SerchVesselKeyPress()"*@ data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/VesselCallVesselDetailsforAutocomplete/', data: { columnName: '' } }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VesselNameSearch, select: $root.VesselSelectSearch
+}" />
+                                                    <span id="spanVesselSearchValid" class="validationError" data-bind="visible: $root.isspanVesselSearchValid"></span>
+                                               
+                                                    @*<input id="VesselNameSearch" name="Vessel Name" class="form-control" data-bind="value: VesselNameSearch" />
+                                                    , event: { keypress: SerchVesselKeyPress, keydown: SerchVesselBackSpace }*@
+
+                                                     </div>
+                                        </div>
+                                    </div>
+                                        </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-1"></label>
+                                            <div class="col-md-10">
+                                                <div>
+                                                    <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetSearchData">Get Data</button>
+                                                    <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ResetData">Reset</button>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="table-toolbar" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <div data-bind="kendoGrid: {
+    data: VesselCallAnchorageList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', filterable: true },
+   { field: 'VesselNameSort', title: 'Vessel Name', filterable: true },
+   { field: 'ATASort', title: 'ATA', filterable: false },
+   { field: 'ATDSort', title: 'ATD', filterable: false },
+   { title: 'Vessel Status', filterable: false },
+   { title: 'Actions', filterable: true }]
+}">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td data-bind="attr: { 'class': AnyDangerousGoodsonBoard() == 'A' ? 'DangerousGoods' : '' }">
+                        <div class="nowrap"><span data-bind="text: VCN" style="text-transform: capitalize;"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: ATA() ? moment(ATA()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+                    </td>
+
+                    <td>
+                        <div class="nowrap"><span data-bind="text: ATD() ? moment(ATD()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselStatus"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            &nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.ViewVesselCallAnchorage" title="View"><i class="fa fa-eye"></i></a>}&nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.EditVesselCallAnchorage, enable: $parent.IsView" title="Edit"><i class="fa fa-edit"></i></a>}&nbsp; &nbsp;
+                            @if (Model.HasVcnClosePrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.VcnClose" title="Close Vcn"><i class="fa fa-ban"></i></a>
+                            }&nbsp; &nbsp;
+                        </div>
+                    </td>
+                </tr>
+            </script>
+        </div>
+    </div>
+    @* <div class="clearfix"></div>*@
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+<!-- Add VesselCallAnchorage form content starts here-->
+<script type="text/html" id="VesselCallAnchorageForm-template">
+<div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+<form action="#" id="VesselCallAnchorageForm" class="form-horizontal">
+	<div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+		<div class="form-body" data-bind="with: vesselCallAnchorageModel">
+			<div id="divValidationError" class="alert alert-danger display-none">
+				<button class="close" data-dismiss="alert"></button>
+				You have some form errors. Please check below.
+			</div>
+			<div id="divValidationError1" class="alert alert-danger display-none">
+				<button class="close" data-dismiss="alert"></button>
+				<span id="spanValidationError1"></span>
+			</div>
+			<div id="divValidationSuccess" class="alert alert-success display-none">
+				<button class="close" data-dismiss="alert"></button>
+				Your form validation is successful!
+			</div>
+			<div class="row col-md-12">
+				<fieldset>
+					<legend>Vessel Details </legend>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-6">VCN No.:</label>
+								<div class="col-md-6">
+									<input id="VCNNumber" type="text" title="VCN Number" readonly="readonly" data-bind="value: VCN, enable: $parent.IsEditable" maxlength="12" class="form-control" name="VCNNumber"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-6">Vessel Name:</label>
+								<div class="col-md-6">
+									<input id="VesselName" type="text" title="Vessel Name" readonly="readonly" data-bind="value: VesselName" maxlength="200" class="form-control" name="VesselName"/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-6">IMO Number:</label>
+								<div class="col-md-6">
+									<input id="IMONumber" type="text" title="IMO Number" readonly="readonly" data-bind="value: IMONo" maxlength="15" class="form-control" name="IMONumber"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-6">Call Sign:</label>
+								<div class="col-md-6">
+									<input id="CallSign" type="text" title="Call Sign" readonly="readonly" data-bind="value: CallSign" maxlength="200" class="form-control" name="IMONumber"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+				<div class="clearfix">
+					<br/>
+				</div>
+				<fieldset>
+					<legend>Arrival / Departure</legend>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-6">ATA:</label>
+								<div class="col-md-6">
+
+									<label class="control-label col-md-8 txtblue" data-bind="text: ATA() ? moment(ATA()).format('YYYY-MM-DD HH:mm') : ''"></label>
+									<span id="spanATA" class="validationError"></span>
+
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-6">ATD:</label>
+								<div class="col-md-6">
+
+									<label class="control-label col-md-8 txtblue" data-bind="text: ATD() ? moment(ATD()).format('YYYY-MM-DD HH:mm') : ''"></label>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" id="Breakwater">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-6">Port Limit In:</label>
+								<div class="col-md-6">
+									<input id="PortIn" type="text" title="PortIn" class="form-control datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="kendoDateTimePicker: { value: PortLimitIn, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, change: PortInChangeDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable, event: { keypress: ValidateNumeric }" name="PortIn" maxlength="16"/>         
+									<span id="spanPortIn" class="validationError" data-bind="visible: $parent.IsPortInValid"></span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Break Water Out:</label>
+                                        <div class="col-md-6">
+
+                                            <input id="BreakOut" type="text" title="BreakOut" class="form-control datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="kendoDateTimePicker: { value: BreakWaterOut, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, change: BreakOutChangeDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable, event: { keypress: ValidateNumeric } " name="BreakOut" maxlength="16" />
+                                            <span id="spanBreakOut" class="validationError" data-bind="visible: $parent.IsBreakOutValid"></span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="PortLimit">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Break Water In:</label>
+                                        <div class="col-md-6">
+
+                                            <input id="BreakIn" type="text" title="BreakIn" class="form-control datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) "  data-bind="kendoDateTimePicker: { value: BreakWaterIn, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, change: BreakChangeDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable, event: { keypress: ValidateNumeric }" name="BreakIn" maxlength="16" />
+                                            <span id="spanBreakIn" class="validationError" data-bind="visible: $parent.IsBreakInValid"></span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Port Limit Out:</label>
+                                        <div class="col-md-6">
+
+                                            <input id="PortOut" type="text" title="PortOut" class="form-control datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="kendoDateTimePicker: { value: PortLimitOut, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, change: PortOutChangeDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable, event: { keypress: ValidateNumeric }" name="PortOut" maxlength="16" />
+                                            <span id="spanPortOut" class="validationError" data-bind="visible: $parent.IsPortOutValid"></span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </fieldset>
+                        <div class="clearfix">
+                            <br>
+                        </div>
+                        <fieldset id="VcnClose">
+                            <legend>Anchorage Details </legend>
+                            <div class="table-toolbar">
+                                <div id="tableheader">
+                                    <a class="button gbtngreen" data-bind="click: $root.AddNewAnchorage, visible: $parent.IsEditable">Add New <i class="fa fa-plus"></i></a>
+                                    <br />
+                                </div>
+                                <div class="table-scrollable">
+                                    <table cellpadding="0" cellspacing="0" border="0" id="tblQualities" class="tinytable">
+                                        <thead>
+                                            <tr>
+                                                <th>&nbsp; Anchor Drop Time</th>
+                                                <th>&nbsp; Anchor Aweigh Time</th>
+                                                <th>&nbsp; Anchor Position</th>
+                                                <th>&nbsp; Bearing &  Distance From Break Water (Deg x NM)</th>
+                                                <th>&nbsp; Reason</th>
+                                                <th>&nbsp; Remarks</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody data-bind="foreach: VesselCallAnchorages ">
+                                            <tr>
+                                                <td>
+                                                    <input id="AnchorDropTime" type="text" title="Anchor Drop Time" class="form-control datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="kendoDateTimePicker: { value: AnchorDropTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsGridEditable }, event: { keypress: ValidateNumeric }" name="AnchorDropTime" />
+                                                </td>
+                                                <td>
+                                                    <input id="AnchorAweighTime" type="text" title="Anchor Aweigh Time" class="form-control datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="kendoDateTimePicker: { value: AnchorAweighTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsGridEditable }, event: { keypress: ValidateNumeric }" name="AnchorAweighTime" /></td>
+                                                <td>
+                                                    <input id="AnchorPosition" name="AnchorPosition" type="text" title="Anchor Position" data-bind="value: AnchorPosition, enable: $root.IsGridEditable" maxlength="50" class="form-control" /></td>
+                                                <td>
+                                                    <input id="BearingDistanceFromBreakWater" type="text" title="Bearing &  Distance From Break Water (Deg x NM)" data-bind="value: BearingDistanceFromBreakWater, enable: $root.IsGridEditable" maxlength="50" class="form-control" name="BearingDistanceFromBreakWater" /></td>
+                                                <td>
+                                                    <select class="form-control" id="ddlAnchorReason" title="Reason" data-bind="options: $root.vesselCallReason().Reasons, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: Reason, enable: $root.IsGridEditable">
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input id="Remarks" type="text" title="Remarks" data-bind="value: Remarks, enable: $root.IsGridEditable" maxlength="2000" class="form-control" name="Remarks" />
+                                                </td>
+                                                <td><a href='#' id="ancDelete" data-bind='click: $root.removeAnchor, visible: $root.IsGridEditable' title="Delete"><i class="fa fa-ban"></i></a></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="clearfix">
+                            <br>
+                        </div>
+                        <div class="form-group">
+                            <div class="btns-group form-actions fluid">
+                                <button type="submit" id="Update" class="btn green" title="Update" data-bind="click: $parent.ModifyVesselCallAnchorage, visible: $parent.IsUpdate">Update</button>
+                                <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetVesselCallAnchorage, visible: $parent.IsReset">Reset</button>
+                                <button type="submit" class="btn red" title="Cancel" data-bind="click: $parent.Cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+

@@ -1,0 +1,122 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Port Information";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var PortContentID = 0;
+    if (ViewBag.PortContentID != null)
+    {
+        PortContentID = ViewBag.PortContentID;
+    }
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/ViewModel/PortInformationViewModel.js"></script>
+    <script src="~/Scripts/Application/Model/PortInformationModel.js"></script>
+}
+
+<style>
+    .sub-links {
+        float: right;
+        margin-right: 40px;
+    }
+
+    .link-seperator {
+        border-bottom: 1px solid #ccc;
+        line-height: 30px;
+    }
+
+        .link-seperator:hover {
+            background: #ddd;
+        }
+
+    .sub-links {
+        float: right;
+        margin-right: 40px;
+    }
+
+    .link-seperator {
+        border-bottom: 1px solid #ccc;
+        line-height: 30px;
+    }
+
+        .link-seperator:hover {
+            background: #ddd;
+        }
+
+    .input-icon table tr:first-child {
+        display: none;
+    }
+</style>
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.PortInformationViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#PortInformation")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="PortInfMaster"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="PortInformation">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'PortInformationList-template' }"></div>
+</div>
+<div class="clearfix"></div>
+<script type="text/html" id="PortInformationList-template">
+    <div id="tableheader" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <fieldset>
+            <legend>Port Information</legend>
+            <div style="margin-right: 30px;" data-bind=" foreach: $root.ContentdataTreeView">
+                <div class="col-md-4">
+                    <div class="link-seperator" data-bind="visible: ContentName() == 'No Data' ? false : true">
+                        <strong>
+                            <span data-bind="text: ContentName"></span>
+                        </strong>
+                    </div>
+                    <div class="row">
+                        <div data-bind="foreach: PortContent1">
+                            <div class="link-seperator">
+                                <a href="#" data-bind="click: $root.Contentview">
+                                    <span data-bind="text: ContentName" class="links "></span>
+                                </a>
+                            </div>
+                            <span class="row"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div id="stack1" class="modal fade" tabindex="-1" data-bind="with: portInformationModel" data-width="500">
+            <div id="field1"
+                class="modal-dialog" style="width: 50%; margin: 100px 300px;">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <div class="form-horizontal" data-always-visible="1" data-rail-visible1="1">
+                            <div id="contentid" class="form-group row" style="display: none">
+                                <label class="control-label col-md-6">
+                                </label>
+                                <div class="input-icon">
+                                    <textarea id="linkId" class="ckeditor form-control" name="editor1" data-bind="kendoEditor: { value: LinkContent }"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btns-group ">
+                        <button type="submit" class="btn red" title="Cancel" data-bind="click: $root.Cancel">Cancel</button>
+                    </div>
+                    <br>
+                    &nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+

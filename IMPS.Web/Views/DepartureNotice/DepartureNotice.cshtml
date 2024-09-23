@@ -1,0 +1,650 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "Departure Notice";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var DepartureID = string.Empty;
+    var showViewOnLoad = false;
+    if (!string.IsNullOrEmpty(ViewBag.DepartureID))
+    {
+        DepartureID = ViewBag.DepartureID;
+        showViewOnLoad = true;
+    }
+}
+@section scripts{
+    <script src="~/Scripts/Application/ViewModel/WorkflowTaskExecution.js"></script>
+    <script src="~/Scripts/Application/Model/DepartureNoticeModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/DepartureNoticeViewModel.js"></script>
+    <script src="~/Scripts/Lib/moment.js"></script>
+}
+@section ko_apply
+{
+    var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+    var viewModel = new IPMSROOT.DepartureNoticeViewModel(showOnLoad,'@DepartureID');	   	
+	ko.applyBindingsWithValidation(viewModel, $("#divDepartureNotice")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }}   ); 
+}
+
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"><span id="spnTitle">Departure Notice</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="divDepartureNotice">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'DepartureNoticeList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'DepartureNoticeForm-template' }"></div>
+    <div data-bind="visible: viewMode() == 'PopUp', template: { name: 'DepartureNoticePopUp-template' }"></div>
+</div>
+
+<!-- Main body content starts here for developers-->
+<div class="clearfix"></div>
+
+
+<!-- DepartureNotice List and Serach content starts here-->
+<script type="text/html" id="DepartureNoticeList-template">
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+             <div>
+                <div class="portlet box advbg">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-reorder"></i>Advanced Search
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="form-wizard form-horizontal">
+                            <div class="form-body">
+
+                                <div class="form-group" data-bind="with: departureNoticeModel">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6"> ETD From  :</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <input id="SubmissionDateFrom" name="SubmissionDateFrom" class="form-control" onkeypress="return false;" data-bind="kendoDatePicker: { value: SubmissionDateFrom, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: ValidDate }" maxlength="10" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6"> ETD To :</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <input id="SubmissionDateTO" name=" SubmissionDateTo" class="form-control" onkeypress="return false;" data-bind="kendoDatePicker: { value: SubmissionDateTO, format: 'yyyy-MM-dd', readonly: true, min: SubmissionDateFrom, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" maxlength="10" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">VCN :</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        @*<input id="VCNSearch" name="VCN" class="form-control" data-bind="value: VCNSearch" />*@
+                                                        
+                                                        <input id="VCNName" name="VCNName"  onblur ="VCNonblur();" onkeydown="SerchVCNBackSpace();" onkeypress="return SerchVCNBackSpaceNumValid(event)" data-bind="kendoAutoComplete: {
+    dataTextField: 'vcn', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/DepartureNoticeVcnDetailsforAutocomplete', dataType: 'json' }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VCNSearch, select: $root.VCNSelectSearch
+}" />
+                                            <span id="spanVCNSearchValid" class="validationError" data-bind="visible: $root.isspanVCNSearchValid"></span>
+                                      
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Vessel Name/IMO No. :</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        @*<input id="VesselNameSearch" name="Vessel Name" class="form-control" data-bind="value: VesselNameSearch" />*@
+                                                        
+                                                  <input id="VesselName1" name="VesselName1"  onblur ="Vesselonblur();" onkeydown="SerchVesselBackSpace();"  @*onkeypress="SerchVesselKeyPress()"*@ data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/DepartureNoticeVesselDetailsforAutocomplete/', data: { columnName: '' } }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VesselNameSearch, select: $root.VesselSelectSearch
+}" />
+                                                    <span id="spanVesselSearchValid" class="validationError" data-bind="visible: $root.isspanVesselSearchValid"></span>
+                                               
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                       
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-1"></label>
+                                                <div class="col-md-8">
+                                                    <div>
+                                                        <button type="submit" class="btn btn-sm green" data-bind="click: $root.SrearchDepatureDet">Get Data</button>
+                                                        <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ResetSearchDet">Reset</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div  id="divDepartureNoticeList" data-bind="kendoGrid: {
+    data: LoadDepartureNoticeDetails,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, 
+        operators: { 
+            string: { 
+                startswith: 'Starts with', 
+                eq: 'Is equal to', 
+                neq: 'Is not equal to' 
+            },
+            date: {
+                gte: 'Is after or equal to',
+                gt: 'Is after',
+                lte: 'Is before or equal to',
+                lt: 'Is before'
+            }
+        } 
+    },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 20, pageSizes: 20 },
+    useKOTemplates: true,
+    columns: [{ field: 'VCNSort', title: 'VCN', width: 80, filterable: true },
+        { field: 'VesselNameSort', title: 'Vessel Name', width: 100, filterable: true },
+        { field: 'VesselTypeSort', title: 'Vessel Type', width: 100, filterable: true },
+        { field: 'SubmissionDateSort', title: 'ETD', filterable: true, width: 130, type: 'date' },
+        { field: 'WFStatusSort', title: 'Status', filterable: true, width: 100 },
+        { title: 'Actions', filterable: true, width: 100 }]
+}">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VCN"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselType"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: SubmissionDate"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: WFStatust"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $root.viewDepartureNotice, visible: isViewVisible" title="View"><i class="fa fa-eye"></i></a>
+                            }
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $root.acknowledgeDepartureNotice, visible: isAcknowledgeVisible" title="Submit"><i class="fa fa-save"></i></a>                                                           
+                                <a href="#" data-bind="click: $root.editDepartureNotice, visible: isEditVisible" title="Edit"><i class="fa fa-edit"></i></a>
+                            }
+                            <a href="#" data-bind="click: $parent.viewWorkFlow" title="View Workflow"><i class="fa fa-stack-exchange"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </script>
+        </div>
+    </div>
+   <div class="form-body" data-bind="with: departureNoticeModel">
+                <div class="form-group">
+                    <div id="stack1" class="modal fade" tabindex="-1" data-width="400">
+                        <div class="modal-dialog" style="width: 500px;">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                    <div class="scroller" style="height: 225px" data-always-visible="1" data-rail-visible1="1">
+                                        <fieldset>
+                                            <legend id="spnTitile1">WorkFlow Remarks</legend>
+                                           <div align="center"><textarea rows="3" cols="50" class="form-control"  id="WorkFlowRemarks"  style="width: 350px; height: 180px; text-align: center; margin:  0px 9.5px 0px 0px;resize: none;" data-bind="value: WorkFlowRemarks" disabled=""></textarea></div>
+                                       </fieldset>
+                                    </div>
+                                </div>
+                                <br>
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+</script>
+
+<script id="customMessageTemplate" type="text/html" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+    <span class="validationError" data-bind="validationMessage: field"></span>
+</script>
+
+<!-- DepartureNotice form for Add Edit and View starts here-->
+<script type="text/html" id="DepartureNoticeForm-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: departureNoticeModel">
+                    <div class="form-group" id="divDepNotiDtls">
+                        <fieldset>
+                            <legend>Agency Details</legend>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Agency Name:</label>
+                                        <div class="col-md-6 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: AgentName"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Cell No:</label>
+                                        <div class="col-md-6 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: AgentMobileNo"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">Fax No:</label>
+                                        <div class="col-md-8 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: AgentFaxNo"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">VCN:</label>
+                                        <div class="col-md-8 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: VCN"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Agency Rep Name:</label>
+                                        <div class="col-md-6 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: AgentRepName"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Telephone No:</label>
+                                        <div class="col-md-6 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: AgentTelephoneNo"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4">Email ID:</label>
+                                        <div class="col-md-8 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: AgentEmailID"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Vessel  Details</legend>
+                            <div class="clearfix">
+                                <br>
+                            </div>
+                            <div class="row col-md-12">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Vessel Name:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: VesselName, enable: $root.IsEditableView">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Voyage In:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: VoyageIn, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Voyage Out:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: VoyageOut, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Vessel Type:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: VesselType, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Call Sign:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: CallSign, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Off No. (IMO No.):</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: IMONo, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">LOA (M):</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: LengthOverallInM, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Beam (M):</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: BeamInM, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Country of Reg.:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: VesselNationality, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">Arr. Draft (M):</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: ArrDraft, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Dep. Draft (M):</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: DepDraft, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Next Port of Call:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: NextPortOfCall, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group1">
+                                        <label class="control-label col-md-6">GRT (MT):</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: GrossRegisteredTonnageInMT, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">DWT (MT):</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" data-bind="value: DeadWeightTonnageInMT, enable: $root.IsEditableView">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6"></label>
+                                        <div class="col-md-6"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Vessel Restrictions</legend>
+                            <div class="clearfix">
+                                <br>
+                            </div>
+                            <div class="row col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Tidal:</label>
+                                        <div class="col-md-6">
+                                            <div class="radio-list">
+                                                <input type="radio" name="tidal" value="A" data-bind="checked: Tidal, enable: $parent.IsEditableView">
+                                                <label class="radio-inline">Yes</label>
+                                                <input name="tidal" type="radio" value="I" data-bind="checked: Tidal, enable: $parent.IsEditableView">
+                                                <label class="radio-inline">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Day Light Restriction:</label>
+                                        <div class="col-md-6">
+                                            <div class="radio-list">
+                                                <input type="radio" name="daylight" value="A" data-bind="checked: DaylightRestriction, enable: $parent.IsEditableView">
+                                                <label class="radio-inline">Yes</label>
+                                                <input type="radio" name="daylight" value="I" data-bind="checked: DaylightRestriction, enable: $parent.IsEditableView">
+                                                <label class="radio-inline">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Does Vessel have Main Engines ?:<span class="required">*</span></label>
+                                        <div class="col-md-6">
+                                            <div class="radio-list">
+                                                <input type="radio" name="mainengine" value="Y" checked="checked" data-bind="checked: NoMainEngine, enable: $parent.editableView">
+                                                <label class="radio-inline">Yes</label>
+                                                <input name="mainengine" type="radio" value="N" data-bind="checked: NoMainEngine, enable: $parent.editableView">
+                                                <label class="radio-inline">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Will it be under Tow ?:<span class="required">*</span></label>
+                                        <div class="col-md-6">
+                                            <div class="radio-list">
+                                                <input type="radio" name="terminal" value="Y" checked="checked" data-bind="checked: WillSheBeUnderTow, enable: $parent.editableView">
+                                                <label class="radio-inline">Yes</label>
+                                                <input name="terminal" type="radio" value="N" data-bind="checked: WillSheBeUnderTow, enable: $parent.editableView">
+                                                <label class="radio-inline">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-12">Towing Details: </label>
+                                </div>
+                                <div class="col-md-7">
+                                    <textarea class="form-control" rows="3" name="TowingDetails" data-bind="value: TowingDetails, enable: $parent.editableView" maxlength="1000"></textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Service Requirements</legend>
+                            <div class="clearfix">
+                                <br>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Current Berth:</label>
+                                        <div class="col-md-6 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: CurrentBerth, enable: $parent.editableView"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Side Alongside:</label>
+                                        <div class="col-md-6 control-label">
+                                            <label class="col-md-12 displaytxt" data-bind="text: SideAlongSideName, enable: $parent.editableView"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Is Vessel Double Bank ?:<span class="required">*</span></label>
+                                        <div class="col-md-6">
+                                            <div class="radio-list">
+                                                <input type="radio" name="doublebank" value="Y" checked="checked" data-bind="checked: IsVesselDoubleBank, enable: $parent.IsVesselEnable">
+                                                <label class="radio-inline">Yes</label>
+                                                <input type="radio" name="doublebank" value="N" data-bind="checked: IsVesselDoubleBank, enable: $parent.IsVesselEnable">
+                                                <label class="radio-inline">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Estimated Date & Time of Departure:<span class="required">*</span></label>
+                                        <div class="col-md-2">
+                                            <div class="form-control">
+                                                <input type="text" id="EstSerReq" class="datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: EstimatedDatetimeOfSRConverted, enabled: $root.editableView, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, readonly: true }" name="EstimatedDatetimeOfSR" />
+                                                <span class="validationError" data-bind="validationMessage: EstimatedDatetimeOfSRConverted"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" title="Save" class="btn green" data-bind="click: $root.SaveDepartureNotice, visible: $root.IsSave">Save</button>
+                        <button type="submit" title="Update" class="btn green" data-bind="click: $root.ModifyDepartureNotice, visible: $root.IsUpdate">Update</button>
+                        @*<button type="submit" title="Reset" class="btn blue" data-bind="click: $root.ResetDepartureNotice, visible: $root.IsReset">Reset</button>*@
+                        <button type="submit" title="Cancel" class="btn red" data-bind="click: $root.Cancel">Cancel</button>
+                    </div>
+                    <div class="form-actions fluid">
+                        @{
+                            Html.RenderPartial(Url.Content("~/Views/Shared/PendingTaskView.cshtml"));
+                        }
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+<!-- DepartureNotice form for remarks popup here -->
+<script type="text/html" id="DepartureNoticePopUp-template">
+    <div class="portlet-body" id="popup1" data-bind="with: departureNoticeModel">
+        <div class="table-toolbar">
+            <div id="stack9" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">
+                <a href="#tab_0" data-toggle="tab"></a>
+                <div class="modal-dialog" id="stk">
+                    <div id="mc1" class="modal-content" style="width: 80%">
+                        <div class="modal-body">
+                            <button type="button" class="close1" data-dismiss="modal" aria-hidden="true" data-bind="event: { click: $root.closePopup }"></button>
+                            <div class="scroller" style="height: 150px" data-always-visible="1" data-rail-visible1="1">
+                                <fieldset>
+                                    <form action="#" id="form_sample_1" class="form-horizontal">
+                                        <label>Reason For Cancel:<span class="required" style="color: red">*</span></label>
+                                        <div class="form-group row">
+
+                                            <div class="col-md-5">
+                                                <textarea rows="5" style="resize: none; width: 180px;" data-bind="value: workflowRemarks, event: { change: $parent.dataLoad }"></textarea>
+                                                &nbsp; &nbsp; <span id="spanremarks" class="validationError" style="margin: -5px -100px 0 0px;"></span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="btns-group ">
+                            <input type="button" data-bind="click: $root.cancelWFRequest" value="Submit" class="btn green" />
+                        </div>
+                        <br>
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<!-- Main body content ends here for developers-->
+
+<!-- END CONTENT -->

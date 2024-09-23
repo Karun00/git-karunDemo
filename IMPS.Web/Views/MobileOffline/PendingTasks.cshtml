@@ -1,0 +1,97 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+@*<html manifest="@Url.Content("~/MobileOffline/Manifest")" type="text/cache-manifest">*@
+<html>
+<head>
+    <title>Integrated Post Management System</title>
+    <link href="@Url.Content("~/Content/Styles/mobile-style.css")" rel="stylesheet" type="text/css">
+    <script src="~/Scripts/Lib/jquery-2.0.3.min.js"></script>
+    <script src="~/Scripts/Lib/knockout-3.0.0.js"></script>
+    <script src="~/Scripts/Lib/kendo.mobile.min.js"></script>
+    <script src="~/Scripts/Lib/kendo.all.min.js"></script>
+</head>
+
+<body class="bg">
+    <header>
+        <img src="@Url.Content("~/Content/Images/header.jpg")" border="0">
+    </header>
+    <section class="ipmidpart">
+        <div class="topbar">
+            <div class="user">Welcome to Admin</div>
+            <div class="topicons">
+                <a href="javascrpt:;">
+                    <img src="@Url.Content("~/Content/Images/home.png")" border="0"></a>
+                <a href="javascript:;">
+                    <img src="@Url.Content("~/Content/Images/message.png")" border="0"></a>
+                <a href="javascript:;">
+                    <img src="@Url.Content("~/Content/Images/logout.png")" border="0"></a>
+            </div>
+        </div>
+        <!-- View for Agents list -->
+
+        <div id="main">
+            <div data-role="view" id="homeView" data-init="GetPendingVerificationAgents">
+                <label data-role="listview" id="listview1" data-source="groupedData" data-template="index-template"></label>
+                <span></span>
+            </div>
+        </div>
+
+    </section>
+</body>
+</html>
+<script type="text/x-kendo-tmpl" id="index-template">      
+      #:VATNumber# &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   #:FromDate#  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  #:RegistrationNumber #
+</script>
+
+<script>
+    function GetPendingVerificationAgents() {
+        var agentList = ko.observableArray();
+
+        $.ajax({
+            url: '/api/Agent/GetAgents/A',
+            dataType: 'json',
+            success: function (data) {
+
+                //AgentsViewModel = kendo.observable({
+                //    agents: data,
+                //});
+                //agentList = AgentsViewModel;
+
+                var dataSource2 = new kendo.data.DataSource();
+
+                var cjson = ko.toJSON(data);
+                for (var i = 0; i < data.length; i++) {
+                    dataSource2.add(data[i]);
+                }
+
+                var dataSource1 = new kendo.data.DataSource({
+                    transport: {
+                        read: {
+                            url: "/api/Agent/GetAgents/A",
+                            type: "GET"
+                        }
+                    },
+                    schema: {
+                        model: {
+                            id: "AgentID",
+                            fields: {
+                                VATNumber: { type: "string" }
+                            }
+                        }
+                    },
+
+                    pageSize: 50
+                });
+
+                $("#listview1").kendoMobileListView({
+                    dataSource: dataSource2,
+                    template: $("#index-template").text(),
+                });
+            }
+        });
+    }
+
+    var app = new kendo.mobile.Application($("#main"));
+</script>

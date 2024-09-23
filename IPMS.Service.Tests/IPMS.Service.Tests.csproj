@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A236503E-6DF1-4DE8-A38E-39389FCCDB55}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IPMS.Service.Tests</RootNamespace>
+    <AssemblyName>IPMS.Service.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\QA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="IPMS.Core.Repository">
+      <HintPath>..\IPMS.Core.Repository\bin\Debug\IPMS.Core.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="PortKonnect.Common.Services">
+      <HintPath>..\IPMS.ServiceHost.IIS\Bin\PortKonnect.Common.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountServiceTest.cs" />
+    <Compile Include="AgentRegistrationServiceTest.cs" />
+    <Compile Include="AgentServiceTest.cs" />
+    <Compile Include="ArrivalNotoficationWorkFlowTest.cs" />
+    <Compile Include="AuditLogServiceTest.cs" />
+    <Compile Include="BerthMasterServiceTest.cs" />
+    <Compile Include="BerthPlanningRulesTest.cs" />
+    <Compile Include="BiztalkAnchorageResponseServiceTest.cs" />
+    <Compile Include="BiztalkPortLimitResponseServiceTest.cs" />
+    <Compile Include="BollardMasterServiceTest.cs" />
+    <Compile Include="NotificationTest.cs" />
+    <Compile Include="ServiceRequestServiceTest.cs" />
+    <Compile Include="PortMasterServiceTest.cs" />
+    <Compile Include="IPMSFakeContext.cs" />
+    <Compile Include="IPMSFakeDbSets.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuayMasterserviceTest.cs" />
+    <Compile Include="ServiceRequestWorkFlowTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IPMS.Core.Repository\Core.Repository.csproj">
+      <Project>{7a02df10-6661-4268-8bc0-b4d62478b934}</Project>
+      <Name>Core.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Data\IPMS.Data.csproj">
+      <Project>{d090ea4b-08b0-4d64-9c7a-b9795b4544f7}</Project>
+      <Name>IPMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Domain\IPMS.Domain.csproj">
+      <Project>{e00e43c0-e42a-4793-889f-eaa2da343c40}</Project>
+      <Name>IPMS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Repository\IPMS.Repository.csproj">
+      <Project>{8e84d313-d5d5-4915-acb3-2ac2ffaef552}</Project>
+      <Name>IPMS.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Services\IPMS.Services.csproj">
+      <Project>{19f71bf8-3ec2-4100-bf3a-4b78a9f09cc5}</Project>
+      <Name>IPMS.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

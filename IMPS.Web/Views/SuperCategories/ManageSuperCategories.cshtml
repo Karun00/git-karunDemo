@@ -1,0 +1,164 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "SuperCategories";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/SuperCategoryModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/SuperCategoryViewModel.js"></script>
+}
+
+@section ko_apply
+{
+
+var viewModel = new IPMSROOT.SuperCategoryViewModel();
+   
+ko.applyBindingsWithValidation(viewModel, $("#SuperCategory")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="SuperCategory">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+
+
+</div>
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addsupcat ">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: SupCatList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'SupCatCodeSort', title: 'Super Category Code', width: '80', filterable: true }
+               , { field: 'SupCatNameSort', title: 'Super Category Name', width: '80', filterable: true },
+               { title: 'Status', filterable: false }, { title: 'Actions', filterable: false }]
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td><span data-bind="text: SupCatCode"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: SupCatName"></span></div>
+                        </td>
+
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: Statust"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editsupcat" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewsupcat" title="View"><i class="fa fa-eye"></i></a>  
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: supercategoryModel">
+                            @*<div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>*@
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Super Category Details</legend>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Super Category Code:
+                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="SupCatCode" name="code" maxlength="4" autofocus="autofocus" class="form-control" data-bind="value: SupCatCode, enable: $parent.IsCodeEnable, event: { keyup: HandleSupCatCodeKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumeric } ">
+                                                        <span id="spanSupcode" class="validationError" data-bind="visible: $parent.UniqueCodeVisible">This Super Category Code already exists</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Super Category Name:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="SupCatName" name="name" maxlength="15" data-required="1" class="form-control" data-bind="value: SupCatName, enable: $parent.editableView, event: { keyup: HandleSupCatNameKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }">
+                                                        <span id="spanSupname" class="validationError" data-bind="visible: $parent.UniqueNameVisible">This Super Category Name already exists</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Status:<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView } " />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.SaveSupCat, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                                <button type="submit" class="btn green" data-bind="click: $parent.ModifySupCat, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                <button type="submit" class="btn blue" data-bind="click: $parent.ResetSupCat, visible: $parent.IsReset ">Reset</button>
+                                <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+    </div>
+</div>

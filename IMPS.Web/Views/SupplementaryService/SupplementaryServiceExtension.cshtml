@@ -1,0 +1,1215 @@
+﻿@{
+    ViewBag.Title = "SupplementaryServiceRequest";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/SupplementaryServiceRequestModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/SupplementaryServiceRequestViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.SupplementaryServiceRequestViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#SupplementaryServiceRequest")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- Main body content starts here for developers-->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="SupplementaryServiceRequest">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'SupplementaryServiceRequestList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'SupplementaryServiceRequestForm-template' }"></div>
+</div>
+
+<!-- Supplementary Service Request List starts here-->
+<script type="text/html" id="SupplementaryServiceRequestList-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="clearfix"></div>
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div id="tableheader">
+                    <a class="button gbtngreen" data-bind="click: $root.addSupplimentaryServRequest">Add New <i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div data-bind="kendoGrid: {
+    data: SupplementaryServiceRequestList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'VCNSort', title: 'VCN', filterable: true },
+              { field: 'VesselNameSort', title: 'Vessel Name', filterable: true },
+             { field: 'ServiceTypeSort', title: 'service Type', filterable: true },
+             { field: 'RequestDtAndTimeSort', title: 'Request Dt. & Time', filterable: true },
+              { field: 'RequestDtAndTimeSort', title: 'Extension Upto', filterable: true },
+             { field: 'StatusSort', title: 'Status', filterable: true },
+             { title: 'Actions', filterable: true }]
+}">
+        </div>
+
+        <script id="rowTmpl" type="text/html">
+            <tr @*data-bind="style: { color: Status() == 'Completed' ? 'green' : 'black' }"*@>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VCN" style="text-transform: capitalize;"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VesselName" style="text-transform: capitalize;"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ServiceTypeName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: FromDate"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: FromDate"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: StatusSort"></span></div>
+                </td>
+
+                <td>
+                    <div class="nowrap">
+                        &nbsp; &nbsp;&nbsp; &nbsp;<a href="#" data-bind="click: $parent.ViewServiceRequest" title="View"><i class="fa fa-eye"></i></a>&nbsp; &nbsp;&nbsp; &nbsp;
+                            <a href="#" data-bind="click: $parent.EditServiceRequest, visible: WFStatus() != 'Approved'" title="Edit"><i class="fa fa-edit"></i></a>&nbsp; &nbsp;
+                    </div>
+                </td>
+            </tr>
+        </script>
+    </div>
+
+</script>
+<!-- Supplementary Service Request List ends here-->
+
+<!-- Error Message -->
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind="validationMessage: field" id="ErrorMsg"></span>
+</script>
+<script type="text/html" id="SupplementaryServiceRequestForm-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-wizard">
+                    <div class="form-body" data-bind="with: supplementaryServiceRequestModel">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Validation header message starts here -->
+                                @*<div id="divValidationError" class="alert alert-danger display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    You have some form errors. Please check below.
+                                </div>*@
+                                <div id="divValidationSuccess" class="alert alert-success display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    Your form validation is successful!
+                                </div>
+                                <!-- Validation header message ends here -->
+
+                                <!--  Vessel Details starts here -->
+                                <div class="portlet box advbg">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <!--<i class="fa fa-reorder"></i>-->
+                                            Vessel Details
+                                        </div>
+                                        <div class="tools">
+                                            <a href="javascript:;" class="collapse"></a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body" data-bind="with: VesselData">
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">VCN:</label><label class="col-md-6 displaytxt" data-bind="text: VCN"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">Vessel Name:</label><label class="col-md-6 displaytxt" data-bind="text: VesselName "></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">Voyage In:</label><label class="col-md-6 displaytxt" data-bind="text: VoyageIn"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">LOA:</label><label class="col-md-6 displaytxt" data-bind="text: LengthOverallInM"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">Beam:</label><label class="col-md-6 displaytxt" data-bind="text: BeamInM"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">Voyage Out:</label><label class="col-md-6 displaytxt" data-bind="text: VoyageOut"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">Reason for Visit:</label><label class="col-md-6 displaytxt" data-bind="text: ReasonForVisit"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">Cargo Type:</label><label class="col-md-6 displaytxt" data-bind="text: VesselType"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-6 txtalgnR">Call Sign:</label><label class="col-md-6 displaytxt" data-bind="text: CallSign"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="equipments" style="width: 100%;">
+                                            <div class="row">
+                                                <div class="row hline">
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">E.T.A:</label><label class="col-md-6 displaytxt" data-bind="text: ETA"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">E.T.D:</label><label class="col-md-6 displaytxt" data-bind="text: ETD"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">IMO No:</label><label class="col-md-6 displaytxt" data-bind="text: IMONo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="row hline">
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Arr Drft:</label><label class="col-md-6 displaytxt" data-bind="text: ArrDraft"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Country of Reg.:</label><label class="col-md-6 displaytxt" data-bind="text: VesselNationality"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">GRT:</label><label class="col-md-6 displaytxt" data-bind="text: GrossRegisteredTonnageInMT"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="row hline">
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">DWT:</label><label class="col-md-6 displaytxt" data-bind="text: DeadWeightTonnageInMT"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Last Port:</label><label class="col-md-6 displaytxt" data-bind="text: LastPortOfCall"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Next Port:</label><label class="col-md-6 displaytxt" data-bind="text: NextPortOfCall"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="row hline">
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Tidal Condition:</label><label class="col-md-6 displaytxt" data-bind="text: Tidal"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Daylight Condition:</label><label class="col-md-6 displaytxt" data-bind="text: DaylightRestriction"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR"></label>
+                                                        <label class="col-md-6 displaytxt"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: right">
+                                            <a href="#" rel="toggle[equipments]" data-openimage="Content/Images/collapse.png" data-closedimage="Content/Images/expand.png">
+                                                <img src="Content/Images/collapse.png" border="0" /></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--  Vessel Details ends here -->
+                                <!-- Water Service Type View starts here-->
+                                @* <div class="portlet" id="form_wizard_1">*@
+
+
+
+                                <fieldset>
+                                    <legend>Service Details</legend>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">VCN:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="Vessel" name="VCN" data-bind="kendoAutoComplete: { data: $root.getVCNDtls().Vessels, dataTextField: 'VCN', select: $root.VesselSelect, filter: 'contains' }, value: VCN, enable: $parent.SuppReqeditableView" />
+                                                        @* <span id="spanvcnd" class="validationError" data-bind="validationMessage: VCN"></span>*@
+                                                        <span id="spanvcnd" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Current Berth:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt">MW01</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Service Type:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <select id="serviceType" class="form-control" data-bind="options: $root.serviceTypeData().serviceTypeList, optionsText: 'SubCatName', optionsCaption: 'Choose..', optionsValue: 'SubCatCode', value: ServiceType, enable: $parent.SuppReqeditableView, event: { change: ChangeserviceType }"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="WaterServiceSection" data-bind="visible: ServiceType() == 'WTST'">
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-7">Service Required at Berth:<span class="required">*</span></label>
+                                                    <div class="col-md-5">
+                                                        <div class="form-control">
+                                                            <select id="WServiceReqBerth" class="form-control" data-bind="options: $root.berthData().berthList, optionsText: 'BerthName', optionsCaption: 'Choose..', optionsValue: 'BerthKey', value: BerthKey, enable: $parent.IsEditable, event: { change: ChangeWServiceReqBerth }"></select>
+                                                            <span id="spanWServiceReqBerth" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Date of Service:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="WSDateOfService" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" onchange="ChangeWSDateOfService();" data-bind="kendoDateTimePicker: { value: FromDate, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="FromDate" maxlength="10" />
+                                                            <span id="spanWSDateOfService" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Quantity:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-9">
+                                                            <input type="text" id="WSQuantity" class="form-control" data-bind="value: Quantity, enable: $parent.IsEditable, event: { keypress: ValidateNumeric }" maxlength="7">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label class="control-label fc-col0">&nbsp;(Mt)</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="control-label col-md-2">Comments:</label>
+                                            <div class="col-md-10">
+                                                <textarea class="form-control" rows="5" name="remarks" id="WSComments" data-bind="value: Remarks, enable: $parent.IsEditable, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="200"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div id="FloatingCraneSection" data-bind="visible: ServiceType() == 'FCST'">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-7">Service Required at Berth:<span class="required">*</span></label>
+                                                    <div class="col-md-5">
+                                                        <div class="form-control">
+                                                            <select id="FCSServiceReqBerth" class="form-control" data-bind="options: $root.berthData().berthList, enable: $parent.IsEditable, optionsText: 'BerthName', optionsCaption: 'Choose..', optionsValue: 'BerthKey', value: BerthKey, event: { change: ChangeFCSServiceReqBerth }"></select>
+                                                            <span id="spanFCSServiceReqBerth" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">From Date:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="FCSFromDate" type="text" onchange="ChangeFCSFromDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FromDate, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="FCSFromDate" maxlength="10" />
+                                                            <span id="spanFCSFromDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">To Date:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="FCSToDate" type="text" onchange="ChangeFCSToDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: ToDate, format: 'MM/dd/yyyy hh:mm:ss tt', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="FCSToDate" maxlength="10" />
+                                                            <span id="spanFCSToDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 row form-group">
+
+                                            <div class="gridhead">Quantities of Commodity</div>
+
+
+                                            <div class="table-scrollable">
+
+                                                <table cellpadding="0" cellspacing="0" border="0" id="tblCommodity" class="tinytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>&nbsp; Berth</th>
+                                                            <th>&nbsp; Cargo Type</th>
+                                                            <th>&nbsp; Package</th>
+                                                            <th>&nbsp; UOM</th>
+                                                            <th>&nbsp; Qty(Mt)</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody data-bind="foreach: ArrivalCommodities">
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" class="form-control" data-bind="value: BerthCode, enable: $parent.IsEditable" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" class="form-control" data-bind="value: CargoType, enable: $parent.IsEditable" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" data-bind="value: Package, enable: $parent.IsEditable" class="form-control" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" data-bind="value: UOM, enable: $parent.IsEditable" class="form-control" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" data-bind="value: Quantity, enable: $parent.IsEditable" class="form-control" />
+                                                            </td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+
+                                        </div>
+                                        <div class="col-md-12 row form-group">
+
+
+                                            <div id="AddFloatingCranetableheader">
+                                                <a class="button gbtngreen NeedToHide" data-bind="click: $root.AddFloatingCrane, enable: $parent.IsEditable">Add New <i class="fa fa-plus" data-bind="    enable: $parent.IsEditable"></i></a>
+                                                <br />
+                                            </div>
+
+                                            <div class="gridhead">Services to be Performed</div>
+
+
+                                            <div class="table-scrollable">
+
+                                                <table cellpadding="0" cellspacing="0" border="0" id="tblFloatingCrane" class="tinytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>&nbsp; Qty</th>
+                                                            <th>&nbsp; Mass(Mt)</th>
+                                                            <th>&nbsp; Description</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody data-bind="foreach: SuppFloatingCranesVO">
+                                                        <tr>
+                                                            <td>
+                                                                <input id="Quantity" name="Quantity" type="text" class="form-control" data-bind="value: Quantity, event: { keypress: ValidateNumeric }, enable: $root.IsEditable" maxlength="7" />
+                                                            </td>
+                                                            <td>
+                                                                <input id="MassMT" name="MassMT" type="text" class="form-control" data-bind="value: MassMT, event: { keypress: ValidateNumeric }, enable: $root.IsEditable" maxlength="7" />
+                                                            </td>
+                                                            <td>
+                                                                <input id="Description" name="Description" type="text" data-bind="value: Description, enable: $root.IsEditable, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="50" class="form-control" />
+                                                            </td>
+
+                                                            <td class="NeedToHide">
+                                                                <a href='#' id="ServiceToBePerformedDelete" data-bind='click: $root.removeServiceToBePerformedDelete' title="Delete"><i class="fa fa-ban"></i></a>
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <span id="spantableFloatingCrane" class="validationError"></span>
+
+                                        </div>
+                                        <div class="row">
+                                            <label class="control-label col-md-2">Comments:</label>
+                                            <div class="col-md-8">
+                                                <textarea id="FCSComments" data-bind="value: Remarks, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEditable" class="form-control" rows="3" name="remarks" maxlength="200"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="HotWorkPermitSection" data-bind="visible: ServiceType() == 'HWST'">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-7">Service Required at Berth:<span class="required">*</span></label>
+                                                    <div class="col-md-5">
+                                                        <div class="form-control">
+                                                            <select id="HWPSServiceReqBerth" class="form-control" data-bind="options: $root.berthData().berthList, optionsText: 'BerthName', optionsCaption: 'Choose..', optionsValue: 'BerthKey', value: BerthKey, event: { change: ChangeHWPSServiceReqBerth }, enable: $parent.IsEditable"></select>
+                                                            <span id="spanHWPSServiceReqBerth" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request From:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="HWPSRequestFromDate" type="text" onchange="ChangeHWPSRequestFromDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FromDate, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="FromDate" maxlength="10" />
+                                                            <span id="spanHWPSRequestFromDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request To:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="HWPSRequestToDate" type="text" onchange="ChangeHWPSRequestToDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: ToDate, format: 'MM/dd/yyyy hh:mm:ss tt', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="ToDate" maxlength="10" />
+                                                            <span id="spanHWPSRequestToDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" data-bind="with: SuppHotColdWorkPermitsVO">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Location:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <select id="HWPSlocation" class="form-control" data-bind="options: $root.locationData().locationList, optionsText: 'LocationName', optionsCaption: 'Choose..', optionsValue: 'LocationID', value: LocationID, event: { change: ChangeHWPSlocation }, enable: $root.IsEditable"></select>
+                                                            <span id="spanHWPSlocation" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"></label>
+                                                    <div class="col-md-10">
+                                                        <div>
+                                                            <input id="HWPSOthers" type="text" data-bind="enable: $parent.IsEditable" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <fieldset>
+                                            <legend>Gas Free Certificate</legend>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Available:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="radio-list" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="HWPSAvailable_Y" type="radio" onclick="ChangeHWPSGassFreeCertificateAvailable(this);" name="HWPSAvailable_Y" value="Y" data-bind="    checked: GassFreeCertificateAvailable">
+                                                                <label class="radio-inline">Yes</label>
+                                                                <input id="HWPSAvailable_N" onclick="ChangeHWPSGassFreeCertificateAvailable(this);" name="HWPSAvailable_Y" type="radio" value="N" data-bind="    checked: GassFreeCertificateAvailable">
+                                                                <label class="radio-inline">No</label>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Validity:<span id="reqHWPSValidity" class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="HWPSValidity" type="text" onchange="ChangeHWPSValidity();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: GassFreeCertificateValidity, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="HWPSValidity" maxlength="10" />
+                                                                <span id="spanHWPSValidity" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Issuing Authority:<span id="reqHWPSIssuingAuthority" class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="HWPSIssuingAuthority" onchange="ChangeHWPSIssuingAuthority();" data-bind="value: GassFreeIssuingAuthority, enable: $parent.IsEditable, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="20" type="text" style="border: none" class="form-control">
+                                                                <span id="spanHWPSIssuingAuthority" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">Dangerous Goods Status:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: AnyDangerousGoodsonBoard"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">Class:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: DangerousGoodsClass"></label>
+                                                    </div>
+                                                    v               
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">UN No.:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: UNNo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Remarks:</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="HWPSRemarks" data-bind="value: Remarks, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEditable" class="form-control" rows="5" name="remarks" maxlength="200"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="fileupload-buttonbar">
+                                                <div class="form-group">
+                                                    <fieldset>
+                                                        <legend>Upload Documents</legend>
+                                                        <div class="col-md-8">
+                                                            &nbsp;&nbsp;
+                                	<span class="btn btn-xs green fileinput-button">
+                                        <i class="fa fa-plus"></i>
+                                        <span>Browse
+                                        </span>
+                                        <input type="file" name="files[]" id="HWPSfileToUpload" data-bind=" enable: $parent.IsEditable" multiple>
+                                    </span>
+                                                            <button type="submit" data-bind="click: $parent.HWPSuploadFile, enable: $parent.IsEditable" class="btn  btn-xs blue start">
+                                                                <i class="fa fa-upload" data-bind=" enable: $parent.IsEditable"></i>
+                                                                <span>Upload
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" data-bind="visible: $parent.isHWPSfileToUpload">
+                                            <div class="form-group">
+                                                <div class="col-md-2">
+                                                    &nbsp;&nbsp; <span id="spanHWPSfileToUpload" class="validationError" data-bind="visible: $parent.isHWPSfileToUpload"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" data-bind="with: SuppHotColdWorkPermitsVO">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-bordered table-advance">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="bg-dark">Document Name</th>
+                                                            <th class="bg-dark"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody data-bind="foreach: SuppHotColdWorkPermitDocumentsVO">
+                                                        <tr>
+                                                            <td><a data-bind="  text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }, enable: $parent.IsEditable"></a></td>
+                                                            <td class="NeedToHide"><a href="#" class="btn default btn-xs red" data-bind="click: $root.HWPSDeleteDocument, enable: $parent.IsEditable"><i class="fa fa-trash-o" data-bind="    enable: $parent.IsEditable"></i>Delete</a></td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+
+
+
+                                    </div>
+                                    <div id="ColdWorkPermitSection" data-bind="visible: ServiceType() == 'CWST'">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-7">Service Required at Berth:<span class="required">*</span></label>
+                                                    <div class="col-md-5">
+                                                        <div class="form-control">
+                                                            <select id="CWPSServiceReqBerth" class="form-control" data-bind="options: $root.berthData().berthList, optionsText: 'BerthName', optionsCaption: 'Choose..', optionsValue: 'BerthKey', value: BerthKey, event: { change: ChangeCWPSServiceReqBerth }, enable: $parent.IsEditable"></select>
+                                                            <span id="spanCWPSServiceReqBerth" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request From:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="CWPSRequestFromDate" type="text" onchange="ChangeCWPSRequestFromDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FromDate, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="CWPSRequestFromDate" maxlength="10" />
+                                                            <span id="spanCWPSRequestFromDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request To:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="CWPSRequestToDate" type="text" onchange="ChangeCWPSRequestToDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: ToDate, format: 'MM/dd/yyyy hh:mm:ss tt', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="CWPSRequestToDate" maxlength="10" />
+                                                            <span id="spanCWPSRequestToDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Location:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                            <select id="CWPSlocation" class="form-control" data-bind="options: $root.locationData().locationList, optionsText: 'LocationName', optionsCaption: 'Choose..', optionsValue: 'LocationID', value: LocationID, event: { change: ChangeCWPSlocation }, enable: $root.IsEditable"></select>
+                                                            <span id="spanCWPSlocation" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"></label>
+                                                    <div class="col-md-10">
+                                                        <div>
+                                                            <input id="CWPSOthers" type="text" data-bind=" enable: $parent.IsEditable" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <fieldset>
+                                            <legend>Gas Free Certificate</legend>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Available:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="radio-list" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="CWPSAvailable_Y" type="radio" name="CWPSAvailable_Y" value="Y" onclick="ChangeCWPSGassFreeCertificateAvailable(this);" data-bind="    checked: GassFreeCertificateAvailable">
+                                                                <label class="radio-inline">Yes</label>
+                                                                <input id="CWPSAvailable_N" name="CWPSAvailable_Y" type="radio" value="N" onclick="ChangeCWPSGassFreeCertificateAvailable(this);" data-bind="    checked: GassFreeCertificateAvailable">
+                                                                <label class="radio-inline">No</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Validity:<span id="reqCWPSValidity" class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="CWPSValidity" type="text" onchange="ChangeCWPSValidity();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: GassFreeCertificateValidity, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="CWPSValidity" maxlength="10" />
+                                                                <span id="spanCWPSValidity" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Issuing Authority:<span id="reqCWPSIssuingAuthority" class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="CWPSIssuingAuthority" data-bind="value: GassFreeIssuingAuthority, enable: $parent.IsEditable, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="20" onchange="ChangeCWPSIssuingAuthority();" type="text" style="border: none" class="form-control">
+                                                                <span id="spanCWPSIssuingAuthority" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">Dangerous Goods Status:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: AnyDangerousGoodsonBoard"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">Class:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: DangerousGoodsClass"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">UN No.:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: UNNo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Remarks:</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="CWPSRemarks" data-bind="value: Remarks, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEditable" class="form-control" rows="5" name="remarks" maxlength="200"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="fileupload-buttonbar">
+                                                <div class="form-group">
+                                                    <fieldset>
+                                                        <legend>Upload Documents</legend>
+                                                        <div class="col-md-8">
+                                                            &nbsp;&nbsp;
+                                	<span class="btn btn-xs green fileinput-button">
+                                        <i class="fa fa-plus"></i>
+                                        <span>Browse
+                                        </span>
+                                        <input type="file" name="files[]" id="CWPSfileToUpload" data-bind=" enable: $parent.IsEditable" multiple>
+                                    </span>
+                                                            <button type="submit" data-bind="click: $parent.CWPSuploadFile, enable: $parent.IsEditable" class="btn  btn-xs blue start">
+                                                                <i class="fa fa-upload" data-bind=" enable: $parent.IsEditable"></i>
+                                                                <span>Upload
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" data-bind="visible: $parent.isCWPSfileToUpload">
+                                            <div class="form-group">
+                                                <div class="col-md-2">
+                                                    &nbsp;&nbsp; <span id="spanCWPSfileToUpload" class="validationError" data-bind="visible: $parent.isCWPSfileToUpload"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" data-bind="with: SuppHotColdWorkPermitsVO">
+                                            <div class="table-responsive">
+                                                <table id="tableCWPS" class="table table-striped table-bordered table-advance">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="bg-dark">Document Name</th>
+                                                            <th class="bg-dark"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbodyCWPS" data-bind="foreach: SuppHotColdWorkPermitDocumentsVO">
+                                                        <tr>
+                                                            <td><a data-bind="  text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }, enable: $parent.IsEditable"></a></td>
+                                                            <td class="NeedToHide"><a href="#" class="btn default btn-xs red" data-bind="click: $root.CWPSDeleteDocument, enable: $parent.IsEditable"><i class="fa fa-trash-o" data-bind="    enable: $parent.IsEditable"></i>Delete</a></td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div id="HotAndColdWorkPermitSection" data-bind="visible: ServiceType() == 'HCST'">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-7">Service Required at Berth:<span class="required">*</span></label>
+                                                    <div class="col-md-5">
+                                                        <div class="form-control">
+                                                            <select id="HCWPSServiceReqBerth" class="form-control" data-bind="options: $root.berthData().berthList, optionsText: 'BerthName', optionsCaption: 'Choose..', optionsValue: 'BerthKey', value: BerthKey, event: { change: ChangeHCWPSServiceReqBerth }, enable: $parent.IsEditable"></select>
+                                                            <span id="spanHCWPSServiceReqBerth" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request From:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="HCWPSRequestFromDate" type="text" onchange="ChangeHCWPSRequestFromDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FromDate, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="HCWPSRequestFromDate" maxlength="10" />
+                                                            <span id="spanHCWPSRequestFromDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request To:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="HCWPSRequestToDate" type="text" onchange="ChangeHCWPSRequestToDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: ToDate, format: 'MM/dd/yyyy hh:mm:ss tt', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="HCWPSRequestToDate" maxlength="10" />
+                                                            <span id="spanHCWPSRequestToDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Location:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                            <select id="HCWPSlocation" class="form-control" data-bind="options: $root.locationData().locationList, optionsText: 'LocationName', optionsCaption: 'Choose..', optionsValue: 'LocationID', value: LocationID, event: { change: ChangeHCWPSlocation }, enable: $root.IsEditable"></select>
+                                                            <span id="spanHCWPSlocation" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"></label>
+                                                    <div class="col-md-10">
+                                                        <div>
+                                                            <input id="HCWPSOthers" type="text" class="form-control" data-bind=" enable: $parent.IsEditable">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <fieldset>
+                                            <legend>Gas Free Certificate</legend>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Available:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="radio-list" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="HCWPSAvailable_Y" type="radio" name="HCWPSAvailable_Y" onclick="ChangeHCWPSGassFreeCertificateAvailable(this);" value="Y" data-bind="    checked: GassFreeCertificateAvailable">
+                                                                <label class="radio-inline">Yes</label>
+                                                                <input id="HCWPSAvailable_N" name="HCWPSAvailable_Y" onclick="ChangeHCWPSGassFreeCertificateAvailable(this);" type="radio" value="N" data-bind="    checked: GassFreeCertificateAvailable">
+                                                                <label class="radio-inline">No</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Validity:<span id="reqHCWPSValidity" class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="HCWPSValidity" type="text" onchange="ChangeHCWPSValidity();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: GassFreeCertificateValidity, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="HCWPSValidity" maxlength="10" />
+                                                                <span id="spanHCWPSValidity" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Issuing Authority:<span id="reqHCWPSIssuingAuthority" class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control" data-bind="with: SuppHotColdWorkPermitsVO">
+                                                                <input id="HCWPSIssuingAuthority" onchange="ChangeHCWPSIssuingAuthority();" data-bind="value: GassFreeIssuingAuthority, enable: $parent.IsEditable, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="20" type="text" style="border: none" class="form-control">
+                                                                <span id="spanHCWPSIssuingAuthority" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">Dangerous Goods Status:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: AnyDangerousGoodsonBoard"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">Class:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: DangerousGoodsClass"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" data-bind="with: VesselData">
+                                                    <label class="control-label col-md-6">UN No.:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-7 displaytxt" data-bind="text: UNNo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Remarks:</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="HCWPSRemarks" data-bind="value: Remarks, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEditable" class="form-control" rows="5" name="remarks" maxlength="200"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="fileupload-buttonbar">
+                                                <div class="form-group">
+                                                    <fieldset>
+                                                        <legend>Upload Documents</legend>
+                                                        <div class="col-md-8">
+                                                            &nbsp;&nbsp;
+                                	                        <span class="btn btn-xs green fileinput-button">
+                                                                <i class="fa fa-plus"></i>
+                                                                <span>Browse
+                                                                </span>
+                                                                <input type="file" name="files[]" id="HCWPSfileToUpload" data-bind=" enable: $parent.IsEditable" multiple>
+                                                            </span>
+                                                            <button type="submit" data-bind="click: $parent.HCWPSuploadFile, enable: $parent.IsEditable" class="btn  btn-xs blue start">
+                                                                <i class="fa fa-upload" data-bind=" enable: $parent.IsEditable"></i>
+                                                                <span>Upload
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" data-bind="visible: $parent.isHCWPSfileToUpload">
+                                            <div class="form-group">
+                                                <div class="col-md-2">
+                                                    &nbsp;&nbsp; <span id="spanHCWPSfileToUpload" class="validationError" data-bind="visible: $parent.isHCWPSfileToUpload"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row" data-bind="with: SuppHotColdWorkPermitsVO">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped table-bordered table-advance">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="bg-dark">Document Name</th>
+                                                            <th class="bg-dark"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody data-bind="foreach: SuppHotColdWorkPermitDocumentsVO">
+                                                        <tr>
+                                                            <td><a data-bind="  text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }, enable: $parent.IsEditable"></a></td>
+                                                            <td class="NeedToHide"><a href="#" class="btn default btn-xs red" data-bind="click: $root.HCWPDeleteDocument, enable: $parent.IsEditable"><i class="fa fa-trash-o" data-bind="    enable: $parent.IsEditable"></i>Delete</a></td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="DryDockSection" data-bind="visible: ServiceType() == 'DDST'">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request From:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="DDRequestFromDate" type="text" onchange="ChangeDDRequestFromDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FromDate, format: 'MM/dd/yyyy hh:mm:ss tt', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="DDRequestFromDate" maxlength="10" />
+                                                            <span id="spanDDRequestFromDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Request To:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="DDRequestToDate" type="text" onchange="ChangeDDRequestToDate();" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: ToDate, format: 'MM/dd/yyyy hh:mm:ss tt', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="DDRequestToDate" maxlength="10" />
+                                                            <span id="spanDDRequestToDate" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Bar Keel:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="radio-list">
+                                                            <input type="radio" name="freecertificatecold" value="Y" checked data-bind=" enable: $parent.IsEditable">
+                                                            <label class="radio-inline">Yes</label>
+                                                            <input name="freecertificatecold" type="radio" value="N" data-bind=" enable: $parent.IsEditable">
+                                                            <label class="radio-inline">No</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Cargo:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-10">
+                                                            <input id="DDCargo" data-bind="value: DDCargo, enable: $parent.IsEditable" type="text" class="form-control">
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <label class="control-label fc-col0">&nbsp;Tons</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Ballast:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-10">
+                                                            <input id="DDBallast" data-bind="value: DDBallast, enable: $parent.IsEditable" type="text" class="form-control">
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <label class="control-label fc-col0">&nbsp;Tons</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Bunkers:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-10">
+                                                            <input id="DDBunkers" data-bind="value: DDBunkers, enable: $parent.IsEditable" type="text" class="form-control">
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <label class="control-label fc-col0">&nbsp;Tons</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">&nbsp;</div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Remarks:</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="DDRemarks" data-bind="value: Remarks, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEditable" class="form-control" rows="5" name="remarks" maxlength="200"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="fileupload-buttonbar">
+                                                <div class="form-group">
+                                                    <fieldset>
+                                                        <legend>Upload Documents</legend>
+                                                        <div class="col-md-8">
+                                                            &nbsp;&nbsp;
+                                	<span class="btn btn-xs green fileinput-button">
+                                        <i class="fa fa-plus"></i>
+                                        <span>Browse
+                                        </span>
+                                        <input type="file" name="files[]" id="fileToUpload3" data-bind=" enable: $parent.IsEditable" multiple>
+                                    </span>
+                                                            @* <button type="submit" data-bind="click: $parent.uploadFile3, enable: $parent.IsEditable" class="btn  btn-xs blue start">
+                                                                <i class="fa fa-upload" data-bind=" enable: $parent.IsEditable"></i>
+                                                                <span>Start upload
+                                                                </span>
+                                                            </button>*@
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                @*<div align="center" class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" id="chkTermsandConditions" data-bind="checked: TermsandConditions, enable: $parent.IsEditable">
+                                        I accept that have read the <a href="#" data-target="#stack1" data-toggle="modal">Terms and Conditions</a>
+                                    </label>
+                                    <div align="center" class="form-group">
+                                        <label class="col-xs-7">
+                                            <span id="spanchkTermsandConditions" class="validationError"></span>
+                                        </label>
+
+                                    </div>
+                                    <div id="stack1" class="modal fade" tabindex="-1" data-width="400">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                    <div class="scroller" style="height: 200px" data-always-visible="1" data-rail-visible1="1">
+                                                        <div class="col-md-12">
+                                                            <h3 class="page-title">Terms &amp; Conditions</h3>
+                                                            <ul class="page-breadcrumb breadcrumb"></ul>
+                                                        </div>
+                                                        <div class="row">
+                                                            Terms and Condition are under Constructions
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>*@
+                                <div class="form-group">
+                                    <div class="btns-group fluid">
+                                        <button type="submit" class="btn green" data-bind="click: $parent.SaveRequest, visible: $parent.IsSave">Save</button>
+                                        <button type="submit" class="btn green" data-bind="click: $parent.ModifyRequest, visible: $parent.IsUpdate">Modify</button>
+                                        <button type="submit" class="btn blue" data-bind="click: $parent.ResetRequest, visible: $parent.IsReset">Reset</button>
+                                        <button type="button" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                    </div>
+                                </div>
+
+
+
+                                @*</div>*@
+                                <!-- Water Service Type View ends here-->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+
+<!-- Main body content ends here for developers-->
+
+

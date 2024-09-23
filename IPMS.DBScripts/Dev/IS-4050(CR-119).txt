@@ -1,0 +1,11 @@
+GO
+insert into SuperCategory(SupCatCode,SupCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('DPDC','Dry Dock Plan Doc Category','A',2,getdate(),2,getdate())
+
+  Go
+  insert into SubCategory(SubCatCode,SupCatCode,SubCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('DP','DPDC','Docking Plan','A',1,getdate(),1,getdate())
+
+  GO
+  insert into SubCategory(SubCatCode,SupCatCode,SubCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('DPOH','DPDC','Others','A',1,getdate(),1,getdate())

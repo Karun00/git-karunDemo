@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8" />
+    <title>Integrated Port Management System</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+    <link href="~/Content/Styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/resourceAllocation.css" rel="stylesheet" />
+
+    <style>
+    .table-container {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-heading {
+        display: table-row;
+        background-color: #3d3d3d;
+        text-align: center;
+        line-height: 25px;
+        color: #fff;
+    }
+
+    .table-row {
+        display: table-row;
+        text-align: center;
+    }
+
+    .col {
+        display: table-cell;
+        border: 1px solid #CCC;
+    }
+</style>
+
+    <script src="~/Scripts/Lib/jquery-2.0.3.min.js"></script>
+    <script src="~/Scripts/Lib/jquery-ui.js"></script>
+    <script src="~/Scripts/Lib/knockout-3.0.0.js"></script>
+    <script src="~/Scripts/Lib/knockout-sortable.min.js"></script>
+    <script src="~/Scripts/Application/IpmsRoot.js"></script>
+     
+
+</head>
+ 
+<body oncontextmenu="return false">
+          
+
+<div class="clearfix">
+</div>
+
+    <section class="page-container">   
+
+        <div class="page-content-wrapper">
+          
+            <div class="plain-content" style="margin-left: 0px;">
+                  @RenderBody()
+            </div>
+        </div>
+    </section>
+
+  @*  @{Html.RenderPartial(Url.Content("~/Views/Shared/_IPMSFooter.cshtml"));}*@
+
+
+    @RenderSection("JavaScript", required: false)
+    @RenderSection("scripts", required: false)
+    <script>
+        IPMSROOT.rootPath = '@Url.Content("~")';
+        var isAuthenticated = "@(WebSecurity.IsAuthenticated)";
+        jQuery(document).ready(function () {
+           
+            @RenderSection("ko_apply", required: false);
+
+        });
+
+    </script>
+
+
+</body>
+</html>

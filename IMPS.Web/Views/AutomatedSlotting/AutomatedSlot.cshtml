@@ -1,0 +1,550 @@
+﻿@{
+    ViewBag.Title = "AutomatedSlot";
+    Layout = "~/Views/Shared/_IPMSAutomatedSlotting.cshtml";
+ 
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/AutomatedSlottingModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AutoSlotting.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var moveLeft = -1150;
+            var moveDown = -35;
+            var moveRight = 20;
+
+            $('a#trigger').hover(function (e) {
+                $('div#pop-up').show();
+                //.css('top', e.pageY + moveDown)
+                //.css('left', e.pageX + moveLeft)
+                //.appendTo('body');
+            }, function () {
+                $('div#pop-up').hide();
+            });
+
+            $('a#trigger').mousemove(function (e) {
+                // Commented and added by Srinivas
+                $("div#pop-up").css('top', e.pageY + moveDown).css('right', moveRight);
+                //$("div#pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+                //-- end
+            });
+
+        });
+
+
+    </script>
+
+}
+@section ko_apply
+{
+    @*var viewModel = new IPMSROOT.AutomatedSlottingViewModel();
+    ko.applyBindings(viewModel);*@
+
+}
+<link href="~/Content/Styles/AutoSlotting.css" rel="stylesheet" />
+<style>
+   .BLCK {
+        /*BLOCKED*/
+        border: 1px solid #CCC;
+        /*background-color: #40FF00;*/
+        background-color: #f00;
+        color: white;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+
+    .CNFR {
+        /*CONFIRM*/
+        border: 1px solid #CCC;
+        /*background-color: #40FF00;*/
+        background-color: #006400;
+        color: white;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+
+    .PLND {
+        /*PLANNED*/
+        border: 1px solid #CCC;
+        background-color: orange;
+        color: black;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+
+    .ONG {
+        /*ONGOING*/
+        border: 1px solid #CCC;
+        background-color: grey;
+        color: black;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+
+    .CMPL {
+        /*COMPLETED*/
+        border: 1px solid #CCC;
+        background-color: #CD6090;
+        color: white;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+
+    .OVRD {
+        /*OVERRIDE*/
+        border: 1px solid #CCC;
+        background-color: yellow;
+        color: black;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+
+    .PEND {
+        /*PENDING*/
+        background-color: white;
+        color: black;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        border: 1px solid #ccc;
+        letter-spacing: 1px;
+    }
+
+    .SCHD {
+        /*SCHDULED*/
+        border: 1px solid #CCC;
+        background-color: grey;
+        color: white;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+
+    td-width {
+        width: 50px;
+    }
+
+    .legend-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid #666;
+    }
+
+        .legend-icon span {
+            margin-left: 0px;
+            margin-top: -4px !important;
+            display: block;
+        }
+
+    .legend-Schduled {
+        background: grey;
+    }
+
+     .legend-Blocked {
+        background: #e02222;
+    }
+
+     .legend-Completed {
+        background: #CD6090;
+    }
+
+    .k-widget.k-tooltip {
+        border-color: #4C4C4C;
+        background-color: #FFFFFF;
+        color: #282828;
+        border: 5px solid #ccc;
+    }
+
+    .k-callout-n {
+        border-bottom-color: #ccc;
+    }
+
+    .k-callout-n {
+        top: -17px;
+        left: 25%;
+    }
+
+    .slotwrapping {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+@*<body>
+    <div>Automated Slotting</div>
+
+    <div id="Div1" data-bind="foreach: pendingSlots">
+        <div class="table_2">
+            <span data-bind="text: slotNumber"></span>
+            <div data-bind="sortable: { data: VesselMovements }">
+                <div class="studenToBePlanned" data-bind="text: Detail"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="main" data-bind="foreach: plannedSlots">
+        <div class="table_2">
+            <span data-bind="text: slotHeading"></span>
+            <div data-bind="sortable: { data: VesselMovements, allowDrop: $root.isSlotFull }">
+                <div class="student" data-bind="kendoTooltip: { content: ToolTip },text: Detail">
+                </div>
+            </div>
+    </div>
+    </div>
+
+    <button value="Save" data-bind="click: SavePlan">Save</button>
+
+    <button value="Save" data-bind="click: LoadPreviousDay">Prev Day</button>
+    <button value="Save" data-bind="click: LoadNextDay">Next Day</button>
+
+    <label data-bind="text: CurrentDate"></label>
+
+</body>*@
+
+<!-- Main body content starts here for developers-->
+
+
+<div id="AutomatedSlot">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="col-md-6">
+                <h3 class="page-title">Automated Slotting System</h3>
+                <ul class="page-breadcrumb breadcrumb"></ul>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label col-md-3">Date: </label>
+                    <div class="col-md-8">
+                        <div class="form-control">
+                            <input id="FromDate" type="text" title="FromDate" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDatePicker: { value: $root.ResourceDate, format: 'yyyy-MM-dd' }" name="FromDate" maxlength="10" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button type="button" class="btn green btn-sm" id="btnSelectDate" data-bind="click: $root.getResourceByDate">Select</button>
+                    <button type="button" class="btn green btn-sm" id="btnRefresh" data-bind="click: $root.clickRefresh">Refresh</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5" align="right">
+            @*   <label class="control-label" style="margin-top: 10px;" data-bind="text: $root.PortName"></label>*@
+            <label class="btn btn-sm  green" disabled><i class="fa fa-anchor"></i>&nbsp;<span data-bind="  text: $root.PortName"></span> </label>
+            <label class="displaytxt"></label>
+            <button class="btn btn-sm green" data-bind="click: LoadPreviousDay"><i class="fa fa-chevron-left"></i>Prev Day</button>
+            @*<button class="btn btn-sm green" data-bind="click: LoadNextDay, enable: IsValidDate">Next Day<i class="fa fa-chevron-right"></i></button>*@
+            <button class="btn btn-sm green" data-bind="click: LoadNextDay">Next Day<i class="fa fa-chevron-right"></i></button>
+            <button class="btn btn-sm green" data-bind="click: ExtendSlots, enable: IsCurrentDate">Extend Slots </button>
+            <a href="#" class="btn btn-sm red" id="trigger">Legend</a>
+            <div id="pop-up">
+                <p>
+                    <table border='0' width="100%" cellpadding='3' cellspacing='3'>
+                        <tr>
+                            <td class='td-width'>
+                                <div class='legend-icon legend-Planned'><span class='left-span'>Planned</span></div>
+                            </td>
+                            <td class='td-width'>
+                                <div class='legend-icon legend-Confirmed'><span class='left-span'>Confirmed</span></div>
+                            </td>
+                            <td class='td-width'>
+                                <div class='legend-icon legend-Pending'><span class='left-span'>Pending</span></div>
+                            </td>
+
+                            @* <td class='td-width'>
+                            <div class='legend-icon legend-OnGoing'><span class='left-span'>On Going</span></div>
+                        </td>
+                        <td class='td-width'>
+                            <div class='legend-icon legend-Completed'><span class='left-span'>Completed</span></div>
+                        </td>*@
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class='legend-icon legend-Overridden'><span class='left-span'>Overridden</span></div>
+                            </td>
+                            <td>
+                                <div class='legend-icon legend-Schduled'><span class='left-span'>Scheduled</span></div>
+                            </td>
+                            <td>
+                                  <div class='legend-icon legend-Blocked'><span class='left-span'>Blocked</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class='legend-icon legend-Completed'><span class='left-span'>Completed</span></div>
+                            </td>
+                            <td>
+                               
+                            </td>
+                            <td>
+                                  
+                            </td>
+                        </tr>
+                    </table>
+                </p>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="clearfix"></div>
+
+
+    <div class="clearfix"></div>
+    <div class="row" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="col-md-5" id="divLeftMenu">
+            <div style="margin-right: 5px;">
+                <fieldset class="min-h1" style="background: white">
+                    <legend>Vessels Waiting for Slot</legend>
+                    <div id="Div1" data-bind="foreach: pendingSlots" class="maintableb" style="background: #fff; padding: 0.5px;">
+                        <div class="col-md-3">
+                            <div class="table">
+                                <div data-bind="text: slotNumber" class="head-container"></div>
+                                <div data-bind="sortable: { data: VesselMovements }">
+                                    @* <div class="studenToBePlanned" data-bind="kendoTooltip: { content: ToolTipDetails }, text: Detail, attr: { 'class': SlotStatus }">*@
+                                    <div data-bind="kendoTooltip: { content: ToolTipDetails }">
+                                        <div class="studenToBePlanned" data-bind="attr: { 'class': SlotStatus }">
+                                            <div data-bind="text: VCN" class="slotwrapping"></div>
+                                            <div data-bind="text: VesselName" class="slotwrapping"></div>
+                                            <div data-bind="text: MovementType" class="slotwrapping"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div style="margin-left: 5px;">
+                <fieldset class="min-h2" style="background: white">
+                    <legend>Automated Slot Plan</legend>
+
+                    <div id="main" data-bind="foreach: plannedSlots" class="maintablea" style="width: 100%;">
+                        <div class="innertablea">
+                            <div class="col-width">
+                                <div class="table">
+                                    <div  class="head-container" style="margin: 0px -2px;"><div data-bind="text: slotHeading" style="width: 76px; white-space: normal;margin: auto;"></div></div>
+                                    <div  data-bind="sortable: { data: VesselMovements, allowDrop: $root.isSlotFull }, style: { backgroundColor: BlockedStatus }, attr: { id: BlockedStatus === '#e02222' ? 'Blocked' + Slotnum : 'NotBlocked' }" class="ko_container" >
+                                        @*<div id="myID" class="student1" data-bind="  kendoTooltip: { content: ToolTipDetails }, text: Detail, attr: { 'class': SlotStatus }, click: function (data, event) { $root.ResourceOnClick(data, event); }"></div>*@
+                                        <div data-bind="kendoTooltip: { content: ToolTipDetails }, click: function (data, event) { $root.ResourceOnClick(data, event); }">
+                                            @*<table id="myID" class="student1" data-bind="attr: { 'class': SlotStatus }" >
+                                                <tr>
+                                                    <td style='text-align: center'>
+                                                        <span data-bind="text: VCN"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style='text-align: center'>
+                                                        <span data-bind="text: VesselName"></span>
+                                                    </td>
+                                                </tr>
+                                            </table>*@
+                                            <div id="myID" class="student1" data-bind="attr: { 'class': SlotStatus }">
+                                                <div data-bind="text: VCN" class="slotwrapping"></div>
+                                                <div data-bind="text: VesselName" class="slotwrapping"></div>
+                                                <div data-bind="text: MovementType" class="slotwrapping"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="btns-group form-actions fluid">
+            <button class="btn btn-sm blue" data-bind="click: $root.Refresh">Refresh</button>
+            @*<button class="btn btn-sm blue" data-bind="click: SavePlan, visible: $root.isEnabled">Confirm</button>*@
+            <button class="btn btn-sm btn-info" data-bind="click: ConfirmAll, visible: $root.isEnabled">Confirm All</button>
+            <button class="btn btn-sm green" data-bind="click: SavePlan">Save</button>
+            @*<button class="btn btn-sm Grey" data-bind="click: LoadPreviousDay, visible: IsCurrentDate">Cancel</button>*@
+            <button class="btn btn-sm red" data-bind="click: cancel">Cancel</button>
+          
+        </div>
+    </div>
+
+    <div id="OtherThanTugModel" class="modal fade">
+        <div class="modal-dialog" style="width: 588px; height: 333px;">
+            <div class="modal-content" data-bind="with: selectedVesselColumn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Are you sure you want to confirm<span id="OtherThanTugHeader"></span></h4>
+                </div>
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="modal-body">
+                        <fieldset>
+                            <legend>Vessel Information</legend>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-md-6">VCN:</label>
+                                    <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="idVCN"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-md-6">Vessel Name:</label>
+                                    <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="idVesselName">asdf</label>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-md-6">Movement Type:</label>
+                                    <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="idMovementType"></label>
+
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                        <div class="btns-group form-actions fluid">
+                            <button type="button" class="btn btn-sm green" title="Save" data-bind="click: $parent.ConfirmVessel">Yes</button>
+                            <button type="button" class="btn btn-sm red" title="Delete" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-sm grey" title="Close" data-dismiss="modal">Cancel</button>
+
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+        <!-- /.modal-dialog -->
+    </div>
+
+  <div class="portlet-body" id="popup1"  data-bind="with: autoSlot">
+        <div class="table-toolbar" >
+            <div id="stack12" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">               
+                <div class="modal-dialog" id="stk">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="form-horizontal" style="height: 60px" data-always-visible="1" data-rail-visible1="1">
+                                <fieldset >
+                                    <legend>Reason For Overriding</legend>
+                                   
+                                        <div class="form-group row">
+                                                      <label class="control-label col-md-5 form hori">Reason:<span class="required">*</span></label>
+                                          <div class="col-md-5">
+                                            <select class="form-control" id="ResnOverRide"  data-bind="options: $root.ReasonTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: ReasonTypeCodes, optionsCaption: 'Choose....'">
+                                            </select>
+                                            <span id="spanOverrideReason" class="validationError" data-bind="visible: $root.isspanOverrideReason" style=" height: 13px;width: 121px;">This field is required</span> 
+                                             
+                                                                                         
+                                       </div>
+                                   
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="btns-group ">
+                            <input type="button"  value="Yes"  data-bind="click: $root.ClickYes" aria-hidden="true" class="btn green" />
+                            <input type="button" data-dismiss="modal" value="No"  data-bind="click: $root.ClickNo" aria-hidden="true" class="btn red" />
+
+                        </div>
+                        <br>
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+ 
+    
+
+<div class="clearfix"></div>
+<div class="row">
+    <div id="log"></div>
+</div>
+
+
+<!-- Main body content ends here for developers-->
+@*</div>*@

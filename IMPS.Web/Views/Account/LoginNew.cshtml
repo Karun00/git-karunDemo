@@ -1,0 +1,176 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Integrated Port Management System - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+    <link href="@Url.Content("~/Content/Styles/font-awesome.min.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/bootstrap.min.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/uniform.default.css")" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Styles/select2_metro.css")"/>
+    <link href="@Url.Content("~/Content/Styles/style-metronic.css")" rel="stylesheet")" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/style.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/style-responsive.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/plugins.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/default.css")" rel="stylesheet" type="text/css" id="style_color"/>
+    <link href="@Url.Content("~/Content/Styles/login-soft.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/custom.css")" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="@Url.Content("~/Content/Images/favicon.ico") "/>
+</head>
+<body>
+    <header class="header navbar navbar-inverse navbar-fixed-top">
+        <div class="header-inner">
+            <a class="navbar-brand" href="index.html">
+                <img src="@Url.Content("~/Content/Images/logo.png")" alt="logo" class="img-responsive">
+            </a><span class="name">Integrated Port Management System</span>
+            <ul class="nav navbar-nav pull-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <i class="fa fa-compass"></i>About Us &nbsp; &nbsp;</a>
+                </li>
+                <li class="dropdown" id="header_notification_bar">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <i class="fa fa-book"></i>Help
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li>
+                            <p>Help</p>
+                        </li>
+                        <li>
+                            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 250px;">
+                                <ul class="dropdown-menu-list scroller" style="height: 250px; overflow: hidden; width: auto;">
+                                    <li>
+                                        <a href="#">
+                                            <span class="label label-sm label-icon label-success">
+                                                <i class="fa fa-plus"></i>
+                                            </span>
+                                            New user registered.
+                            <span class="time">Just now
+                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="external">
+                            <a href="#">See all<i class="m-icon-swapright"></i></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <section class="login">
+        <article class="content">
+            <form class="login-form" action="index.html" method="post">
+                <div class="logo">
+                    <img src="@Url.Content("~/Content/Images/transnet_logo_large.png")" alt=""/>
+                </div>
+                <h3 class="form-title">Welcome to IPMS.</h3>
+                <p>Please enter your username and password to login.</p>
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    <span>Enter any username and password.
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label visible-ie8 visible-ie9">Username</label>
+                    <div class="input-icon">
+                        <i class="fa fa-user"></i>
+                        <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label visible-ie8 visible-ie9">Password</label>
+                    <div class="input-icon">
+                        <i class="fa fa-lock"></i>
+                        <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <select id="port" class="form-control col-lg-5">
+                            <option>Select Port</option>
+                            <option value="1">Richards Bay</option>
+                            <option value="2">Durban</option>
+                            <option value="3">East London</option>
+                            <option value="4">Ngqura</option>
+                            <option value="5">Port Elizabeth</option>
+                            <option value="6">Mossel Bay</option>
+                            <option value="7">Cape Town</option>
+                            <option value="8">Saldanha Bay</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <br>
+                </div>
+                <div class="form-actions">
+                    <label class="checkbox">
+                        <input type="checkbox" name="remember" value="1" />
+                        Remember me
+                    </label>
+                    <button type="submit" class="btn green pull-right">
+                        Login <i class="m-icon-swapright m-icon-white"></i>
+                    </button>
+                </div>
+                <div class="forget-password">
+                    <a href="javascript:;" id="forget-password"><span class="fa fa-arrow-circle-right">&nbsp; </span>Forgot password?</a>
+                </div>
+                <div class="create-account">
+                    <p>
+                        Don't have an account yet ?
+                 <a href="@Url.Content("~/AgentRegistration/RegistrationNew")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>New Agent Registration</a>
+                    </p>
+                </div>
+            </form>
+            <form class="forget-form" action="index.html" method="post">
+                <h3>Forget Password ?</h3>
+                <p>
+                    Enter your e-mail address below to reset your password.
+                </p>
+                <div class="form-group">
+                    <div class="input-icon">
+                        <i class="fa fa-envelope"></i>
+                        <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email" />
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="back-btn" class="btn">
+                        <i class="m-icon-swapleft"></i>Back
+                    </button>
+                    <button type="submit" class="btn blue pull-right">
+                        Submit <i class="m-icon-swapright m-icon-white"></i>
+                    </button>
+                </div>
+            </form>
+        </article>
+    </section>
+    <script src="@Url.Content("~/Scripts/Lib/jquery-2.0.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery-migrate-1.2.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/twitter-bootstrap-hover-dropdown.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.slimscroll.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.blockui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.cokie.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.uniform.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.backstretch.min.js")" type="text/javascript"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/Lib/select2.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/Lib/app.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/login-soft.js")" type="text/javascript"></script>
+    <script>
+        $(function () {
+            App.init();
+            Login.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "CraftOutOfCommission";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/CraftOutOfCommissionModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/CraftOutOfCommissionViewModel.js"></script>
+}
+@section ko_apply
+{
+
+var viewModel = new IPMSROOT.CraftOutOfCommissionViewModel();  
+   ko.applyBindingsWithValidation(viewModel, $("#CraftOutOfCommission")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="CraftOutOfCommission">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+
+<script type="text/html" id="List-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div id="tableheader">
+            @if (Model.HasAddPrivilege)
+            {
+                <a class="button gbtngreen" data-bind="click: $root.addcraftoutofcomm ">Add New <i class="fa fa-plus"></i></a>
+            }
+        </div>
+
+        <div data-bind="kendoGrid: {
+    data: CraftOutOfCommsList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' }, int: { eq: 'Is equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'CraftCodeSort', title: 'Craft Code', width: '80px', filterable: true },
+                 { field: 'CraftNameSort', title: 'Craft Name', width: '160px', filterable: true },
+                 { field: 'CraftTypeSort', title: 'Craft Type', width: '100px', filterable: true },
+                 { field: 'IMONoSort', title: 'IMO No.', width: '100px', filterable: true },
+                 { field: 'ReasonSort', title: 'Reason', width: '100px', filterable: true },
+                 { field: 'ExpectedDurationSort', title: 'Expected Duration', width: '100px', filterable: true, type: 'number', format: '{0:d}', validation: { min: 0, required: false } },
+                 { title: 'Actions', width: '60px', filterable: false }]
+}">
+        </div>
+        <script id="rowTmpl" type="text/html">
+            <tr>
+                <td>
+                    <div class="nowrap"><span data-bind="text: CraftCode"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: CraftName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: CraftTypeName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: IMONo"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ReasonName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ExpectedDuration"></span></div>
+                </td>
+
+                <td>
+                    <div class="nowrap">
+                        @if (Model.HasEditPrivilege)
+                        {
+                            <a href="#" data-bind="click: $parent.editcraftoutofcomm" title="Edit"><i class="fa fa-edit"></i></a>
+                        }
+                        @if (Model.HasViewPrivilege)
+                        {
+                            <a href="#" data-bind="click: $parent.viewcraftoutofcomm" title="View"><i class="fa fa-eye"></i></a>
+                        }
+                        &nbsp; &nbsp;
+                    </div>
+                </td>
+            </tr>
+        </script>
+    </div>
+</script>
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+<script type="text/html" id="Form-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" id="form_sample_1" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: craftoutofcommissionModel">
+                    <div class="tab-pane active" id="tab1">
+                        <div class="form-group">
+                            <fieldset>
+                                <legend>Craft Out of Commission Details</legend>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">
+                                                Craft Name:
+                                                        <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input data-bind="kendoDropDownList: { data: $parent.CraftList, value: CraftID, dataTextField: 'CraftName', dataValueField: 'CraftID', enabled: $parent.Dropdowneditable, optionLabel: 'Select...' }, event: { change: $parent.CraftChanged }" />
+                                                <span id="spanCraftID" class="validationError" data-bind="validationMessage: CraftID "></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">
+                                                Craft Code:
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="CraftCode" name="code" class="form-control" data-bind="value: CraftCode, enable: $parent.Dataeditable">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">
+                                                Craft Type:
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="CraftType" name="type" class="form-control" data-bind="value: CraftType, enable: $parent.Dataeditable">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">
+                                                IMO No.:
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="IMONo" name="type" class="form-control" data-bind="value: IMONo, enable: $parent.Dataeditable">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">
+                                                Reason for Out of Commision:
+                                                    	<span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input data-bind="kendoDropDownList: { data: $parent.ReasonsList, value: Reason, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...', enabled: $parent.editableView }" />
+                                                <span id="spanReason" class="validationError" data-bind="validationMessage: Reason "></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">
+                                                Craft Commission Status:                                                    	
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input data-bind="kendoDropDownList: { data: $parent.CommStatusList, value: CraftCommissionStatus, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...', enabled: false }" />
+                                                <span id="spanCommSta" class="validationError" data-bind="validationMessage: CraftCommissionStatus "></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">
+                                                Expected Duration for Repair:
+                                                    	<span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-1">
+                                                <input type="text" id="ExpectedDuration" name="type" class="form-control" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" maxlength="7" data-bind="value: ExpectedDuration, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric }" />
+                                                <span id="spanExpDur" class="validationError" data-bind="validationMessage: ExpectedDuration "></span>
+                                            </div>
+                                            <div class="col-md-2">&nbsp;Hours</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">
+                                                Remarks:
+                                                    	<span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-9">
+                                                <textarea id="Remarks" name="Remarks" maxlength="500" data-required="1" data-bind="value: Remarks, enable: $parent.editableView" style="width: 100%; height: 52px;"> </textarea>
+                                                <span id="spanRemarks" class="validationError" data-bind="validationMessage: Remarks "></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                        <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.Savecraftoutofcomm, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                        <button type="submit" class="btn green" data-bind="click: $parent.Modifycraftoutofcomm, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                        <button type="submit" class="btn blue" data-bind="click: $parent.Resetcraftoutofcomm, visible: $parent.IsReset ">Reset</button>
+                        <button type="button" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>

@@ -1,0 +1,285 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "Vessel SAP Posting";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/VesselSAPPostingModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/VesselSAPPostingViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.VesselSAPPostingViewModel();   
+ko.applyBindingsWithValidation(viewModel, $("#VesselSAPPosting")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="VesselSAPPosting">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+         
+        <script type="text/html" id="List-template">
+            <div id="tableheader">
+            <a class="button gbtngreen" data-bind="click:$root.addNew">Add New <i class="fa fa-plus"></i></a>
+            </div>
+            <div data-bind="kendoGrid: {
+    data: LoadSAPVessels,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [ { field: 'VesselNameSort', title: 'Vessel Name', width: 100, filterable: true },
+{ field: 'IMONoSort', title: 'IMO No.', width: 100, filterable: true },
+{ field: 'SAPReferenceNoSort', title: 'SAP Vessel No.', width: 100, filterable: true },
+{ title: 'Remarks', width: 100, filterable: true },
+                        { title: 'Actions', width: 100, filterable: true }]
+}">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: IMONo"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: SAPReferenceNo"></span></div>
+                    </td>
+                      <td>
+                        <div class="nowrap"><span data-bind="text: Remarks"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            &nbsp;
+                                  <a href="#"title="View" data-bind="click: $root.ViewSAP"><i class="fa fa-eye"></i></a>
+                                  <a href="#"title="Repost" data-bind="click: $root.RepostSAP, visible: IsRepost() == 'Y'">Repost</a>
+
+                        </div>
+                    </td>
+                </tr>
+            </script>
+          
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: vesselSAPPostingModel">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Vessel SAP Posting Details</legend>
+
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Search Type:<span class="required">*</span></label>
+                                                <div class="col-md-4">
+                                                    <div class="form-control">
+                                                        <input id="VslSrchOn" name="VslSrchOn" title="VsrchOn" data-bind="kendoDropDownList: { data: [{ name: 'Vessel Name', val: 'NM' }, { name: 'IMO No', val: 'IM' }, { name: 'CallSign', val: 'CL' }], value: VslSrchOn, dataTextField: 'name', dataValueField: 'val' }" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="row ">
+                                            <div class="col-md-8" >
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Vessel:</label>
+                                                <div class="col-md-4">
+                                                    <div class="form-control">
+                                                        <input id="VesselName" name="VesselName" onblur="VesselNameBlur();" data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName', minLength: 3, pageSize: 1
+    , dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: 'api/VesselsList', data: { columnName: VslSrchOn } }
+        }, schema: {
+            data: function (data) { return data; }, total: function (data) {
+                return data.length;
+            }
+        },
+    }, value: SearchText, select: $root.VesselSelect
+}" oncopy="return false" onpaste="return false" oncut="return false"/>
+                                                        <span id="spancraft" class="validationError" data-bind="validationMessage: VesselName"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                    <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Seen the Vessel register and Tonnage Certificate:</label>
+                                                <div class="radio-list" style="padding-top: 2px;">
+                                                    <input type="radio" name="seenVessel" value="01"  data-bind="checked: IsVesselSeened"><label class="radio-inline">Yes</label>
+                                                    <input type="radio" name="seenVessel" value="02" data-bind="checked: IsVesselSeened"><label class="radio-inline">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                         
+                                        
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="tab-pane active" id="VesselDetails">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Vessel Details</legend>
+
+
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">SAP Vessel No:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: SAPAccountNo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Vessel Name:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: VSNAME"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">IMO No:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Vessel Type:</label>
+                                                    <div class="col-md-8 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: VesselTypeName"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">LOA (M):</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: LengthOverallInM"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Beam In (M):</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: BeamInM"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Call Sign:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: CallSign"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Vessel Nationality:</label>
+                                                    <div class="col-md-8 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: VesselNationality"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">GRT (M):</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: GrossRegisteredTonnageInMT"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">DWT (M):</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: DeadWeightTonnageInMT"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+
+
+
+                                            <br>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <fieldset>
+                                    <legend>XML Messsage</legend>
+                                    <div class="form-group"  >
+
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" rows="10" id="description" style="resize: none;" maxlength="1000" data-bind="value: TransmitData"></textarea>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div>
+
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="btns-group form-actions fluid" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                            <button type="submit" id="Post" class="btn green" value="POST VAL" data-bind="click: $root.SaveSAPPosting, enable: $root.IsSaveDisabled, visible: $root.IsSaveDisabled">Post Vessel SAP</button>
+                            <button type="submit" class="btn blue" data-bind="click: $root.Reset, visible: $root.IsReset">Reset</button>
+                            <button type="submit" class="btn red" title="Cancel" data-bind="click: $root.Cancel, visible: $root.IsCancel">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+           
+    </script>
+
+</div>
+</div>
+

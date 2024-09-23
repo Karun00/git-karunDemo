@@ -1,0 +1,902 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "Statement of Fact";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/StatementFactModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/StatementFactViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.StatementFactViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#StatementFact")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<style>
+    .td-width {
+        width: 150px;
+    }
+    .row-height {
+        height: 30px;
+    }
+    .theader {
+background-color: #3d3d3d; font-family: OswaldLight, sans-serif; text-align: left; color: #fff; 
+    }
+    .empty-height {
+        display: none;
+    }
+    .main-title1, .hide-print, .hide-print1 {
+        display: none;
+    }
+
+   @@media print {.empty-height{ display:block !important; height:20px !important;}.row col-md-6{width:400px !important;}fieldset .col-md-6 .form-group .k-datetimepicker .k-picker-wrap {width: 250px !important;}.width1 {width:250px !important;}/*.col-md-5  fieldset {width:650px !important;}*/fieldset .col-md-7 label, fieldset .col-md-4 label, fieldset .col-md-5 label {text-align: left !important;}.displaytxt, .left-align {text-align: left !important; }.topmargin {margin-top: 5px !important;}.hide-row {display:none !important;}.main-title1, .hide-print{display:-webkit-box !important; }.hide-print1{display:block !important; }.widthc {width: 250px;}.k-select{display:none !important;   border: 1px solid #f00 !important;} .lheight{line-height:26px !important;}.k-input{border: 1px solid #fff !important;}.form-control{border:none}.tinytable {border:none; width:auto;}  .main-title1, .hide-print{display: -webkit-box !important;}.hide-print1 {display: block !important;}}
+
+</style>
+
+<!-- BEGIN CONTENT -->
+<table class="hide-print" style="width: 100%;">
+    <tr>
+        <td style="width: 577px; vertical-align: bottom;">
+            <div class="main-title1" style="font-size: 16px; font-weight: bold;" align="center">Vessel Performance Report</div>
+        </td>
+        <td style="text-align: right;">
+            <img src="~/Content/Images/print-logo.jpg">
+        </td>
+    </tr>
+</table>
+
+<div class="row hide-print" style="height:20px;">&nbsp;</div>
+<div class="row hide-row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="StatementFact">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+
+             <div class="portlet box advbg">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-reorder"></i>Advance Search
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" data-bind="with: statementFactModelGrid">
+                        <div class="form-wizard">
+                            <div class="form-body form-horizontal">
+                                <div class="form-group">
+                                    <div class="row">                                        
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-3">VCN :</label>
+                                                <div class="col-md-7">
+                                                    <input type="text" id="VCNName" name="name" autocomplete="off" maxlength="15" data-required="1" class="form-control" data-bind="value: VCN">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">Vessel Name:</label>
+                                                <div class="col-md-7">
+                                                    <input type="text" id="VesselName" name="name" autocomplete="off" maxlength="30" data-required="1" class="form-control" data-bind="value: VesselName">
+                                                </div>
+                                            </div>
+                                        </div>
+                                         <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <div class="col-md-9 fluid">
+                                                    
+                                                        <button type="submit" class="btn btn-xs green" data-bind="click: $root.GetDataClick">Get Data</button>
+                                                    &nbsp;
+                                                        <button type="submit" class="btn btn-xs blue" data-bind="click: $root.ClearFilter">Reset</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addstatementfact ">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: StatementFactList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', width: '110px', filterable: true },
+                { field: 'VesselNameSort', title: 'Vessel Name', width: '120px', filterable: true },
+                { field: 'VoyageInSort', title: 'Voyage In', width: '100px', filterable: true },
+                { field: 'VoyageOutSort', title: 'Voyage Out', width: '110px', filterable: true },
+                { field: 'OperationCodeSort', title: 'Operation', width: '110px', filterable: true },
+                { field: 'BerthSort', title: 'Berth', width: '110px', filterable: true },
+                { field: 'DateFromSort', title: 'Date From', width: '150px', filterable: true },
+                { field: 'DateToSort', title: 'Date To', width: '150px', filterable: true },
+                { field: 'MasterNameSort', title: 'Master Name', width:'150px', filterable: true },
+                { title: 'Actions', width: '90px', filterable: false }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td><span data-bind="text: VCN"></span></td>
+                        <td><span data-bind="text: VesselName"></span></td>
+                        <td><span data-bind="text: VoyageIn"></span></td>
+                        <td><span data-bind="text: VoyageOut"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: OperationName"></span></div>
+                        </td>
+                        <td><span data-bind="text: CurrentBerth"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(SDateFrom()).format('YYYY-MM-DD HH:mm')"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(SDateTo()).format('YYYY-MM-DD HH:mm')"></span></div>
+                        </td>
+                        <td>
+                            <span data-bind="text: MasterName"></span>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editstatementfact" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewstatementfact" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                &nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet portlet-body form">
+                    <form action="#" id="form_sample_1" class="form-horizontal">
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                            <div class="form-body" data-bind="with: statementfactModel">
+                                <div class="tab-pane active" id="tab1">
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend>Add Statement of Fact</legend>
+                                            @*<div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label col-md-4">Port:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="Port" name="Port" data-bind="kendoDropDownList: { data: $root.statementfactReferenceData().Ports, value: PortCode, dataTextField: 'PortName', dataValueField: 'PortCode', optionLabel: 'Select Port' }" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6"></div>
+                                                </div>
+                                            </div>
+                                            *@
+                                            <div class="row">
+                                               
+                                                    <div class="col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">
+                                                            Vessel Name/VCN:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                            <div class="form-control">
+                                                              <input id="VCN" name="VCN" class="zeroborder" onblur="VCNBlur();" onkeypress="VCNKeypress();" data-bind="kendoAutoComplete: {
+                                                                    dataTextField: 'VCN_VesselName', minLength: 1, pageSize: 1, dataSource: {
+                                                                    serverFiltering: true,
+                                                                    transport: {
+                                                                        read: { url: '/api/StatementVCN', dataType: 'json' }
+                                                                    }, schema: {
+                                                                        data: function (data) { return data; }, total: function (data) {
+                                                                            return data.length;
+                                                                        }
+                                                                    },
+                                                                    }, select: $root.VCNSelect
+                                                                }, value: VCN_VesselName, enable: $parent.IsVCNEnable" />
+                                                                <span id="spanvcn" class="validationError" data-bind="validationMessage: VCN"></span>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">Vessel Name:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: VesselName"></label>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class=" col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">Berth:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: CurrentBerth"></label>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                
+                                            </div>
+                                            <div class="row">
+                                               
+                                                    <div class="col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">
+                                                            Operation:
+                                                       <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="Operation" class="print-drop zeroborder" name="Operation" data-bind="kendoDropDownList: { data: $root.statementfactReferenceData().Operations, value: OperationCode, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select Operation', enable: $parent.editableView }" />
+                                                                <span id="spanvcn" class="validationError" data-bind="validationMessage: OperationCode"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">Voyage In:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: VoyageIn"></label>
+                                                        </div>
+                                                    </div></div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">Voyage Out:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: VoyageOut"></label>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="form-group col-md-4"></div>
+                                                
+                                            </div>
+                                            <div class="row">
+                                                
+                                                    <div class=" col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">Date From:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: SDateFrom"></label>
+                                                        </div>
+                                                    </div></div>
+                                                    <div class=" col-md-4">
+                                                        <div class="form-group ">
+                                                        <label class="control-label col-md-4">Date To:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: SDateTo"></label>
+                                                        </div>
+                                                    </div></div>
+                                                    <div class="form-group col-md-4"></div>
+                                                
+                                            </div>
+                                       @* <div class="txtline"><span class="txt">Inward Details</span></div>*@
+                                     <fieldset>
+                                      <legend>Inward Details</legend>
+                                            <div class="row">
+                                                 
+                                                    <div class="col-md-4">
+                                                            <div class="form-group">
+                                                        <label class="control-label col-md-4">Pilot On Board:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: InwardPilotOnBoard"></label>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                        <label class="control-label col-md-4">First Line Ashore:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: InwardFirstLine"></label>
+                                                        </div>
+                                                     </div>
+                                                    </div>
+                                                    <div class=" col-md-4">
+                                                        <div class="form-group">
+                                                        <label class="control-label col-md-4">All Fast:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: InwardAllFast"></label>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                             
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label col-md-4">Pilot Off:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: InwardPilotAway"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-4"></div>
+                                                    <div class="form-group col-md-4"></div>
+                                                </div>
+                                            </div>                                            
+                                            
+
+<div class="col-md-12">
+<div class="col-md-6" style="margin-right: 5px;">
+<fieldset>
+                                      <legend>Tugs Name</legend>
+                                                <div >
+                                                  <div class="gridhead">
+                                                      Arriving</div>
+                                                  <table cellpadding="0" cellspacing="0" border="0" id=""  data-bind="with: StatementTugDetails">
+                                                      <thead>
+                                                          <tr>
+                                                              <th width="16%" class="theader">
+                                                                  <h5>Tug Name</h5>
+                                                              </th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Tug Type</h5>
+                                                              </th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Fwd</h5>
+                                                              </th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Aft</h5>
+                                                              </th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody class="k-grid-content" data-bind="foreach: ArrivalDetails">
+                                                          <tr>
+                                                              <td>
+                                                                  <label data-bind="text: CraftName"></label>
+                                                              </td>
+                                                              <td>
+                                                                  <label data-bind="text: CRAFTTYPE"></label>
+                                                              </td>
+                                                              <td>
+                                                                  <label data-bind="text: ForwardDraftM"></label>
+                                                              </td>
+                                                              <td>
+                                                                  <label data-bind="text: AftDraftM"></label>
+                                                              </td>
+                                                          </tr>
+                                                      </tbody>
+                                                  </table>
+                                              </div>
+                                                                                   
+                                       
+                                  </fieldset>
+</div>
+<div class="col-md-6">
+    <div style="margin-left: 5px;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+</div>
+    </div>
+
+                                            <div class="clearfix"></div>
+                                            &nbsp;
+                                  <div class="col-md-12">
+                                      <div class="col-md-6">
+                                          <div style="margin-right: 5px;">
+                                              <fieldset style="height: 120px;">
+                                                  <legend>Bunkers</legend>
+                                                  <table cellpadding="0" cellspacing="0" border="0" id="table3" style="width: 100%" class="">
+                                                      <thead>
+                                                          <tr>
+                                                              <th width="16%" class="theader"></th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Fuel</h5>
+                                                              </th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Diesel</h5>
+                                                              </th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody class="k-grid-content">
+                                                          <tr>
+                                                              <td><span class="form-control" style="background:#eee;">Arrival</span></td>
+                                                              <td>
+                                                                  <input type="text" id="ArrivalFuel" name="name" maxlength="8" class="form-control" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: ArrivalFuel, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric }"></td>
+                                                              <td>
+                                                                  <input type="text" id="ArrivalDiesel" name="name" maxlength="8" class="form-control" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: ArrivalDiesel, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric }"></td>
+                                                          </tr>                                                          
+                                                      </tbody>
+                                                  </table>
+                                              </fieldset>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                          <div style="margin-left: 5px;">
+                                              <fieldset style="height: 120px;">
+                                                  <legend>Draft</legend>
+                                                  <table cellpadding="0" cellspacing="0" border="0" id="table3" style="width:100%" class="">
+                                                      <thead>
+                                                          <tr>
+                                                              <th width="16%" class="theader"></th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Fwd</h5>
+                                                              </th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Aft</h5>
+                                                              </th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody class="k-grid-content">
+                                                          <tr>
+                                                              <td><label>Arrival</label></td>
+                                                              <td>
+                                                                  <label  data-bind="text: DraftArrivalFwd"></label>
+                                                              </td>
+                                                              <td>
+                                                                  <label  data-bind="text: DraftArrivalAft"></label>
+                                                              </td>
+                                                          </tr>                                                          
+                                                      </tbody>
+                                                  </table>
+                                              </fieldset>
+                                          </div>
+                                      </div> 
+                                  </div>
+                                  </fieldset>
+                                     <fieldset>
+                                           <legend>Key Events</legend>
+                                         <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label col-md-4">EOSP:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.EOSPDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable }" maxlength="16" />
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                            </div>
+
+                                              <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label col-md-4">Gangway Down:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) "  data-bind="kendoDateTimePicker: { value: $data.GangwayDown, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm',interval: 01, enabled: $root.IsKeyEventEnable } " maxlength="16" />
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                            </div>
+
+                                               <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label col-md-4">NOR Tendered:</label>
+                                                        <div class="col-md-6 control-label">
+                                                            <input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.NORTendered, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" />
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                             <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="control-label col-md-4">NOR Accepted:</label>
+                                                        <div class="col-md-6 control-label">
+                                                           <input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.NORAccepted, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" />
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                            </div>                                           
+
+<fieldset>
+                                <legend>Stevedores</legend>
+                                    <div class="">    
+                                        <table class="" style="width:100%;">
+                                            <tr class="row-height">
+                                                <th class="td-width control-label">Time on board:</th>
+                                                <td><input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.StevedoreOnBoard, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" /> </td>
+                                                <td>&nbsp;</td>
+                                                <th class="td-width control-label">Time Operations start:</th>
+                                                <td><input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.StevedoreStart, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable }"  maxlength="16" /> </td>
+                                            </tr>
+                                            <tr class="row-height">                                                
+                                                <th class="control-label">Time Operations ends:</th>
+                                                <td><input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.StevedoreEnd, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" /> </td>
+                                                <td>&nbsp;</td>
+                                                <th class="control-label">Time off vessel</th>
+                                                <td><input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.StevedoreOff, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" /> </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+</fieldset>
+                                    &nbsp;
+                                    <fieldset>
+                                    <legend>Cargo Operations</legend>
+                                     <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                            <label class="control-label col-md-9">Cranes deployed:</label>
+                                            <div class="col-md-3">
+                                                <input type="text" id="CranesDeployed" name="name" maxlength="8" class="form-control" data-bind="value: CranesDeployed, enable: $parent.IsKeyEventEnable, event: { keypress: $parent.validationHelper.ValidateNumeric_keypressEvent }">
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                            <label class="control-label col-md-6">Start Cargo Operations:</label>
+                                            <div class="col-md-6">
+                                                <input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.StartCargo, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable }"  maxlength="16" />
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                            <label class="control-label col-md-6">End Cargo Operations:</label>
+                                            <div class="col-md-6">
+                                                <input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.EndCargo, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" />
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                </fieldset>
+                                         <div style="height:20px">&nbsp;  </div>
+                                   <div class="table-toolbar">
+            <div id="tableheader">
+                <a id="vid" class="button gbtngreen" data-bind="click: $root.AddNewCommodity, visible: $root.IsEnable">Add New <i class="fa fa-plus"></i></a>
+                
+            </div>
+            <div class="gridhead">Quantities of Commodities</div>
+            <div class="table-scrollable">
+
+                <table cellpadding="0" cellspacing="0" border="0" id="tblQualities" class="tinytable">
+                    <thead>
+                        <tr>
+                            <th width="40%">Terminal Operator</th>
+                            <th>Berth</th>
+                            <th>Cargo Type</th>
+                            <th>Commodity</th>
+                            <th>Moves</th>
+                            <th>UoM</th>
+                            <th width="8%">Quantity</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody data-bind="foreach: StatementCommodities, enable: $root.IsEnable ">
+                        <tr>
+                            <td width="40%">
+                                <select class="form-control print-drop" data-bind="enable: $root.IsKeyEventEnable, options: $root.statementfactReferenceData().TerminalOperators, optionsText: 'RegisteredName', optionsCaption: 'Choose....', optionsValue: 'TerminalOperatorID', value: TerminalOperatorID">
+                                </select></td>                            
+                            <td>
+                                <select class="form-control print-drop" data-bind="enable: $root.IsKeyEventEnable, options: $root.statementfactReferenceData().Berths, optionsText: 'BerthName', optionsCaption: 'Choose....', optionsValue: 'BerthKey', value: CommodityBerthKey">
+                                </select></td>
+                            <td>
+                                <select class="form-control print-drop" data-bind="enable: $root.IsKeyEventEnable, options: $root.statementfactReferenceData().CargoTypes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: CargoType ">
+                                </select></td>
+                            <td>
+                                <select class="form-control print-drop" data-bind="enable: $root.IsKeyEventEnable, options: $root.statementfactReferenceData().Commodities, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Commodity">
+                                </select></td>
+                             <td>
+                                <select class="form-control print-drop" data-bind="enable: $root.IsKeyEventEnable, options: $root.statementfactReferenceData().Purposes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Package">
+                                </select></td>
+                            <td>
+                                <select class="form-control print-drop" data-bind="enable: $root.IsKeyEventEnable, options: $root.statementfactReferenceData().Uoms, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: UOM">
+                                </select></td>
+                            <td>
+                                <input type="text" id="CommQty" maxlength="10" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" class="form-control" data-bind="enable: $root.IsKeyEventEnable, value: Quantity" /></td>
+                            <td><a href='#' id="CommoditiesDelete" data-bind='visible: $root.IsEnable, click: $root.removeCommodities' title="Delete"><i class="fa fa-ban"></i></a></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+
+
+                                    <div class="table-toolbar">
+                                                <div id="tableheader">                                                   
+                                                    <a class="button gbtngreen" data-bind="click: $root.AddNewRowtotable, visible: $root.IsEnable ">Add New <i class="fa fa-plus"></i></a>                                                  
+                                                </div>
+
+                                    <div class="table-scrollable">
+                                                    <table cellpadding="0" cellspacing="0" border="0" id="tblmovementsdetails" style="width: 100%" class=" ">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="theader">Type of Operational Delay</th>                                                               
+                                                                @*<th class="theader">Start</th>
+                                                                <th class="theader">End</th> *@  
+                                                                 <th class="theader">Duration</th>
+                                                                <th class="theader">Remarks</th>                                                             
+                                                                <th class="theader"><span></span></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="delayBody" data-bind="foreach: StatementFactEvents, enable: $root.IsEnable ">
+                                                            <tr>                                                               
+                                                                <td>
+                                                                   <select class="form-control print-drop" id="DelayName" data-bind="options: $root.statementfactReferenceData().DelayTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', optionsCaption: 'Select...', value: DelayType, enable: $root.IsKeyEventEnable"></select>
+                                                                </td>                                                                                                                               
+                                                                <td>
+                                                                         <input type="text" onchange="addZeroes(this)"  class="form-control print-drop" size="35" value="0.00" maxlength="6" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: Duration,enable: $root.IsKeyEventEnable"/>
+                                                                    @*<input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.StartOperational, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" /> *@
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text"  class="form-control print-drop" data-bind="value: Remarks, enable: $root.IsKeyEventEnable" size="40"/>
+                                                                @*<input onkeypress="return isNumber(event);" onkeydown="" onblur=" checkDateTime(this) " data-bind="kendoDateTimePicker: { value: $data.EndOperational, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, enabled: $root.IsKeyEventEnable } "  maxlength="16" /> *@
+                                                                </td>
+                                                                <td>
+                                                                    <a href='#' class="focus1" id="RemoveAddNewRowtotable" data-bind="click: $root.RemoveAddNewRowtotable, visible: $root.IsEnable" title="Delete"><i class="fa fa-ban"></i></a>
+                                                                </td>
+                                                               
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                             </div>
+                                    
+
+                                    
+                                         @*<table cellpadding="0" cellspacing="0" border="0" id="table3" class="tinytable">
+                                        <thead>
+                                            <tr>
+                                                <th width="25%">
+                                                    <h5>Key Event</h5>
+                                                </th>
+                                                <th width="25%">
+                                                    <h5>Date Time</h5>
+                                                </th>
+                                                <th width="50%">
+                                                    <h5>Operations, Delay</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <div class="table-scrollable">
+                                                <table width="100%" id="tblKey" class="table1 table-striped table-bordered table-hover" data-bind="foreach: $parent.masterKeyEvents">
+                                                    <tr>
+                                                        <td width="25%">
+                                                            <div class="nowrap"><span data-bind="text: SubCatName"></span></div>
+                                                        </td>
+                                                        <td width="25%">
+                                                            <input onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: $data.KeyEventDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', enabled: $root.IsKeyEventEnable } " />
+                                                           
+                                                        </td>
+                                                        <td width="50%">
+                                                            <input type="text" class="form-control" data-bind="value: $data.OperationsDelay, enable: $root.IsKeyEventEnable">
+                                                           
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <span id="spankeydatetime" class="validationError"></span>
+                                            </div>
+                                        </tbody>
+                                    </table>*@
+    
+                                     </fieldset>
+                                     <fieldset>
+                                      <legend>Outward Details</legend>
+                                      <div class="row">
+                                          <div class="col-md-12">
+                                              <div class="form-group col-md-4">
+                                                  <label class="control-label col-md-4">Pilot Onboard:</label>
+                                                  <div class="col-md-6 control-label">
+                                                      <label class="col-md-12 displaytxt" data-bind="text: OutwardPilotOnBoard"></label>
+                                                  </div>
+                                              </div>
+                                              <div class="form-group col-md-4">
+                                                  <label class="control-label col-md-4">All Cast Off:</label>
+                                                  <div class="col-md-6 control-label">
+                                                      <label class="col-md-12 displaytxt" data-bind="text: OutwardAllCast"></label>
+                                                  </div>
+                                              </div>
+                                              <div class="form-group col-md-4">
+                                                  <label class="control-label col-md-4">Pilot Off:</label>
+                                                  <div class="col-md-6 control-label">
+                                                      <label class="col-md-12 displaytxt" data-bind="text: OutwardPilotAway"></label>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+
+                                  
+                                            
+                                    <div class="col-md-12">
+                                        <div class="col-md-6" style="margin-right: 5px;">
+                                            <fieldset>
+                                                <legend>Tugs Name</legend>
+                                                <div class="row">
+                                                    <div class="">
+                                                        <div>
+                                                            <div class="gridhead">
+                                                                Sailing</div>
+                                                            <table cellpadding="0" cellspacing="0" border="0" id="" style="width: 100%" class=" " data-bind="with: StatementTugDetails">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th width="16%" class="theader">
+                                                                            <h5>Tug Name</h5>
+                                                                        </th>
+                                                                        <th width="10.5%" class="theader">
+                                                                            <h5>Tug Type</h5>
+                                                                        </th>
+                                                                        <th width="10.5%" class="theader">
+                                                                            <h5>Fwd</h5>
+                                                                        </th>
+                                                                        <th width="10.5%" class="theader">
+                                                                            <h5>Aft</h5>
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="k-grid-content" data-bind="foreach: SailingDetails">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <label data-bind="text: CraftName"></label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label data-bind="text: CRAFTTYPE"></label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label  data-bind="text: ForwardDraftM"></label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label  data-bind="text: AftDraftM"></label>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                            <div class="clearfix"></div>
+                                            &nbsp;
+                                  <div class="col-md-12">
+                                      <div class="col-md-6">
+                                          <div style="margin-right: 5px;">
+                                              <fieldset style="height: 120px;">
+                                                  <legend>Bunkers</legend>
+                                                  <table cellpadding="0" cellspacing="0" border="0" id="table3" style="width: 100%" class=" ">
+                                                      <thead>
+                                                          <tr>
+                                                              <th width="16%" class="theader"></th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Fuel</h5>
+                                                              </th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Diesel</h5>
+                                                              </th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody>                                                          
+                                                          <tr>
+                                                              <td><span class="form-control" style="background: #eee;">Sailing</span></td>
+                                                              <td>
+                                                                  <input type="text" id="SailingFuel" name="name" maxlength="8" class="form-control" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: SailingFuel, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric }"></td>
+                                                              <td>
+                                                                  <input type="text" id="SailingDiesel" name="name" maxlength="8" class="form-control" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: SailingDiesel, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric }"></td>
+                                                          </tr>
+                                                      </tbody>
+                                                  </table>
+                                              </fieldset>
+                                          </div>
+                                      </div>
+<div class="empty-height">&nbsp;</div>
+                                      <div class="col-md-6">
+                                          <div style="margin-left: 5px;">
+                                              <fieldset style="height: 120px;">
+                                                  <legend>Draft</legend>
+                                                  <table cellpadding="0" cellspacing="0" border="0" id="table3" style="width: 100%" class=" ">
+                                                      <thead>
+                                                          <tr>
+                                                              <th width="16%" class="theader"></th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Fwd</h5>
+                                                              </th>
+                                                              <th width="10.5%" class="theader">
+                                                                  <h5>Aft</h5>
+                                                              </th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody class="k-grid-content">                                                          
+                                                          <tr>
+                                                              <td><label>Sailing</label></td>
+                                                              <td>
+                                                                  <label  data-bind="text: DraftSailingAft"></label>
+                                                              </td>
+                                                              <td>
+                                                                  <label  data-bind="text: DraftSailingFwd"></label>
+                                                              </td>
+                                                          </tr>
+                                                      </tbody>
+                                                  </table>
+                                              </fieldset>
+                                          </div>
+                                      </div>
+                                  </div>
+                                   </fieldset>
+                                     <div class="row">
+                                                <div class="form-group col-md-7">
+                                                    <label class="control-label col-md-2">Master Name:</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" id="SailingDiesel" name="name" maxlength="50" class="form-control" data-bind="value: MasterName, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateAlphabetsWithSpaces_keypressEvent }"></td>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                        <button type="submit" id="Save" class="btn green" value="POST VAL" title="Save" data-bind="click: $parent.SaveStatementFact, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                                        <button type="submit" class="btn green" title="Update" data-bind="click: $parent.ModifyStatementFact, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                        <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetStatementFact, visible: $parent.IsReset ">Reset</button>
+                                        <button type="submit" class="btn red" title="Cancel" data-bind="click: $parent.Cancel">Cancel</button>
+                                        <a class="btn purple button-submit" onclick="javascript:printForm();" data-bind="visible:$parent.IsPrint"><i class="fa fa-print"></i>Print</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </script>
+    </div>
+</div>
+
+<script>
+    function printForm() { 
+        $("select").each(function () {
+            if ($(this).val() == '') {
+                $(this).val('not selected'); 
+            }  
+        });
+        window.print();
+    }
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    function addZeroes(ev) {
+        debugger;
+        // Convert input string to a number and store as a variable.
+        var value = Number(ev.value);
+        // Split the input string into two arrays containing integers/decimals
+        var res = ev.value.split(".");
+        // If there is no decimal point or only one decimal place found.
+        if (res.length == 1 || res[1].length < 3) {
+            // Set the number to two decimal places
+            value = value.toFixed(2);
+        }
+        // Return updated or original number.
+        if (ev.value != "") {
+            ev.value = String(value);
+        }
+    }
+</script>
+
+

@@ -1,0 +1,512 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "Terminal Operator Master";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/TerminalOperatorModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/TerminalOperatorViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.TerminalOperatorViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#TerminalOperatorMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="TerminalOperatorMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<!-- terminaloperatorList  and Serach content starts here-->
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addTerminalOperator">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: terminaloperatorList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: {
+        extra: false,
+        operators: {
+            string: {
+                startswith: 'Starts with',
+                eq: 'Is equal to',
+                neq: 'Is not equal to'
+            }
+        }
+    },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'TerminalOperatorIDSort', title: 'TO Code', width: 58, filterable: true },
+             { field: 'RegisteredNameSort', title: 'TO Rep. Name', width: 80, filterable: true },
+             { field: 'TradingNameSort', title: 'TO Trading Name', width: 90, filterable: true },
+             { field: 'RegistrationNumberSort', title: 'Registration No.', width: 80, filterable: true },
+             { field: 'RegistrationDateSort', title: 'Registration Date', width: 120, filterable: true },
+             { field: 'ValidityDateSort', title: 'Validity Date', filterable: true, width: 120 },
+             { field: 'LicenLicensedForStringSort', title: 'Lisenced For', filterable: true, width: 120 },
+             { title: 'Status', filterable: false, width: 50 },
+             { title: 'Actions', filterable: false, width: 45 }]
+}">
+                </div>
+
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td data-bind="text: TerminalOperatorID"></td>
+                        <td>
+                            <div class="nowrap" data-bind="text: RegisteredName"></div>
+                        </td>
+                        <td data-bind="text: TradingName"></td>
+                        <td data-bind="text: RegistrationNumber"></td>
+                        <td>
+                            <div class="nowrap" data-bind="text: moment(RegistrationDate()).format('YYYY-MM-DD')"></div>
+                        </td>
+                        <td data-bind="text: moment(ValidityDate()).format('YYYY-MM-DD')"></td>
+                        <td data-bind="text: LicenLicensedForString"></td>
+                        <td data-bind="text: Statust"></td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="javascript:;" title="View" data-bind="click: $parent.viewTerminalOperator"><i class="fa fa-eye"></i></a>
+                                }&nbsp; &nbsp;
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="javascript:;" title="Edit" data-bind="click: $parent.EditTerminalOperator"><i class="fa fa-edit"></i></a>
+                                }&nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+    </div>
+</div>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<!--Terminaloperator form for AddForm / EditForm and ViewForm starts here-->
+<script type="text/html" id="Form-template">
+    <div class="portlet portlet-body form">
+        <form action="#" id="form_sample_1" class="form-horizontal">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body" data-bind="with: terminaloperatorModel">
+                        <div class="form-group">
+                            <fieldset>
+                                <legend>Port of Operations</legend>
+                                <div class="row ">
+                                    <input type="checkbox" id="allchks" name="Allport" onclick="return CheckingAll(this);" data-bind="    event: { change: $parent.eventallport }" />
+                                    <label>Select all ports below</label>
+                                    <div class="clearfix">
+                                        <br />
+                                    </div>
+                                    <div class="checkbox-list" id="divPortList" data-bind="foreach: $root.PortReferenceData().PortRequesttypes">
+                                        <div class="col-md-3">
+                                            <input type="checkbox" id="port" name="port" data-bind="event: { change: $root.CategoryChange }, checkedValue: PortCode, checked: $root.terminaloperatorModel().TerminalOperatorPortsArr, enable: $root.IsCodeEnable">
+                                            <label name="portnames" data-bind="text: PortName"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="clearfix">
+                                <br />
+                            </div>
+
+                            <fieldset>
+                                <legend>Terminal Operator Details</legend>
+                                <div class="row" id="divtoregfirstdetails">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Registered Name of the Applicant:<span class="required">*</span></label>
+                                            <div class="col-md-6">
+                                                <input id="RegisteredName" type="text" class="form-control" data-bind="value: RegisteredName, event: { keypress: $parent.ValidateAlphabetsWithSpaces }, enable: $parent.IsCodeEnable " name="RegisteredName" maxlength="100" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Trading Name:<span class="required">*</span></label>
+                                            <div class="col-md-6">
+                                                <input id="TradingName" type="text" class="form-control" data-bind="value: TradingName, event: { keypress: $root.ValidateAlphabetsWithSpaces }, enable: $parent.IsCodeEnable " name="TradingName" maxlength="100" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Registration Number:<span class="required">*</span></label>
+                                            <div class="col-md-6">
+                                                <input id="RegistrationNumber" type="text" data-bind="value: RegistrationNumber, enable: $parent.IsRegistrationNoEnable, event: { change: ValidEvent, keyup: HandleKeyUp, keypress: $root.ValidateAlphaNumericWithSpaces }" class="form-control" name="RegistrationNumber" maxlength="50" />
+                                                <span id="spanRegNo" class="validationError" style="display: none"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="divtoregseconddetails">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Registration Date:<span class="required">*</span></label>
+                                            <div class="col-md-6">
+                                                <div>
+                                                    <input id="RegistrationDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDatePicker: { value: RegistrationDate, format: 'yyyy-MM-dd', max: new Date, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: $root.ValidateDate }, enable: $parent.IsCodeEnable" name="RegistrationDate" maxlength="0" />
+                                                    <span id="RegistrationDateMsg" class="validationError" data-bind="visible: $root.isRegistrationDateMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Validity Date:<span class="required">*</span></label>
+                                            <div class="col-md-3">
+                                                <div>
+                                                    <input id="ValidityDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDatePicker: { value: ValidityDate, min: RegistrationDate, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: $root.ValidateDate }, enable: $parent.IsCodeEnable" name="ValidityDate" maxlength="0" />
+                                                    <span id="ValidityDateMsg" class="validationError" data-bind="visible: $root.isValidityDateMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Terminal Premise Location:<span class="required">*</span></label>
+                                            <div class="col-md-6">
+                                                <input id="PremiseLocation" type="text" class="form-control" data-bind="value: PremiseLocation, event: { keypress: $root.ValidateAlphabetsWithSpaces }, enable: $parent.IsCodeEnable" name="PremiseLocation" maxlength="50" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Status:</label>
+                                            <div class="col-md-6">
+                                                <select id="status" name="" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.IsActivityEnable "></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix">
+                                    <br />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div style="margin-right: 5px;">
+                                            <fieldset>
+                                                <legend>Principal Place of Business</legend>
+                                                <div data-bind="with: BusinessAddress ">
+
+                                                    <div class="col-md-11">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-4">
+                                                                Number &amp; Street:<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-8">
+                                                                <input id="NumStreet" type="text" onblur="NumStreetChange(this);" onchange="NumStreetChange(this);" class="form-control" data-bind="value: NumberStreet, event: { keyup: $root.AddessKeyupEvents }, enable: $root.IsCodeEnable" name="NumStreet" maxlength="200" />
+                                                                <span id="errNumStreetMsg" class="validationError" data-bind="visible: $root.isNumStreetMsg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-11">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-4">Suburb:<span class="required">*</span></label>
+                                                            <div class="col-md-8">
+                                                                <input id="Suburb" type="text" onblur="SuburbChange(this);" onchange="SuburbChange(this);" class="form-control" data-bind="value: Suburb, event: { keypress: ValidateAlphabetsWithSpaces, keyup: $root.AddessKeyupEvents }, enable: $root.IsCodeEnable" name="Suburb" maxlength="20" />
+                                                                <span id="errSuburbMsg" class="validationError" data-bind="visible: $root.isSuburbMsg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-11">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-4">
+                                                                Town &amp; City:<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-8">
+                                                                <input id="TownCity" type="text" onblur="TownCityChange(this);" onchange="TownCityChange(this);" class="form-control" data-bind="value: TownCity, event: { keypress: ValidateAlphabetsWithSpaces, keyup: $root.AddessKeyupEvents }, enable: $root.IsCodeEnable" name="TownCity" maxlength="50" />
+                                                                <span id="errTownCityMsg" class="validationError" data-bind="visible: $root.isTownCityMsg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-11">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-4">
+                                                                Country:<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-8">
+                                                                <select name="ResidentialAddressCountry" id="ResidentialAddressCountry" ondragover="PreventDrop(event)" onchange="ResidentialAddressCountryChange(this);" class="form-control" data-bind="options: $root.CountriesList, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: CountryCode, optionsCaption: 'Select...', enable: $root.IsCodeEnable"></select>
+                                                                <span id="ResidentialAddressCountryMsg" class="validationError" data-bind="visible: $root.isResidentialAddressCountry"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-11">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-4">
+                                                                Postal Code:<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="PostalCode" type="text" onblur="PostalCodeChange(this);" onchange="PostalCodeChange(this);" class="form-control" data-bind=" value: PostalCode, event: { keypress: Validatenumeric, keyup: $root.AddessKeyupEvents }, enable: $root.IsCodeEnable" name="PostalCode" maxlength="15" />
+                                                                <span id="errPostalCodeMsg" class="validationError" data-bind="visible: $root.isPostalCodeMsg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-11">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                            Telephone No.:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-3">
+                                                            <input id="telephoneNo" type="text" class="form-control" data-bind="value: TelephoneNo1, event: { keypress: Validatenumeric }, enable: $root.IsCodeEnable" name="TelephoneNo1" maxlength="10" />
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-11">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                            Fax No.:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-5">
+                                                            <input id="faxNum" type="text" class="form-control" data-bind="value: FaxNo, event: { keypress: Validatenumeric }, enable: $root.IsCodeEnable" name="FaxNo" maxlength="10" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="checkbox-list" id="divPortList1">
+                                                    <div class="col-md-11">
+                                                        <label class="control-label col-md-4">
+                                                            Lisenced For :<span class="required">*</span>
+                                                        </label>
+                                                        <input type="checkbox" id="chk1" name="SrvBerth" data-bind=" checkedValue: 'TOB', checked: $root.terminaloperatorModel().TerminalOperatorServiceTypesArray, enable: $root.IsCodeEnable, event: { change: $parent.eventberth }">
+                                                        <label name="SrvBerthname">Berths</label>
+                                                        <input type="checkbox" id="chk2" name="SrvBCargo" data-bind=" checkedValue: 'TOCH', checked: $root.terminaloperatorModel().TerminalOperatorServiceTypesArray, enable: $root.IsCodeEnable, event: { change: $parent.eventcargo }">
+                                                        <label name="SrvBCargoname">Cargo Handling</label>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <span id="ischkmsgischkmsg1" style="margin-top: 10px;" class="validationError" data-bind="visible: $root.ischkmsg"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix">
+                                                    <br />
+                                                </div>
+                                                <div class="clearfix">
+                                                    <br />
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div style="margin-left: 5px;">
+                                            <fieldset style="height: 198px;" data-bind="with: PostalAddress ">
+                                                <legend>Postal Address</legend>
+                                                <div class="col-md-11">
+                                                    <div>
+                                                        <label>
+                                                            <input type="checkbox" id="chkBuisinessAddress" data-bind="click: $root.selectedChoices, enable: $root.IsCodeEnable ">
+                                                            Same as 'Principal place of Business'
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-11">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                            Number &amp; Street:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                            <input id="NumStreet2" type="text" onblur="NumStreet2Change(this);" onchange="NumStreet2Change(this);" class="form-control" data-bind="value: NumberStreet, enable: $root.IsCodeEnable " name="NumStreet2" maxlength="200" />
+                                                            <span id="errNumStreet2Msg" class="validationError" data-bind="visible: $root.isNumStreet2Msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-11">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                            Suburb:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                            <input id="Suburb2" type="text" onblur="Suburb2Change(this);" onchange="Suburb2Change(this);" class="form-control" data-bind="value: Suburb, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsCodeEnable " name="Suburb2" maxlength="20" />
+                                                            <span id="errSuburb2Msg" class="validationError" data-bind="visible: $root.isSuburb2Msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-11">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                            Town &amp; City:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                            <input id="TownCity2" type="text" onblur="TownCity2Change(this);" onchange="TownCity2Change(this);" class="form-control" data-bind="value: TownCity, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsCodeEnable" name="TownCity2" maxlength="50" />
+                                                            <span id="errTownCity2Msg" class="validationError" data-bind="visible: $root.isTownCity2Msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                    <div class="col-md-11">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-4">
+                                                                Country:<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-8">
+                                                                <select name="PostalAddressCountry" id="PostalAddressCountry" ondragover="PreventDrop(event)" onchange="PostalAddressCountryChange(this);" class="form-control" data-bind="options: $root.CountriesList, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: CountryCode, optionsCaption: 'Select...', enable: $root.IsCodeEnable"></select>
+                                                                <span id="PostalAddressCountryMsg" class="validationError" data-bind="visible: $root.isPostalAddressCountry"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                <div class="col-md-11">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                            Postal Code:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-5">
+                                                            <input id="PostalCode2" type="text" onblur="PostalCode2Change(this);" onchange="PostalCode2Change(this);" class="form-control" data-bind=" value: PostalCode, event: { keypress: Validatenumeric }, enable: $root.IsCodeEnable" name="PostalCode2" maxlength="15" />
+                                                            <span id="errPostalCode2Msg" class="validationError" data-bind="visible: $root.isPostalCode2Msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="clearfix">
+                                    <br />
+                                </div>
+                                <div class="row" id="divtoaddressdetails">
+                                    <div class="col-md-6" id="berthiddiv">
+                                        <div style="margin-right: 5px;">
+                                            <fieldset style="height: 180px">
+                                                <legend>Berth Configuration</legend>
+
+                                                <div class="col-md-11" id="divquay">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">Select Port:</label>
+                                                        <div class="col-md-6">
+                                                            <select style="width: 100%" id="portdropdown" data-bind="options: TerminalOperatorPortsNameArr, optionsText: 'PortName', optionsValue: 'PortCode', optionsCaption: 'Select...', value: PortValue, enable: $root.IsCodeEnable, event: { change: $parent.LoadQuays }"></select>
+                                                            @*<select id="PortValue" name="PortValue" data-bind="kendoDropDownList: { autoBind: false, index: 0, data: TerminalOperatorPortsNameArr, optionsText: 'PortName', optionsValue: 'PortCode', optionLabel: 'Select Column' }"></select>*@
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">Select Quay:</label>
+                                                        <div class="col-md-6">
+                                                            <select style="width: 100%" data-bind="options: $root.masterQuays, optionsText: 'QuayName', optionsValue: 'QuayKey', optionsCaption: 'Select...', value: selectedQuayKey, event: { change: $parent.load }"></select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row col-md-12">
+                                                        <div class="col-md-12" id="divberth">
+                                                            <div style="margin-right: 8px;">
+                                                                <div class="portlet-body">
+                                                                    <div class="table-scrollable">
+
+                                                                        <table width="100%" id="tblberth" class="table1 table-striped table-bordered table-hover">
+                                                                            <tbody data-bind="with: selectedQuay">
+                                                                                <tr>
+                                                                                    <td style="height: 75px; width: 100%; display: inline-block; overflow: auto;">
+                                                                                        <div class="checkbox-list" id="divBirthList" data-bind="foreach: Berths">
+                                                                                            <div class="col-md-6">
+                                                                                                <input type="checkbox" name="BirthType" data-bind="checkedValue: $data.BerthKey, checked: $root.terminaloperatorModel().operationalBerths, enable: $root.IsCodeEnable">
+                                                                                                <label data-bind="text: BerthName"></label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" id="divcargo">
+                                        <div style="margin-left: 5px;">
+                                            <fieldset style="height: 140px">
+                                                <legend>Cargo Type</legend>
+                                                <div class="col-md-12">
+                                                    <div style="margin-right: 8px;">
+                                                        <div class="portlet-body">
+                                                            <div class="table-scrollable">
+
+                                                                <table id="tblcargo" width="100%" class="table1 table-striped table-bordered table-hover">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="height: 100px; display: inline-block; overflow: auto;">
+                                                                                <div class="checkbox-list" id="divCargoList" data-bind="foreach: $root.masterCargoTypes">
+                                                                                    <div class="col-md-6">
+                                                                                        <input type="checkbox" name="CargType" data-bind="checkedValue: $data.SubCatCode, checked: $root.terminaloperatorModel().operationalCargotypes, enable: $root.IsCodeEnable">
+                                                                                        <label data-bind="text: SubCatName"></label>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix">
+                                    <br />
+                                    <br />
+                                </div>
+                            </fieldset>
+
+                        </div>
+                        <div class="btns-group form-actions fluid" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                            <button type="submit" class="btn green" title="Save" data-bind=" click: $parent.SaveTerminalOperator, visible: $parent.IsSave">Save</button>
+                            <button type="submit" class="btn green" title="Update" data-bind="click: $parent.UpdateTerminalOperator, visible: $parent.IsUpdate">Update</button>
+                            <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetTerminalOperators, visible: $parent.IsReset">Reset</button>
+                            <button type="submit" class="btn red button-submit" title="Cancel" data-bind="click: $parent.CancelTerminalOperator">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>

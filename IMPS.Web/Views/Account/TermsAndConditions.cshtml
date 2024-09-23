@@ -1,0 +1,729 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Integrated Port Management System - Terms and Conditions</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link href="@Url.Content("~/Content/Styles/font-awesome.min.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/bootstrap.min.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/uniform.default.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/select2_metro.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Styles/style-metronic.css")" rel="stylesheet")" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/style.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/style-responsive.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/plugins.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/default.css")" rel="stylesheet" type="text/css" id="style_color"/>
+    <link href="@Url.Content("~/Content/Styles/login-soft.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/custom.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/default.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/toastr.css")" rel="stylesheet" type="text/css"/>
+    <script src="@Url.Content("~/Scripts/Lib/jquery-2.0.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery-migrate-1.2.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/twitter-bootstrap-hover-dropdown.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.slimscroll.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.blockui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.cokie.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.uniform.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.backstretch.min.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/Lib/jquery.bootstrap.wizard.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/spinner.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap-datepicker.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.dataTables.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/DT_bootstrap.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap-maxlength.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap.touchspin.js")" type="text/javascript"></script>
+
+    <script  src="@Url.Content("~/Scripts/Lib/select2.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/app.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/Lib/form-validation.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/form-wizard.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/form-components.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/Lib/login-soft.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/newsTicker.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/toastr.js")" type="text/javascript"></script>
+
+    @Scripts.Render("~/bundles/KnockoutScripts")
+
+    <script src="~/Scripts/Application/IpmsRoot.js"></script>
+    <script src="~/Scripts/Application/Model/AccountLoginModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AccountLoginViewModel.js"></script>
+
+    <link rel="shortcut icon" href="@Url.Content("~/Content/Images/favicon.ico") "/>
+<style>
+    .heading11 {    padding: 10px 0 5px 20px;
+    font-size: 21px;
+    color: #666;
+    margin: -48px 0px 5px -20px;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    }
+#cont ol {
+  list-style-type: none;
+  counter-reset: item;
+  margin: 0;
+  padding: 0;
+}
+
+#cont li {
+  display: table;
+  counter-increment: item;
+  margin-bottom: 0.6em;
+}
+
+#cont li:before {
+    content: counters(item, ".") ". ";
+    display: table-cell;
+    padding-right: 0.6em;    
+}
+
+#cont li li {
+    margin: 0;
+}
+
+#cont li li:before {
+    content: counters(item, ".") " ";
+}
+    #mainli li:before {
+        padding-right: 0.6em;
+    }
+    #mainli li {
+        margin-bottom: 0.6em;
+    }
+    
+    </style>
+
+
+
+</head>
+<body>
+     
+<header class="header navbar navbar-inverse navbar-fixed-top">
+        <div style="padding: 0 175px 0 0px">
+            <div class="header-inner">
+                <span class="name">IPMS TERMS AND CONDITIONS</span>
+                <ul class="nav navbar-nav pull-right">
+
+                    
+                    
+                </ul>
+            </div>
+        </div>
+    </header>
+        
+    <section>
+        <article class="content">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <fieldset  style="margin: 50px 10px; background-color: #fff;">
+                   @* <legend style="list-style:none !important;">Terms and Conditions</legend>*@
+<div class="row" align="center"><h4>© 2015 ALL RIGHTS RESERVED</h4></div>
+<p style="color:#f00;"><strong>NB: 	It is important to note that the use of IPMS is subject to the Terms and Conditions of use which is set out below. By using IPMS the User agrees and is deemed to have agreed to observe all Terms and Conditions of use.</strong></p>
+<p><strong>This agreement (“Agreement”) is formed between you (“the End-User”) and Transnet SOC Ltd (registration number 1990/000900/30) acting through its operating division Transnet National Port Authority   30 Wellington Road, Parktown, Gauteng, Republic of South Africa and governs your rights to use the Integrated Port Management System, (“IPMS”).</strong></p>
+
+<p><strong>By ticking the box next to the link to these terms and conditions and by clicking on “Log in”, you agree to the terms and conditions detailed herein and confirm that you have read and understood this Agreement. </strong></p>
+<p><strong>You furthermore agree that this Agreement is valid and enforceable in terms of, but not limited to, section 11(3) of the <a href="http://www.internet.org.za/ect_act.html" target="_blank">Electronic Communications and Transactions Act 25 of 2002</a>.</strong></p>
+<p><strong>IMPORTANT: If there is any conflict or inconsistency between the provisions of this Agreement and the provisions of the Act, at any time, the provisions of the Act shall prevail over the provisions of this Agreement.</strong></p>
+<p>For ease of reference, the breakdown of the applicable Terms and Conditions are as follows (click on any of the following headings to be transferred to the specific clause):</p>
+
+                    <div class="row" id="mainli">
+                        <div class="col-md-6">
+                            
+                            <ol>
+                                <li><a href="#definitions">Definitions & Interpretations</a></li>
+                                <li><a href="#abouttransnet">About Transnet National Ports Authority an operating division of TRANSNET SOC Ltd</a></li>
+                                <li><a href="#grantlice">Grant of license and allowed use</a></li>
+                                <li><a href="#internationalusers">International Users</a></li>
+                                <li><a href="#dutiesofenduser">Duties of End-User</a></li>
+                                <li><a href="#equipment">Equipment</a></li>
+                                <li><a href="#warranties">Warranties</a></li>
+                                <li><a href="#commencement">Commencement and term</a></li>
+                                <li><a href="#accessibility">Accessibility</a></li>
+                                <li><a href="#intellectual">Intellectual Property</a></li>
+                                <li><a href="#addservinfo">Additional Service Information</a></li>
+                                <li><a href="#serspeprov">Service Specific Provisions</a></li>
+                                <li><a href="#privacy">Privacy</a></li>
+                            </ol>
+
+                        </div>
+                        <div class="col-md-6">
+                           <ol start="14">
+                                <li><a href="#security">Security</a></li>
+                                <li><a href="#interception">Interception and Monitoring</a></li>
+                                <li><a href="#limitation">Limitation of Liability</a></li>
+                                <li><a href="#breach">Breach and Termination</a></li>
+                                <li><a href="#dispute">Dispute Resolution</a></li>
+                                <li><a href="#arbitration">Arbitration</a></li>
+                                <li><a href="#force">Force Majeure</a></li>
+                                <li><a href="#support">Support and Maintenance services</a></li>
+                                <li><a href="#removal">Removal, Amendments and  Corrections;</a></li>
+                                <li><a href="#agreement">Agreement & eCommunications</a></li>
+                                <li><a href="#general">General</a></li>
+                                <li><a href="#law">Law and Jurisdiction</a></li>
+                                <li><a href="#legalcosts">Costs</a></li>
+                            </ol>
+
+                        </div>
+
+
+
+                    </div>
+                    <ul id="cont"><a name="definitions"></a>
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Definitions & Interpretations</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>“<strong>the Act</strong>” means the National Ports Act No. 12 of 2005 (<a href="http://www.info.gov.za/gazette/acts/2005/a12-05.pdf" target="_blank">click here</a> to view);</li>
+                                <li>“<strong>Commencement Date</strong>” means the date on which the End-User ticks the box on the log in page and clicks on “Log in”;</li>
+                                <li>“<strong>End-User</strong>” means TNPA’s customer(s), including but not limited to Shipping Lines, Vessel Agents, Clearing and Forwarding Agents, Cargo Owners, Container Operators, and Terminal Operators, and their authorised representatives, who enters or uses the IPMS, notwithstanding the fact that such a person only visits the home page / first page of the IPMS without utilising the underlying Services available through IPMS;</li>
+                                <li>“<strong>End-User Information</strong>” means the information required by TNPA, provided during the registration process and subsequently electronically provided and updated by the End-User via the TNPA/IPMS website, including such other administrative information reasonably required by TNPA from the End-User from time to time;</li>
+                                <li>“<strong>ETC Act</strong>” means the Electronic Communications and Transactions Act 25 of 2002 (<a href="http://www.internet.org.za/ect_act.html" target="_blank">click here to view</a>)</li>
+                                <li>“<strong>Intellectual Property</strong>” means, but is not limited to, copyright (including but not limited to literary-, artistic-, musical- work, photograph, sound recording, computer programs, artistic works), patents, trademarks (incl. domain names, meta tags), confidential information, trade secrets;</li>
+                                <li>“<strong>Manifest</strong>” means the internationally accepted trading document listing the contents of a ship as submitted to TNPA and other organisation such as the South African Revenue Services (Import Manifest), used primarily to extract statistical data and for revenue completeness;</li>
+                                <li>“<strong>Port</strong>” means any of the ports of Richards Bay, Durban, East London, Nqqura, Port Elizabeth, Mossel Bay, Cape Town, Saldanha Bay, Port Nolloth or a port which has been determined as such in terms of section 10(2) of the National Ports Act 12 of 2005.</li>
+                                <li>“<strong>TNPA</strong>” means Transnet SOC Ltd (registration number 1990/000900/30) acting through its operating division Transnet National Port Authority, (referred to as “the Authority” under the Act);</li>
+                                <li>“<strong>IPMS</strong>” means the online / internet facility where the End-User can execute certain instructions to TNPA and includes all future upgrades available and/or enhancements provided by TNPA from time to time;</li>
+                                <li>References herein to the singular includes the plural and vice versa; </li>
+                                <li>the rule of construction that a contract shall be interpreted against the party responsible for the drafting or preparation of the contract, shall not apply; and</li>
+                                <li>Notwithstanding the fact that hyperlinks in these terms and conditions to copyright notices and legislation should be deemed part of these terms and conditions in terms of section 11 of the ECT Act, the fact that some or all of the hyperlinks may be non-operational, shall not play a role in determination of the validity and interpretation of these terms and conditions.</li>
+                            </ol>
+                        </li>
+
+                        <a name="abouttransnet"></a><p>&nbsp;</p><p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">About Transnet National Ports Authority</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                             <ol style="font-size: 12px;">
+                                 <li><b>Company name:</b> Transnet National Ports Authority an operating division of Transnet SOC Ltd;</li>
+                                 <li><b>Company Registration Number:</b>   1990/000900/30 </li>
+                                 <li><b>Physical Address :</b> 30 Wellington Road, Parktown, Johannesburg, 2001, South Africa;</li>
+                                 <li><b>Postal Address :</b> PO Box 32696, Braamfontein, 2017, South Africa;</li>
+                                 <li><b>Tel : </b> +27 860 109 330;</li>
+                                <li><b>Fax : </b> 086 (Support));</li>
+                                 <li><b>Email : </b> <a href="mailto:ipms@transnet.net">ipms@transnet.net</a></li>
+                                 <div style="padding-left:24px;">(email address you can use for questions or information on IPMS (Support))</div>
+                                <li><b>Email : </b> <a href="mailto:customercare@transnet.net">customercare@transnet.net</a></li>
+                                 <div style="padding-left:24px;">(email address you can use if you have complaints);</div>
+                                 <li><b>Type of Business : </b> transport and related services</li>
+                                 <li style="width:750px;">The Manual published in terms of section 51 of the Promotion of Access to Information Act 2 of 2000 of the owner of the IPMS may be downloaded <a href="http://www.acts.co.za/promotion-of-access-to-information-act-2000/index.html?1_definitions.php" target="_blank"> here</a></li> 
+                            </ol>
+                        </li>
+
+<a name="grantlice"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Grant of license and allowed use</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                             <ol style="font-size: 12px;">
+                                 <li>TNPA provides the End-User with a non-exclusive and a non-transferrable right to view and use the functions and content of IPMS in accordance with this Agreement, provided that such use is for the exclusive execution of instructions, orders and / or notifications in terms of the Services;</li>
+                                 <li>Other than as agreed to above, the End-User may not use, copy, adapt, redistribute or modify the content or any part thereof or frame, "mirror", data-mine or cache the IPMS or reverse engineer, copy, modify, download, distribute, decompile or create a derivative work of the software or TNPA software, or any part thereof without prior written permission from TNPA. For any re-use or distribution of the content or TNPA software, you must make clear to others the terms and conditions applicable to the content available from the website;</li>
+                                 <li>End-User may not sublicense any of the content available from the website. End-User must keep intact all notices that refer to this License and to the Limitation of Liability hereunder;</li>
+                                 <li>End-User may not assign, transfer or sublicense the rights pursuant to this Agreement;</li>
+                                 <li>End-User agrees to supervise all usage by minors (younger than 18 years of age) of this website under End-User’s name or account;</li>
+                                 <li>TNPA must be acknowledged as the source of the material and the TNPA contact details must be reflected accordingly;</li>
+                                 <li>End-User is not allowed to make false, speculative or fraudulent transactions;</li>
+                                 <li>End-User may not use the IPMS communication facilities for purposes of unsolicited communications (“Spam”) or to send or publish any content that is in violation of any law or that are obscene, defamatory, racist or offensive in nature or which may result in the infringement of intellectual property;</li>
+                                 <li>The End-User’s fair use and other rights are in no way affected by the above;</li>
+                                 <li>Hyperlinks to and from IPMS:
+                                    <ol>
+                                    <li>The IPMS may contain links to other websites operated by third parties. TNPA does not necessarily endorse, or approve of the operators and / or owners of Third Party Web Sites, or operate or control in any respect any of the information, graphics and material on those Third Party Web Sites or guarantee that the website will be operation at all times;</li>
+                                    <li>Links to third party websites are included solely for the convenience of End-Users.  The End-User therefore assumes sole responsibility for the use of a third party website;</li>
+                                    <li>TNPA makes no warranties or representations: 
+                                        <ol>
+                                            <li>regarding the quality, accuracy, reliability, legality, merchantability or fitness for purpose of Third Party Web site content or products or services available through Third Party Web Sites; or</li>
+                                            <li>that Third Party Web Site content does not infringe the intellectual property rights of any person.  TNPA is not authorising or endorsing or otherwise condoning the reproduction of Third Party Web Site content by linking to it.</li>
+                                        </ol>
+                                    <li>TNPA expressly disclaims acting in any respect on behalf of Third Party Web Site operators and / or owners. Please note that third party sites may be subject to their own terms of use and privacy policies different from those of this site;</li>
+                                    <li>Hyperlinks to the IPMS will be allowed, subject to prior written approval from TNPA.</li>
+                                    </li>
+                                    </ol>
+
+                                 </li>
+                                 
+                            </ol>
+                        </li>
+
+<a name="internationalusers"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">International Users</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>IPMS can be accessed from countries around the world, but is only applicable to the Services relevant to South Africa’s ports managed by TNPA;</li>
+                                <li>IPMS is controlled, operated, and administered by TNPA from its offices within The Republic of South Africa. TNPA makes no representation that IPMS, or the Services or Materials available through it, are appropriate or available for management of Services at locations outside South Africa, and access to IPMS from territories where IPMS or any of its Services or Materials are illegal is prohibited. If the End User accesses IPMS from a location outside South Africa, the End User is responsible for compliance with all local laws.</li>
+                            </ol>
+                        </li>
+
+<a name="dutiesofenduser"></a><p>&nbsp;</p><p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Duties of the End-User</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <span style="font-size:12px;">Notwithstanding any other duties detailed in this Agreement, the End-User has the duty and responsibility to/for:</span>
+                            <ol  style="font-size: 12px;">
+                                <li>Provide all the correct End-User Information;</li>
+                                <li>Utilise IPMS and defined Services as detailed herein and other relevant Documentation / User Manual;</li>
+                                <li>Use his/her account and maintaining the confidentiality of all passwords and account information.  Sharing of passwords and account numbers and account information is strictly prohibited and may result in suspension of the Services, End-User agrees to bear all responsibility for the confidentiality of End-User’s password and all use or charges incurred from use of the IPMS with End-User’s password;</li>
+                                <li>The security, confidentiality and integrity of all messages and the content that End-User receives, transmits through or stores on IPMS.  End-User agrees that it is solely responsible for collecting, inputting and updating all data related to End-User’s use of IPMS (“End-User Data”);</li>
+                                <li>Prohibit unauthorised access to End-User’s account by another person;</li>
+                                <li>Inform TNPA if there are any discrepancies between IPMS Documentation and IPMS functionality or if IPMS is inaccessible for whatsoever reason and within 2 (two) hours of becoming aware of such problem(s);</li>
+                                <li>Take all reasonable steps to ensure that IPMS and/or Product Documentation is not used or exploited outside the scope of this agreement;</li>
+                                <li>Inform TNPA if the End-User becomes aware of any person who makes unauthorised use of IPMS and/or Product Documentation; and</li>
+                                <li>Implement and communicate all reasonable instructions received from TNPA;</li>
+                                <li>Familiarise itself with the IPMS Terms of Use, available from the IPMS homepage.</li>
+                            </ol>
+                        </li>
+
+<a name="equipment"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Equipment</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>End-User shall be solely responsible for providing, maintaining and ensuring:-
+                                    <ol>
+                                        <li>compatibility with the Service, and</li>
+                                        <li>all hardware, software, electrical and other physical requirements for End-User’s use of IPMS, including, without limitation, telecommunications and internet access connections and links, a web browser, and programs and services required to access and use IPMS;</li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </li>
+
+
+<a name="warranties"></a><p>&nbsp;</p><p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Warranties</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <span style="font-size:12px;">The End - User of IPMS warrants that it:</span>
+                            <ol  style="font-size: 12px;">
+                                <li>Has obtained the necessary approval from its employer or authorised representative(s) to utilise IPMS as a communication tool between the End-User and TNPA;</li>
+                                <li>Shall not use or attempt to use another's account, password, or system without authorization;</li>
+                                <li>Shall not exploit IPMS and/or Product Documentation beyond the scope of the allowed rights under this Agreement;</li>
+                                <li>Shall ensure that the End-User Information is correct and updated;</li>
+                                <li>Not circumvent or disable or attempt to circumvent or disable any security or technical measures used and provided by TNPA to ensure the proper operation of IPMS; and</li>
+                            </ol>
+                        </li>
+
+
+
+<a name="commencement"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Commencement and term</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>This Agreement shall commence on the Commencement Date and continue until termination as per clause 17 below.</li>
+                            </ol>
+                        </li>
+
+
+<a name="accessibility"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Accessibility</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>End-User agrees that from time to time IPMS may be inaccessible or inoperable for any reason, including, without limitation: 
+                                    <ol>
+                                        <li>equipment malfunctions;</li>
+                                        <li>periodic maintenance procedures or repairs which TNPA may undertake from time to time;</li>
+                                        <li>necessary updates or upgrades; or</li>
+                                        <li>causes beyond the control of TNPA or which are not reasonably foreseeable by TNPA.</li>
+                                    </ol>
+                                </li>
+                                <li>Any planned non-availability of IPMS will be communicated 48 hours in advance to the End-User via IPMS Notices, unless otherwise agreed to between TNPA and the End-User or End-User’s employer.</li>
+                                <li>Clause 9.2 will not be applicable under events as detailed under clause 9.1.1 above and 9.1.4 above;</li>
+                                <li>To ensure business continuity, during a period where IPMS is inaccessible or inoperable, the End-User agrees to the execution of Services and receipt of confirmation manually, similar to the process and procedure applicable prior to the incorporation of IPMS.</li>
+                            </ol>
+                        </li>
+
+<a name="intellectual"></a><p>&nbsp;</p><p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Intellectual Property Rights</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>The Intellectual Property available on the IPMS or obtained via the interaction between itself and the End-Users are the property of - or licensed to TNPA and may not be utilized outside the licensed terms as set out under this Agreement;</li>
+                                <li>E-mail addresses, names, telephone numbers and fax numbers published on the IPMS website may not be incorporated into any database used for electronic marketing or similar purposes. The presentation of such details is no “opt-in” / permission from IPMS to utilise same.</li>
+                            </ol>
+                        </li>
+
+<a name="addservinfo"></a><p>&nbsp;</p><p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Additional Information to the End-User</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <span style="font-size:12px;">Further disclosure requirements to the End-User as consumer:</span>
+                            <ol  style="font-size: 12px;">
+                                <li>Services available from IPMS:
+                                    <ol>
+                                        <li>Vessel Management;</li>
+                                        <li>Vessel Arrival Notification;</li>
+                                        <li>Change estimated time of arrival (ETA);</li>
+                                        <li>Marine Service Request/s;</li>
+                                        <li>Berth Planning;</li>
+                                        <li>Vessel Traffic Services;</li>
+                                        <li>Dry Dock</li>
+                                        <li>Change of Agent Request</li>
+                                        <li>Supplementary Services</li>
+                                        <li>Security Permit Application</li>
+                                        <li>Incident Reporting</li>
+                                    </ol>
+                                </li>
+                                <li>The costs / fees associated with the access and use of the IPMS and the Services as referred to under clause 11.1 above are as follows:
+                                    <ol>
+                                        <li>Access to and use of the IPMS will initially be available to users free of charge, however, TNPA reserves the right to impose a fee payable by users, should TNPA deem it necessary at any time in the future. TNPA undertakes to provide users with reasonable notice of any changes to the fees payable in respect of access and use of IPMS as set out above. </li>
+                                        <li>Costs associated with Services as per clause 11.1 above shall be in terms of the TNPA Official Tariff Book - see <a href="http://www.transnetnationalportsauthority.net/DoingBusinesswithUs/Pages/Port-Tariffs.aspx" target="_blank">Ports Tariffs</a>, of which all the relevant <a href="http://www.transnetnationalportsauthority.net/Pages/default.aspx" target="_blank" >General Terms and Conditions</a> will apply, including but not limited to relevant provisions of the <a href="http://www.transnetnationalportsauthority.net/DoingBusinesswithUs/NationalPortAct/Documents/Port Rules GG31986 060309.pdf" target="_blank" >Act and the Port Rules</a>.</li>
+                                        <li>The Port Tariffs may be amended, changed or adapted at any time without prior notice. It is the responsibility of the End-User to be familiar with the applicable charges and / or fees as set out in TNPA’s most recent TNPA Tariff Book.</li>
+                                        <li>Completion of a transaction, under the available services, will be accepted by TNPA as a notification that the tariffs associated with the instructions contained therein are payable;</li>
+                                        <li>The End-User agrees to pay any additional charges that may be incurred by TNPA in carrying out the instructions contained on the transaction submitted to TNPA or any other additional charges /penalties that may be incurred as a result of late submission of certain documents and/or notifications as per clause 12 below;</li>
+                                        <li>Payment of tariffs as indicated under the TNPA’s most recent Tariff Book will have to be paid in the manner as set out under the TNPA Tariff Book;</li>
+                                        <li>TNPA shall submit on a regular basis to the End-User or End-User’s authorised representative, in the form of a statement /an invoice, the outstanding amount as per the End-User Account with TNPA;</li>
+                                        <li>The End-User or its authorised representative shall make payment to TNPA 25 (twenty five) days after receipt of TNPA statement / invoice;</li>
+                                        <li>The TNPA reserves its right not to perform the requested Services via IPMS where no credit limit has been granted to the End-User or where the granted credit limit has been exceeded by TNPA’s customer.</li>
+                                    </ol>
+                                </li>
+                                
+                            </ol>
+                        </li>
+
+<a name="serspeprov"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Service Specific Provisions</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>End-User agrees to the applicability of the TNPA’s Business Rules, Processes and Procedures  (TNPA reserves the right to amend these Business Rules, Processes and Procedures without any notice to the End-User), Port Rules as amended from time to time, Act as amended from time to time, ISPS regulations and the TNPA Tariff Book as amended from time to time;</li>
+                            </ol>
+                        </li>
+
+<a name="privacy"></a><p>&nbsp;</p> <p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Privacy</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>TNPA is the sole owner of information collected on IPMS.  TNPA will not sell, share, or rent the information you have provided to TNPA in any ways other than those disclosed in this statement.  If specifically stated TNPA only collects personal information during the registration process and no personal identifiable information from visitors to the IPMS;</li>
+                                <li>TNPA values your <a href="http://www.acts.co.za/prom_of_access_to_info/1_definitions.htm" target="_blank">personal information</a> and intends to give you as much control as possible over your personal information;</li>
+                                <li>TNPA collects and uses your personal information for the following purposes:
+                                    <ol>
+                                        <li>To process the End-User’s registration application with TNPA as a customer and to provide services pursuant to such registration;</li>
+                                        <li>To create and maintain End-User Profile;</li>
+                                        <li>To receive and process questions and/or comments that End-User may send TNPA via email or via IPMS contact us or other feedback page;</li>
+                                    </ol>
+                                </li>
+                                <li>TNPA electronically collects, store and use the following information during the course of End-User’s visit to IPMS:
+                                    <ol>
+                                        <li>non-personal browsing habits and click patterns;</li>
+                                        <li>domain name part of End-User’s e-mail address;</li>
+                                        <li>IP address (IP address is not linked to personally identifiable information); and</li>
+                                        <li>username and password.</li>
+                                    </ol>
+                                </li>
+                                <li>Along with the IP Addresses of all other End-Users who visit IPMS, TNPA records, in the aggregate only, the following information:
+                                <ol>
+                                        <li>Communication problems with IPMS;</li>
+                                        <li>Usability of IPMS;</li>
+                                        <li>Number of times pages are viewed;</li>
+                                        <li>Number of times error messages were generated;</li>
+                                        <li>Average length of time pages are viewed;</li>
+                                        <li>How many visits per day occur to the IPMS</li>
+                                    </ol>
+                                </li>
+                                <li>TNPA collects, stores and uses the abovementioned information for the following purposes:
+                                    <ol>
+                                        <li>Communicate requested information to the End-User;</li>
+                                        <li>Provide the End-User with access to restricted pages on this web site; and</li>
+                                        <li>Compile non-personal statistical information about browsing habits, click-patterns and access to the IPMS.</li>
+                                    </ol>
+                                </li>
+                                <li>Information detailed above is collected either electronically by using cookies or is provided voluntarily by the End-User. End-Users may determine cookie use independently through their browser settings.</li>
+                                <li>No log-in names or passwords will be disclosed to any third party, except those third parties responsible for the execution of the IPMS log-in facility;</li>
+                                <li>Occasionally third parties may provide storage services to TNPA.  In those circumstances those third parties shall be required to enter into a Non Disclosure Agreement on no less stringent terms than found in this privacy statement and to process and protect your data solely in accordance with our instructions;</li>
+                                <li>TNPA may collect, maintain, save, compile, share, disclose any information collected from End-users, subject to the following provisions:
+                                    <ol>
+                                        <li>TNPA shall not disclose personal information from End-Users unless the End-User consents thereto;</li>
+                                        <li>TNPA shall disclose information without the End-User’s consent only through due legal process; and</li>
+                                        <li>TNPA may compile, use and share any information that does not relate to any specific individual and/or entity.</li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </li>
+
+<a name="security"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Security</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>Although TNPA is not obliged to provide security on the IPMS TNPA feels it is important that End-Users information or any communication between End-Users and TNPA is dealt with in the most secure manner reasonably possible, however because of the nature of the internet TNPA cannot warrant that the End-User’s communications with TNPA via the website is completely secure;</li>
+                                <li>To provide adequate security to all End-Users of the website and to monitor activities prohibited under <a href="http://www.acts.co.za/ect_act/86_unaut.htm" target="_blank">section 86</a> of the ECT Act the End-User hereby authorises TNPA to intercept, monitor, block, read, delete or accesses all data sent to the website or any other TNPA communication facility, e.g. email, Instant messaging – or fax to email application, subject to conditions as set out under the <a href="http://www.info.gov.za/acts/2002/a70-02/index.html" target="_blank">Regulation of Interception of Communications and Provision of Communication related information act 70 of 2002 (click here to View );</a></li>
+                                <li>It is TNPA’s policy to virus check documents and files before they are posted on the IPMS. However, TNPA cannot guarantee that documents or files downloaded from the IPMS will be free from viruses and TNPA does not accept any responsibility for any damage or loss caused by any virus. Accordingly, for the End-User’s own protection, the End-User must use virus-checking software when using this website;</li>
+                                <li>Further, the End-User shall not post or provide to TNPA via the IPMS, any document or file that may contain a virus. The End-User must virus check any document or file which the End-User intends to post or provide to TNPA via the IPMS.  The End-User hereby indemnifies TNPA, its service providers and affiliates against any possible damages, expenses or losses as a result of delivering computer programs or any other code that may damage this website or the TNPA or its service provider’s infrastructure;</li>
+                                <li>The End-User must take note that TNPA will never send to the End-User electronic correspondence requesting the End-User to provide its login details (“<i>phishing</i>”).</li>
+                            </ol>
+                        </li>
+
+<a name="interception"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Interception and Monitoring</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>The End-User agrees that TNPA may reasonably scan, block, filter, monitor, count, print, intercept, delete, use and retain any electronic communications sent by the End-User to TNPA by whatever means; and</li>
+                                <li>TNPA agrees that the rights detailed in 15.1 above shall only be enforced to ensure the proper operation of IPMS and/or to investigate abuse and unlawful use of IPMS. No private or confidential information of the End-User or others shall be used or disclosed unless authorised by the End-User or pursuant to due legal process.</li>
+                            </ol>
+                        </li>
+
+<a name="limitation"></a><p>&nbsp;</p><p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Limitation of Liability</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>The End-User shall use IPMS and/or Product Documentation at his / her / its own and absolute risk;</li>
+                                <li>IPMS is provided “As-Is” and therefore TNPA makes no warranties, conditions, indemnities, representations or terms, express or otherwise, whether by statute, common law, custom, usage or otherwise as to any matter, including but not limited  to non-infringement, title, integration, accuracy, security, error-free, satisfactory quality, suitability and/or fitness for a specific purpose.  TNPA shall take all reasonable steps to ensure the quality and accuracy of content available from the IPMS Portal;</li>
+                                <li>The liability of TNPA for faulty execution of the software as well as all damages suffered by the End-User, whether direct or indirect, as a result of the malfunctioning of such software or incorrect information, will be limited to TNPA rectifying the malfunction or incorrect information, within a reasonable time and free of charge, provided that the TNPA is notified immediately of the damage or faulty execution of the software;</li>
+                                <li>This liability is completely excluded if the End-User attempts to correct or allows third parties to correct or attempt to correct the software without the prior written approval of the TNPA;</li>
+                                <li>Any other liability on the part of the TNPA arising from any cause whatsoever is specifically excluded. Without limiting the generality of the aforegoing, the TNPA shall not be liable for any delay, failure, breakdown, damage or injury caused by:
+                                    <ol>
+                                        <li>software, programs and support services supplied by or obtained by the End User without the consent or knowledge of the TNPA; or</li>
+                                        <li>software or programs modified by the End-User or any third party not authorised to do so in terms of this License; or</li>
+                                        <li>the actions or requirements of any telecommunications authority or a supplier of telecommunications services or software.</li>
+                                    </ol>
+                                </li>
+                                <li>In no event shall the TNPA or any of its directors, employees, officers or business partners be liable to the End-User and / or the particular TNPA customer for loss of profits or for incidental, special or consequential damages arising out of or in connection with the software or the delivery, installation, servicing, performance or use of it in combination with other computer software or services made available through the IPMS software;</li>
+                                <li>End-User agrees to indemnify, hold harmless and defend TNPA, its shareholders, directors, officers, employees and agents from and against any action, cause, claim, damage, debt, demand or liability, including reasonable costs and attorney’s fees, asserted by any person, arising out of or relating to any unacceptable use of IPMS, including, without limitation, any statement, data or content made, transmitted or republished by End-User which is prohibited under this Agreement.</li>
+                                <li>TNPA and its service providers will not be liable for any special, direct, indirect or consequential damages, expenses or losses whatsoever, including loss of profits or data, any delays,  whether in an action in contract or delict, arising out of the use or inability to use the IPMS or performance of the IPMS or non-performance of the IPMS, i.e. IPMS not available as a result of 3rd party service providers, maintenance, enhancements, events outside the control of TNPA or force majeure events, even if TNPA have been advised of the possibility of such damages;</li>
+                                <li>TNPA does not make any warranties or representations that the IPMS shall be available at all times. End-Users acknowledge that the IPMS may be unavailable due to reasons as set out under clause 9 above.</li>
+                            </ol>
+                        </li>
+
+<a name="breach"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Breach & Termination</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>If the End - User is in breach of the terms and conditions of this website / IPMS, TNPA reserves the right to, without prejudice to any rights which it may have in terms hereof or at law, to:
+                                    <ol>    
+                                        <li>Immediately suspend the IPMS Services;</li>
+                                        <li>order for specific performance and damages;</li>
+                                        <li>immediately terminate this Agreement and claim damages;</li>
+                                        <li>immediately institute criminal procedures where applicable and necessary;</li>
+                                        <li>TNPA further reserves its right to immediately terminate this License when the End-User terminates its employment with TNPA’s customer; or</li>
+                                    </ol>
+</li>
+                                <li>Either of the Parties may terminate this License at any stage by giving the other one (1) month  written notice of its intention to do so;</li>
+                                <li>All costs, charges and expenses of whatsoever nature which may be incurred by TNPA in enforcing its rights in terms hereof including, without limitation, legal costs on the scale as between an attorney and own client and collection commission, irrespective of whether any action has been instituted, shall be recoverable from the End-User if the above rights are successfully enforced.</li>
+                                </ol>
+                        </li>
+
+<a name="dispute"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Dispute Resolution</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>If the Parties are unable to resolve any dispute resulting from this Agreement  or subsequent Terms of Use by means of joint co-operation or discussion between the individuals directly involved with the execution of this Agreement or the subsequent Terms of Use, within 5 (five) days after a dispute arises or such extended time period as the Parties may in writing allow, then such a dispute shall be submitted to the most senior executives of the Parties who shall endeavour to resolve this dispute within 5 (five) days after it has been referred to them;</li>
+                                <li>Should the dispute not be resolved in the aforesaid manner, then it shall be resolved by way of arbitration in accordance with the provisions of 19 below.</li>
+                            </ol>
+                        </li>
+
+<a name="arbitration"></a><p>&nbsp;</p><p>&nbsp;</p>
+                        @*<div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Arbitration</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>Any dispute referred to arbitration pursuant to clause 18.2 shall be determined by arbitration in terms of this clause.</li>
+                                <li>This clause shall not preclude any Party from obtaining interim relief on an urgent basis from a court of competent jurisdiction.</li>
+                                <li>The arbitration shall be held:
+                                        <ol>
+                                            <li>in the magisterial district within which the Port is situated; </li>
+                                            <li>with only the legal or other representatives of the Parties to the dispute present thereat;</li>
+                                            <li><i>mutatis mutandis</i> in accordance with the provisions of the Supreme Court Act, No 59 of 1959, the rules made in terms of that Act and the practice of the division of the High Court referred to in 19.8;</li>
+                                            <li>otherwise in terms of the Arbitration Act, No 42 of 1965, it being the intention that the arbitration shall be held and completed as soon as possible.</li>
+                                        </ol>
+                                </li>
+                                <li>The arbitrator shall be, if the matter in dispute is principally:
+                                        <ol>
+                                            <li>a legal matter, a practising advocate or attorney of at least 15 (fifteen) years standing and who is practising within  the magisterial district within which the Port is situated;</li>
+                                            <li>an accounting matter, a practising chartered accountant of at least 15 (fifteen) years standing and who is practising within the magisterial district within which the Port is situated; </li>
+                                            <li>any other matter, an independent person, agreed upon between the Parties to the dispute.</li>
+                                        </ol>
+                                </li>
+                                <li>Should the Parties to the dispute fail to agree whether the dispute is principally a legal, accounting or other matter within 7 (seven) days after the arbitration was demanded, the matter shall be deemed to be a legal matter;</li>
+                                <li>Should the Parties fail to agree on an arbitrator within 14 (fourteen) days after the giving of notice in terms of 18.2, the arbitrator shall be appointed at the request of either Party to the dispute by the President for the time being of the Law Society of the Northern Provinces according to the provisions of 19.4;</li>
+                                <li>The decision of the arbitrator may be made an order of the court referred to in 19.8 at the instance of any of the Parties to the dispute.  The Parties further have a right to appeal against the decision of the arbitrator;</li>
+                                <li>The Parties hereby consent to the jurisdiction of the High Court of South Africa (Witwatersrand Local Division) in respect of the proceedings referred to in 19.2;</li>
+                                <li>Nothing in this clause shall prevent a Party from approaching a court of competent jurisdiction in South Africa for urgent or interim relief, where applicable;</li>
+                                <li>The Parties agree to keep the arbitration including the subject matter of the arbitration and the evidence heard during the arbitration confidential and not to disclose it to anyone except for purposes of an order to be made in terms of 19.7.</li>
+                                <li>The provisions of this clause:
+                                    <ol>
+                                        <li>constitute an irrevocable consent by the Parties to any proceedings in terms hereof and no Party shall be entitled to withdraw there from or claim at any such proceedings that it is not bound by such provisions;</li>
+                                        <li>are severable from the rest of this Agreement and shall remain in effect despite the termination of or invalidity for any reason of this Agreement.</li>
+                                        <li>Each party will bear their own costs of arbitration.</li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </li>
+
+<a name="force"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Force Majeure</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>Should either Party (“the defaulting Party”) fail to meet any of its obligations under this Agreement as a result of:
+                                    <ol>
+                                        <li>any act of God, war, strike, lock-out or other labour dispute, fire, flood or legislation; or</li>
+                                        <li>any computer virus or any other cause beyond the reasonable control of the defaulting Party,</li>
+                                    </ol>
+                                </li>
+                                <span>(hereinafter the “<i>force majeure</i>”), then notwithstanding anything to the contrary contained or implied in this Agreement the affected obligation as well as the other Party’s counter-obligation shall be suspended for the duration of the force majeure  and the other Party shall not be entitled to terminate this Agreement prematurely nor shall it have any claim for damages of whatsoever nature against the defaulting Party, unless the event complained of continues for 30 (thirty) consecutive days or 60 (sixty) in aggregate in any 12 (twelve) month period, in which event the other Party may terminate this Agreement on written notice to the defaulting Party.</span>
+
+                            </ol>
+                        </li>
+
+<a name="support"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Support & Maintenance services</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                    <li>For online assistance the End-User may utilise the following contact details to communicate to TNPA IPMS issues:
+                                        <ol>
+                                            <li>Tel: 0860 109 330</li>
+                                            <li>Email: <a href="mailto:IPMS@transnet.net">IPMS@transnet.net</a></li>
+                                        </ol>
+                                    </li>                                    
+                                    <li>Support and Maintenance services, requested by End-User, which cannot be resolved remotely, may be charged for by TNPA against its standard support and maintenance rate at time of request.  The End user further agrees that answers or guidance from TNPA may be communicated to the End-User through email.</li>
+                            </ol>
+                        </li>
+
+<a name="removal"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Removal, Amendments and  Corrections of Content</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>End-Users are encouraged to report untrue, inaccurate, illegal, infringing and/or harmful content available from the IPMS to TNPA and TNPA undertakes to correct and/or remove such content or any part thereof if the person reporting such content provided reasonable grounds to prove the alleged nature of the content.</li>
+                                <li>TNPA may make changes / amendments to IPMS, the policies, information described in the materials or content of this Agreement, at any time without notice.  TNPA reserves the right to vary or amend these terms and conditions from time to time. Any changes shall take effect upon posting such amendments on IPMS.  TNPA makes no commitment to update the materials and may discontinue any part of IPMS or Services or certain software or version of certain software for the utilisation of the IPMS;</li>
+                            </ol>
+                        </li>
+
+<a name="agreement"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Agreement & eCommunications</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li><strong>Formation and validity of this agreement</strong>
+<p>The End-User agrees that:</p>
+<ol>
+<li>the End-User shall be bound by these term and conditions and such agreement is concluded in Johannesburg (South Africa) at the time the End-User enters the IPMS for the first time;</li>
+<li>the End-User is at least 18 years of age and possesses the legal right and ability to enter into this Agreement and to use this Website in accordance with all terms of use herein;</li>
+<li>all information that are incorporated by using hyperlinks and / or other methods of reference form part of this agreement (see <a href="http://www.acts.co.za/ect_act/11_legal.htm" target="_blank">section 11(3)</a> of the ECT Act);</li>
+</ol>
+</li>
+<li><strong>Time and Place of communication, dispatch and receipt</strong>
+<ol>
+<li><a href="http://www.acts.co.za/ect_act/1_defini.htm" target="_blank">Data Messages</a> sent from TNPA to the End-User have been sent from TNPA’s place of business;</li>
+<li>Data Messages sent from TNPA to the End-User is deemed to be received by the End-User as stipulated in the ECT Act; </li>
+<li>Data Messages from the End-User to TNPA are deemed to be received by TNPA, as stipulated in the ECT Act. </li>
+<li>Data messages (as defined in the ECT Act) addressed by the End-User to TNPA shall be deemed to have been created and sent by the End-User from within the geographical boundaries of South Africa;</li>
+</ol>
+</li>
+<li><strong>Expression of intent</strong>
+<ol>
+<li>The End-User acknowledges that all agreements, authorization or request under this agreement satisfies the “writing” requirement as per <a href="http://www.acts.co.za/ect_act/12_writi.htm" target="_blank">section 12</a> of the ECT Act;</li>
+<li>For purposes of Electronic Communications between End-User and TNPA no Electronic Signature is required; the mere sending of Data Messages or clicking on a button as provided or browsing of our website demonstrates the End-User’s intent to be a party to this agreement;</li>
+</ol>
+</li>
+<li><strong>Attribution of data messages to originator</strong>
+<ol>
+<li>The End-User agrees and warrants that the data message sent, from any Computer or device that are owned by the End-User or the End-User’s employer or programmed by the End-User or on the End-User’s behalf, to TNPA was sent by the End-User or a person that had authority to act on the End-User’s behalf in respect of the data message.</li>
+</ol>
+</li>
+                            </ol>
+                        </li>
+
+
+<a name="general"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">General and Miscellaneous</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li><strong>Sole record of agreement</strong>
+                                    <p>These Terms and Conditions constitutes the sole record of the agreement between the End-User and TNPA with regard to the subject matter hereof.  No Party shall be bound by any express or implied term, representation, warranty, promise or the like not recorded herein.</p>
+                                    </li>
+                                    <li><strong>No amendments except in writing</strong>
+                                    <ol>
+                                    <li>No addition to, variation of, or agreed cancellation of, this Agreement shall be of any force or effect unless in writing and signed by or on behalf of the End-User and TNPA; and</li>
+                                    <li>No data message as defined above, including but not limited to an e-mail, SMS and recorded voice message, sent by End-User to TNPA shall amend this agreement or the rights and duties of the parties in any manner, unless such a data message is reduced to paper and signed by the parties</li>
+                                    </ol>
+                                    </li>
+                                    <li><strong>Waivers</strong>
+                                     <p>No relaxation or indulgence, which any party may grant to any other, shall constitute a waiver of the rights of that party and shall not preclude that party from exercising any rights which may have arisen in the past or which might arise in future.</p>
+                                    </li>
+                                    <li><strong>Survival of obligations</strong>
+                                    <p>Any provision under these terms and conditions, which contemplates performance or observance subsequent to any termination, or expiration of this Agreement shall survive any termination or expiration of this Agreement and continue in full force and effect.</p>
+                                    </li>
+                                    <li><strong>Severability</strong>
+                                    <p>If any one or more of the clauses of these terms and conditions shall be declared or adjudged (formally or informally) by competent authority to be illegal, invalid or unenforceable under any law applicable in any jurisdiction in which these terms and conditions is to be performed, including this clause :</p>
+                                    <ol>
+                                    <li>That clause shall be deemed for all purposes to be severable from all the other clauses of these terms and conditions, which clauses shall continue in force unaffected;</li>
+                                    <li>The terms and conditions thus continuing shall (subject and without prejudice to any appeal to higher authority as to the status of that clause) exclude the offending clause but, if such deletion substantially affects or alters the commercial basis of these terms and conditions, the terms and conditions, including such provision, shall be amended in such manner as the parties shall in good faith agree which will, while not being void or unenforceable, most nearly achieve the object of the allegedly void or unenforceable provisions.</li>
+                                    </ol>
+                                    </li>
+                            </ol>
+                        </li>
+
+<a name="law"></a><p>&nbsp;</p><p>&nbsp;</p>
+                       @* <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Applicable and Governing Law</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>The law of South Africa and the jurisdiction of the South African courts shall govern this Agreement.</li>
+                            </ol>
+                        </li>
+
+<a name="legalcosts"></a><p>&nbsp;</p><p>&nbsp;</p>
+                      @*  <div align="right"><a href="#top">Top</a></div>*@
+                         <li  style="font-size: 21px;">
+                                <h3 class="heading1">Legal Costs</h3>
+                             <ul class="page-breadcrumb breadcrumb"></ul>
+                            <ol  style="font-size: 12px;">
+                                <li>TNPA shall not be liable for costs incurred by End-Users to obtain professional advice relating to these terms and conditions.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                <div class="row" align="center"><h4>© 2015 ALL RIGHTS RESERVED</h4>
+                    </div>
+                </fieldset>
+                </div>
+        </article>
+    </section>
+</body>
+</html>
+</html>
+

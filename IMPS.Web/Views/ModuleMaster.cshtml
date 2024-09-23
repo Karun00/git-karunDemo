@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "ModuleMaster";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/ViewModel/ModuleViewModel.js"></script>
+
+    <script src="~/Scripts/Application/Model/ModuleModel.js"></script>
+}
+
+@section ko_apply
+{
+
+    var viewModel = new IPMSROOT.ModuleViewModel();
+   @*ko.applyBindings(viewModel);*@
+ko.applyBindingsWithValidation(viewModel, $("#ModuleMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="QuayMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div id="tableheader">
+                <a class="button gbtngreen" data-bind="click: $root.addModule">Add New <i class="fa fa-plus"></i></a>
+            </div>
+            <div data-bind="kendoGrid: {
+    data: ModuleList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'ModuleName', title: 'Module Name', width: '80', filterable: true },
+                                    { field: 'SequenceNo', title: 'Sequence No ', width: '80', filterable: true },
+                                    { title: 'Status', filterable: false }, { title: 'Actions', filterable: false }]
+}">
+            </div>
+
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td><span data-bind="text: ModuleName"></span></td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: OrderNo"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            <span data-bind="text: Status"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            <a href="#" data-bind="click: $parent.editModule" title="Edit"><i class="fa fa-edit"></i></a>
+                            <a href="#" data-bind="click: $parent.viewModule" title="View"><i class="fa fa-eye"></i></a>&nbsp; &nbsp;                                    
+                        </div>
+                    </td>
+                </tr>
+            </script>
+        </script>
+
+
+    </div>
+</div>

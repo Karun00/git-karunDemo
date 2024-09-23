@@ -1,0 +1,222 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "test";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{<script src="~/Scripts/Application/Model/AutomatedSlotConfigurationModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AutomatedSlotConfigurationViewmodel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.AutomatedSlotConfigurationViewmodel();
+    ko.applyBindingsWithValidation(viewModel, $("#AutomatedSlotConfiguration")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="AutomatedSlotConfiguration">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <div id="tableheader">
+                @if(Model.HasAddPrivilege){
+                <a class="button gbtngreen" data-bind="click: $root.addautomatedslotconfig">Add New <i class="fa fa-plus"></i></a>
+                }
+            </div>
+
+            <div data-bind="kendoGrid: {
+    data: automatedslotconfigList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' }, number: { eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'EffectiveFrmSort', title: 'Effective From', width: 120, filterable: false },
+                        { field: 'DurationSort', title: 'Duration', width: 120, filterable: false },
+                       { field: 'NoofSlotsSort', title: 'No. of Slots', width: 120, filterable: false },
+                       { field: 'ExtendableSlotsSort', title: 'Extendable Slots', width: 100, filterable: false },
+                       { title: 'Status', filterable: false, width: 50 },
+                       { title: 'Actions', filterable: false, width: 80 }],
+
+}">
+            </div>
+
+
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td>
+                        <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: EffectiveFrm"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: Duration"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: NoofSlots"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: ExtendableSlots"></span></div>
+                    </td>
+
+                    <td>
+                        <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: Statust"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            &nbsp;@if(Model.HasViewPrivilege){
+                            <a href="#" data-bind="click: $parent.viewautomatedslotconfig" title="View"><i class="fa fa-eye"></i></a>}&nbsp;
+                            @if(Model.HasEditPrivilege){
+                            <a href="#" data-bind="click: $parent.Editautomatedslotconfig, visible: IsEdit" title="Edit"><i class="fa fa-edit"></i></a>}&nbsp;
+                          
+                        </div>
+                    </td>
+                </tr>
+            </script>
+
+                </div>
+
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: automatedslotconfigmasterModel">
+                            <div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Add Automated Slotting Configuration</legend>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Effective From:<span class="required">*</span></label>
+                                                <div class="col-md-3">
+                                                    <div class="form-control">                                                  
+                                                       <input type="text" id="EffectiveFrm" class="date-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: EffectiveFrm, enable: $parent.IsCodeEnable, open: calmintoday, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="EffectiveFrm"/>
+                                                         <span class="validationError" data-bind="validationMessage: EffectiveFrm"></span>
+                                                         </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">                                            
+                                              <div class="form-group">
+                                                <label class="control-label col-md-5">Operation Start Time:<span class="required">*</span></label>
+                                                <div class="col-md-1">
+                                                    <div class="form-control">                                                                           
+                                                      <input id="OperationalPeriod" onkeypress="return false;" onkeydown="PreventBackSpace();"  data-bind="kendoTimePicker: { value: OperationalPeriod1, format: 'HH:mm', interval: 05, enable: $parent.IsCodeEnable }, event: { change: $root.OperationalChange }" />                                                                                                                                                        
+                                                         <span class="validationError" data-bind="validationMessage: OperationalPeriod1"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Slot Time Interval (Minutes):<span class="required">*</span></label>
+                                                <div class="col-md-3">
+                                                    <div class="form-control">
+                                              <input type="text" class="form-control" data-bind="value: Duration, enable: $parent.IsCodeEnable, event: { keypress: ValidateNumeric }" maxlength="3" />
+                                                     <span class="validationError" data-bind="validationMessage: Duration"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">No. of Slots:<span class="required">*</span></label>
+                                                <div class="col-md-3">
+                                                    <div class="form-control">
+                                             <input type="text" class="form-control" data-bind="value: NoofSlots, enable: $parent.IsCodeEnable, event: { keypress: ValidateNumeric }" maxlength="3" />
+                                                          <span class="validationError" data-bind="validationMessage: NoofSlots"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                                <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Extended Vessels:<span class="required">*</span></label>
+                                                <div class="col-md-3">
+                                                    <div class="form-control">
+                                  <input type="text" class="form-control" data-bind="value: ExtendableSlots, enable: $parent.IsCodeEnable" maxlength="3" />
+                                                          <span class="validationError" data-bind="validationMessage: ExtendableSlots"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table-toolbar">
+            <div id="tableheader">
+                <a class="button gbtngreen" id="AddSlotPriorityConfig" data-bind="click: $root.AddSlotPriorityConfig, visible: $parent.IsAdd" >Add New <i class="fa fa-plus"></i></a>             
+            </div>
+            <div class="gridhead">Slot Priority Configuration</div>
+            <div class="table-scrollable" id="SlotPriorityConfig">
+                <table cellpadding="0" cellspacing="0" border="0" id="tblQualities" class="tinytable">
+                    <thead>
+                        <tr>
+                            <th>Vessel Type</th>
+                            <th>Priority</th>
+                            <th>No. Of Vessels</th> 
+                            <th></th>     
+                        </tr>
+                    </thead>
+
+                    <tbody  data-bind="foreach: SlotPriorityConfigurations">
+                        <tr>
+                            <td>
+
+                                <select id="VesselType" class="form-control" data-bind="options: $root.automatedslotconfigReferenceData().VesselType, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: vesseltype, enable: $root.IsCodeEnable">
+                                </select></td>
+                            <td>
+                                <select id="priority" class="form-control" data-bind="options: $root.automatedslotconfigReferenceData().PrioprtySeqList, optionsText: 'SubCatCode', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Priority, enable: $root.IsCodeEnable">
+                                </select>
+                            </td>
+                            <td>
+                                <select id="noofvessels" class="form-control" data-bind="options: $root.automatedslotconfigReferenceData().PrioprtySeqList, optionsText: 'SubCatCode', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: NoofVessels, enable: $root.IsCodeEnable">
+                                </select>
+                            </td>
+                            <td>
+                                <a href='#' id="idRemoveVesselTypeConfig" data-bind="click: RemoveVesselTypeConfig, visible: $root.IsReset" title="Delete"><i class="fa fa-ban"></i></a>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+                                        <div class="btns-group form-actions fluid">
+                                            <button type="submit" data-bind="click: $parent.SaveAutomatedSlotConfiguration,visible: $parent.IsSave, enable: $parent.IsSave " class="btn green">Save</button>
+                                             <button type="submit" data-bind=" click: $parent.SaveAutomatedSlotConfiguration, visible: $parent.IsUpdate " class="btn green" >Update</button>
+                                            <button type="submit" data-bind="click: $parent.Resetautomatedslotconfig, visible: $parent.IsReset " class="btn blue">Reset</button>
+                                            <button type="button" data-bind=" click: $parent.cancelautomatedslotconfig" class="btn red">Cancel</button>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+    </div>
+</div>
+

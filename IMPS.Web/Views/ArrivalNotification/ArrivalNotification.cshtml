@@ -1,0 +1,3440 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "ArrivalNotification";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var vcn = "";
+    int WorkflowInstanceId = 0;
+    var showViewOnLoad = false;
+    if (!string.IsNullOrEmpty(ViewBag.VCN))
+    {
+        vcn = ViewBag.VCN;
+        WorkflowInstanceId = ViewBag.WorkflowInstanceId;
+        showViewOnLoad = true;
+    }
+}
+
+<style>
+    @@media print {
+      
+
+        fieldset .col-md-6 .form-group .k-datetimepicker .k-picker-wrap {
+            width: 250px !important;
+        }
+
+        .width1 {
+            width: 250px !important;
+        }
+        /*.col-md-5  fieldset {width:650px !important;}*/
+
+        fieldset .col-md-7 label, fieldset .col-md-4 label, fieldset .col-md-5 label {
+            text-align: left !important;
+        }
+
+        .displaytxt, .left-align {
+            text-align: left !important;
+        }
+
+        .topmargin {
+            margin-top: 5px !important;
+        }
+
+        .hide-row {
+            display: none !important;
+        }
+
+        .main-title1, .hide-print {
+            display: -webkit-box !important;
+        }
+
+        .hide-print1 {
+            display: block !important;
+        }
+
+        .widthc {
+            width: 250px;
+        }
+
+        .k-select {
+            display: none !important;
+        }
+
+        .lheight {
+            line-height: 26px !important;
+        }
+
+        P.breakhere {
+            page-break-before: always;
+        }
+        
+
+        
+    }
+</style>
+<style type="text/css">
+P.breakhere {page-break-before: always}
+    .txt {
+        font-size: 13px; /*font-weight:bold;*/
+        margin: 0;
+        padding: 3px 5px;
+        color: #999;
+        background: #d5d5d5;
+        display: inline-block;
+        margin-left: 45%;
+    }
+
+    .txtline {
+        position: relative;
+        z-index: 2;
+    }
+
+        .txtline:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            border-top: solid 1px #b1b1b1;
+            z-index: -1;
+        }
+
+    div#pop-up {
+        display: none;
+        position: absolute;
+        width: 500px;
+        padding: 3px;
+        background: #eeeeee;
+        color: #000000;
+        border: 1px solid #1a1a1a;
+        font-size: 90%;
+        z-index: 999;
+        border-radius: 4px;
+    }
+
+    .legend-new {
+        background: red;
+    }
+
+    .legend-resubmit {
+        background: orange;
+    }
+
+    .legend-reject {
+        background: #8b0000;
+    }
+
+    .legend-approved {
+        background: green;
+    }
+
+    .legend-na {
+        background: grey;
+    }
+
+    .legend-inprogress {
+        background: yellow;
+    }
+
+    .legend-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        border: 1px solid #666;
+    }
+
+    .left-span {
+        padding-left: 18px;
+    }
+
+    .main-title1, .hide-print, .hide-print1 {
+        display: none;
+    }
+</style>
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+@section scripts{
+ 
+<script src="~/Scripts/Application/ViewModel/WorkflowTaskExecution.js"></script>
+<script src="~/Scripts/Application/Model/ArrivalNotificationModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/ArrivalNotificationViewModel.js"></script>
+
+
+<script type="text/javascript">
+    function alertf() {
+        var moveDown = -200;
+        var moveRight = 35;
+        $('a#trigger').hover(function (e) {
+            $('div#pop-up').show();
+
+        }, function () {
+            $('div#pop-up').hide();
+        });
+
+        $('a#trigger').mousemove(function (e) {
+            $("div#pop-up").css('top', e.pageY + moveDown).css('right', moveRight);
+        });
+    }
+</script>
+
+}
+@section ko_apply
+{
+
+    var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+    var viewModel = new IPMSROOT.ArrivalNotificationViewModel("@vcn","@WorkflowInstanceId", showOnLoad);	   	
+	ko.applyBindingsWithValidation(viewModel, $("#divArrivalNotifications")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }}   );
+    
+
+}
+
+
+<table class="hide-print" style="width: 100%" border="0">
+    <tr>
+        <td style="vertical-align: bottom; width: 1020px;">
+            <div class="main-title1" style="font-size: 16px; font-weight: bold;" align="center">Arrival Notification</div>
+        </td>
+        <td>
+
+            <img src="~/Content/Images/print-logo.jpg" border="0">
+
+        </td>
+    </tr>
+</table>
+
+<div class="row hide-row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">Arrival Notification</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+
+    </div>
+</div>
+<div id="divArrivalNotifications">
+
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'ArrivalNotificationList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'ArrivalNotificationForm-template' }"></div>
+    <div data-bind="visible: viewMode() == 'PopUp', template: { name: 'PopUp-template' }"></div>
+    <div data-bind="visible: viewMode() == 'PopUpCslRem', template: { name: 'PopUp-templateCslRem' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'tbl' }"></div>
+</div>
+<div class="clearfix"></div>
+
+<!-- ArrivalNotification List and Serach content starts here-->
+<script type="text/html" id="ArrivalNotificationList-template">
+
+
+    <div class="clearfix"></div>
+
+
+    <div class="portlet-body">
+        <div class="table-toolbar">
+
+            <div>
+                <div class="portlet box advbg">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-reorder"></i>Advance Search
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" data-bind="with: arrivalNotificationModelSearchGrid">
+                        <div class="form-wizard">
+                            <div class="form-body form-horizontal">
+                                <div class="alert alert-danger display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    You have some form errors. Please check below.
+                                </div>
+                                <div class="alert alert-success display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    Your form validation is successful!
+                                </div>
+                                <div class="form-group">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                         <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">ETA From :</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <input id="SearchETAFrom" style="margin-top: 0px;" type="text" title="ETA From" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: ETAFrom, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SearchValidDate }" name="ETAFrom" maxlength="10" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-5">ETA To :</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <input id="SearchETATo" style="margin-top: 0px;" type="text" title="ETA To" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: ETATo, format: 'yyyy-MM-dd', readonly: true, open: SearchETAtoCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="ETATo" maxlength="10" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">IMDG:</label>
+                                                <div class="radio-list" style="padding-top: 2px;">
+                                                    <input type="radio" name="IsserchIMDG" value="A"
+                                                        data-bind="checked: IsserchIMDG"><label class="radio-inline">Yes</label>
+                                                    <input type="radio" name="IsserchIMDG" value="I"
+                                                        data-bind="checked: IsserchIMDG"><label class="radio-inline">No</label>
+                                                    <input type="radio" name="IsserchIMDG" value="All"
+                                                        data-bind="checked: IsserchIMDG"><label class="radio-inline">All</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">ISPS:</label>
+                                                        <div class="radio-list" style="padding-top: 2px;">
+                                                            <input type="radio" name="IsserchISPS" value="A"
+                                                                data-bind="checked: IsserchISPS"><label class="radio-inline">Yes</label>
+                                                            <input type="radio" name="IsserchISPS" value="I"
+                                                                data-bind="checked: IsserchISPS"><label class="radio-inline">No</label>
+                                                            <input type="radio" name="IsserchISPS" value="All"
+                                                                data-bind="checked: IsserchISPS"><label class="radio-inline">All</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    </div>
+                              
+
+
+                                <div class="row">
+                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-8">PHO Cleared:</label>
+                                                <div class="radio-list" style="padding-top: 2px;">
+                                                   <input type="checkbox" id="IsserchIMDGClear" data-bind="checked: IsserchPHOClear" /><label class="radio-inline"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-8">ISPS Cleared:</label>
+                                                <div class="radio-list" style="padding-top: 2px;">
+                                                   <input type="checkbox" id="IsserchISPSClear" data-bind="checked: IsserchISPSClear" /><label class="radio-inline"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-8">IMDG Cleared:</label>
+                                                <div class="radio-list" style="padding-top: 2px;">
+                                                   <input type="checkbox" id="IsserchIMDGClear" data-bind="checked: IsserchIMDGClear" /><label class="radio-inline"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </div>
+                                        
+
+                                 
+
+
+
+
+
+
+                              </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">VCN :</label>
+                                                  <div class="col-md-9">
+                                                        <input id="searchVCN" name="searchVCN" onkeydown="SerchVCNBackSpace();" onkeypress="return SerchVCNBackSpaceNumValid(event)" data-bind="kendoAutoComplete: {
+                                                        dataTextField: 'vcn', minLength: 2, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: 'api/ArrivalVcnDetailsforAutocomplete', dataType: 'json' }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VCN, select: $root.VCNSelectSearch
+                                                    }" />
+                                            <span id="spanVCNSearchValid" class="validationError" data-bind="visible: $root.isspanVCNSearchValid"></span>
+                                        </div>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Vessel Name/IMO No.:</label>
+                                                <div class="col-md-6">
+                                                    <input id="autocompleteSearchAN" name="autocompleteSearchAN" onkeydown="SerchVesselBackSpace();"  @*onkeypress="SerchVesselKeyPress()"*@ data-bind="kendoAutoComplete: {
+                                                        dataTextField: 'VesselName', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/ArrivalNotification/GetVesselNamesAN/', data: { columnName: '' } }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VesselName, select: $root.VesselSelectSearch, event: { keypress: SerchVesselKeyPress, keydown: SerchVesselBackSpace }
+                                                    }" />
+                                                    <span id="spanVesselSearchValid" class="validationError" data-bind="visible: $root.isspanVesselSearchValid"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row form-group">
+                                       
+                                            
+                                                <div class="col-md-8"></div>
+                                                <div class="col-md-2 fluid">
+                                                    <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetDataClick">Get Data</button>
+
+                                                </div>
+                                                <div class="col-md-2 fluid">
+                                                    <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ClearFilter">Reset</button>
+                                                </div>
+
+                                    </div>
+                                </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+<div class="row">
+        <div class="col-md-6">
+            @if (Model.HasAddPrivilege)
+                {
+                    <a class="button gbtngreen" data-bind="click: $root.addArrivalNotification ">Add New <i class="fa fa-plus"></i></a>
+            }
+                <div class="search" style="border: none; padding: 0; margin-top: 5px;">
+                    <select id="columns" onchange="sorter.search('query')" style="display: none;"></select>
+                </div>
+        </div>
+<div class="col-md-6" align="right">
+                <a href="#" class="btn btn-xs red" id="trigger" onmouseover="alertf()">Legend</a>
+            <div id="pop-up">
+                <p>
+                    <table border='0' width="100%" cellpadding='3' cellspacing='3'>
+                        <tr>
+                                <td class='td-width' colspan="3" style="text-align: right; padding-right: 5px;">
+                                    <div>
+                                        <span class="fa-stack fa-lg ">
+                            <i class="fa fa-circle fa-stack-2x" style="font-size: 22px;"></i>
+                            <i class="fa fa-lightbulb-o fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                                        </span><span style="vertical-align: top;">Berth Planner</span>
+                                    </div>
+                            </td>
+                                <td style="width: 80px;">
+                                    <div>
+                                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x" style="font-size: 22px;"></i>
+                            <i class="fa fa-stethoscope fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                                        </span><span style="vertical-align: top;">PHC</span>
+                                    </div>
+                            </td>
+                                <td style="width: 70px;">
+                                    <div>
+                                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x" style="font-size: 22px;"></i>
+                            <i class="fa fa-link fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                                        </span><span style="vertical-align: top;">ISPS</span>
+                                    </div>
+                            </td>
+
+                                <td style="width: 70px;">
+                                    <div>
+                                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x" style="font-size: 22px;"></i>
+                            <i class="fa fa-bomb fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                                        </span><span style="vertical-align: top;">IMDG</span>
+                                    </div>
+                        </td>
+
+                        </tr>
+                        <tr>
+                                <td style="width: 65px;">
+                                    <div class='legend-icon legend-new' style="margin-left: 6px;"><span class='left-span'>New</span></div>
+                                </td>
+                                <td>
+                                    <div class='legend-icon legend-inprogress' style="margin-left: 6px;"><span class='left-span'>InProgress</span></div>
+                        </td>
+                                <td>
+                                    <div class='legend-icon legend-resubmit' style="margin-left: 6px;"><span class='left-span'>Resubmission</span></div>
+                        </td>
+                        
+                            <td>
+                                <div class='legend-icon legend-approved' style="margin-left: 6px;"><span class='left-span'>Approved</span></div>
+                            </td>
+                            <td>
+                                <div class='legend-icon legend-na' style="margin-left: 6px;"><span class='left-span'>N/A</span></div>                                                               
+                            </td>
+                                <td>
+                                    <div class='legend-icon legend-reject' style="margin-left: 6px;"><span class='left-span'>Reject</span></div>
+                                </td>
+                            
+                        </tr>
+                    </table>
+                </p>
+            </div>
+
+</div>
+</div>
+
+        <div data-bind="kendoGrid: {
+    data: arrivalNotificationListGrid,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'VCNSortGrid', title: 'VCN', width: 150, filterable: true },
+						{ field: 'VesselNameSortGrid', title: 'Vessel Name', width: 150, filterable: true },
+					   { field: 'VesselTypeSortGrid', title: 'Vessel Type', width: 150, filterable: true },
+					   { field: 'ReasonforvisitSortGrid', title: 'Reason for visit', width: 150, filterable: false },
+						{ field: 'ETASortGrid', title: 'ETA', filterable: false, width: 130, filterable: true },
+						{ field: 'ETDSortGrid', title: 'ETD', filterable: false, width: 130, filterable: true },
+						{ field: 'NominationDateSortGrid', title: 'Nomination Date', filterable: true, width: 140 },
+	                    { field: 'ArvStatusSortGrid', title: 'Status', filterable: true, width: 100 },
+                        { title: 'Workflow Status', filterable: false, width: 160 },
+						 { title: 'Actions', filterable: true, width: 100 }]
+
+}">
+        </div>
+
+        <script id="rowTmpl" type="text/html">
+
+            <tr data-bind="style: { backgroundColor: (IsSamsaArrested() == 'true') ? '#FCE4E7' : '' }, loadingWhen: $root.viewModelHelper.isLoading">
+
+                <td data-bind="style: { backgroundColor: (AnyDangerousGoodsonBoard() == 'A') ? '#FA370E' : '' }">
+
+                    <div class="nowrap"><span data-bind="text: VCN"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VesselType"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ReasonforvisitName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ETA"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ETD"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: NominationDate"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ArvStatus"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap" style="margin-top: 10px">
+
+                        <a href="#" data-bind="attr: { title: ArrvwfRemarks }"><span class="fa-stack fa-lg ">
+                            <i data-bind="style: { color: (IsANFinal() == 'Y' && RecordStatus() == 'A' && IsArrivaStatus() == 'WFSA') ? '#04821a' :  IsArrivaStatus() == 'NEW'? '#fe2424' :IsArrivaStatus() == 'VRES'? 'orange':IsArrivaStatus() == 'WFRE'? '#8b0000':IsArrivaStatus() == 'WFSA'? '#04821a': IsArrivaStatus() == 'WFCA'? '#9a9696':IsArrivaStatus() == ''? '#9a9696':'yellow'}" class="fa fa-circle fa-stack-2x" style="font-size: 22px;"></i>
+                            <i class="fa fa-lightbulb-o fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                        </span></a> 
+                        <a href="#" data-bind="attr: { title: PHOwfRemarks }"><span class="fa-stack fa-lg">
+                            <i data-bind="style: { color: (IsPHANFinal() == 'Y' && RecordStatus() == 'A' && IsPHANStatus() == 'WFSA') ? '#04821a' :  IsPHANStatus() == 'NEW'? '#fe2424' :IsPHANStatus() == 'VRES'? 'orange':IsPHANStatus() == 'WFRE'? '#8b0000':IsPHANStatus() == 'WFSA'? '#04821a': IsPHANStatus() == 'WFCA'? '#9a9696':IsPHANStatus() == ''? '#9a9696':'yellow'}" class="fa fa-circle fa-stack-2x" style="font-size: 22px;"></i>
+                            <i class="fa fa-stethoscope fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                        </span></a>
+
+                        <a href="#" data-bind="attr: { title: ISPSwfRemarks }"><span class="fa-stack fa-lg">
+                            <i data-bind="style: { color: (IsISPSANFinal() == 'NA') ? '#9a9696' : (IsISPSANFinal() == 'Y' && RecordStatus() == 'A' && IsISPSANStatus() == 'WFSA') ?'#04821a' :  IsISPSANStatus() == 'NEW'? '#fe2424' :IsISPSANStatus() == 'VRES'? 'orange':IsISPSANStatus() == 'WFRE'? '#8b0000':IsISPSANStatus() == 'WFSA'? '#04821a': IsISPSANStatus() == 'WFCA'? '#9a9696':'yellow' }" class="fa fa-circle fa-stack-2x" style="font-size: 22px;"></i>
+                            <i class="fa fa-link fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                        </span></a>
+
+                        <a href="#" data-bind="attr: { title: IMDGwfRemarks }"><span class="fa-stack fa-lg">
+                            <i data-bind="style: { color: (IsIMDGANFinal() == 'NA') ? '#9a9696' : (IsIMDGANFinal() == 'Y' && RecordStatus() == 'A' && IsIMDGANStatus() == 'WFSA') ?'#04821a' :   IsIMDGANStatus() == 'NEW'? '#fe2424' :IsIMDGANStatus() == 'VRES'? 'orange':IsIMDGANStatus() == 'WFRE'? '#8b0000':IsIMDGANStatus() == 'WFSA'? '#04821a': IsIMDGANStatus() == 'WFCA'? '#9a9696':'yellow' }" class="fa fa-circle fa-stack-2x" style="font-size: 22px; color: #9a9696"></i>
+                            <i class="fa fa-bomb fa-stack-1x fa-inverse" style="font-size: 12px;"></i>
+                        </span></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="nowrap">
+                        &nbsp;
+                            
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.viewArrivalNotificationNew" title="View"><i class="fa fa-eye"></i></a>}&nbsp;
+
+                            <div data-bind="style: { display: (ArvStatus() == 'Cancelled') ? 'inline' : 'none' }">
+                                <a href="#" data-target="#stack12CslRem" data-toggle="modal" data-bind="click: $parent.ViewcancelReqst, attr: { title: 'View Cancel Reason' }"><span><i class="fa fa-stack-exchange"></i></span></a>
+                             </div>
+                            
+                            @if (Model.HasEditPrivilege)
+                        {<div data-bind="style: { display: (IsPrimary() == 'Y') ? 'inline' : 'none' }">
+                                <a href="#" data-bind="click: $parent.editArrivalNotificationNew, style: { display: (isEditVisible() == 'true') ? 'inline-block' : 'none' }, attr: { title: 'Edit' }"><i class="fa fa-edit"></i></a>
+                            </div>
+                            }&nbsp;
+                              @if (Model.HasDeletePrivilege)
+                              {     
+                                  <div data-bind="style: { display: (IsPrimary() == 'Y') ? 'inline' : 'none' }">
+                                      <a href="#" data-target="#stack12" data-toggle="modal" data-bind="click: $parent.cancelReqst, attr: { title: 'Cancel' }"><span data-bind="    visible: IsArrivaStatus() != 'WFCA'"><i class="fa fa-ban" data-bind="    visible: ArvStatus() == 'Not Arrived'  "></i></span></a>
+                        </div>
+                        }
+                       
+                    </div>
+                </td>
+            </tr>
+        </script>
+
+    </div>
+
+
+</script>
+
+<!-- ArrivalNotification form for Add Edit and View starts here-->
+<script type="text/html" id="ArrivalNotificationForm-template">
+    <div class="row" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="col-md-12">
+            <div class="portlet" id="divFormWizardTabNavigation">
+                <div class="portlet-body form">
+                    <form action="#" class="form-horizontal" id="submit_form" data-bind='with: arrivalNotificationModel'>
+
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }' id="divRegistration">
+
+                            <div class="form-body">
+                                <ul class="nav nav-pills nav-justified steps" id="ulTabs">
+                                    <li>
+                                        <a data-toggle="tab" class="step" data-bind="click: $root.GotoTab1" style="cursor: pointer">
+                                            <span class="number">1
+                                            </span>
+                                            <span class="desc">
+                                                <i class="fa fa-check"></i>Arrival Details
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" class="step" data-bind="click: $root.GotoTab2" style="cursor: pointer">
+                                            <span class="number">2
+                                            </span>
+                                            <span class="desc">
+                                                <i class="fa fa-check"></i>Cargo Details
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" class="step" data-bind="click: $root.GotoTab3" style="cursor: pointer">
+                                            <span class="number">3
+                                            </span>
+                                            <span class="desc">
+                                                <i class="fa fa-check"></i>Documents Upload & Submit
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div id="bar" class="progress progress-striped" role="progressbar">
+                                    <div class="progress-bar progress-bar-success">
+                                    </div>
+                                </div>
+                                <div class="tab-content">
+                                    <div id="divValidationError" class="alert alert-danger display-none">
+                                        <button class="close" data-dismiss="alert"></button>
+                                        You have some form errors. Please check below.
+                                    </div>
+                                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                                        <button class="close" data-dismiss="alert"></button>
+                                        Your form validation is successful!
+                                    </div>
+                                    <!--Tab1 Starts-->
+                                    <div class="tab-pane active" id="tab1" data-bind="visible: $parent.viewModeForTabs() == 'notification1', template: { name: 'notification1-template' }">
+                                    </div>
+                                    <!--Tab1 ends here-->
+                                    <!--Tab2 Starts here-->
+                                    <div class="tab-pane active" id="tab2" data-bind="visible: $parent.viewModeForTabs() == 'notification2', template: { name: 'notification2-template' }">
+                                    </div>
+                                    <!--Tab2 ends here-->
+
+                                    <!--Tab2 Starts here-->
+                                    <div class="tab-pane active" id="tab3" data-bind="visible: $parent.viewModeForTabs() == 'notification3', template: { name: 'notification3-template' }">
+                                    </div>
+                                    <!--Tab2 ends here-->
+                                </div>
+                            </div>
+
+                            <div class="form-actions fluid">
+                                <div class="row">
+                                    <div class="col-md-12" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                                        <div class="btns-group">
+                                            <a href="javascript:;" class="btn default button-previous" id="btnGoBack" data-bind="click: $root.GoToPrevTab, visible: $parent.isGoBackVisible">
+                                                <i class="m-icon-swapleft"></i>Back</a>
+                                            <a href="javascript:;" class="btn default button-previous" id="btnGoNext" data-bind="click: $root.GoToNextTab, visible: $parent.isGoNextVisible">Next <i class="m-icon-swapright"></i></a>
+                                            <a href="#" class="btn default button-next" data-bind="click: $root.ValidateForm, visible: $parent.isSaveVisible">Next <i class="m-icon-swapright"></i>
+                                            </a>
+                                            <a href="#" class="btn default button-next" data-bind="click: $root.ValidateForm, visible: $parent.isUpdateVisible">Next <i class="m-icon-swapright"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-info button-submit" data-bind="click: $root.DraftArrivalNotification, visible: $parent.isSaveDraftVisible">Save Draft
+                                            </a>
+                                            <a href="#" id="submitID" class="btn green button-submit" data-bind="click: $root.SaveArrivalNotification, visible: $parent.isSubmitVisible">Submit
+                                            </a>
+                                            <button type="submit" class="btn blue" data-bind="click: $parent.ResetArrivalNotification, visible: $parent.isReset">Reset</button>
+                                            <button type="submit" class="btn red button-submit" data-bind="click: $parent.CancelArrivalNotification">Cancel</button>
+                                            <a class="btn purple button-submit" onclick="javascript:printForm();" data-bind="visible: $parent.isGoNextVisible"><i class="fa fa-print"></i>Print</a>
+                                            
+                                            @*@Html.ActionLink("PDF", "ExportPDF", "ArrivalNotification", new {@class = "btn btn-xs blue button-submit" })*@
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions fluid">
+                                @{Html.RenderPartial(Url.Content("~/Views/Shared/PendingTaskView.cshtml"));}
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</script>
+
+<!-- First TAB IN ArrivalNotification form  starts here-->
+<script type="text/html" id="notification1-template">
+<fieldset class="hide-row">
+<legend>Vessel Details</legend>
+<div class="row">
+	<div class="col-md-4">
+		<div class="form-group hide-row">
+			<label class="control-label col-md-4">Pending VCN:</label>
+			<div class="col-md-8">
+				<select id="DraftDetailsList" name="DraftDetails" class="form-control" data-bind="enable: $root.isDrftCmbEnabled, options: $root.arrivalNotificationReferenceDraftData().DraftDetails, optionsText: 'VCNName', optionsValue: 'VCNKey', value: DraftKey, optionsCaption: 'Choose....', event: { change: DraftDetailsListChange }">
+				</select>
+			</div>
+		</div>
+		<div class="row hide-print">
+			<div class="col-md-4 widthc">
+				<div class="form-group">
+					<label class="control-label col-md-5">VCN:</label>
+					<div class="col-md-6 control-label txtblue" style="text-align: left">
+						<label class="col-md-12 displaytxt" data-bind="text: VCN"></label>
+
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4 widthc">
+				<div class="row">
+					<div class="form-group">
+						<label class="control-label col-md-4">Vessel:<span class="required">*</span></label>
+						<div class="col-md-6" style="text-align: left">
+							<input id="autocompleteAN" class="zeroborder" name="VCN" onblur=" VesselNameBlur(); " onkeypress=" VesselNameKeypress(); " onkeydown=" VesselNameKeypress(); " data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName', minLength: 3, pageSize: 1
+    , dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: '/api/ArrivalNotification/GetVesselNamesAN/', data: { columnName: VslSrchOn } }
+        }, schema: {
+            data: function (data) { return data; }, total: function (data) {
+                return data.length;
+            }
+        },
+    }, value: VesselName, select: $root.VesselSelect, enable: $root.isVslEnabled
+}"/>
+							<span id="spanVslValid" class="validationError" data-bind="visible: $root.isspanVslValid"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4 widthc">
+				<div class="form-group">
+					<label class="control-label col-md-5">IMO No.:</label>
+					<div class="col-md-6 control-label txtblue" style="text-align: left" data-bind="with: VesselData">
+						<label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label class="control-label col-md-5">IMO No.:</label>
+			<div class="col-md-6 control-label txtblue" data-bind="with: VesselData">
+				<label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="form-group">
+			<label class="control-label col-md-5">Pending VCN/VCN:</label>
+			<div class="col-md-6 control-label txtblue">
+				<label class="col-md-12 displaytxt" data-bind="text: VCN"></label>
+
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4">
+		<div class="form-group">
+			<label class="control-label col-md-4">Primary Agent:</label>
+			<div class="col-md-8 control-label txtblue">
+				<label class="col-md-12 displaytxt" data-bind="text: ArrivalCreatedAgent"></label>
+
+			</div>
+		</div>
+	</div>
+<div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-5">Submitted By:</label>
+                    <div class="col-md-6 control-label txtblue">
+                        <label class="col-md-12 displaytxt" data-bind="text: UserName"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-5">Contact No.:</label>
+                    <div class="col-md-6 control-label txtblue">
+                        <label class="col-md-12 displaytxt" data-bind="text: ContactNo"></label>
+
+                    </div>
+                </div>
+            </div>
+</div>
+        <div class="row">
+<div class="row hide-row">
+<div class="col-md-6">
+<div style="margin-right: 5px;">
+<fieldset>
+<legend>Vessel Search</legend>
+<div class="row">
+<div class="form-group">
+                    <label class="control-label col-md-4">Search Type:</label>
+                    <div class="col-md-6">
+                                        <input id="VslSrchOn" name="VslSrchOn" title="VsrchOn" data-bind="enable: $parent.isVslEnabled, kendoDropDownList: { data: [{ name: 'Vessel Name', val: 'NM' }, { name: 'IMO No', val: 'IM' }, { name: 'CallSign', val: 'CL' }], value: VslSrchOn, dataTextField: 'name', dataValueField: 'val' }" />
+            </div>
+        </div>
+</div>
+        <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-md-4">Vessel:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                                        <input id="autocompleteAN" name="VCN" onblur="VesselNameBlur();" onkeypress="VesselNameKeypress();" onkeydown="VesselNameKeypress();" data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName', minLength: 3, pageSize: 1
+    , dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: '/api/ArrivalNotification/GetVesselNamesAN/', data: { columnName: VslSrchOn } }
+        }, schema: {
+            data: function (data) { return data; }, total: function (data) {
+                return data.length;
+            }
+        },
+    }, value: VesselName, select: $root.VesselSelect, enable: $root.isVslEnabled
+}" />
+                        <span id="spanVslValid" class="validationError" data-bind="visible: $root.isspanVslValid" style=" height: 13px;width: 121px;">This field is required</span> 
+                    </div>
+  
+                </div>
+            </div>
+
+</fieldset>
+</div>
+</div>
+<div class="col-md-6">
+                    <div style="margin-left: 5px;">
+        <fieldset>
+            <legend>Secondary Agents</legend>
+                <div class="row">
+                <div class="form-group">
+                                                <label class="control-label col-md-4">Secondary Agent1 : </label>    
+                                                <div class="col-md-6">
+                                        <input id="Agent1" class="zeroborder tindent" name="Agent1" onblur="AgentName1Blur();" onkeypress="AgentName1Keypress();" onkeydown="AgentName1Keypress();" data-bind="kendoAutoComplete: {
+    dataTextField: 'RegisteredName',
+    dataValueField: 'AgentID', minLength: 1, pageSize: 1
+    , dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: '/api/ArrivalNotification/GetAgentnames', dataType: 'json' }
+        }, schema: {
+            data: function (data) { return data; }, total: function (data) {
+                return data.length;
+            }
+        },
+    }, value: SecondaryAgent1Name, select: $root.SecondaryAgentID1Select
+}, enable: $root.isArrvalEnable "
+                                            oncopy="return false" onpaste="return false" oncut="return false" />
+                                                </div>
+                                            </div>               
+                </div>
+                <div class="row">
+                <div class="form-group">
+                                                <label class="control-label col-md-4">Secondary Agent2 : </label>  
+                                                <div class="col-md-6">
+                                        <input id="Agent2" class="zeroborder tindent" name="Agent2" onblur="AgentName2Blur();" onkeypress="AgentName2Keypress();" onkeydown="AgentName2Keypress();" data-bind="kendoAutoComplete: {
+    dataTextField: 'RegisteredName',
+    dataValueField: 'AgentID', minLength: 1, pageSize: 1
+    , dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: '/api/ArrivalNotification/GetAgentnames', dataType: 'json' }
+        }, schema: {
+            data: function (data) { return data; }, total: function (data) {
+                return data.length;
+            }
+        },
+    }, value: SecondaryAgent2Name, select: $root.SecondaryAgentID2Select
+}, enable: $root.isArrvalEnable"
+                                            oncopy="return false" onpaste="return false" oncut="return false" />
+                                                </div>
+                                            </div>               
+                </div>
+        </fieldset>
+    </div>
+
+</div>
+</div>
+                
+            
+        </div>
+        
+
+        <div class="txtline"><span class="txt">Vessel Details</span></div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Vessel Type:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+
+                            <label class="col-md-12 displaytxt" data-bind="text: VesselTypeName"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">LOA:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: LengthOverallInM"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Beam:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: BeamInM"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Call Sign:</label>
+
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: CallSign"></label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Country of Reg:</label>
+
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: VesselNationality"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">GRT:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: GrossRegisteredTonnageInMT"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">DWT:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: DeadWeightTonnageInMT"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Nomination Date:</label>
+                        <div class="col-md-6 control-label displaytxt">
+
+                            <label class="col-md-12 displaytxt" data-bind="text: NominationDate"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+             
+        
+        <div class="txtline"><span class="txt">Voyage Details</span></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Voyage In:<span class="required">*</span></label>
+                    <div class="col-md-6">
+
+                        <input type="text" id="VoyageIn"  name="VoyageIn" class="form-control zeroborder" maxlength="50" data-bind="value: VoyageIn, enable: $parent.isArrvalEnable, event: { change: $parent.ChangeVoyageIn }">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Voyage Out:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input type="text" id="VoyageOut" name="VoyageOut" class="form-control zeroborder" maxlength="50" data-bind="value: VoyageOut, enable: $parent.isArrvalEnable, event: { change: $parent.ChangeVoyageOut }">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Terminal Operator:</label>
+                    <div class="col-md-6">
+                        <div class="radio-list">
+                            <input type="radio" id="TerminalOperator" name="TerminalOperator" value="A" data-bind="enable: $root.isArrvalEnable, event: { change: $parent.TOHit }, checked: IsTerminalOperator">
+                            <label class="radio-inline">Yes</label>
+                            <input type="radio"  name="TerminalOperator" value="I" data-bind="enable: $parent.isArrvalEnable, event: { change: $parent.TOHitNo }, checked: IsTerminalOperator">
+                            <label class="radio-inline">No</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Specify Terminal:<span id="IsTOStrSpn" class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input name="SpecTO" class="zeroborder" id="SpecTO" data-bind="enable: $root.isTOEnabled, kendoAutoComplete: { data: $root.arrivalNotificationReferenceData().BirthTos, dataTextField: 'RegisteredName', dataValueField: 'TerminalOperatorid', select: $root.LoadTOBirths, value: RegisteredName }" />
+                        <input type="hidden" id="TerminalOperatorID" data-bind="text: TerminalOperatorID" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">E.T.A:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                       @* <input type="text" id="ETA" title="ETA" class="datetime-picker" onkeypress="return false;" data-bind="enable: $root.isArrvalEnable, kendoDateTimePicker: { value: ETA, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, open: calmintoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="ETA" maxlength="0" />*@
+                        <input type="text" id="ETA" onchange="ChangeETADate();" onkeydown="PreventBackSpace();" class="datetime-picker topb" onkeypress="return false;" data-bind="enable: $parent.isArrvalEnable, kendoDateTimePicker: { value: ETA, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, open: calmintoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="ETA" maxlength="0" />
+                   
+                         <span id="spanEtaValid" class="validationError" data-bind="visible: $root.isspanEtaValid"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">E.T.D:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input type="text" id="ETD" onchange="ChangeETDDate();" onkeydown="PreventBackSpace();" class="datetime-picker" onkeypress="return false;" data-bind="enable: $root.isArrvalEnable, kendoDateTimePicker: { value: ETD, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="ETD" maxlength="0" />
+                        <span id="spanEtdValid" class="validationError" data-bind="visible: $root.isspanEtdValid"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Reason for Visit:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input id="reasonforvisit" class="form-control zeroborder" name="reasonforvisit" required data-bind="kendoMultiSelect: { dataTextField: 'SubCatName', dataValueField: 'SubCatCode', data: $root.arrivalNotificationReferenceData().ReasonVisists, value: ArrivaReasonArray, enable: $root.isArrvalEnable }, event: { change: $parent.LoadLayup }" />
+                        <span class="validationError" data-bind="validationMessage: ReasonForVisit"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Arr. Draft(m):<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control zeroborder" maxlength="5" onkeypress="return allowOnlyTwoPositiveDigtsOnly(this,event);" data-bind="enable: $parent.isArvValEnable, value: ArrDraft">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Dep. Draft(m):<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control zeroborder" maxlength="15" onkeypress="return allowOnlyTwoPositiveDigtsOnly(this,event);" data-bind="enable: $parent.isArvValEnable, value: DepDraft">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" data-bind="visible: $parent.isOtherRsonVisible">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label col-md-2">Other (specify):<span class="required">*</span></label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" maxlength="200" data-bind="enable: $parent.isArrvalEnable, value: SpecifyReason">
+                        <span id="spanSpecifyReason" class="validationError" data-bind="visible: $root.isspanSpecifyReason"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Last Port of Call:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <select name="LastPortOfCall" id="LastPortOfCall" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().PortDetails, optionsText: 'PortName', optionsValue: 'PortCode', value: LastPortOfCall, optionsCaption: 'Select....', enable: $root.isArrvalEnable,">
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Next Port of Call:<span class="required">*</span></label><div class="col-md-6">
+                        <select name="LastPortOfCall" id="LastPortOfCall1" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().PortDetails, optionsText: 'PortName', optionsValue: 'PortCode', value: NextPortOfCall, optionsCaption: 'Select....', enable: $root.isArrvalEnable,">
+                        </select><!--id changed from 'LastPortOfCall' to 'LastPortOfCall1' by divya on 6th Nov-->
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">&nbsp;</label>
+                    <div class="col-md-6">
+                        <input type="text" style="display: none;" class="form-control zeroborder" maxlength="15">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group"></div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group"></div>
+            </div>
+        </div>
+
+    </fieldset>
+    <div data-bind="visible: $parent.DryDockDetailsVisible">
+        <div class="clearfix">
+            <br>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div style="margin-right: 5px;">
+                    <fieldset class="hide-row">
+                        <legend>Dry Dock Details</legend>
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label col-md-12">Dock Plan No.:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-6 control-label txtblue" data-bind="with: VesselData">
+                                    <label class="col-md-12 displaytxt" data-bind="text: DockingPlanNo"></label>
+                                </div>
+
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label col-md-12">Submission Date:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-6 control-label txtblue" data-bind="with: VesselData">
+                                    <label class="col-md-12 displaytxt" data-bind="text: SubmissionDate"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label col-md-12">Preferred Dry Dock Berth:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select class="form-control" id="SelectDryDocBerths" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceData().DryDocBerths, optionsText: 'BerthName', optionsValue: 'BerthKey', value: DryDockBerthKey, optionsCaption: 'Choose....'">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix">
+        <br>
+    </div>
+    <div class="row">
+        <div class="col-md-7">
+            <div style="margin-right: 5px;">
+                <fieldset class="hide-row">
+                    <legend>ISPS Information</legend>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label class="control-label col-md-8">Applied for ISPS Clearance?:</label>
+                                <div class="col-md-4">
+                                    <div class="radio-list">
+                                        <input type="radio" name="AppliedForISPS" value="A" onclick="CheckingISPS(this);"
+                                            data-bind="enable: $parent.isISPSEnable, checked: AppliedForISPS">
+                                        <label class="radio-inline">Yes</label>
+                                        <input type="radio" name="AppliedForISPS" value="I" onclick="CheckingISPS(this);"
+                                            data-bind="enable: $parent.isISPSEnable, checked: AppliedForISPS"><label class="radio-inline">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="control-label col-md-6">Date Applied:<span id="IspsClearenceSpn" class="required">*</span></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="AppliedDate" class="form-control zeroborder datetime-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="enable: $parent.isISPSDTLEnable, kendoDatePicker: { value: AppliedDate, format: 'yyyy-MM-dd', open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" />
+                                    <span class="validationError" data-bind="validationMessage: AppliedDate"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label class="control-label col-md-8">Clearance:</label>
+                                <div class="col-md-4">
+                                    <div class="radio-list">
+                                        <input type="radio" name="Clearance" id="ClearanceA" value="A" data-bind="enable: $parent.isClearenceEnable, checked: Clearance"><label class="radio-inline">Yes</label>
+                                        <input type="radio" name="Clearance" id="ClearanceI" value="I" data-bind="enable: $parent.isClearenceEnable, checked: Clearance"><label class="radio-inline">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="control-label col-md-6">ISPS Reference No:</label>
+                                <div class="col-md-6">
+                                    <input type="text" id="ISPSReferenceNo" class="form-control zeroborder" maxlength="15" data-bind="enable: $parent.isISPSDTLEnable, value: ISPSReferenceNo, event: { keypress: $root.validationHelper.ValidateAlphaNumeric }">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div style="margin-left: 5px;">
+                <fieldset class="hide-row">
+                    <legend>Pilot Exemption Request</legend>
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">Pilot Exempted?:</label>
+                            <div class="col-md-8">
+                                <div class="radio-list">
+                                    <input type="checkbox" id="exemptionChk" onclick="CheckingPilotExemption(this);" data-bind="    enable: $parent.isArrvalEnable, checked: PilotExemptionChecked" /><label class="radio-inline"></label>
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="row">
+                        
+                            <div class="form-group">
+                                
+                                    <label class="control-label col-md-4">Exemption ID:<span id="ExemptionSpn" class="required">*</span></label>
+                                
+                                <div class="col-md-8">
+                                    <select class="form-control" id="exemptionname" name="exemptionname" data-bind="enable: $parent.isExemptionEnable, options: $root.arrivalNotificationReferenceData().Pilots, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: ExemptionPilotID, event: { change: $root.ExemptionChange } ">
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        
+                    </div>
+
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix">
+        <br>
+    </div>
+    <fieldset class="inner hide-row">
+        <legend>Commodities and Berths</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Preferred Berth:<span class="required">*</span></label>
+                    <div class="col-md-6 ">
+                        <select id="preferredberthList" name="preferredberths" class="form-control" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceBirthData().Berths, optionsText: 'BerthName', optionsValue: 'BerthKey', value: PreferedBerthKey, optionsCaption: 'Choose....', event: { change: $root.BerthChange1 }">
+                        </select>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 ">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Preferred Side of Dock:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <select name="documents" id="selDockList" class="form-control" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceData().Docks, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: PreferredSideDock, optionsCaption: 'Choose....'">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 ">
+                <div class="form-group">
+                    <label class="control-label col-md-6">&nbsp;</label>
+                    <div class="col-md-6">
+                        <input type="text" style="display: none;" class="form-control" maxlength="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Alternate Berth:</label>
+                    <div class="col-md-6 ">
+                        <select class="form-control" id="alterBirthname" name="alterBirthname" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceBirthData().Berths, optionsText: 'BerthName', optionsValue: 'BerthKey', value: AlternateBerthKey, event: { change: $root.AlterBerth }, optionsCaption: 'Choose....'">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 ">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Preferred Side for Alternate Berth:</label>
+                    <div class="col-md-6">
+                        <select id="preferedside" class="form-control" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceData().Docks, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: PreferredSideAlternateBirth, optionsCaption: 'Choose....'">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 ">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Reason for Alternate Berth:</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control zeroborder" maxlength="100" data-bind="enable: $parent.isArrvalEnable, value: ReasonAlternateBirth, event: { keypress: $root.validationHelper.ValidateAlphabetsWithSpaces_keypressEvent }">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-toolbar">
+            <div id="tableheader">
+                <a id="vid" class="button gbtngreen" data-bind="click: $root.AddNewQualitiesOfCommodity, visible: EnableDisableAddNew">Add New <i class="fa fa-plus"></i></a>
+                <div class="search" style="display: none">
+                    <select id="columns" onchange="sorter.search('query')"></select>
+                    <input type="text" id="query" onkeyup="sorter.search('query')" placeholder="Search" />
+                    <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                </div>
+            </div>
+            <div class="gridhead">Quantities of Commodities</div>
+            <div class="table-scrollable">
+
+                <table cellpadding="0" cellspacing="0" border="0" id="tblQualities" class="tinytable">
+                    <thead>
+                        <tr>
+                            <th>Berth</th>
+                            <th>Cargo Type</th>
+                            <th>Commodity</th>  
+                            <th>Moves</th>
+                            <th>UoM</th>
+                            <th>Quantity</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody data-bind="foreach: ArrivalCommodities" id="tblQualitiesBody"><!--id added by divya on 7thNov 2017-->
+                        <tr>
+                            <td>
+                                <select class="form-control" data-bind="enable: $root.isArrvalEnable, options: $root.arrivalNotificationReferenceBirthData().Berths, optionsText: 'BerthName', optionsCaption: 'Choose....', optionsValue: 'BerthKey', value: CommodityBerthKey, event: { change: $root.BerthChange11 }">
+                                </select></td>
+                            <td>
+                                <select class="form-control " data-bind="enable: $root.isArrvalEnable, options: $root.arrivalNotificationReferenceData().CargoTypes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: CargoType, event: { change: $root.BerthChange2 } ">
+                                </select></td>
+                           <td>
+                                 <select  class="form-control" data-bind="enable: $root.isArrvalEnable, options: $root.arrivalNotificationReferenceData().Commoditys, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Commodity">
+                                </select></td>
+                            <td>
+                                <select class="form-control" data-bind="enable: $root.isArrvalEnable, options: $root.arrivalNotificationReferenceData().Purposes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Package">
+                                </select></td>
+                            <td>
+                                <select class="form-control" data-bind="enable: $root.isArrvalEnable, options: $root.arrivalNotificationReferenceData().Uoms, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: UOM">
+                                </select></td>
+                            <td>
+                                <input type="text" id="ArvCommQty" maxlength="10" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" class="form-control" data-bind="enable: $root.isArrvalEnable, value: Quantity" /></td>
+                            <td><a href='#' id="ArrivalCommoditiesDelete" data-bind='visible: $root.isArrvalEnable, click: $root.removeArrivalCommodities' title="Delete"><i class="fa fa-ban"></i></a></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+    </fieldset>
+    <div class="clearfix">
+        <br>
+    </div>
+    <fieldset class="hide-row">
+        <legend>Compliance Requirements</legend>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label col-md-8">Tidal:</label>
+                    <div class="radio-list">
+                        <input type="radio" name="Tidal" value="A"
+                            data-bind="enable: $parent.isArrvalEnable, checked: Tidal"><label class="radio-inline">Yes</label>
+                        <input type="radio" name="Tidal" value="I"
+                            data-bind="enable: $parent.isArrvalEnable, checked: Tidal"><label class="radio-inline">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label col-md-5">Ballast Water:</label>
+                    <div class="radio-list">
+                        <input type="radio" name="BallastWater" value="A"
+                            data-bind="enable: $parent.isArrvalEnable, checked: BallastWater"><label class="radio-inline">Yes</label>
+                        <input type="radio" name="BallastWater" value="I"
+                            data-bind="enable: $parent.isArrvalEnable, checked: BallastWater"><label class="radio-inline">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Waste Declaration:</label>
+                    <div class="radio-list">
+                        <input type="radio" id="rdYesWasteDeclaration" name="WasteDeclaration" value="A"
+                            data-bind="enable: $parent.isArrvalEnable, checked: WasteDeclaration" onclick="	AnyWasteDeclarationClick();"><label class="radio-inline">Yes</label>
+                        <input type="radio" id="rdNoWasteDeclaration" name="WasteDeclaration" value="I"
+                            data-bind="enable: $parent.isArrvalEnable, checked: WasteDeclaration"  onclick="	AnyWasteDeclarationClick();"><label class="radio-inline">No</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label col-md-8">Is Special Nature:</label>
+                    <div class="radio-list">
+                        <input type="radio" name="IsSpecialNature" value="A" onclick="CheckingSpecialNeture(this);"
+                            data-bind="enable: $parent.isArrvalEnable, checked: IsSpecialNature"><label class="radio-inline">Yes</label>
+                        <input type="radio" name="IsSpecialNature" value="I" onclick="CheckingSpecialNeture(this);"
+                            data-bind="enable: $parent.isArrvalEnable, checked: IsSpecialNature"><label class="radio-inline">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input type="text" maxlength="200" id="SpecialNeturetxt" class="form-control zeroborder" data-bind="enable: $parent.SpecialNetureChanged, value: SpecialNatureReason, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }">
+                <span class="validationError" data-bind="validationMessage: SpecialNatureReason"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label col-md-8">Daylight Restricted:</label>
+                    <div class="radio-list">
+                        <input type="radio" name="DaylightRestriction" value="A" onclick="CheckingDaylightRestriction(this);"
+                            data-bind="enable: $parent.isArrvalEnable, checked: DaylightRestriction"><label class="radio-inline">Yes</label>
+                        <input type="radio" name="DaylightRestriction" value="I" onclick="CheckingDaylightRestriction(this);"
+                            data-bind="enable: $parent.isArrvalEnable, checked: DaylightRestriction"><label class="radio-inline">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input type="text" maxlength="200" id="DaylightSpecifyReasontxt" class="form-control zeroborder" data-bind="enable: $parent.DaylightSpecifyReasonChanged, value: DaylightSpecifyReason, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }">
+                <span class="validationError" data-bind="validationMessage: DaylightSpecifyReason"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label col-md-8">Exceed Port Limitations:</label>
+                    <div class="radio-list">
+                        <input type="radio" name="ExceedPortLimitations" value="A" onclick="CheckingExceedPortLimitations(this);"
+                            data-bind="enable: $parent.isArrvalEnable, checked: ExceedPortLimitations"><label class="radio-inline">Yes</label>
+                        <input type="radio" name="ExceedPortLimitations" value="I" onclick="CheckingExceedPortLimitations(this);"
+                            data-bind="enable: $parent.isArrvalEnable, checked: ExceedPortLimitations"><label class="radio-inline">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+
+                <input type="text" class="form-control zeroborder" maxlength="200" data-bind="enable: $parent.Exeedportlimitenable, value: ExceedSpecifyReason">
+                    <span class="validationError" data-bind="validationMessage: ExceedSpecifyReason"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="control-label col-md-12">Any Additional Info About the Vessel: &nbsp;</label>
+
+            </div>
+            <div class="col-md-5">
+                <textarea class="form-control zeroborder" style="resize: none;" rows="3" maxlength="200" name="remarks" data-bind="enable: $parent.isArrvalEnable, value: AnyAdditionalInfo"></textarea>
+            </div>
+        </div>
+        <br>
+    </fieldset>
+    <div class="clearfix">
+        <br>
+    </div>
+    <fieldset class="hide-row">
+        <legend>Operational Information</legend>
+        <div class="row">
+            <div class="col-md-6 ">
+                <div class="form-group">
+                    <label class="control-label col-md-7">Plan Date/Time at Berth:<span class="required">*</span></label>
+                    <div class="col-md-5">
+                        <input id="PlanDateTimeOfBerth" type="text" onchange="PlanDate();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isArrvalEnable, kendoDateTimePicker: { value: PlanDateTimeOfBerth, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeOfBerthCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeOfBerth" maxlength="10" />
+                        <span id="spanOptValid1" class="validationError" data-bind="visible: $root.isspanOptValid1"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="form-group">
+
+
+                    <label class="control-label col-md-7">Plan Date/Time to Start Cargo OPS:<span class="required">*</span></label>
+                    <div class="col-md-5">
+                        <input id="PlanDateTimeToStartCargo" type="text" onchange="StartCargoOPS();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isArrvalEnable, kendoDateTimePicker: { value: PlanDateTimeToStartCargo, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeToStartCargoCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeToStartCargo" maxlength="10" />
+                        <span id="spanOptValid3" class="validationError" data-bind="visible: $root.isspanOptValid3"></span>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 ">
+                <div class="form-group">
+                    <label class="control-label col-md-7">Plan Date/Time to Complete Cargo OPS:<span class="required">*</span></label>
+                    <div class="col-md-5">
+                        <input id="PlanDateTimeToCompleteCargo" type="text" onchange="CompleteCargoOPS();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isArrvalEnable, kendoDateTimePicker: { value: PlanDateTimeToCompleteCargo, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeToCompleteCargoCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeToCompleteCargo" maxlength="10" />
+                        <span id="spanOptValid2" class="validationError" data-bind="visible: $root.isspanOptValid2"></span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6 ">
+                <div class="form-group">
+                    <label class="control-label col-md-7">Plan Date/Time to Vacate Berth:<span class="required">*</span></label>
+                    <div class="col-md-5">
+                        <input id="PlanDateTimeToVacateBerth" type="text" onchange="VacateBerth();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isArrvalEnable, kendoDateTimePicker: { value: PlanDateTimeToVacateBerth, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeToVacateBerthCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeToVacateBerth" maxlength="10" />
+                        <span id="spanOptValid4" class="validationError" data-bind="visible: $root.isspanOptValid4"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </fieldset>
+
+</script>
+
+<!-- Second TAB IN ArrivalNotification form  starts here-->
+<script type="text/html" id="notification2-template">
+
+    <fieldset class="hide-row">
+        <legend>Vessel Details</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Vessel Name:</label>
+                    <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                        <label class="col-md-12 displaytxt" data-bind="text: VesselName"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">IMO No.:</label>
+                    <div class="col-md-6 control-label txtblue" data-bind="with: VesselData">
+                        <label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Pending VCN/VCN:</label>
+                    <div class="col-md-6 control-label txtblue">
+                        <label class="col-md-12 displaytxt" data-bind="text: VCN"></label>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="txtline"><span class="txt">Vessel Details</span></div>
+
+        <div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Vessel Type:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+
+                            <label class="col-md-12 displaytxt" data-bind="text: VesselTypeName"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">LOA:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: LengthOverallInM"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Beam:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: BeamInM"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Call Sign:</label>
+
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: CallSign"></label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Country of Reg:</label>
+
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: VesselNationality"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">GRT:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: GrossRegisteredTonnageInMT"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">DWT:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: DeadWeightTonnageInMT"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Nomination Date:</label>
+                        <div class="col-md-6 control-label displaytxt">
+
+                            <label class="col-md-12 displaytxt" data-bind="text: NominationDate"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <br>
+    </fieldset>
+
+
+
+
+
+
+
+
+
+
+
+    <fieldset class="hide-row">
+        <legend>Dangerous Goods Information and Declaration</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-8">Any Dangerous Goods on Board?:</label>
+                    <div class="radio-list">
+                        <input type="radio" id="rdYesDangerousGoods" name="IsDangerousGoodsonBoard" value="A" data-bind="enable: $parent.isIMDGEnablechk"
+                            onclick="AnyDangerousGoodsClick();"><label class="radio-inline">Yes</label>
+                        <input type="radio" id="rdNoDangerousGoods" name="IsDangerousGoodsonBoard" value="I" data-bind="enable: $parent.isIMDGEnablechk"
+                            onclick="AnyDangerousGoodsClick();"><label class="radio-inline">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 hide-row">If Yes: Attach a List of IMDG Cargo Separately. All Classes Must be Declared (Rule 20 of Port Rules)</div>
+        </div>
+        <br>
+        <div data-bind="visible: $parent.IsDangerousGoods">
+            <div class="row">
+                <div class="col-md-4 ">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Date of Load:</label>
+                        <div class="col-md-6">
+                            <input id="LoadDischargeDate" type="text" class="form-control datetime-picker zeroborder" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isIMDGEnable, kendoDatePicker: { value: LoadDischargeDate, format: 'yyyy-MM-dd', readonly: true, open: PlanDateTimeOfBerthCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="LoadDischargeDate" maxlength="0" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 ">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Date of Discharge:</label>
+                        <div class="col-md-6">
+                            <input id="DischargeDate" type="text" class="form-control datetime-picker zeroborder" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isIMDGEnable, kendoDatePicker: { value: DischargeDate, format: 'yyyy-MM-dd', readonly: true, open: PlanDateTimeOfBerthCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="DischargeDate" maxlength="0" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 ">
+                    <div class="form-group">
+                        <label class="control-label col-md-5">Cell No.:<span class="required">*</span></label>
+                        <div class="col-md-6">
+                            <input type="text" id="CellNo" class="form-control zeroborder" data-bind="enable: $parent.isIMDGEnable, value: CellNo, event: { keypress: $root.validationHelper.ValidateNumeric }" maxlength="15" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="table-toolbar">
+                <div>
+                    <a class="button gbtngreen" data-bind="click: $root.AddIMDGInformations, visible: EnableDisableAddNewIMDG">Add New <i class="fa fa-plus"></i></a>
+                    <div class="search" style="display: none">
+                        <select onchange="sorter.search('query')"></select>
+                        <input type="text" id="query" onkeyup="sorter.search('query')" placeholder="Search" />
+                        <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                    </div>
+                </div>
+                <div class="gridhead">IMDG Cargo Information</div>
+                <div class="table-scrollable">
+
+                    <table cellpadding="0" cellspacing="0" border="0" id="table1" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th>Purpose
+                                </th>
+                                <th>Class
+                                </th>
+                                <th>Cargo
+                                </th>
+                                <th>UN No.
+                                </th>
+                                <th>Qty(Mt)
+                                </th>
+                                <th>No. Of Containers
+                                </th>
+                                <th>Others (Specify)
+                                </th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: IMDGInformations" id="table1Boody" style="background: #fff"><!--id added by divya on 7thNov 2017-->
+                            <tr>
+                                <td>
+                                    <select id="IMDGInfoPurposes" class="form-control" data-bind="enable: $root.isIMDGEnable, options: $root.arrivalNotificationReferenceData().Purposes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Purpose">
+                                    </select>                                     
+                                </td>
+                                <td>
+                                    <select name="documents" id="DangerousGoodsList" class="form-control" data-bind="enable: $root.isIMDGEnable, options: $root.arrivalNotificationReferenceData().DangerousGoods, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: ClassCode, optionsCaption: 'Choose....'">
+                                    </select></td>
+                                <td>
+                                    <select id="IMDGInformationsCargoTypes" class="form-control" data-bind="enable: $root.isIMDGEnable, options: $root.arrivalNotificationReferenceData().CargoTypes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: CargoCode ">
+                                    </select></td>
+                                <td>
+                                    <input id="IMDGInformationsUNNo" class="form-control" maxlength="15" data-bind="enable: $root.isIMDGEnable, value: UNNo" /></td>
+                                <td>
+                                    <input id="IMDGInformationsQuantity" maxlength="10" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" class="form-control" data-bind="enable: $root.isIMDGEnable, value: Quantity" /></td>
+                                <td>
+                                    <input id="IMDGInformationsNoofContainer" maxlength="4" class="form-control" data-bind="enable: $root.isIMDGEnable, value: NoofContainer, event: { keypress: ValidateNumericonly }" /></td>
+                                <td>
+                                    <input id="IMDGInformationsOthers" maxlength="200" class="form-control" data-bind="enable: $root.isIMDGEnable, value: Others" /></td>
+
+                                <td><a href='#' id="IMDGInformationsDelete" data-bind='visible: $root.isIMDGEnable, click: $root.removeIMDGInformations' title="Delete"><i class="fa fa-ban"></i></a></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            @* 
+            <p>
+                <div class="table-toolbar">
+                    <div>
+                        <a class="button gbtngreen" data-bind="click: $root.AddTankerCommodities, visible: EnableDisableAddNewIMDG">Add New <i class="fa fa-plus"></i></a>
+                        <div class="search" style="display: none">
+                            <select onchange="sorter.search('query')"></select>
+                            <input type="text" id="query" onkeyup="sorter.search('query')" placeholder="Search" />
+                            <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                        </div>
+                    </div>
+                    <div class="gridhead">IMDG Tanker Commodities</div>
+                    <div class="table-scrollable">
+
+                        <table cellpadding="0" cellspacing="0" border="0" id="table1" class="tinytable">
+                            <thead>
+                                <tr>
+                                    <th>Purpose
+                                    </th>
+                                    <th>Commodity
+                                    </th>
+                                    <th>Qty(Mt)
+                                    </th>
+                                    <th>From Tank
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: ArrivalIMDGTankers" id="table2Body" style="background: #fff"><!--id added by divya on 7thNov 2017-->
+                                <tr>
+                                    <td>
+                                        <select id="ArrivalIMDGTankersPurposes" class="form-control" data-bind="enable: $root.isIMDGEnable, options: $root.arrivalNotificationReferenceData().Purposes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Purpose">
+                                        </select>
+                                    </td>
+
+                                    <td>
+                                        <select id="ArrivalIMDGTankersCommoditys" class="form-control" data-bind="enable: $root.isIMDGEnable, options: $root.arrivalNotificationReferenceData().Commoditys, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: Commodity">
+                                        </select></td>
+                                    <td>
+                                        <input id="ArrivalIMDGTankersQuantity" maxlength="10" class="form-control" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="enable: $root.isIMDGEnable, value: Quantity" /></td>
+                                    <td>
+                                        <input id="ArrivalIMDGTankersFromTank" maxlength="10" class="form-control" data-bind="enable: $root.isIMDGEnable, value: FromTank" /></td>
+                                    <td><a href='#' id="ArrivalIMDGTankersDelete" data-bind='visible: $root.isIMDGEnable, click: $root.removeArrivalIMDGTankers' title="Delete"><i class="fa fa-ban"></i></a></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </p>
+            *@
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Cargo Description:<span class="required">*</span></label>
+                        <div class="col-md-6">
+                            <textarea class="form-control zeroborder" style="resize: none;" maxlength="200" rows="3" name="CargoDescription" data-bind="enable: $parent.isIMDGEnable, value: CargoDescription"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Disclaimer: All Relevant Documents have been Submitted and the Relevant Authorities are Informed as per Port Requirements</label>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </fieldset>
+    <div class="clearfix"></div>
+    <fieldset data-bind="visible: $parent.LayByVisble" class="hide-row">
+        <legend>Lay By and Repair Information</legend>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label col-md-4">Planned Duration of Lay Up or Repairs:<span class="required">*</span></label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div>
+
+                                <input id="PlannedDurationDate" name="PlannedDurationDate" class="form-control date-picker" size="0" onkeypress="return false;" onchange="ChangeRepairDate();" onkeydown="PreventBackSpace();" type="text" data-bind="enable: $parent.isArrvalEnable, kendoDatePicker: { value: PlannedDurationDate, format: 'yyyy-MM-dd', readonly: true, open: PlanDateTimeOfBerthCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }">
+                            </div>
+                            <span class="input-group-addon">To<span class="required">*</span></span>
+                            <div>
+
+                                <input class="form-control date-picker" id="PlannedDurationToDate" name="PlannedDurationToDate" size="0" onkeypress="return false;" onkeydown="PreventBackSpace();" type="text" data-bind="enable: $parent.isArrvalEnable, kendoDatePicker: { value: PlannedDurationToDate, min: PlannedDurationDate, max: ETD, change: Calcdate, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="text" name="Daycnt" data-bind="value: Daycnt, enable: false" class="form-control">
+                    </div>
+                    <label class="control-label fc-col0">&nbsp;(in days)</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label col-md-4">Reason for Lay Up/Nature of Repairs:<span class="required">*</span></label>
+                    <div class="col-md-4">
+                        <textarea class="form-control" maxlength="100" rows="3" name="remarks" data-bind="enable: $parent.isArrvalEnable, value: ReasonForLayup"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="clearfix">
+        <br>
+    </div>
+    <fieldset data-bind="visible: $parent.BunkersVisible" class="hide-row">
+        <legend>Bunker Information</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group1">
+                    <label class="control-label col-md-6">Bunkers Required (Specify Type):<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <select class="form-control" id="BunkerRequired" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceData().BunkersRequiredDetails, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: BunkersRequired, optionsCaption: 'Choose....'">
+                        </select>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group1">
+                    <label class="control-label col-md-6">Bunkers Method (Specify):<span class="required">*</span></label>
+                    <div class="col-md-6">
+                       
+                        <select class="form-control" id="BunkerMethod" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceData().BunkersMethodDetails, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: BunkersMethod, optionsCaption: 'Choose....'">
+                        </select>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group1">
+                    <label class="control-label col-md-6">Bunker Service Provider:<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <select id="BunkerServices" name="BunkerServices" class="form-control" data-bind="enable: $parent.isArrvalEnable, options: $root.arrivalNotificationReferenceData().BunkersDetails, optionsText: 'RegisteredName', optionsValue: 'LicenseRequestID', value: BunkerService, optionsCaption: 'Choose....'">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group1">
+                    <label class="control-label col-md-6">Distance from Stern to Bunker Point (in m):<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control zeroborder" maxlength="8" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="enable: $parent.isArrvalEnable, value: DistanceFromStern" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group1">
+                    <label class="control-label col-md-6 lheight">Tons (in mt):<span class="required">*</span></label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control zeroborder" maxlength="12" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="enable: $parent.isArrvalEnable, value: TonsMT" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                </div>
+            </div>
+        </div>
+        <div class="row lmargin">
+            <div class="col-md-8">
+                <div class="form-group1">
+                    <label class="control-label col-md-3 ">Any Imp. Info. We Need to Know:</label>
+                    <div class="col-md-6">
+                        <textarea class="form-control zeroborder" style="resize: none;" rows="3" name="remarks" data-bind="enable: $parent.isArrvalEnable, value: AnyImpInfo, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces } "></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">&nbsp;</div>
+        </div>
+    </fieldset>
+    <div class="clearfix">
+        <br>
+    </div>   
+    <!-- Waste Declaration -->
+     <fieldset data-bind="visible: $parent.WasteDeclarationVisible" class="hide-row">
+        <legend>Waste Declaration Information</legend>        
+        <br>
+            <div class="row">
+            <div class="col-md-4">
+                <div class="form-group1">
+                    <label class="control-label col-md-6">Last Port Waste Delivered:<span class="required">*</span></label>
+                    <div class="col-md-6">                         
+                          <select name="LastPortWasteDelivered" id="LastPortWasteDelivered" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().PortDetails, optionsText: 'PortName', optionsValue: 'PortCode', value: LastPortWasteDelivered, optionsCaption: 'Select....', enable: $parent.isWasteDeclationEnable">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group1">
+                    <label class="control-label col-md-6 lheight">Next Port Waste Delivery:<span class="required">*</span></label>
+                    <div class="col-md-6">                        
+                         <select name="NextPortWasteDelivery" id="NextPortWasteDelivery" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().PortDetails, optionsText: 'PortName', optionsValue: 'PortCode', value: NextPortWasteDelivery, optionsCaption: 'Select....', enable: $parent.isWasteDeclationEnable">
+                         </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                 <label class="control-label col-md-6 lheight">Date Last Waste Delivered:<span class="required">*</span></label>
+                   <div class="col-md-6">
+                        <input id="DateLastWasteDelivered" type="text" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isWasteDeclationEnable, kendoDateTimePicker: { value: DateLastWasteDelivered, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="DateLastWasteDelivered" maxlength="10" />                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+           <div class="table-toolbar">
+                <div>
+                    <a class="button gbtngreen" data-bind="click: $root.AddWasteDeclarations, visible: EnableDisableAddNewIMDG">Add New <i class="fa fa-plus"></i></a>
+                    <div class="search" style="display: none">
+                        <select onchange="sorter.search('query')"></select>
+                        <input type="text" id="query" onkeyup="sorter.search('query')" placeholder="Search" />
+                        <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                    </div>
+                </div>
+                <div class="gridhead">Waste Declaration Information</div>
+                <div class="table-scrollable">
+
+                    <table cellpadding="0" cellspacing="0" border="0" id="tableWaste" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th>Marpol
+                                </th>
+                                <th>Class
+                                </th>
+                                <th>Service Provider
+                                </th>                               
+                                <th>Qty(Mt)
+                                </th>
+                                <th>Name
+                                </th>                             
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: WasteDeclarations" id="table3Boody" style="background: #fff">
+                            <tr>
+                                <td>
+                                    <select id="WDMarpolCode" class="form-control" data-bind="enable: $root.isArrvalEnable, options: $root.arrivalNotificationReferenceData().Marpols, optionsText: 'MarpolName', optionsCaption: 'Choose....', optionsValue: 'MarpolCode', value: MarpolCode">                                   
+                                    </select>
+                                </td>
+                                <td>                                    
+                                    <select id="WDClassCode" class="form-control"  data-bind="enable: $root.isArrvalEnable, options: MarpolTypes, optionsText: 'ClassName', optionsCaption: 'Choose..', optionsValue: 'ClassCode', value: ClassCode"></select>
+                                </td>
+                                <td>
+                                    <select id="WDLicenseRequestID" class="form-control" data-bind="enable: $root.isArrvalEnable, options: $root.arrivalNotificationReferenceData().WasteDclServiceProviders, optionsText: 'RegisteredName', optionsCaption: 'Choose....', optionsValue: 'LicenseRequestID', value: LicenseRequestID ">
+                                    </select></td>                                
+                                <td>
+                                    <input id="WDQuantity" maxlength="10" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" class="form-control" data-bind="enable: $root.isArrvalEnable, value: Quantity" /></td>
+                                <td>
+                                    <input id="WDDeclarationName" maxlength="50" class="form-control" data-bind="enable: $root.isArrvalEnable, value: DeclarationName, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }" /></td>                               
+
+                                <td><a href='#' id="WasteDeclarationsDelete" data-bind='visible: $root.isArrvalEnable, click: $root.removeWasteDeclarations' title="Delete"><i class="fa fa-ban"></i></a></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>   
+        
+    </fieldset>
+</script>
+
+<!-- Third  TAB IN ArrivalNotification form  starts here-->
+<script type="text/html" id="notification3-template">
+    <fieldset class="hide-row">
+        <legend>Vessel Details</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Vessel Name:</label>
+                    <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                        <label class="col-md-12 displaytxt" data-bind="text: VesselName"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">IMO No.:</label>
+                    <div class="col-md-6 control-label txtblue" data-bind="with: VesselData">
+                        <label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-6">Pending VCN/VCN:</label>
+                    <div class="col-md-6 control-label txtblue">
+                        <label class="col-md-12 displaytxt" data-bind="text: VCN"></label>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="txtline"><span class="txt">Vessel Details</span></div>
+
+        <div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Vessel Type:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+
+                            <label class="col-md-12 displaytxt" data-bind="text: VesselTypeName"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">LOA:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: LengthOverallInM"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Beam:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: BeamInM"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Call Sign:</label>
+
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: CallSign"></label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Country of Reg:</label>
+
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: VesselNationality"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">GRT:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: GrossRegisteredTonnageInMT"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">DWT:</label>
+                        <div class="col-md-6 control-label displaytxt" data-bind="with: VesselData">
+                            <label class="col-md-12 displaytxt" data-bind="text: DeadWeightTonnageInMT"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Nomination Date:</label>
+                        <div class="col-md-6 control-label displaytxt">
+
+                            <label class="col-md-12 displaytxt" data-bind="text: NominationDate"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <br>
+    </fieldset>
+
+    <fieldset class="hide-row">
+        <legend>Documents Upload</legend>
+        <div class="row fileupload-buttonbar hide-row">
+            <div class="form-group" data-bind="visible: isView">
+
+                <div class="col-md-4">
+                    <select id="selUploadDocs" class="form-control" data-bind="enable: $root.isArvValEnable, options: $root.arrivalNotificationReferenceData().Doctypes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode' ">
+                    </select>
+                </div>
+                <div class="col-md-7">
+                    <span class="btn btn-sm green fileinput-button" data-bind="visible: $root.isArvValEnable">
+                        <i class="fa fa-plus"></i>
+                        <span>Browse
+                        </span>
+                        <input type="file" name="files[]" id="fileToUpload" multiple>
+                    </span>
+                    <button type="button" data-bind="enable: $root.isArvValEnable, click: $parent.uploadFile" class="btn btn-sm blue start">
+                        <i class="fa fa-upload"></i>
+                        <span>Upload
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-advance">
+                    <thead>
+                        <tr>
+                            <th class="bg-dark">Document Category</th>
+                            <th class="bg-dark">Document Name</th>
+                            <th class="bg-dark"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: ArrivalDocuments" id="tblDocBody">
+                        <tr>
+                            <td data-bind="text: DocumentName"></td>
+                            <td><a data-bind="text: FileName, attr: { href: '/FileDownload/ArrivalNotificationDocument/' + DocumentID() }">Document</a></td>
+                            <td><a href="#" class="btn default btn-xs red" data-bind="visible: $root.isArvValEnable, click: $root.DeleteDocument"><i class="fa fa-trash-o"></i>Delete</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </fieldset>
+</script>
+
+<script type="text/html" id="PopUp-template">
+    <div class="portlet-body" id="popup1" data-bind="with: arrivalNotificationModelGrid">
+        <div class="table-toolbar" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <div id="stack12" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">
+                <a href="#tab_0" data-toggle="tab"></a>
+                <div class="modal-dialog" id="stk">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="scroller" style="height: 150px" data-always-visible="1" data-rail-visible1="1">
+                                <fieldset>
+                                    <legend>Reason For Cancel :</legend>
+                                    <form action="#" id="form_sample_1" class="form-horizontal">
+                                        <div class="form-group row">
+
+                                            <div class="col-md-5">
+                                                <textarea rows="5" data-bind="value: workflowRemarks" style="width: 263px; resize: none;"></textarea>
+                                                &nbsp; &nbsp; <span id="spanremarks" class="validationError"></span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="btns-group ">
+                            <input type="button" data-dismiss="modal" value="Submit" data-bind="click: $parent.cancelWFRequestNew" aria-hidden="true" class="btn green" />
+                            <input type="button" data-dismiss="modal" value="Cancel" data-bind="click: $parent.cancelWF" aria-hidden="true" class="btn red" />
+
+                        </div>
+                        <br>
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="PopUp-templateCslRem">
+    <div class="portlet-body" id="popupCslRem" data-bind="with: arrivalNotificationModel ">
+        <div class="table-toolbar" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <div id="stack12CslRem" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">
+                <a href="#tab_0" data-toggle="tab"></a>
+                <div class="modal-dialog" id="stk">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="scroller" style="height: 150px" data-always-visible="1" data-rail-visible1="1">
+                                <fieldset>
+                                    <legend>Reason For Cancel :</legend>
+                                    <form action="#" id="form_sample_1" class="form-horizontal">
+                                        <div class="form-group row">
+                                            <div class="col-md-5">
+                        <textarea rows="5" data-bind="value: CancelRemarks" style="width: 263px; resize: none;"></textarea>
+                                                &nbsp; &nbsp; <span id="spanremarks" class="validationError"></span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="btns-group ">
+                            <input type="button" data-dismiss="modal" value="Cancel" data-bind="click: $parent.cancelWFView" aria-hidden="true" class="btn red" />
+                        </div>
+                        <br>
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="tbl">
+<!--added by divya on 3rdNov for print-->
+    <div class="hide-print1" style="border:1px solid #000; padding:10px;">
+    
+
+    <table id="tblVesselDetails" style="width:100%; " border="0"  data-bind='with: arrivalNotificationModel'>
+        <tr >
+            <td colspan="6" style="font-size:18px; line-height:40px;"><b><u>Vessel Details</u></b></td>
+        </tr>  
+                     <tr>
+                       <td>
+                          <label class="control-label">VCN:</label>
+                        </td>
+                        <td>                       
+                          <label class="displaytxt"  data-bind="text: VCN"></label>                     
+                        </td>
+                        <td>
+                           <label class="control-label">Vessel:</label> 
+                        </td>
+                        <td>
+                          <label class="displaytxt" style="text-align: left" data-bind="text: VesselName"></label>
+                        </td>
+                        <td>
+                         <label class="control-label">IMO No.:</label>
+                        </td>
+                        <td data-bind="with: VesselData">
+                         <label class="displaytxt" style="text-align: left" data-bind="text: IMONo"></label>                   
+                        </td>
+                     </tr>
+                     <tr>                   
+                       <td>
+                           <label class="control-label">Primary Agent:</label>
+                        </td>
+                        <td>
+                          <label class="displaytxt" style="text-align: left; line-height:20px;" data-bind="text: ArrivalCreatedAgent"></label>
+                        </td>
+                        <td>
+                         <label class="control-label">Submitted By:</label>
+                        </td>
+                        <td>
+                         <label class="displaytxt" style="text-align: left" data-bind="text: UserName"></label>
+                        </td>
+                        <td>
+                            <label class="control-label">Contact No.:</label>
+                        </td>
+                        <td>
+                         <label class="displaytxt" style="text-align: left" data-bind="text: ContactNo"></label>
+                       </td>
+
+    </tr>
+    </table>
+
+    <table id="tblDetails"  border="0" style="width:100%;" data-bind='with: arrivalNotificationModel'>
+
+        <tr>
+             <td  colspan="8" class="txtline" ><span class="txt">Vessel Details</span></td>
+        </tr>
+           <tr>          
+                     <td> 
+                          <label class="control-label">Vessel Type:</label> 
+                      </td>
+                      <td  data-bind="with: VesselData">
+                          <label class="displaytxt" style="text-align: left" data-bind="text: VesselTypeName"></label>                     
+                       </td>
+                       <td>
+                           <label class="control-label">LOA:</label>
+                        </td>
+                        <td data-bind="with: VesselData"> 
+                           <label class="displaytxt" style="text-align: left" data-bind="text: LengthOverallInM"></label>
+                        </td>
+                       <td>
+                         <label class="control-label">Beam:</label>
+                        </td>
+                        <td  data-bind="with: VesselData">
+                         <label class="displaytxt" style="text-align: left" data-bind="text: BeamInM"></label>
+                       </td>
+                       <td>
+                          <label class="control-label">Call Sign:</label>
+                        </td>
+                        <td  data-bind="with: VesselData">
+                          <label class="displaytxt" style="text-align: left" data-bind="text: CallSign"></label>                     
+                       </td>
+    </tr>
+      <tr>                  
+                       <td>
+                           <label class="control-label">Country of Reg:</label> 
+                        </td>
+                        <td data-bind="with: VesselData">
+                          <label class="displaytxt" style="text-align: left" data-bind="text: VesselNationality"></label>
+                        </td>
+                        <td>
+                         <label class="control-label">GRT:</label>
+                        </td>
+                        <td data-bind="with: VesselData">
+                         <label class="displaytxt" style="text-align: left" data-bind="text: GrossRegisteredTonnageInMT"></label>
+                       </td>
+                        <td>
+                         <label class="control-label">DWT:</label>
+                        </td>
+                        <td data-bind="with: VesselData">
+                         <label class="displaytxt" style="text-align: left" data-bind="text: DeadWeightTonnageInMT"></label>
+                       </td>
+                        <td>
+                         <label class="control-label">Nomination Date:</label>
+                        </td>
+                        <td>
+                         <label class="displaytxt" style="text-align: left" data-bind="text: NominationDate"></label>
+                       </td>
+                     </tr>  
+    </table>
+
+    <table id="tblVoyageDetails"  border="0" style="width:100%;" data-bind='with: arrivalNotificationModel'>
+        <tr>
+            <td colspan="8" class="txtline"><span class="txt">Voyage Details</span></td>
+        </tr>          
+                     <tr>
+                       <td>
+                          <label class="control-label">Voyage In:</label> 
+                        </td>
+                        <td>
+                          <label class="displaytxt" maxlength="50" data-bind="text: VoyageIn, enable: $parent.isArrvalEnable"/>                     
+                       </td>
+                    <td>
+                           <label class="control-label">Voyage Out:</label> 
+                    </td>
+                        <td>
+                          <label class="displaytxt" style="text-align: left" data-bind="text: VoyageOut, enable: $parent.isArrvalEnable"></label>
+                        </td>
+                       <td>
+                         <label class="control-label">Terminal Operator:</label> 
+                        </td>
+                        <td>                  
+                           <label class="displaytxt" style="text-align: left" id="lblTerminalOperator"></label>
+
+                       </td>   
+    <td>
+
+    </td>       
+    <td>
+
+    </td>
+                     </tr>
+                     <tr>                   
+                       <td>
+                           <label class="control-label">Specify Terminal:</label> 
+                        </td>
+                         <td>
+                         <label name="SpecTO" class="displaytxt" id="SpecTODis" data-bind="enable: $root.isTOEnabled, text: RegisteredName" />                       
+                        </td>
+                
+
+                       <td>
+                         <label class="control-label">E.T.A:</label>
+    </td>
+    <td>
+                         <label class="displaytxt" style="text-align: left" data-bind="text: ETA"></label>
+                       </td>
+                       <td>
+                         <label class="control-label">E.T.D:</label>
+    </td>
+    <td>
+                         <label class="displaytxt" style="text-align: left" data-bind="text: ETD"></label>
+                       </td>     
+    <td>
+
+    </td>       
+    <td>
+
+    </td>             
+                     </tr>
+
+                     <tr>                   
+                       <td>
+                           <label class="control-label">Reason for Visit:</label> 
+    </td>
+    <td>
+                          <label class="displaytxt" id="reasonforvisitDis" style="text-align: left" data-bind="value: ArrivaReasonArray" ></label>
+                        </td>
+                       <td>
+                         <label class="control-label">Arr. Draft(m):</label>
+    </td>
+    <td>
+                         <label class="displaytxt" style="text-align: left" data-bind="text: ArrDraft"></label>
+                       </td>
+                       <td>
+                         <label class="control-label">Dep. Draft(m):</label>
+    </td>
+    <td>
+                         <label class="displaytxt" style="text-align: left" data-bind="text: DepDraft"></label>
+                       </td>                  
+                 
+
+                  <td data-bind="visible: $parent.isOtherRsonVisible">
+                     <label class="control-label">Other (specify):</label> 
+    </td>
+    <td data-bind="visible: $parent.isOtherRsonVisible">                   
+                            <input type="text" class="displaytxt" maxlength="200" data-bind="enable: $parent.isArrvalEnable, value: SpecifyReason">
+                        
+                        </td>
+    </tr>
+                    <tr>                   
+                       <td>
+                           <label class="control-label">Last Port of Call:</label> 
+    </td>
+    <td>              
+
+                           <label class="displaytxt" style="text-align: left" id="lblLastPortOfCal"></label>
+                        </td>
+                       <td>
+                         <label class="control-label">Next Port of Call:</label>
+    </td>
+    <td>
+     <label class="displaytxt" style="text-align: left" id="lblNextVal"></label>
+                  
+                       </td>
+    <td>
+
+    </td>
+    <td>
+
+    </td>
+    <td>
+
+    </td>
+    <td>
+
+    </td>
+    </tr>
+              
+    </table>
+
+    <table id="tblDryDock"  border="0" style="width:100%;" data-bind="with: arrivalNotificationModel">
+        <tr data-bind="visible: $parent.DryDockDetailsVisible">
+        <td colspan="4" style="font-size:18px; line-height:40px;"><b><u>Dry Dock Details</u></b></td>      
+        </tr>     
+                     <tr data-bind="visible: $parent.DryDockDetailsVisible">
+                       <td>
+                          <label class="control-label">Dock Plan No.:</label>
+    </td>
+    <td data-bind="with: VesselData"> 
+                         <label class="displaytxt" data-bind="text: DockingPlanNo"></label>
+                       </td>
+                       <td>
+                           <label class="control-label">Submission Date:</label> 
+    </td>
+    <td data-bind="with: VesselData"> 
+                          <label class="displaytxt" style="text-align: left" data-bind="text: SubmissionDate"></label>
+                        </td>
+    </tr>
+    <tr data-bind="visible: $parent.DryDockDetailsVisible">
+                       <td colspan="2">
+                         <label class="control-label col-md-5">">Preferred Dry Dock Berth:</label>
+    </td>
+    <td>
+                         <label id="lblSelectDryDocBerthsVal" class="displaytxt" style="text-align: left"></label>
+                       </td>                  
+                     </tr>
+                
+          
+    </table>
+
+    <table id="tblISPSInformation"  style="width:100%;" border="0" data-bind="with: arrivalNotificationModel">
+        <tr>
+          <td colspan="4" style="font-size:18px; line-height:40px;"><b><u>ISPS Information</u></b></td>        
+        </tr>     
+                     <tr>
+                       <td>
+                          <label class="control-label">Applied for ISPS Clearance?:</label>
+                      </td>
+                      <td> 
+                          <label id="lblAppliedForISPS" class="displaytxt"></label>                                      
+                       </td>
+                       <td>
+                           <label class="control-label">Date Applied:</label> 
+                        </td>
+                        <td>
+                          <label id="lblAppliedDate" class="displaytxt" style="text-align: left" data-bind="text: AppliedDate"></label>
+                        </td>
+    </tr>
+    <tr>
+                       <td>
+                         <label class="control-label">Clearance:</label>
+    </td>
+    <td>
+                         <label id="lblClearance" class="col-md-8 control-label txtblue  displaytxt" ></label>                 
+                       </td>
+                       <td>
+                          <label class="control-label">ISPS Reference No:</label> 
+    </td>
+    <td>
+                          <label class="displaytxt" style="text-align: left" data-bind="enable: $parent.isISPSDTLEnable, text: ISPSReferenceNo"></label>                     
+                       </td>
+                     </tr>
+                
+          
+    </table>
+
+    <table id="tblPilotExemptionRequest"  style="width:100%;" border="0" data-bind='with: arrivalNotificationModel'>
+        <tr>
+     <td colspan="2" style="font-size:18px; line-height:40px;"><b><u>Pilot Exemption Request</u></b></td>      
+        </tr>     
+                     <tr>
+                       <td>
+                          <label class="control-label">Pilot Exempted?:</label> 
+    </td>
+    <td>
+                            <input type="checkbox" id="exemptionChk"  data-bind="enable: $parent.isArrvalEnable, checked: PilotExemptionChecked" /><label class="radio-inline"></label>                     
+                       </td>
+    </tr>
+    <tr>
+                       <td>
+                           <label class="control-label">Exemption ID:</label> 
+    </td>
+    <td>
+                         <label class="displaytxt" style="text-align: left" id="lblexemptionname"></label>
+    </td>
+
+                
+                     </tr>
+                
+          
+    </table>
+
+    <table id="tblCommoditiesAndBerths"  style="width:100%;" border="0"  data-bind='with: arrivalNotificationModel'>
+        <tr>
+        <td colspan="6" style="font-size:18px; line-height:40px;"><b><u>Commodities and Berths</u></b></td>
+        </tr>     
+                     <tr>
+                       <td>
+                          <label class="control-label">Preferred Berth:</label> 
+                        </td>
+                        <td>
+                       
+                     <label class="displaytxt" style="text-align: left" id="lblpreferredberthList"></label>
+                      
+
+                       </td>
+                       <td>
+                           <label class="control-label">Preferred Side of Dock:</label> 
+                        </td>
+                        <td>
+                           <label class="displaytxt" style="text-align: left" id="lblselDockList"></label>
+                        </td>
+    <td>
+
+    </td>
+    <td>
+
+    </td>
+                   
+    </tr>
+    <tr>
+                   <td>
+                         <label class="control-label">Alternate Berth:</label>
+                    </td>
+                    <td>
+                     <label class="displaytxt" style="text-align: left" id="lblalterBirthname"></label>
+                    
+                       </td>
+                       <td>
+                          <label class="control-label">Preferred Side for Alternate Berth:</label>
+                        </td>
+    <td>
+    <label class="displaytxt" style="text-align: left" id="lblpreferedside"></label>
+                     
+                     
+                       </td>        
+                       <td>
+                           <label class="control-label">Reason for Alternate Berth:</label>
+    </td>
+    <td> 
+                         <textarea  maxlength="100" class="displaytxt" data-bind="enable: $parent.isArrvalEnable, text: ReasonAlternateBirth">
+    </textarea>
+                        </td>
+                  
+                     </tr>
+
+    <tr id="trQunatities">
+    <td colspan="6">
+    <label style="font-size:18px; line-height:40px;"><b><u>Quantities of Commodities</u></b></label> 
+    </td>
+    </tr> 
+
+    <tr class="table-scrollable">
+    <td colspan="6">
+    <table  cellpadding="0" cellspacing="0" border="1" id="tblQualities" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Berth</th>
+                                <th>Cargo Type</th>
+                                <th>Commodity</th>
+                                <th>Moves</th>
+                                <th>UoM</th>
+                                <th>Quantity</th>
+                            
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: ArrivalCommodities" id="tblQualitiesBodyDis">
+                             <tr>
+                                <td>
+                                <label class="displaytxt" style="text-align: left" id="lblTableBerthDis"></label></td>                            
+                                <td>
+                                    <label class="displaytxt" style="text-align: left" id="lblTableCargoDis"></label></td>
+                                <td>
+                                <label class="displaytxt" style="text-align: left" id="lblTableCommodityDis"></label></td> 
+                                <td>
+                                   <label class="displaytxt" style="text-align: left" id="lblTableMovesDis"></label></td>
+                                <td>
+                                   <label class="displaytxt" style="text-align: left" id="lblTableUoMDis"></label></td>
+                                <td>
+                                   <label id="ArvCommQty" maxlength="10" class="displaytxt" data-bind="enable: $root.isArrvalEnable, text: Quantity" /></td>
+                            
+                            </tr>
+                        </tbody>
+                    </table>
+    </td>
+    </tr>
+    </table>
+
+    <table id="tblComplianceRequirements"  style="width:100%;" border="0"  data-bind='with: arrivalNotificationModel'>
+        <tr>
+            <td colspan="6" style="font-size:18px; line-height:40px;"><b><u>Compliance Requirements</u></b></td>
+       
+        </tr>     
+                     <tr>
+                       <td>
+                          <label class="control-label">Tidal:</label> 
+    </td>
+    <td>
+                          <label class="displaytxt" id="lblTidal"></label>
+                                     
+                       </td>
+                       <td>
+                           <label class="control-label">Ballast Water:</label> 
+    </td>
+    <td>
+                            <label class="displaytxt" id="lblBallastWater"></label>                     
+                        </td>
+                       <td>
+                         <label class="control-label">Waste Declaration:</label>
+    </td>
+    <td>
+                         <label class="displaytxt" id="lblWasteDeclaration"></label>
+                       </td>
+    </tr>
+    <tr>
+                       <td>
+                          <label class="control-label">Is Special Nature:</label>
+    </td>
+    <td>
+                          <label class="displaytxt" id="lblIsSpecialNature"></label>
+                       </td>
+    <td>
+
+    </td>
+    <td> <textarea id="SpecialNeturetxtDis" class="displaytxt" data-bind="visible: $parent.IsSpecialNature, text: SpecialNatureReason"/>  
+                       
+            
+    </td>
+                     </tr>
+                     <tr>                   
+                       <td>
+                           <label class="control-label">Daylight Restricted:</label> 
+    </td>
+    <td>
+                           <label class="displaytxt" id="lblDaylightRestriction"></label> 
+                        </td>
+    <td>
+
+    </td>
+    <td>
+                    <textarea id="DaylightSpecifyReasontxtDis" class="displaytxt" data-bind="visible: $parent.DaylightRestriction, text: DaylightSpecifyReason"/>               
+        
+    </td>
+    </tr>
+    <tr>
+                       <td>
+                         <label class="control-label">Exceed Port Limitations:</label>
+    </td>
+    <td>
+     <label class="displaytxt" id="lblExceedPortLimitations"></label>  
+                    
+                       </td>
+    <td>
+
+    </td>
+    <td>
+                    <textarea  id="txtExceedPortLimitationsDis" class="displaytxt"   data-bind="visible: $parent.Exeedportlimitenable, text: ExceedSpecifyReason"/>
+    </td>
+    </tr>
+    <tr>
+                       <td colspan="6">
+                         <label class="control-label">Any Additional Info About the Vessel:</label>
+                         <textarea class="displaytxt" style="resize: none;" rows="3" maxlength="200" name="remarks" data-bind="enable: $parent.isArrvalEnable, text: AnyAdditionalInfo"></textarea>
+                       </td>
+                     </tr>              
+            
+          
+    </table>
+    <table id="tblOperationalInformation"  style="width:100%; " border="0"  data-bind='with: arrivalNotificationModel'>
+        <tr>
+            <td colspan="2" style="font-size:18px; line-height:40px;"><b><u>Operational Information</u></b></td>
+        </tr>     
+        <tr>                 
+            <td>
+                <label class="control-label">Plan Date/Time at Berth:</label> 
+            </td>
+            <td>
+                <label class="displaytxt" data-bind="enable: $parent.isArrvalEnable, text: PlanDateTimeOfBerth"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <label class="control-label">Plan Date/Time to Start Cargo OPS:</label> 
+            </td>
+            <td>
+               <label class="displaytxt"  data-bind="enable: $parent.isArrvalEnable, text: PlanDateTimeToStartCargo" />
+             </td>
+     </tr>
+        <tr>   
+                
+            <td>
+                                 <label class="control-label">Plan Date/Time to Complete Cargo OPS:</label>
+            </td>
+            <td>
+                                <label class="displaytxt"  data-bind="enable: $parent.isArrvalEnable, text: PlanDateTimeToCompleteCargo" />
+                      
+                               </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="control-label">Plan Date/Time to Vacate Berth:</label> 
+            </td>
+            <td>
+                <label class="displaytxt"  data-bind="enable: $parent.isArrvalEnable, text: PlanDateTimeToVacateBerth" />
+            </td>
+            </tr>
+    </table>
+
+    </div>
+
+    <P CLASS="breakhere"></P>
+
+    <div class="hide-print1" style="border:1px solid #000;">
+
+
+    <table id="tblDangerousGoodsInformationandDeclaration" style="width:100%;" border="0" data-bind="with: arrivalNotificationModel">
+        <tr>
+          <td colspan="2" style="font-size:18px; line-height:40px;"><b><u>Dangerous Goods Information and Declaration</u></b></td>        
+        </tr>     
+                     <tr>
+                       <td>
+                          <label class="control-label">Any Dangerous Goods on Board?:</label> 
+    </td>
+    <td>
+                            <label class="displaytxt" style="text-align: left" id="lblIsDangerousGoodsonBoard"></label>
+                       
+                       </td>
+                 
+                  
+    </tr>
+
+    </table>
+    <table  style="width:100%;" border="0" data-bind="with: arrivalNotificationModel">
+    <tr data-bind="visible: $parent.IsDangerousGoods">  
+                       <td>
+                          <label class="control-label">Date of Load:</label> 
+    </td>
+    <td>
+                           <label class="displaytxt" id="LoadDischargeDateDis" name="LoadDischargeDate" />
+                      
+                       </td>
+                       <td>
+                           <label class="control-label">Date of Discharge:</label> 
+    </td>
+    <td>
+                           <label class="displaytxt"  id="DischargeDateDis" />
+                        
+                        </td>  
+    <td>
+                         <label class="control-label" >Cell No.:</label>
+    </td>
+    <td>
+                        <label class="displaytxt"  id="CellNo"  data-bind="enable: $parent.isIMDGEnable, text: CellNo" />
+                      
+                       </td>
+                 
+                     </tr>
+    </table>
+
+    <table style="width:100%" data-bind='with: arrivalNotificationModel'  >
+    <tr>
+    <td data-bind="visible: $parent.IsDangerousGoods">
+    <label style="font-size:18px; line-height:40px;"><b><u>IMDG Cargo Information</b></u></label> 
+    </td>
+    </tr> 
+    <tr class="table-scrollable" data-bind="visible: $parent.IsDangerousGoods">
+    <td>
+    <table  style="width:100%" cellpadding="0" cellspacing="0" border="1" id="table1">
+                   
+                            <thead>
+                                <tr>
+                                    <th>Purpose
+                                    </th>
+                                    <th>Class
+                                    </th>
+                                    <th>Cargo
+                                    </th>
+                                    <th>UN No.
+                                    </th>
+                                    <th>Qty(Mt)
+                                    </th>
+                                    <th>No. Of Containers
+                                    </th>
+                                    <th>Others (Specify)
+                                    </th>                              
+
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: IMDGInformations" id="table1BodyDis" style="background: #fff">
+                                <tr>
+                                    <td>
+
+                                        <label id="IMDGInfoPurposes" class="displaytxt">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label name="documents" id="DangerousGoodsList"  class="displaytxt" >
+                                        </label></td>
+                                    <td>
+                                        <label id="IMDGInformationsCargoTypes" class="form-control" >
+                                        </label></td>
+                                    <td>
+                                        <label id="IMDGInformationsUNNo"  class="displaytxt" maxlength="15" data-bind="enable: $root.isIMDGEnable, text: UNNo" /></td>
+                                    <td>
+                                        <label id="IMDGInformationsQuantity" maxlength="10"   class="displaytxt" data-bind="enable: $root.isIMDGEnable, text: Quantity" /></td>
+                                    <td>
+                                        <label id="IMDGInformationsNoofContainer" maxlength="4"  class="displaytxt" data-bind="enable: $root.isIMDGEnable, text: NoofContainer" /></td>
+                                    <td>
+                                        <label id="IMDGInformationsOthers" maxlength="200"  class="displaytxt" data-bind="enable: $root.isIMDGEnable, text: Others" /></td>
+
+                                
+                                </tr>
+
+                            </tbody>
+                        </table>
+    </td>
+    </tr>
+    </table>  
+
+    <table   data-bind='with: arrivalNotificationModel'>
+     <tr data-bind="visible: $parent.IsDangerousGoods">
+                       <td>
+                          <label class="control-label">Cargo Description:</label> 
+                           <textarea class="displaytxt" style="resize: none;" maxlength="200" rows="3" name="CargoDescription" data-bind="enable: $parent.isIMDGEnable, text: CargoDescription"></textarea>                  
+                       </td>                
+                  
+    </tr>
+    <tr data-bind="visible: $parent.IsDangerousGoods">
+    <td>
+     <label class="control-label">Disclaimer: All Relevant Documents have been Submitted and the Relevant Authorities are Informed as per Port Requirements</label>
+    </td>
+    </tr>
+    </table>
+
+
+
+
+    <table id="tblLayByandRepairInformation" style="width:100%;" border="0"    data-bind='with: arrivalNotificationModel'>
+        <tr data-bind='visible: $parent.LayByVisble'>
+          <td colspan="4" style="font-size:18px; line-height:40px;"><b><u>Lay By and Repair Information</u></b></td>        
+        </tr>     
+                     <tr data-bind='visible: $parent.LayByVisble'>
+                       <td>
+                          <label class="control-label">Planned Duration of Lay Up or Repairs:</label>
+    </td>
+    <td> 
+                          <label class="displaytxt" id="LayByFromDis"/>
+                       </td>
+    <td>
+    <label class="control-label">To</label>
+    </td>
+    <td>
+    <lable class="displaytxt" id="LayByToDis" />
+    </td>
+    </tr>
+    <tr data-bind='visible: $parent.LayByVisble'>
+    <td>
+    <label class="control-label">No. Of days:</label>
+    </td>
+    <td>
+     <label name="Daycnt" data-bind="text: Daycnt" class="displaytxt"/>
+    </td>
+
+    <tr data-bind='visible: $parent.LayByVisble'>
+                       <td colspan="4">
+                           <label class="control-label">Reason for Lay Up/Nature of Repairs:</label>
+                   
+                        <textarea class="displaytxt" style="resize: none;" rows="3" maxlength="200" name="remarks" data-bind="enable: $parent.isArrvalEnable, text: ReasonForLayup"></textarea>
+
+                        </td>
+                  
+    </tr>
+
+               
+            
+          
+    </table>
+
+ 
+    <table id="tblBunkerInformation" style="width:100%;" border="0"  data-bind='with: arrivalNotificationModel'>
+        <tr data-bind="visible: $parent.BunkersVisible" >
+    <td colspan="6" style="font-size:18px; line-height:40px;"><b><u>Bunker Information</u></b></td>
+       
+        </tr>     
+                     <tr data-bind="visible: $parent.BunkersVisible">
+                       <td>
+                          <label class="control-label">Bunkers Required (Specify Type):</label> 
+                        </td>
+    <td>
+     <label class="displaytxt" style="text-align: left" id="lblBunkerRequired"></label>
+                       </td>
+    <td>
+    <label class="control-label">Bunkers Method (Specify):</label>
+    </td>
+    <td>
+      <label class="displaytxt" style="text-align: left" id="lblBunkerMethod"></label>
+    </td>
+    <td>
+    <label class="control-label">Bunker Service Provider:</label>
+    </td>
+    <td>
+     <label class="displaytxt" style="text-align: left" id="lblBunkerServices"></label>
+    </td>
+    </tr>
+    <tr data-bind="visible: $parent.BunkersVisible">
+    <td>
+       <label class="control-label">Distance from Stern to Bunker Point (in m):</label>
+    </td>
+    <td>
+       <label class="displaytxt" data-bind="enable: $parent.isArrvalEnable, text: DistanceFromStern" />
+                   
+    </td>
+
+    <td>
+      <label class="control-label">Tons (in mt):</label>               
+    </td>
+    <td colspan="2">    
+    <label class="displaytxt" data-bind="enable: $parent.isArrvalEnable, text: TonsMT" />
+                    
+    </td>
+
+    </tr>
+    <tr data-bind="visible: $parent.BunkersVisible">
+                       <td colspan="4">
+                           <label class="control-label">Any Imp. Info. We Need to Know:</label>  
+                
+                            <textarea class="displaytxt" data-bind="enable: $parent.isArrvalEnable, text: AnyImpInfo"></textarea>
+                   
+                        </td>
+                   
+    </tr>
+
+               
+            
+          
+    </table> 
+
+    <table id="tblWasteDeclaration" style="width:100%;" border="0"  data-bind='with: arrivalNotificationModel'>
+     <tr data-bind="visible: $parent.WasteDeclarationVisible" >
+      <td colspan="6" style="font-size:18px; line-height:40px;"><b><u>Waste Declaration Information</u></b></td>       
+    </tr>    
+     
+    </table>
+    <table  style="width:100%;" border="0" data-bind="with: arrivalNotificationModel">
+    <tr data-bind="visible: $parent.WasteDeclarationVisible">  
+                       <td>
+                          <label class="control-label">Last Port Waste Delivered:</label> 
+    </td>
+    <td>
+<label class="displaytxt" style="text-align: left" id="LastPortWasteDeliveredDis"></label>
+                           @*<label class="displaytxt" id="LastPortWasteDeliveredDis" title="LastPortWasteDelivered" name="LastPortWasteDelivered" data-bind="enable: $parent.isArrvalEnable, text: LastPortWasteDelivered" />*@
+                      
+                       </td>
+                       <td>
+                           <label class="control-label">Next Port Waste Delivery:</label> 
+    </td>
+    <td>
+                         <label class="displaytxt" style="text-align: left" id="NextPortWasteDeliveryDis"></label>
+                           @*<label class="displaytxt"  id="NextPortWasteDeliveryDis" title="NextPortWasteDelivery" data-bind="enable: $parent.isArrvalEnable, text: NextPortWasteDelivery" />*@
+                        
+                        </td>  
+    <td>
+                         <label class="control-label" >Date Last Waste Delivered:</label>
+    </td>
+    <td>
+                        <label class="displaytxt"  id="DateLastWasteDeliveredDis"  data-bind="enable: $parent.isArrvalEnable, text: DateLastWasteDelivered" />
+                      
+                       </td>
+                 
+                     </tr>
+    </table>
+
+    <table style="width:100%" data-bind='with: arrivalNotificationModel'  >
+    <tr>
+    <td data-bind="visible: $parent.WasteDeclarationVisible">
+    <label style="font-size:18px; line-height:40px;"><b><u>Waste Declaration Information</b></u></label> 
+    </td>
+    </tr> 
+    <tr class="table-scrollable" data-bind="visible: $parent.WasteDeclarationVisible">
+    <td>
+    <table  style="width:100%" cellpadding="0" cellspacing="0" border="1" id="table1">
+                   
+                            <thead>
+                                <tr>
+                                    <th>Marpol
+                                    </th>
+                                    <th>Class
+                                    </th>
+                                    <th>Service Provider
+                                    </th>                                   
+                                    <th>Qty(Mt)
+                                    </th>
+                                    <th>Name
+                                    </th>                                                                
+
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: WasteDeclarations" id="table3BodyDis" style="background: #fff">
+                                <tr>
+                                    <td>
+
+                                        <label id="WDMarpolCode" class="displaytxt">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label name="WDClassCode" id="WDClassCode"  class="displaytxt" >
+                                        </label></td>
+                                    <td>
+                                        <label id="WDLicenseRequestID" class="form-control" >
+                                        </label></td>                                
+                                    <td>
+                                        <label id="WDQuantity" maxlength="10"   class="displaytxt" data-bind="enable: $root.isIMDGEnable, text: Quantity" /></td>
+                                    <td>
+                                        <label id="WDDeclarationName" maxlength="4"  class="displaytxt" data-bind="enable: $root.isIMDGEnable, text: DeclarationName" /></td>                                    
+
+                                
+                                </tr>
+
+                            </tbody>
+                        </table>
+    </td>
+    </tr>
+    </table>
+
+
+    <table id="tblDocumetUpload"  style="width:100%;" border="0"  data-bind='with: arrivalNotificationModel'>
+        <tr>
+    <td colspan="2" style="font-size:18px; line-height:40px;"><b><u>Documents Upload</u></b></td>
+        
+        </tr>     
+                     <tr id="trDoc">
+                      <td>
+                      <table class="table table-striped table-bordered table-advance">
+                        <thead>
+                            <tr>
+                                <th>Document Category</th>
+                                <th>Document Name</th>                           
+
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: ArrivalDocuments">
+                            <tr>
+                                <td data-bind="text: DocumentName"></td>
+                                <td><a data-bind="  text: FileName">Document</a></td>                            
+                            </tr>
+                        </tbody>
+                    </table>
+                       </td>
+                 
+                  
+    </tr>
+    <tr>
+    <td>
+    <label id="lblDoc" class="displaytxt">No Documnets Uploaded</label>
+    </td>
+    </tr>
+
+
+         
+    
+            
+          
+    </table>
+
+    </div>
+
+    <!--end-->
+</script>
+<script>
+    jQuery(document).ready(function () {
+        $("#ETA, #ETD").kendoDateTimePicker();
+    });
+    function printForm() {
+       
+       
+        var selMulti = $.map($("#reasonforvisit option:selected"), function (el, i) {
+            return $(el).text();
+        });
+        $('#reasonforvisitDis').html(selMulti.join(", "));
+        var FromDanDate = $('#LoadDischargeDate').val();
+        var ToDanDate = $('#DischargeDate').val();
+        $('#LoadDischargeDateDis').html(FromDanDate);
+        $('#DischargeDateDis').html(ToDanDate);
+        //added by divya on 3rdNov for print
+        var FromDate = $('#PlannedDurationDate').val();
+        var ToDate = $('#PlannedDurationToDate').val();
+        $('#LayByFromDis').html(FromDate);
+        $('#LayByToDis').html(ToDate);
+        var AppliedDate = $('#AppliedDate').val();
+        $('#lblAppliedDate').html(AppliedDate);
+        var DocRows = $('#tblDocBody').find('tr');
+        if (DocRows.length > 0) {
+            $('#trDoc').show();
+            $('#lblDoc').hide();
+        }
+        else {
+            $('#trDoc').hide();
+            $('#lblDoc').show();
+
+        }
+        var MyRows = $('#tblQualitiesBody').find('tr');
+        //if (MyRows.length > 0) {
+        //    $('#trQunatities').show();
+        //    $('#lblQunatity').hide();
+        //}
+        //else {
+        //    $('#trQunatities').hide();
+        //    $('#lblQunatity').show();
+        //}
+//tables binding
+        var MyRowDis = $('#tblQualitiesBodyDis').find('tr');
+        for (var i = 0; i < MyRows.length; i++) {
+            var TabBerth = $(MyRows[i]).find('td:eq(0) option:selected').text();
+            $(MyRowDis[i]).find('td:eq(0)').html(TabBerth);
+            var TabCargo = $(MyRows[i]).find('td:eq(1) option:selected').text();
+            $(MyRowDis[i]).find('td:eq(1)').html(TabCargo);
+            var TabMoves = $(MyRows[i]).find('td:eq(2) option:selected').text();
+            $(MyRowDis[i]).find('td:eq(2)').html(TabMoves);
+            var TabUoM = $(MyRows[i]).find('td:eq(3) option:selected').text();
+            $(MyRowDis[i]).find('td:eq(3)').html(TabUoM);
+        }
+        var MyDangeorsTableRows = $('#table1Boody').find('tr');
+        var MyDangeorsTableDis = $('#table1BodyDis').find('tr');
+        for (var i = 0; i < MyDangeorsTableRows.length; i++) {
+            var TabBerth = $(MyDangeorsTableRows[i]).find('td:eq(0) option:selected').text();
+            $(MyDangeorsTableDis[i]).find('td:eq(0)').html(TabBerth);
+            var TabCargo = $(MyDangeorsTableRows[i]).find('td:eq(1) option:selected').text();
+            $(MyDangeorsTableDis[i]).find('td:eq(1)').html(TabCargo);
+            var TabMoves = $(MyDangeorsTableRows[i]).find('td:eq(2) option:selected').text();
+            $(MyDangeorsTableDis[i]).find('td:eq(2)').html(TabMoves);
+        }
+        var MyDangeorsTableRows1 = $('#table2Body').find('tr');
+        var MyDangeorsTableDis1 = $('#table2BodyDis').find('tr');
+        for (var i = 0; i < MyDangeorsTableRows1.length; i++) {
+            var TabBerth = $(MyDangeorsTableRows1[i]).find('td:eq(0) option:selected').text();
+            $(MyDangeorsTableDis1[i]).find('td:eq(0)').html(TabBerth);
+            var TabCargo = $(MyDangeorsTableRows1[i]).find('td:eq(1) option:selected').text();
+            $(MyDangeorsTableDis1[i]).find('td:eq(1)').html(TabCargo);
+
+        }
+
+        var MyWasteDeclarationRows = $('#table3Boody').find('tr');
+        var MyWasteDeclarationTableDis = $('#table3BodyDis').find('tr');
+
+        for (var i = 0; i < MyWasteDeclarationRows.length; i++) {
+        	var TabBerth = $(MyWasteDeclarationRows[i]).find('td:eq(0) option:selected').text();
+        	$(MyWasteDeclarationTableDis[i]).find('td:eq(0)').html(TabBerth);
+        	var TabCargo = $(MyWasteDeclarationRows[i]).find('td:eq(1) option:selected').text();
+        	$(MyWasteDeclarationTableDis[i]).find('td:eq(1)').html(TabCargo);
+        	var TabMoves = $(MyWasteDeclarationRows[i]).find('td:eq(2) option:selected').text();
+        	$(MyWasteDeclarationTableDis[i]).find('td:eq(2)').html(TabMoves);
+        }
+
+//radio buttons 
+
+        var TidalVal = $('input[name=Tidal]:checked').val();
+        if (TidalVal == 'A')
+            $('#lblTidal').html('Yes');
+        else
+            $('#lblTidal').html('No');
+        var AppliedForISPSVal = $('input[name=AppliedForISPS]:checked').val();
+        if (AppliedForISPSVal == 'A')
+            $('#lblAppliedForISPS').html('Yes');
+        else
+            $('#lblAppliedForISPS').html('No');
+        var ClearanceVal = $('input[name=Clearance]:checked').val();
+        if (ClearanceVal == 'A')
+            $('#lblClearance').html('Yes');
+        else
+            $('#lblClearance').html('No');
+        var TerminalOperatorVal = $('input[name=TerminalOperator]:checked').val();
+       
+        if (TerminalOperatorVal == 'A') {
+            $('#lblTerminalOperator').html('Yes');           
+        }
+        else {
+            $('#lblTerminalOperator').html('No');
+          
+        }
+        var BallastWaterVal = $('input[name=BallastWater]:checked').val();
+        if (BallastWaterVal == 'A')
+            $('#lblBallastWater').html('Yes');
+        else
+            $('#lblBallastWater').html('No');
+        var WasteDeclarationVal = $('input[name=WasteDeclaration]:checked').val();
+        if (WasteDeclarationVal == 'A')
+            $('#lblWasteDeclaration').html('Yes');
+
+        else
+            $('#lblWasteDeclaration').html('No');
+        var IsSpecialNatureVal = $('input[name=IsSpecialNature]:checked').val();
+        if (IsSpecialNatureVal == 'A') {
+            $('#lblIsSpecialNature').html('Yes');
+            $('#SpecialNeturetxtDis').show();
+        }
+        else {
+            $('#lblIsSpecialNature').html('No');
+            $('#SpecialNeturetxtDis').hide();
+        }
+        var DaylightRestrictionVal = $('input[name=DaylightRestriction]:checked').val();
+        if (DaylightRestrictionVal == 'A') {
+            $('#lblDaylightRestriction').html('Yes');
+            $('#DaylightSpecifyReasontxtDis').show();
+        }
+
+        else {
+            $('#lblDaylightRestriction').html('No');
+            $('#DaylightSpecifyReasontxtDis').hide();
+        }
+        var ExceedPortLimitationsVal = $('input[name=ExceedPortLimitations]:checked').val();
+        if (ExceedPortLimitationsVal == 'A') {
+            $('#lblExceedPortLimitations').html('Yes');
+            $('#txtExceedPortLimitationsDis').show();
+        }
+        else {
+            $('#lblExceedPortLimitations').html('No');
+            $('#txtExceedPortLimitationsDis').hide();
+        }
+        var IsDangerousGoodsonBoardVal = $('input[name=IsDangerousGoodsonBoard]:checked').val();
+        if (IsDangerousGoodsonBoardVal == 'A')
+            $('#lblIsDangerousGoodsonBoard').html('Yes');
+        else
+            $('#lblIsDangerousGoodsonBoard').html('No');
+        //drop downs
+        
+       
+        var LastPortOfCallVal = $('#LastPortOfCall option:selected').text();
+        $('#lblLastPortOfCal').html(LastPortOfCallVal);
+
+        var NextVal = $('#LastPortOfCall1 option:selected').text();
+        $('#lblNextVal').html(NextVal);
+        var SelectDryDocBerthsVal = $('#SelectDryDocBerths option:selected').text();
+        $('#lblSelectDryDocBerthsVal').html(SelectDryDocBerthsVal);
+        var exemptionnameVal = $('#exemptionname option:selected').text();
+        if (exemptionnameVal == 'Choose....')
+            $('#lblexemptionname').html('No selection');
+        else
+            $('#lblexemptionname').html(exemptionnameVal);
+
+        var preferredberthListVal = $('#preferredberthList option:selected').text();
+        $('#lblpreferredberthList').html(preferredberthListVal);
+        var selDockListVal = $('#selDockList option:selected').text();
+        $('#lblselDockList').html(selDockListVal);
+        var alterBirthnameVal = $('#alterBirthname option:selected').text();
+        if (alterBirthnameVal == 'Choose....')
+            $('#lblalterBirthname').html('No berth selected');
+        else
+            $('#lblalterBirthname').html(alterBirthnameVal);
+        var preferedsideVal = $('#preferedside option:selected').text();
+        if (preferedsideVal == 'Choose....')
+            $('#lblpreferedside').html('No berth selected');
+        else
+            $('#lblpreferedside').html(preferedsideVal);
+        var BunkerRequiredVal = $('#BunkerRequired option:selected').text();
+        if (BunkerRequiredVal == 'Choose....')
+            $('#lblBunkerRequired').html('No selection');
+        else
+            $('#lblBunkerRequired').html(BunkerRequiredVal);
+        var BunkerMethodVal = $('#BunkerMethod option:selected').text();
+        if (BunkerMethodVal == 'Choose....')
+            $('#lblBunkerMethod').html('No selection');
+        else
+            $('#lblBunkerMethod').html(BunkerMethodVal);
+        var BunkerServicesVal = $('#BunkerServices option:selected').text();
+        if (BunkerServicesVal == 'Choose....')
+            $('#lblBunkerServices').html('No selection');
+        else
+        	$('#lblBunkerServices').html(BunkerServicesVal);
+
+        var LastPortWasteVal = $('#LastPortWasteDelivered option:selected').text();
+        if (LastPortWasteVal == 'Choose....')
+        	$('#LastPortWasteDeliveredDis').html('No selection');
+        else
+        	$('#LastPortWasteDeliveredDis').html(LastPortWasteVal);
+
+        var NextPortWasteVal = $('#NextPortWasteDelivery option:selected').text();
+        if (NextPortWasteVal == 'Choose....')
+        	$('#NextPortWasteDeliveryDis').html('No selection');
+        else
+        	$('#NextPortWasteDeliveryDis').html(NextPortWasteVal);
+
+//end
+        window.print();
+    }
+</script>
+
+
+
+
+
+

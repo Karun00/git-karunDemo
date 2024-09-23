@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="IPMS.Services.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="IPMS_Services_LloydsSOAPForVesselRegistration_SidDBRequestService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest</Value>
+    </Setting>
+    <Setting Name="WebServiceConsoleApplication_TrainSummary_getTrainSummary_wsd" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://TFRDWINWMISA8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getTrainSummary_wsd/tnpa_train_info_webservice_getTrainSummary_wsd_Port</Value>
+    </Setting>
+    <Setting Name="IPMS_Services_TfrService_getWagonDetails_wsd" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://TFRDWINWMISA8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getWagonDetails_wsd/tnpa_train_info_webservice_getWagonDetails_wsd_Port</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

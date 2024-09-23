@@ -1,0 +1,64 @@
+﻿@*<div id="wftask" data-bind="with: notificationModel">
+    <table>
+        <tr>
+            <td>
+                <textarea rows="5" id="viewremarks" ></textarea>
+            </td>
+            <td>&nbsp;
+            </td>
+            <td>
+                <div data-bind="foreach: $root.GetViewList">
+                  
+                    <a href="#" class="btn green button-submit" data-bind="click: $root.Actiontask, attr: { title: TaskName }"><i data-bind="    attr: { 'class': 'fa fa-' + TaskCode }"></i>
+                    </a>
+                </div>
+                
+            </td>
+        </tr>
+    </table>
+</div>*@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="btns-group" data-bind="foreach: pendingTasks">
+            <div data-bind=" attr: { id: 'stack' + $index() }"  class="modal fade" tabindex="-1" data-width="400">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="width:100%">
+                        <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <div class="scroller" style="height:130px" data-always-visible="1" data-rail-visible1="1">
+                        <fieldset style="height:130px">
+                           
+                            <form action="#" id="form_sample_1" class="form-horizontal">
+                               
+
+                        <div class="form-group row">
+                            <label class="control-label col-md-5">Remarks:<span class="required" data-bind="visible: HasRemarks() == 'Y'">*</span></label>
+                            <div class="col-md-5">
+                                <textarea  rows="3" cols="50" class="form-control" style="width:160px;height:70px;" data-bind="value: Remarks"></textarea>                              
+                             
+                            </div>
+                            </div>
+                        </form>
+                        </fieldset>
+                        </div>
+                        </div>
+                            <div class="btns-group ">
+                            <button type="submit" class="btn green" data-bind="click: $root.WorkflowAction">Submit</button>
+                            <button type="button" data-dismiss="modal" class="btn red">Cancel</button>
+                        </div>
+                        <br>&nbsp;
+                    </div>
+                </div>
+            </div> 
+           <!-- ko if: ($index() == 0)-->
+         <label>Previous Remarks: </label>       
+        <div align="center"><textarea rows="3" cols="50" class="form-control" style="width: 350px; height: 100px; text-align: center; margin:  0px 9.5px 0px 0px;resize: none;" data-bind="value: PreviousRemarks" disabled=""></textarea></div>
+             <!-- /ko -->
+      
+ <a href="#" class="btn green button-submit" style="margin-top: 10px;"  data-toggle="modal" data-bind="attr: { title: TaskName, 'data-target':'#stack' + $index()}"><i data-bind="    attr: { 'class': 'fa fa-' + TaskCode() }"></i>
+            </a>
+    </div>
+</div>
+                                  
+

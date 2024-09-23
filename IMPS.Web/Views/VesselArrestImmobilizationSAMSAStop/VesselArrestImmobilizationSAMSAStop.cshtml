@@ -1,0 +1,566 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/VesselArrestImmobilizationSAMSAStopModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/VesselArrestImmobilizationSAMSAStopViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.VesselArrestImmobilizationSAMSAStopViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#VesselArrestImmobilizationSAMSAStop")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="VesselArrestImmobilizationSAMSAStopTitle">Vessel Arrests</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="VesselArrestImmobilizationSAMSAStop">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'VesselArrestImmobilizationSAMSAStopList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'VesselArrestImmobilizationSAMSAStopForm-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+
+
+<!-- Vessel Arrests List and Serach content starts here-->
+<script type="text/html" id="VesselArrestImmobilizationSAMSAStopList-template">
+
+    <div class="clearfix"></div>
+
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+            <div id="tableheader">
+                @if (Model.HasAddPrivilege)
+                {
+                    <a class="button gbtngreen" data-bind="click: $root.addVesselArrestImmobilizationSAMSAStop">Add New <i class="fa fa-plus"></i></a>
+                }
+
+            </div>
+            <div data-bind="kendoGrid: {
+    data: VesselArrestImmobilizationSAMSAStopList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', width: 100, filterable: true },
+        { field: 'VesselNameSort', title: 'Vessel Name', width: 115, filterable: true },
+     { field: 'ArrestedSort', title: 'Arrested', width: 90, filterable: false },
+     { field: 'ImmobilizationSort', title: 'Immobilization', width: 110, filterable: false },
+     { field: 'SAMSAStopSort', title: 'SAMSA Stop', width: 110, filterable: false },
+     { title: 'Actions', filterable: false, width: 100 }]
+}">
+            </div>
+
+
+            <script id="rowTmpl" type="text/html">
+                <tr data-bind="style: { backgroundColor: ((VesselArrestedStatus() == true) && (VesselReleasedStatus() == false)) ? '#FCE4E7' : '' }">
+                    <td data-bind="style: { backgroundColor: (AnyDangerousGoods() == 'A') ? '#FA370E' : '' }">
+                        <div class="nowrap"><span data-bind="text: VCN" style="text-transform: capitalize;"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselName" style="text-transform: capitalize;"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            <input type="checkbox" id="detailVesselArrestedStatus" data-bind="checked: ((VesselArrestedStatus() == true) && (VesselReleasedStatus() == false)), enable: $parent.GridChk" />
+
+                        </div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            <input type="checkbox" id="detailImmobilizationStatus" data-bind="checked: ImmobilizationStatus, enable: $parent.GridChk" />
+
+                        </div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            <input type="checkbox" id="detailSAMSAStopStatus" data-bind="checked: ((SAMSAStopStatus() == true) && (SAMSAClearedStatus() == false)), enable: $parent.GridChk" />
+
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="nowrap">
+                            &nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.ViewVesselArrestImmobilizationSAMSAStop" title="View"><i class="fa fa-eye"></i></a>
+                            }&nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.EditVesselArrestImmobilizationSAMSAStop" title="Edit"><i class="fa fa-edit"></i></a>
+                            }&nbsp; &nbsp;
+                         
+                        </div>
+                    </td>
+                </tr>
+            </script>
+
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<!-- Add Vessel Arrests form content starts here-->
+
+<script type="text/html" id="VesselArrestImmobilizationSAMSAStopForm-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" id="VesselArrestImmobilizationSAMSAStopForm" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+
+                <div class="form-body" data-bind="with: vesselArrestImmobilizationSAMSAStopModel">
+
+                    @*<div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>*@
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="row col-md-12">
+                        <fieldset>
+
+                            <fieldset>
+                                <legend>Vessel Details</legend>
+                                <div class="row col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Vessel Name / VCN:</label>
+                                            <div class="col-md-5" data-bind="visible: $parent.IsVCN">
+
+                                            @*  <input id="Vessel" name="VCN" onkeypress="GetVCNDetails();" data-bind="kendoAutoComplete: { data: $root.vcndetails(), dataTextField: 'VCN_VesselName', dataValueField: 'VCN', select: $root.VCNSelect, filter: 'contains' }, value: VCN, enable: $parent.IsVCN " maxlength="30" />*@
+
+<input id="Vessel" name="VCN" onkeypress="return VCNBackSpaceNumValid(event)"  data-bind="kendoAutoComplete: {
+    dataTextField: 'VCN_VesselName', dataValueField: 'VCN', minLength: 2, pageSize: 1,filter: 'contains'
+                                                        , dataSource: {
+                                                            transport: {
+                                                                read: { url: 'api/GetVcnDetails', dataType: 'json' }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, select: $root.VCNSelect
+}, value: VCN, enable: $parent.IsVCN" maxlength="30" />
+
+                                      <span id="spanvcnd" class="validationError" style="display: none"></span>
+                                            </div>
+                                            <div class="col-md-5 control-label" data-bind="visible: $parent.IsVCNlable">
+                                                <label class="col-md-12 displaytxt" style="width: 150px" data-bind="text: VCN"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Vessel Name:</label>
+                                            <div class="col-md-6 control-label">
+                                                <label class="col-md-12 displaytxt" style="width: 150px" data-bind="text: VesselName"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">LOA:</label>
+                                            <div class="col-md-6 control-label">
+                                                <label class="col-md-12 displaytxt" style="width: 150px" data-bind="text: LOA"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">GRT:</label>
+                                            <div class="col-md-6 control-label">
+                                                <label class="col-md-12 displaytxt" data-bind="text: GRT"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Port of Registry:</label>
+                                            <div class="col-md-6 control-label">
+                                                <label class="col-md-12 displaytxt" data-bind="text: PortOfRegistry"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Agent Name:</label>
+                                            <div class="col-md-6 control-label">
+                                                <label class="col-md-12 displaytxt" data-bind="text: AgentName"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Agent Contact No.:</label>
+                                            <div class="col-md-6 control-label">
+                                                <label class="col-md-12 displaytxt" data-bind="text: TelephoneNo1"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"></div>
+                                <div class="clearfix">
+                                    <br>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Vessel Arrests Details</legend>
+                                <div class="row">
+                                    <label>
+                                        <input type="checkbox" id="VesselArrestedStatus" data-bind="checked: VesselArrestedStatus, enable: $parent.IsEditableA" onchange="chkVesselArrested();"/>
+                                        Vessel Arrested</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Arrested Date/Time:<span class="required" data-bind="visible: $parent.IschkVesselArrested">*</span></label>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+                                                    <input id="ArrestedDate" type="text" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: ArrestedDate, format: 'yyyy-MM-dd HH:mm', open: calOpen, timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IschkVesselArrested" name="ArrestedDate" maxlength="10" />
+                                                    <span id="isArrestedMsg" class="validationError" data-bind="visible: $parent.isArrestedMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Remarks:<span class="required" data-bind="visible: $parent.IschkVesselArrested">*</span></label>
+                                            <div class="col-md-9">
+                                                <textarea rows="3" id="ArrestedRemarks" data-bind="value: ArrestedRemarks, enable: $parent.IschkVesselArrested" maxlength="500" class="form-control" name="Remarks" />
+                                                <span id="isArrestedRemarksMsg" class="validationError" data-bind="visible: $parent.isArrestedRemarksMsg"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label>
+                                        <input type="checkbox" id="VesselReleasedStatus" data-bind="checked: VesselReleasedStatus, enable: $parent.isArresstReleased_chk, event: { change: $root.chkVesselReleased }" />
+                                        Vessel Released</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Released Date/Time:<span class="required" data-bind="visible: $parent.IschkVesselReleased">*</span></label>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+
+                                                    <input id="ReleasedDate" type="text" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: ReleasedDate, format: 'yyyy-MM-dd HH:mm', open: calOpenReleasedDate, timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IschkVesselReleased" name="ReleasedDate" maxlength="10" />
+                                                    <span id="isReleasedMsg" class="validationError" data-bind="visible: $parent.isReleasedMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Remarks:<span class="required" data-bind="visible: $parent.IschkVesselReleased">*</span></label>
+                                            <div class="col-md-9">
+                                                <textarea rows="3" id="ReleasedRemarks" data-bind="value: ReleasedRemarks, enable: $parent.IschkVesselReleased" maxlength="500" class="form-control" name="Remarks" />
+                                                <span id="isReleasedRemarksMsg" class="validationError" data-bind="visible: $parent.isReleasedRemarksMsg"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row fileupload-buttonbar">
+                                    <div class="form-group">
+
+                                        <div class="col-md-7">
+                                            &nbsp;&nbsp;
+                                	<span class="btn btn-xs green fileinput-button">
+                                        <i class="fa fa-plus"></i>
+                                        <span>Browse
+                                        </span>
+                                        <input type="file" name="files[]" title="Browse" data-bind="enable: $parent.IschkVesselReleased" id="fileToUpload1" multiple>
+                                    </span>
+                                            <button type="submit" data-bind="click: $parent.uploadFile1, enable: $parent.IschkVesselReleased" class="btn  btn-xs blue start">
+                                                <i class="fa fa-upload"></i>
+                                                <span>Upload
+                                                </span><span class="required" data-bind="visible: $parent.IschkVesselReleased">*</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" data-bind="visible: $parent.isVesselArrestDetailsUploadFileMsg">
+                                    <div class="form-group">
+
+                                        <div class="col-md-2">
+                                            &nbsp;&nbsp; <span id="isVesselArrestDetailsUploadFileMsg" class="validationError" data-bind="visible: $parent.isVesselArrestDetailsUploadFileMsg"></span>
+                                            <div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-advance">
+                                            <thead>
+                                                <tr>
+                                                    <th class="bg-dark">Document Name</th>
+                                                    <th class="bg-dark"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody data-bind="foreach: VesselArrestDocuments">
+                                                <tr>
+                                                    <td><a data-bind="text: FileName, attr: { href: '/FileDownload/VesselArrestImmobilizationSAMSAStopDocuments/' + DocumentID() }"></a></td>
+                                                    <td><a href="#" class="btn default btn-xs red" data-bind="click: $root.ArrestedDeleteDocument, visible: $root.IsReset"><i class="fa fa-trash-o"></i>Delete</a></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="clearfix">
+                                <br>
+                            </div>
+                            <fieldset>
+                                <legend>Immobilization Details</legend>
+                                <div class="row">
+                                    <label>
+                                        <input type="checkbox" id="ImmobilizationStatus" data-bind="checked: ImmobilizationStatus, enable: $parent.IsEditableI, event: { change: $root.chkImmobilization }" />
+                                        Immobilization</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Immobilization Start Date/Time:<span class="required" data-bind="visible: $parent.IschkImmobilization">*</span></label>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+
+                                                    <input id="ImmobilizationStartDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: ImmobilizationStartDate, format: 'yyyy-MM-dd HH:mm', change: CalcStartPeriodofImmobilization, timeFormat: 'HH:mm', open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IschkImmobilization" name="ImmobilizationStartDate" maxlength="10" />
+                                                    <span id="isIMBStartDateMsg" class="validationError" data-bind="visible: $parent.isIMBStartDateMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Immobilization End Date/Time:<span class="required" data-bind="visible: $parent.IschkImmobilization">*</span></label>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+
+                                                    <input id="ImmobilizationEndDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: ImmobilizationEndDate, format: 'yyyy-MM-dd HH:mm', change: CalcPeriodofImmobilization, timeFormat: 'HH:mm', open: calOpenImmobilizationEndDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IschkImmobilization " name="ImmobilizationEndDate" maxlength="10" />
+                                                    <span id="isIMBEndDateDMsg" class="validationError" data-bind="visible: $parent.isIMBEndDateDMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Period of Immobilization:</label>
+                                            <div class="col-md-6">
+                                                <input type="text" maxlength="50" id="PeriodofImmobilization" class="form-control" readonly data-bind="value: PeriodofImmobilization, enable: $parent.IschkImmobilization" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Exact Work Proposed:</label>
+                                            <div class="col-md-6">
+                                                <input id="ExactWorkProposed" type="text" data-bind="value: ExactWorkProposed, enable: $parent.IschkImmobilization" maxlength="500" class="form-control" name="ExactWorkProposed" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Berth:</label>
+                                            <div class="col-md-6">
+                                                <input type="text" maxlength="50" readonly class="form-control" data-bind=" value: CurrentBerth, enable: false" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Pollution Precaution Taken :</label>
+                                            <div class="col-md-2">
+                                                <div class="radio-list">
+
+                                                    <input type="checkbox" id="PollutionPrecautionTaken" data-bind="checked: PollutionPrecautionTakenStatus, enable: $parent.IschkImmobilization" /><label class="radio-inline"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Approved Date/Time:</label>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+
+                                                    <input id="ApprovedDate" type="text" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: ApprovedDate, format: 'yyyy-MM-dd HH:mm', open: calOpenApprovedDate, timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IschkImmobilization " name="ApprovedDate" maxlength="10" />
+                                                    <span id="isApprovedMsg" class="validationError" data-bind="visible: $parent.isApprovedMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6"></div>
+                                </div>
+                            </fieldset>
+                            <div class="clearfix"></div>
+                            <fieldset>
+                                <legend>SAMSA Stop</legend>
+                                <div class="row">
+                                    <label>
+                                        <input type="checkbox" id="SAMSAStopStatus" data-bind="checked: SAMSAStopStatus, enable: $parent.IsEditableS, event: { change: $root.chkSAMSAStop }" />
+                                        SAMSA Stop</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Stop Date/Time:<span class="required" data-bind="visible: $parent.IschkSAMSAStop">*</span></label>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+
+                                                    <input id="SAMSAStopDate" type="text" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: SAMSAStopDate, format: 'yyyy-MM-dd HH:mm', open: calOpen, timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IschkSAMSAStop " name="SAMSAStopDate" maxlength="10" />
+                                                    <span id="isSAMSAStopMsg" class="validationError" data-bind="visible: $parent.isSAMSAStopMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Remarks:<span class="required" data-bind="visible: $parent.IschkSAMSAStop">*</span></label>
+                                            <div class="col-md-9">
+                                                <textarea rows="3" id="SAMSAStopRemarks" data-bind="value: SAMSAStopRemarks, enable: $parent.IschkSAMSAStop" maxlength="500" class="form-control" name="Remarks" />
+                                                <span id="isSAMSAStopRemarksMsg" class="validationError" data-bind="visible: $parent.isSAMSAStopRemarksMsg"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label>
+
+                                        <input type="checkbox" id="SAMSAClearedStatus" data-bind="checked: SAMSAClearedStatus, enable: $parent.isSAMSACleared_chk, event: { change: $root.chkSAMSACleared }" />
+                                        SAMSA Cleared</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Cleared Date/Time:<span class="required" data-bind="visible: $parent.IschkSAMSACleared">*</span></label>
+                                            <div class="col-md-6">
+                                                <div class="form-control">
+
+                                                    <input id="SAMSAClearedDate" type="text" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: SAMSAClearedDate, format: 'yyyy-MM-dd HH:mm', open: calOpenSAMSAClearedDate, timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IschkSAMSACleared " name="SAMSAClearedDate" maxlength="10" />
+                                                    <span id="isSMASAClearedMsg" class="validationError" data-bind="visible: $parent.isSMASAClearedMsg"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Remarks:<span class="required" data-bind="visible: $parent.IschkSAMSACleared">*</span></label>
+                                            <div class="col-md-9">
+                                                <textarea rows="3" id="SAMSAClearedRemarks" data-bind="value: SAMSAClearedRemarks, enable: $parent.IschkSAMSACleared" maxlength="500" class="form-control" name="Remarks" />
+                                                <span id="isSAMSAClearedRemarksdMsg" class="validationError" data-bind="visible: $parent.isSAMSAClearedRemarksdMsg"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row fileupload-buttonbar">
+                                    <div class="form-group">
+
+                                        <div class="col-md-7">
+                                            &nbsp;&nbsp;
+                                	<span class="btn btn-xs green fileinput-button">
+                                        <i class="fa fa-plus"></i>
+                                        <span>Browse
+                                        </span>
+                                        <input type="file" data-bind="enable: $parent.IschkSAMSACleared" title="Browse" name="files[]" id="fileToUpload2" multiple>
+                                    </span>
+                                            <button type="submit" data-bind="click: $parent.uploadFile2, enable: $parent.IschkSAMSACleared" class="btn  btn-xs blue start">
+                                                <i class="fa fa-upload"></i>
+                                                <span>Upload
+                                                </span><span class="required" data-bind="visible: $parent.IschkSAMSACleared">*</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" data-bind="visible: $parent.isSAMSAStopUploadFileMsg">
+                                    <div class="form-group">
+
+                                        <div class="col-md-2">
+                                            &nbsp;&nbsp; <span id="isSAMSAStopUploadFileMsg" class="validationError" data-bind="visible: $parent.isSAMSAStopUploadFileMsg"></span>
+                                            <div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-advance">
+                                            <thead>
+                                                <tr>
+                                                    <th class="bg-dark">Document Name</th>
+                                                    <th class="bg-dark"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody data-bind="foreach: VesselSAMSAStopDocuments">
+                                                <tr>
+                                                    <td><a data-bind="text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }"></a></td>
+                                                    <td><a href="#" class="btn default btn-xs red" data-bind="click: $root.ClearedDeleteDocument, visible: $root.IsReset"><i class="fa fa-trash-o"></i>Delete</a></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                            <div class="clearfix">
+                                <br>
+                                <br>
+                            </div>
+                        </fieldset>
+                        <div class="clearfix">
+                            <br>
+                        </div>
+                        <div class="form-group">
+                            <div class="btns-group form-actions fluid">
+                                <button type="submit" class="btn green" data-bind="click: $parent.SaveVesselArrestImmobilizationSAMSAStop, visible: $parent.IsSave">Save</button>
+                                <button type="submit" class="btn green" data-bind="click: $parent.ModifySaveVesselArrestImmobilizationSAMSAStop, visible: $parent.IsUpdate">Update</button>
+                                <button type="submit" class="btn blue" data-bind="click: $parent.ResetVesselArrestImmobilizationSAMSAStop, visible: $parent.IsReset">Reset</button>
+                                <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+
+
+

@@ -1,0 +1,367 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Dredging Volume";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+var dredgingvolumeid = 0;
+    var showViewOnLoad = false;
+    if (!string.IsNullOrEmpty(ViewBag.ID))
+    {
+        dredgingvolumeid = Convert.ToInt32(ViewBag.ID);
+        showViewOnLoad = true;
+    }
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/DredgingVolumeModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/DredgingVolumeViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+    var viewModel = new IPMSROOT.DredgingVolumeViewModel("@dredgingvolumeid", showOnLoad);
+ 
+ko.applyBindingsWithValidation(viewModel, $("#DredgingVolume")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="DredgingVolume">  
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<!-- Main body content starts here for developers-->
+
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+
+        <script type="text/html" id="List-template">
+            
+            <div id="tableheader">
+               @if(Model.HasAddPrivilege) {
+                <a class="button gbtngreen" data-bind="click: $root.addDredgingVolume ">Add New <i class="fa fa-plus"></i></a>
+              }
+                 </div>
+<!-- Grid View-->
+
+          <div data-bind="kendoGrid: {
+    data: DredgingVolumeList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'AreaCodeSort', title: 'Area', width: 60, filterable: true },
+                       { field: 'DredgingFromDateSort', title: 'Start Time', width: 80, filterable: true },
+                       { field: 'DredgingToDateSort', title: 'End Time', width: 80, filterable: true },
+                        { field: 'VolumeSort', title: 'Volume', width: 60, filterable: true },
+                        { field: 'DredgingTaskSort', title: 'Task', width: 40, filterable: true },
+                          { title: 'Actions', width: 40, filterable: false }]
+}">
+            </div>
+
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                     <td><span data-bind="text: AreaCode"></span></td>
+                           
+                            <td><div class="nowrap"><span data-bind="text: DredgingFromDate"></span></div></td>
+                            <td>
+                                <div class="nowrap"><span data-bind="text: DredgingToDate"></span></div>
+                            </td>
+                           <!-- <td>
+                                <div class="nowrap"><span data-bind="text: TotalHour"></span></div>
+                            </td>-->
+                            <td><div class="nowrap"><span data-bind="text: Volume"></span></div></td>
+                            <td>
+                                <div class="nowrap"><span data-bind="text: DredgingTask"></span></div>
+                            </td>
+                            
+                            <td>
+                                <div class="nowrap">
+                                
+                                    <a href="#" data-bind="click: $parent.viewdredgingvolume" title="View">
+                                        <i class="fa fa-eye"></i></a>
+                                 
+                                
+                                    <a href="#" data-bind="click: $parent.editdredgingvolume," title="Edit"><i class="fa fa-edit"></i></a>&nbsp; &nbsp;
+                                 
+                                </div>
+                            </td>
+                </tr>
+                                  <div data-bind="visible: DredgingVolumeList().length === 0">
+                                                No Records Found...</div>
+            </script>
+
+           <!--End Grid View-->
+        </script>
+      <!--28.10.2014------------------------------------------------------------------------------------------------------------------------------------------->
+ <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+ <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: dredgingvolumeModel">
+                            <div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Dredging Volume Details</legend>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                       Financial Year:
+                                                    	<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <!--<input type="text" class="form-control" name="FinancialYear" data-bind="value: FinancialYear, enable: $parent.editableView">-->
+                                                      @* <input id="FinancialYear" name="FinancialYear" title="FinancialYear" data-bind="kendoDropDownList: { data: $root.dredgingvolumereferenceData().FinancialYears, value: FinancialYearCode, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select Financial Year', enable: $parent.editableView }" />
+                                                        <span id="spanoiltype" class="validationError" data-bind="validationMessage: FinancialYearCode "></span>*@
+                                                       <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: FinancialYearID"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Dredging Material:
+                                                    	<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                       @* <input id="DredgingType" name="DredgingType" title="DredgingType" data-bind="kendoDropDownList: { data: $root.dredgingvolumereferenceData().DredgingTypes, value: DredgingTypeCode, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select Dredging Type', enable: $parent.editableView }" />
+                                                        <span id="spanoiltype" class="validationError" data-bind="validationMessage: DredgingTypeCode "></span>*@
+                                                      <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: DredgingTypeCode"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                         <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                      Area:
+                                                    	<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: AreaCode"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Dredging Depth:
+                                                    	<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        @* <input type="text" class="form-control" name="DredgingDepth" data-bind="value: DredgingDepth, enable: $parent.editableView">*@
+                                                          <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: DredgingDepth"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                      Promulgate Depth:
+                                                    	<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        @*<input type="text" class="form-control" name="PromulgateDepth" data-bind="value: PromulgateDepth, enable: $parent.editableView">*@
+                                                          <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: PromulgateDepth"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Requirement:
+                                                    	<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        @* <input type="text" class="form-control" name="Requirement" data-bind="value: Requirement, enable: $parent.editableView">*@
+                                                           <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: Requirement"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                       <div class="txtline"></div>
+                                       <div>&nbsp;</div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                       Dredging From Date:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="DredgingFromDate" type="text" title="Datetimepicker" class="form-control date-picker" data-bind="kendoDateTimePicker: { value: DredgingFromDate, format: 'yyyy-MM-dd HH:mm:ss', timeFormat: 'HH:mm', readonly: true, min: StartDate}, event: { change: ValidDate }" name="Datepicker" maxlength="16"  /> 
+                                                          <span class="validationError" data-bind="validationMessage: DredgingFromDate"></span>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Dredging To Date:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                          <input id="DredgingToDate" type="text" title="Datetimepicker" class="form-control date-picker" data-bind="kendoDateTimePicker: { value: DredgingToDate, format: 'yyyy-MM-dd HH:mm:ss', timeFormat: 'HH:mm', readonly: true }, event: { change: ValidDate }" name="Datepicker" maxlength="16"  /> 
+                                                          <span class="validationError" data-bind="validationMessage: DredgingToDate"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                       <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                       Total Hours:
+                                                    	<span class="required"></span>
+                                                    </label>
+
+                                                   <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                             <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: TotalTime"></label>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                </div>
+                                            </div>
+                                          <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Volume:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-2">
+                                                         <input type="text" maxlength="10" style="width:70px" class="form-control" name="Volume" data-bind="value: Volume, enable: $parent.editableView, valueUpdate: 'keypress', event: { keypress: Validatenumeric }">
+                                                     
+                                                  </div>
+                                                       <div><label class="control-label col-md" name="UnitCode" value="m3" data-bind="value: UnitCode">m3</label></div>
+                                                </div>
+                                            </div>
+                                             <!-- <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Units:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-1">
+                                                        <input id="UnitType" name="UnitType" title="UnitType" data-bind="kendoDropDownList: { data: $root.dredgingvolumereferenceData().UnitTypes, value: Units, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select Unit', enable: $parent.editableView }" />
+                                                        <span id="spanoiltype" class="validationError" data-bind="validationMessage: Units "></span>
+                                                    </div>
+                                                </div>
+                                            </div>-->
+
+                                        </div>
+                                           <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                       Dredger Name:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                       <!-- <input type="text" maxlength="30" class="form-control" name="DredgerName" data-bind="value: DredgerName, enable: $parent.editableView">-->
+                                                        <input id="DredgerNameType" name="DredgerNameType" title="DredgerNameType" data-bind="kendoDropDownList: { data: $root.dredgingvolumereferenceData().DredgerNameTypes, value: DredgerName, dataTextField: 'CraftName', dataValueField: 'CraftID', optionLabel: 'Select Dredger Name', enable: $parent.editableView }" />
+                                                        <span id="spanoiltype" class="validationError" data-bind="validationMessage: DredgerName "></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Dredging Task:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                         <textarea class="form-control" maxlength="500" rows="2" data-bind="value: DredgingTask, enable: $parent.editableView "></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                          <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Remarks:</label>
+                                                    <div class="col-md-6">
+                                                        <textarea class="form-control" maxlength="500" rows="2" data-bind="value: Remarks, enable: $parent.editableView "></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                         <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Dredging Delay:</label>
+                                                    <div class="col-md-6">
+                                                        <textarea class="form-control" maxlength="500" rows="2" data-bind="value: DredgingDelay, enable: $parent.editableView "></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <br>
+                                    </fieldset>
+                                </div>
+                            </div>
+                           <div class="btns-group form-actions fluid">
+                                <button type="submit" id="Save" class="btn green" value="POST VAL"
+                                    data-bind="click: $parent.SaveDredgingVolume, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">
+                                    Save</button>
+                                <button type="submit" class="btn green" data-bind="click: $parent.ModifyDredgingVolume, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                <button type="submit" class="btn blue" data-bind="click: $parent.ResetDredgingVolume, visible: $parent.IsReset ">Reset</button>
+                                <button type="submit" class="btn red" data-bind="click: $parent.CancelDredgingVolume">Cancel</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+
+    </div>
+</div>
+
+<!-- Main body content ends here for developers-->
+
+
+
+<!-- END CONTENT -->
+
+
+
+

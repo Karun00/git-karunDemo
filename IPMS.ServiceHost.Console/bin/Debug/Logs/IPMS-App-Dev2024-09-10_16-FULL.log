@@ -1,0 +1,137 @@
+2024-09-10 16:29:40,810 [10] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:29:51,982 [10] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 51 (Milli seconds) 
+2024-09-10 16:29:56,067 [12] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:00,581 [12] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass7_0 / IPMS.Domain.Models.AccountLoginModel <UserLogin>b__0() is 3567 (Milli seconds) 
+2024-09-10 16:30:00,594 [12] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:01,613 [15] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:02,605 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 49 (Milli seconds) 
+2024-09-10 16:30:03,197 [10] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:03,236 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:03,267 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:03,271 [17] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:04,110 [10] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : NewsService+<>c__DisplayClass6_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.NewsVO] <GetNewsForScroll>b__0() is 839 (Milli seconds) 
+2024-09-10 16:30:04,696 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DivingRequestService+<>c__DisplayClass14_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.DivingRequestVO] <GetDivingrequestsForScroll>b__0() is 55 (Milli seconds) 
+2024-09-10 16:30:05,557 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DashBoardService / System.String <GetReportPeriod>b__7_0() is 2288 (Milli seconds) 
+2024-09-10 16:30:05,566 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DashBoardService+<>c__DisplayClass14_0 / IPMS.Domain.ValueObjects.AnchorageDtlsVO <GetAnchorageCount>b__0() is 2329 (Milli seconds) 
+2024-09-10 16:30:06,086 [17] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DashBoardService+<>c__DisplayClass13_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.PlannedMovementsDtlsVO] <GetPlannedMovementsCount>b__0() is 2811 (Milli seconds) 
+2024-09-10 16:30:06,129 [17] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:06,135 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:07,087 [17] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 44 (Milli seconds) 
+2024-09-10 16:30:07,107 [15] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:08,060 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 46 (Milli seconds) 
+2024-09-10 16:30:08,095 [15] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:08,465 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / System.Collections.Generic.IEnumerable`1[IPMS.Domain.Models.Module] <GetModulesByUser>b__9_0() is 1438 (Milli seconds) 
+2024-09-10 16:30:10,141 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : ModuleService+<>c__DisplayClass7_0 / System.Collections.Generic.IEnumerable`1[IPMS.Domain.Models.UserRole] <GetUserRoles>b__0() is 1155 (Milli seconds) 
+2024-09-10 16:30:10,181 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:10,182 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:10,195 [16] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:10,199 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:11,106 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / System.Collections.Generic.IEnumerable`1[IPMS.Domain.ValueObjects.PortVO] <GetPortsByUser>b__8_0() is 38 (Milli seconds) 
+2024-09-10 16:30:11,127 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileConversationService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.UserConversationVO] <GetNewMessages>b__7_0() is 46 (Milli seconds) 
+2024-09-10 16:30:11,150 [20] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:11,264 [16] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 104 (Milli seconds) 
+2024-09-10 16:30:11,675 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / System.Collections.Generic.IEnumerable`1[IPMS.Domain.ValueObjects.GroupedPendingTaskVO] <GetPendingTask>b__11_0() is 553 (Milli seconds) 
+2024-09-10 16:30:12,210 [20] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.SystemNotificationVO] <GetNotifications>b__7_0() is 107 (Milli seconds) 
+2024-09-10 16:30:12,235 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:13,303 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 102 (Milli seconds) 
+2024-09-10 16:30:17,767 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:18,759 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 47 (Milli seconds) 
+2024-09-10 16:30:18,885 [10] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:18,886 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:18,894 [12] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:18,895 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:18,937 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : NewsService+<>c__DisplayClass6_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.NewsVO] <GetNewsForScroll>b__0() is 49 (Milli seconds) 
+2024-09-10 16:30:19,825 [12] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MarpolService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.MarpolVO] <GetMarpolDetails>b__4_0() is 66 (Milli seconds) 
+2024-09-10 16:30:19,868 [10] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DivingRequestService+<>c__DisplayClass14_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.DivingRequestVO] <GetDivingrequestsForScroll>b__0() is 46 (Milli seconds) 
+2024-09-10 16:30:20,070 [6] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:21,058 [6] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 44 (Milli seconds) 
+2024-09-10 16:30:21,085 [6] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:22,070 [6] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 47 (Milli seconds) 
+2024-09-10 16:30:22,121 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:24,257 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : ModuleService+<>c__DisplayClass7_0 / System.Collections.Generic.IEnumerable`1[IPMS.Domain.Models.UserRole] <GetUserRoles>b__0() is 1181 (Milli seconds) 
+2024-09-10 16:30:24,273 [15] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:24,289 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:24,297 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:24,364 [20] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:25,245 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileConversationService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.UserConversationVO] <GetNewMessages>b__7_0() is 41 (Milli seconds) 
+2024-09-10 16:30:25,275 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 87 (Milli seconds) 
+2024-09-10 16:30:25,353 [20] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.SystemNotificationVO] <GetNotifications>b__7_0() is 82 (Milli seconds) 
+2024-09-10 16:30:25,376 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:30:25,703 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / System.Collections.Generic.IEnumerable`1[IPMS.Domain.ValueObjects.GroupedPendingTaskVO] <GetPendingTask>b__11_0() is 529 (Milli seconds) 
+2024-09-10 16:30:26,377 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 88 (Milli seconds) 
+2024-09-10 16:30:32,780 [17] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:04,843 [18] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:16,224 [18] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 48 (Milli seconds) 
+2024-09-10 16:42:16,294 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:17,180 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 37 (Milli seconds) 
+2024-09-10 16:42:17,376 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:17,377 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:17,394 [12] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:17,988 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : NewsService+<>c__DisplayClass6_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.NewsVO] <GetNewsForScroll>b__0() is 604 (Milli seconds) 
+2024-09-10 16:42:18,288 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DivingRequestService+<>c__DisplayClass14_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.DivingRequestVO] <GetDivingrequestsForScroll>b__0() is 53 (Milli seconds) 
+2024-09-10 16:42:18,594 [12] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 45 (Milli seconds) 
+2024-09-10 16:42:18,616 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:19,593 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 46 (Milli seconds) 
+2024-09-10 16:42:19,617 [18] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:21,770 [18] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : ModuleService+<>c__DisplayClass7_0 / System.Collections.Generic.IEnumerable`1[IPMS.Domain.Models.UserRole] <GetUserRoles>b__0() is 1210 (Milli seconds) 
+2024-09-10 16:42:21,792 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:21,805 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:21,807 [16] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:21,904 [12] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:22,769 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileConversationService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.UserConversationVO] <GetNewMessages>b__7_0() is 51 (Milli seconds) 
+2024-09-10 16:42:22,776 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 116 (Milli seconds) 
+2024-09-10 16:42:23,217 [12] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.SystemNotificationVO] <GetNotifications>b__7_0() is 124 (Milli seconds) 
+2024-09-10 16:42:23,247 [12] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:23,401 [16] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / System.Collections.Generic.IEnumerable`1[IPMS.Domain.ValueObjects.GroupedPendingTaskVO] <GetPendingTask>b__11_0() is 594 (Milli seconds) 
+2024-09-10 16:42:24,348 [12] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 100 (Milli seconds) 
+2024-09-10 16:42:24,403 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:25,415 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 43 (Milli seconds) 
+2024-09-10 16:42:25,521 [18] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:25,522 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:25,530 [15] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:25,581 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : NewsService+<>c__DisplayClass6_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.NewsVO] <GetNewsForScroll>b__0() is 52 (Milli seconds) 
+2024-09-10 16:42:26,426 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 42 (Milli seconds) 
+2024-09-10 16:42:26,448 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:26,561 [18] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DivingRequestService+<>c__DisplayClass14_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.DivingRequestVO] <GetDivingrequestsForScroll>b__0() is 56 (Milli seconds) 
+2024-09-10 16:42:27,339 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 43 (Milli seconds) 
+2024-09-10 16:42:27,356 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:29,237 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : ModuleService+<>c__DisplayClass7_0 / System.Collections.Generic.IEnumerable`1[IPMS.Domain.Models.UserRole] <GetUserRoles>b__0() is 1043 (Milli seconds) 
+2024-09-10 16:42:29,257 [14] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:29,278 [18] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:29,279 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:29,324 [17] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:30,142 [14] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileConversationService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.UserConversationVO] <GetNewMessages>b__7_0() is 39 (Milli seconds) 
+2024-09-10 16:42:30,339 [17] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.SystemNotificationVO] <GetNotifications>b__7_0() is 86 (Milli seconds) 
+2024-09-10 16:42:30,351 [18] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 93 (Milli seconds) 
+2024-09-10 16:42:30,398 [15] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:30,809 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / System.Collections.Generic.IEnumerable`1[IPMS.Domain.ValueObjects.GroupedPendingTaskVO] <GetPendingTask>b__11_0() is 571 (Milli seconds) 
+2024-09-10 16:42:31,485 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 110 (Milli seconds) 
+2024-09-10 16:42:34,412 [17] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:35,430 [17] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 47 (Milli seconds) 
+2024-09-10 16:42:35,519 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:35,520 [12] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:35,529 [16] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:35,530 [17] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:35,572 [12] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : NewsService+<>c__DisplayClass6_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.NewsVO] <GetNewsForScroll>b__0() is 50 (Milli seconds) 
+2024-09-10 16:42:36,423 [16] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MarpolService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.MarpolVO] <GetMarpolDetails>b__4_0() is 47 (Milli seconds) 
+2024-09-10 16:42:36,541 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : DivingRequestService+<>c__DisplayClass14_0 / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.DivingRequestVO] <GetDivingrequestsForScroll>b__0() is 47 (Milli seconds) 
+2024-09-10 16:42:36,727 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:37,756 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 46 (Milli seconds) 
+2024-09-10 16:42:37,768 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:38,790 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService+<>c__DisplayClass19_0 / System.String <GetUserPrivilegesWithControllerName>b__0() is 48 (Milli seconds) 
+2024-09-10 16:42:38,810 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:40,992 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : ModuleService+<>c__DisplayClass7_0 / System.Collections.Generic.IEnumerable`1[IPMS.Domain.Models.UserRole] <GetUserRoles>b__0() is 1212 (Milli seconds) 
+2024-09-10 16:42:41,009 [11] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:41,019 [18] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:41,021 [15] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:41,093 [17] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:41,969 [15] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 90 (Milli seconds) 
+2024-09-10 16:42:42,029 [11] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileConversationService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.UserConversationVO] <GetNewMessages>b__7_0() is 43 (Milli seconds) 
+2024-09-10 16:42:42,123 [17] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : MobileService / System.Collections.Generic.List`1[IPMS.Domain.ValueObjects.SystemNotificationVO] <GetNotifications>b__7_0() is 84 (Milli seconds) 
+2024-09-10 16:42:42,139 [13] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:42:42,512 [18] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / System.Collections.Generic.IEnumerable`1[IPMS.Domain.ValueObjects.GroupedPendingTaskVO] <GetPendingTask>b__11_0() is 544 (Milli seconds) 
+2024-09-10 16:42:43,202 [13] INFO  IPMS.Services.ServiceBase - Time taken to execute class / method : AccountService / Int32 <GetPendingTaskCount>b__20_0() is 94 (Milli seconds) 
+2024-09-10 16:43:29,371 [6] DEBUG IPMS.Services.ServiceBase - Service Base
+2024-09-10 16:45:29,629 [6] DEBUG IPMS.Services.ServiceBase - 
+2024-09-10 16:45:29,629 [6] ERROR IPMS.Services.ServiceBase - Internal Server error occured. Please contact to administrator. Primary key for entity type Marpol not found.
+2024-09-10 16:45:35,345 [27] DEBUG IPMS.Services.ServiceBase - Service Base

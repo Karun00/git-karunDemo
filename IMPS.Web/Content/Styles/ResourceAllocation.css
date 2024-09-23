@@ -1,0 +1,288 @@
+﻿#emaildisplay, #smsdisplay, #sndisplay {
+    display: none;
+}
+
+.leftalign {
+    text-align: left;
+}
+
+.plain-content {
+    /* margin-left: 0px;
+            margin-top: 0px;
+           height: auto;
+            min-height: 90.8vh;
+            min-height: 960px;
+           padding: 10px 20px 30px 20px;*/
+    background-color: #fff;
+}
+
+
+
+
+.CLEARSlot {
+    /*Clearing Slot*/
+    /*border: 1px solid #CCC;*/
+    background-color: #fff;
+    width: 150px;
+    /*height: 40px;*/
+}
+
+.ACCP {
+    /*Accepted*/
+    border: 1px solid #CCC;
+    background-color: #ae91ff;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.CFRI {
+    /*Confirmed*/
+    /*background-color: #40FF00;*/
+    background-color: #006400;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.CLSD {
+    /*Closed*/
+    background-color: #d11d53;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.COMP {
+    /*Completed*/
+    background-color: #ffc0cb;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.VERF {
+    /*Completed*/
+    background-color: #ffc0cb;
+    /*background-color: #d11d53;*/
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.PNDG {
+    /*Pending*/
+    background-color: white;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.REJT {
+    /*Rejected*/
+    background-color: #8b0000;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.SCHD {
+    /*Scheduled*/
+    background-color: orange;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.OVRD {
+    /*OVERRIDE*/
+    background-color: #ffff00;
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+
+/*suresh*/
+
+table {
+    table-layout: fixed;
+}
+
+.maintable > table {
+    border: 1px solid #ccc;
+}
+
+    .maintable > table > thead {
+        background-color: #3d3d3d;
+        text-align: center;
+        line-height: 25px;
+        color: #fff;
+    }
+
+    .maintable > table > tbody {
+        text-align: center;
+    }
+
+    .maintable > table > thead > tr > td {
+        /*width: 90px;*/
+    }
+
+    .maintable > table > tbody > tr {
+        border-bottom: 1px solid #ccc;
+    }
+
+.int-table > table > tbody > tr {
+    border-bottom: 1px solid #ccc;
+}
+
+    .int-table > table > tbody > tr:last-child {
+        border-bottom: 0px;
+    }
+
+.col-width {
+    border-left: 1px solid #ccc;
+    /*width: 190px;*/
+    display: table-cell;
+}
+
+
+.resource-col {
+    border-left: 1px solid #ccc;
+    /*width: 150px;*/
+}
+
+.inner-col-width {
+    border-left: 1px solid #ccc;
+    width: 150px;
+    display: table-cell;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 70px;
+}
+
+.cursor-btn {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.trash-col {
+    border-left: 1px solid #ccc;
+    width: 30px;
+}
+
+.empty-col {
+    border-left: 1px solid #ccc;
+    width: 30px;
+}
+
+.STRD {
+    background-color: grey;
+    /*width: 120px;*/
+    width: 150px;
+    height: 40px;
+    display: table-cell;
+    border-left: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+.legend-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #666;
+}
+
+.legend-Started {
+    background: grey;
+}
+
+.legend-Confirmed {
+    /*background: #40FF00;*/
+    background: #006400;
+}
+
+.legend-Pending {
+    background: white;
+}
+
+.legend-Scheduled {
+    background: orange;
+}
+
+.legend-grey {
+    background: grey;
+}
+
+.legend-purple {
+    background: #639;
+}
+
+.legend-darkyellow {
+    background: #FC0;
+}
+
+.legend-orange {
+    background: #F60;
+}
+
+.legend-UnPlanned {
+    background: lightblue;
+}
+
+.legend-Accepted {
+    background: #ae91ff;
+}
+
+.legend-Closed {
+    background: #d11d53;
+}
+
+.legend-Completed {
+    background: #ffc0cb;
+}
+
+.legend-Rejected {
+    background: #8b0000;
+}
+
+.legend-Overridden {
+    background: #ffff00;
+}
+
+.left-span {
+    padding-left: 18px;
+}
+
+
+div#pop-up {
+    display: none;
+    position: absolute;
+    width: 600px;
+    padding: 3px;
+    background: #eeeeee;
+    color: #000000;
+    border: 1px solid #1a1a1a;
+    font-size: 90%;
+    z-index: 999;
+    border-radius: 4px;
+}

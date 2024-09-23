@@ -1,0 +1,23 @@
+﻿@using MvcReportViewer;
+@{
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        @Html.MvcReportViewer(
+       "/IPMS.Reports/PwdChangeReqLog",
+        new { UserName = ViewBag.UserName },
+         new { Height = "550px", Width = "100%", scrolling = "no", style = "border: none" })
+    </div>
+</body>
+</html>
+
+
+

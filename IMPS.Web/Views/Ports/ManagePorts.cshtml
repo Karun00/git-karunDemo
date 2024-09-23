@@ -1,0 +1,263 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Port";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/PortModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/PortViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.PortViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#PortMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="PortMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<!-- Main body content starts here for developers-->
+
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+@*  //For BugID 4870 below line is commented
+                <a class="button gbtngreen" data-bind="click: $root.addPort ">Add New <i class="fa fa-plus"></i></a>*@
+                    }
+                </div>
+
+                <div data-bind="kendoGrid: {
+    data: portList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: {
+        extra: false,
+        operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } }
+    },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'PortCodeSort', title: 'Port Code', width: 70, filterable: true },
+        { field: 'PortNameSort', title: 'Port Name', width: 80, filterable: true },
+        { field: 'InternationalCharacterSort', title: 'International Character', width: 100, filterable: false },
+        { field: 'GeographicLocationSort', title: 'Geographic Location', width: 80, filterable: false },
+        { field: 'ContactNoSort', title: 'Contact No', width: 70, filterable: true },
+        { field: 'EmailSort', title: 'Email', width: 110, filterable: false },
+        { field: 'FaxSort', title: 'Fax', width: 70, filterable: false },
+        { field: 'StatusSort', title: 'Status', filterable: false, width: 50 },
+        { title: 'Actions', width: 40, filterable: false }]
+}">
+                </div>
+
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td><span data-bind="text: PortCode"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: PortName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: InternationalCharacter"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: GeographicLocation"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ContactNo"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Email"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Fax"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Statust"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewport" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editport" title="Edit"><i class="fa fa-edit"></i></a>
+                                }&nbsp; &nbsp;
+                                    @*<a href="#" data-bind="click: $parent.DeletePort" title="Delete"><i class="fa fa-ban"></i></a>*@
+                            </div>
+                        </td>
+                    </tr>
+                    <div data-bind="visible: portList().length === 0">
+                        No Records Found...
+                    </div>
+                </script>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet portlet-body form">
+                    <form action="#" id="form_sample_1" class="form-horizontal">
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                            <div class="form-body" data-bind="with: portModel">
+
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Port Details</legend>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Port Code:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="PortCode" name="code" maxlength="2" class="form-control" data-bind="value: PortCode, enable: $parent.IsCodeEnable, event: { change: ValidEvent }">
+                                                        <span id="spanportcode" class="validationError" style="display: none"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Port Name:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" maxlength="20" id="PortName" name="name" data-required="1" class="form-control" data-bind="value: PortName, enable: $parent.IsCodeEnable, event: { change: ValidPortName } " />
+                                                        <span id="spanportname" class="validationError" style="display: none"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        International Character:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" maxlength="10" class="form-control" name="intcharacter" data-bind="value: InternationalCharacter, enable: $parent.editableView, event: { keypress: ValidateAlphabets }">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Geographic Location:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" maxlength="16" class="form-control" name="geoloc" data-bind="value: GeographicLocation, enable: $parent.editableView, event: { keypress: Validatealphanumeric } ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Contact No.:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" name="number" id="ContactNo" maxlength="15" data-bind="value: ContactNo, enable: $parent.editableView, event: { keypress: Validatenumeric }">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Email:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="email" maxlength="50" class="form-control" name="email" data-bind="value: Email, enable: $parent.editableView">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Fax:</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control" name="fax" id="Fax" maxlength="15" data-bind="value: Fax, enable: $parent.editableView, event: { keypress: Validatenumeric }">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Website:</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" maxlength="50" class="form-control" name="website" data-bind="value: Website, enable: $parent.editableView, event: { keypress: ValidateWebsite }">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">Description:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="input-icon">
+                                                            <textarea class="form-control" maxlength="100" rows="4" data-bind="value: Description, enable: $parent.editableView, event: { keypress: Validatealphanumeric }"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Status:</label>
+                                                    <div class="col-md-6">
+                                                        <select id="status" name="" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.editableView "></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                        </div>
+                                        <br>
+                                    </fieldset>
+                                </div>
+
+                                <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                    <button type="submit" class="btn green" title="Save" data-bind="click: $parent.SavePort, visible: $parent.IsSave">Save</button>
+                                    <button type="submit" class="btn green" title="Update" data-bind="click: $parent.ModifyPort, visible: $parent.IsUpdate">Update</button>
+                                    <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetPort, visible: $parent.IsReset ">Reset</button>
+                                    <button type="submit" class="btn red" title="Cancel" data-bind="click: $parent.cancel">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </script>
+
+    </div>
+</div>
+
+<!-- Main body content ends here for developers-->
+
+<!-- END CONTENT -->
+
+
+

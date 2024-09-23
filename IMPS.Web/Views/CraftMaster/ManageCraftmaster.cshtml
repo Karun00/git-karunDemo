@@ -1,0 +1,498 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Craft Master";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/ViewModel/CraftMasterViewModel.js"></script>
+    <script src="~/Scripts/Application/Model/CraftMasterModel.js"></script>
+    <script src="~/Scripts/Lib/jspdf.min.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.CraftMasterViewModel();   
+ko.applyBindingsWithValidation(viewModel, $("#CraftMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="CraftMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<!-- Main body content starts here for developers-->
+
+<div class="clearfix"></div>
+
+<script type="text/html" id="List-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div id="tableheader">
+            @if (Model.HasAddPrivilege)
+            {
+                <a class="button gbtngreen" data-bind="click: $root.addCraftMaster">Add New <i class="fa fa-plus"></i></a>
+            }
+        </div>
+        <div id="craftManifestGrid" data-bind="kendoGrid: {
+    data: craftmasterList,
+    groupable: false,
+    sortable: true,
+    scrollable: false,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, 
+    columns: [{ field: 'CraftCodeSort', title: 'Craft Code', width: 20, filterable: true },
+              { field: 'CraftNameSort', title: 'Craft Name', width: 80, filterable: true },
+              { field: 'IMONoSort', title: 'IMO Number', width: 80, filterable: true },
+              { field: 'CallSignSort', title: 'Call Sign', width: 80, filterable: true },
+              { field: 'StatusSort',title: 'Status', filterable: true , width: 60 },
+              { title: 'Actions', filterable: false, width: 80 }]
+}">
+        </div>
+        <script id="rowTmpl" type="text/html">
+            <tr>
+                <td data-bind="text: CraftCode"></td>
+                <td>
+                    <div class="nowrap" data-bind="text: CraftName"></div>
+                </td>
+                <td data-bind="text: IMONo"></td>
+                <td data-bind="text: CallSign"></td>
+                <td data-bind="text: Statust"></td>
+                <td>
+                    <div class="nowrap">
+                        @if (Model.HasViewPrivilege)
+                        {
+                            <a href="javascript:;" title="View" data-bind="click: $root.viewCraftMaster"><i class="fa fa-eye"></i></a>
+                        }
+                        @if (Model.HasEditPrivilege)
+                        {
+                            <a href="javascript:;" title="Edit" data-bind="click: $root.editCraftMaster"><i class="fa fa-edit"></i></a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </script>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+    <span class="validationError" data-bind="validationMessage: field"></span>
+</script>
+
+<script type="text/html" id="Form-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="row">
+            <div class="col-md-12">
+                <form action="#" class="form-horizontal" id="submit_form">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind='with: craftmasterModel'>
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Craft Details</legend>
+                                    <div class="clearfix">
+                                        <br>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Code:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: CraftCode, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces, change: ValidEventCraftCode, keyup: HandleKeyUpCraftCode }, enable: $parent.IsCodeEnable" maxlength="10">
+                                                    <span id="spanCraftcode" class="validationError" style="display: none"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Type:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <select name="crafttype" id="crafttype" class="form-control" onchange="DredgerColorEvent(this);" data-bind="options: $root.craftReferenceData().CraftTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: CraftType, optionsCaption: 'Select...', enable: $parent.IsCodeEnable"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Commission Date:</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <input type="text" id="CommissionDate" class="date-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind=" kendoDatePicker: { value: CommissionDate, max: new Date(), format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsCodeEnable, event: { keypress: $root.ValidateDate } " name="CommissionDate" maxlength="10" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Name:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: CraftName, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces, change: ValidEventCraftName, keyup: HandleKeyUpCraftName }, enable: $parent.IsCodeEnable" maxlength="30">
+                                                    <span id="spanCraftName" class="validationError" style="display: none"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Build Date:</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="CraftBuildDate" class="date-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: CraftBuildDate, max: new Date(), format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsCodeEnable, event: { keypress: $root.ValidateDate } " name="CraftBuildDate" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">AFC in Metric Ton:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" onkeypress="return Validatenumeric(this,event);" data-bind="value: AFCInMetricTon, enable: $parent.IsCodeEnable" maxlength="3" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">IMO Number :<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" id="IMONo" data-bind="value: IMONo, event: { keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces, change: $parent.ValidEventIMO, keyup: HandleKeyUpIMO }, enable: $root.IsCodeEnable" maxlength="20" autofocus>
+                                                    <span id="spanIMONo" class="validationError" style="display: none"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Date of Delivery:</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="DateOfDelivery" class="date-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: DateOfDelivery, max: new Date(), format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsCodeEnable, event: { keypress: $root.ValidateDate }" name="DateOfDelivery" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Fuel Type:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <select name="FuelType" id="FuelType" class="form-control" data-bind="options: $root.craftReferenceData().FuelTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: FuelType, optionsCaption: 'Select....', enable: $parent.IsCodeEnable"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Commission Status:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <select name="CraftCommissionStatus" id="CraftCommissionStatus" class="form-control" data-bind="options: $root.craftReferenceData().CraftCommissionStatuss, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: CraftCommissionStatus, optionsCaption: 'Select....', enable: $parent.IsCodeEnable">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-6">Call Sign:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: CallSign, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }, enable: $parent.IsCodeEnable" maxlength="20">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Nationality / Flag:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <select name="CraftNationality" id="CraftNationality" class="form-control" data-bind="options: $root.craftReferenceData().CraftNationalitys, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: CraftNationality, optionsCaption: 'Select....', enable: $parent.IsCodeEnable"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Port of Registry:</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <select name="PortOfRegistry" id="PortOfRegistry" class="form-control" data-bind="options: $root.craftReferenceData().PortOfRegistrys, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: PortOfRegistry, optionsCaption: 'Select....', enable: $parent.IsCodeEnable"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-6">Ex-Call Sign:</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: ExCallSign, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }, enable: $parent.IsCodeEnable" maxlength="20">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Classification Society:</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <select name="ClassificationSociety" id="ClassificationSociety" class="form-control" data-bind="options: $root.craftReferenceData().ClassificationSocietys, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: ClassificationSociety, optionsCaption: 'Select....', enable: $parent.IsCodeEnable"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Status:</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <select id="status" name="RecordStatus" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.IsActivityEnable "></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="DredgerColor">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6" for="background-color">Pick Color For Dredger:<span class="required">*</span></label>
+                                                <div class="col-md-2">
+
+                                                    @*Working Code*@
+                                                    <input id="background-color" type="color" onchange="ColorCodeChange();" style="width: 100%; height: 24px;" data-bind="value: DredgerColorCode, enable: $parent.IsCodeEnable" placeholder="#000000" maxlength="10">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input id="chosen-color" class="form-control" style="width: 116px;" type="text" readonly data-bind="value: DredgerColorCode, enable: $parent.IsCodeEnable" />
+                                                    <span id="spanDredgerColorCode" class="validationError" style="display: none;"></span>
+
+                                                    @*Another code*@
+                                                    @*<input data-bind="kendoColorPicker: { palette: colorPalette, value: selectedChoice }" />                                                  
+                                                      Selected: <strong data-bind="text: selectedChoice"></strong>*@
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="txtline">
+                                        <span class="txt"><strong><b>Engine Details</b></strong></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-6">Engine Power (Kilowatts):</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" onkeypress="return Validatenumeric(this,event);" data-bind="value: EnginePower, enable: $parent.IsCodeEnable, enable: $parent.IsCodeEnable" maxlength="4" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">No. of Propellers:</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" onkeypress="return Validatenumeric(this,event);" data-bind="value: NoOfPropellers, enable: $parent.IsCodeEnable" maxlength="4" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-6">Engine Type:</label>
+                                                <div class="col-md-6">
+                                                    <div>
+                                                        <select name="EngineType" id="EngineType" class="form-control" data-bind="options: $root.craftReferenceData().EngineTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: EngineType, optionsCaption: 'Select...', enable: $parent.IsCodeEnable"></select>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Max Maneuvering speed:</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" onkeypress="return Validatenumeric(this,event);" data-bind="value: MaxManeuveringSpeed, enable: $parent.IsCodeEnable" maxlength="4" />
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-6">Propulsion Type:</label>
+                                                <div class="col-md-6">
+                                                    <div>
+
+                                                        <select name="PropulsionType" id="PropulsionType" class="form-control" data-bind="options: $root.craftReferenceData().PropulsionTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: PropulsionType, optionsCaption: 'Select...', enable: $parent.IsCodeEnable"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Parameters</legend>
+                                    <div class="clearfix">
+                                        <br>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Beam (M):<span class="required">*</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" onkeypress="return Validatenumeric(this,event);" data-bind="value: BeamM, enable: $parent.IsCodeEnable" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Gross Registered Tonnage (GRT) MT:<span class="required">*</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" onkeypress="return Validatenumeric(this,event);" data-bind="value: GrossRegisteredTonnageMT, enable: $parent.IsCodeEnable" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Registered Length (M):<span class="required">*</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" data-bind="value: RegisteredLengthM, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Net Registered Tonnage (NRT) MT:<span class="required">*</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" data-bind="value: NetRegisteredTonnageMT, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Forward Draft (M):<span class="required">*</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" data-bind="value: ForwardDraftM, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Dead Weight Tonnage MT:</label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" data-bind="value: DeadWeightTonnageMT, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Aft. Draft (M):<span class="required">*</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" data-bind="value: AftDraftM, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Bollard Pull MT:</label>
+                                                <div class="col-md-5">
+                                                    <input type="text" class="form-control" data-bind="value: BollardPullMT, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="col-md-6">
+                                    <div style="margin-right: 5px;">
+                                        <fieldset style="height: 180px;">
+                                            <legend>Bunker Details</legend>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">Initial Fuel Quantity(MT):</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: InitialFuelQuantityMT, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">HYD.ROB (MT):</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: HYDROBMT, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">LO.ROB (MT):</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: LOROBMT, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">Freshwater ROB (MT):</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: FreshwaterROBMT, enable: $parent.IsCodeEnable" onkeypress="return Validatenumeric(this,event);" maxlength="8">
+                                                </div>
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div style="margin-left: 5px;">
+                                        <fieldset style="height: 180px;">
+                                            <legend>Owner Details</legend>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">Owners Name:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" data-bind="value: OwnersName, event: { keypress: $root.validationHelper.ValidateAlphabetsWithSpaces_keypressEvent }, enable: $parent.IsCodeEnable" maxlength="30">
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">Address:</label>
+                                                <div class="col-md-6">
+                                                    <textarea type="text" class="form-control" data-bind="value: Address, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }, enable: $parent.IsCodeEnable" maxlength="500"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">Phone Number:</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" onkeypress="return Validatenumeric(this,event);" data-bind="value: PhoneNumber, enable: $parent.IsCodeEnable" maxlength="17">
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="control-label col-md-6">Email ID:</label>
+                                                <div class="col-md-6">
+                                                    <input type="email" id="EmailID" class="form-control" data-bind="value: EmailID, enable: $parent.IsCodeEnable" maxlength="50">
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btns-group form-actions fluid" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                                <button type="submit" class="btn green" data-bind="click: $root.UpdateCraftMaster, visible: $root.IsUpdate">Update</button>
+                                <button type="submit" class="btn green" data-bind="click: $root.SaveCraftMaster, visible: $root.IsSave">Save</button>
+                                <button type="submit" class="btn blue" data-bind="click: $root.ResetCraft, visible: $root.IsReset">Reset</button>
+                                <button type="button" class="btn red" data-bind="click: $root.CancelCraft">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- Main body content ends here for developers-->
+<!-- END CONTENT -->
+
+<script type="text/javascript">
+    //$(document).ready(function() {
+    //    kendo.init($("#colorPicker"));
+    //});
+</script>

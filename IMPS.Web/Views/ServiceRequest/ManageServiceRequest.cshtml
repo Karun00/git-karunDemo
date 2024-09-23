@@ -1,0 +1,1331 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "ServiceRequest";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var servicerequestid = "0";
+    var showViewOnLoad = false;
+    if (!string.IsNullOrEmpty(ViewBag.ID))
+    {
+        //Srinivas Maleapti
+        //servicerequestid = Convert.ToInt32(ViewBag.ID);
+        servicerequestid = ViewBag.ID;
+        showViewOnLoad = true;
+    }
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/ViewModel/WorkflowTaskExecution.js"></script>
+    <script src="~/Scripts/Application/Model/ServiceRequestModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ServiceRequestViewModel.js"></script>
+    <script src="~/Scripts/Lib/moment.js"></script>
+    <style>
+        .white_content {
+            display: none;
+            top: 200px;
+            left: 40%;
+            width: 15%;
+            height: 20%;
+            padding: 5px;
+            background-color: aqua;
+            border: thick;
+        }
+
+        .content_display {
+            margin: 15px 1px 1px 15px;
+            overflow: auto;
+            height: 90%;
+            cursor: auto;
+        }
+
+        .main-title1, .hide-print, .hide-print1 {
+            display: none;
+        }
+
+
+
+        @@media print {
+            .hline {
+                border-bottom: none;
+            }
+
+            .labelAlign {
+                width: 150px;
+            }
+
+            .rspace {
+                width: 100%;
+            }
+
+            .k-header {
+                margin-left: 5px;
+            }
+
+            .control-label {
+                text-align: left;
+            }
+
+            .lwidth {
+                width: 200px !important;
+            }
+
+            .fa-info-circle {
+                display: none !important;
+            }
+
+            .tindent {
+                text-indent: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .iindent {
+                text-indent: -2px !important;
+            }
+
+            .main-title1, .hide-print {
+                display: -webkit-box !important;
+            }
+
+            .hide-print1 {
+                display: block !important;
+            }
+        }
+    </style>
+}
+@section ko_apply
+{
+
+    var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+    var viewModel = new IPMSROOT.ServiceRequestViewModel("@servicerequestid", showOnLoad);	  
+   
+   @* ko.applyBindings(viewModelk);*@
+ko.applyBindingsWithValidation(viewModel, $("#ServiceRequest")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+
+<table class="hide-print" style="width: 100%;">
+    <tr>
+        <td style="width: 577px; vertical-align: bottom;">
+            <div class="main-title1" style="font-size: 16px; font-weight: bold;" align="center">Service Request</div>
+        </td>
+        <td style="text-align: right;">
+            <img src="~/Content/Images/print-logo.jpg">
+        </td>
+    </tr>
+</table>
+
+<div class="row hide-print" style="height: 20px;">&nbsp;</div>
+
+
+<div class="row hide-row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="ServiceRequest">
+
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+	<div data-bind="visible: viewMode() == 'PopUp', template: { name: 'PopUp-template' }"></div>
+<div data-bind="visible: viewMode() == 'PopUp1', template: { name: 'PopUp1-template' }"></div>
+</div>
+<!-- Main body content starts here for developers-->
+<div class="clearfix"></div>
+
+
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+
+        <script type="text/html" id="List-template">
+
+            <div>
+                <div class="portlet box advbg">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-reorder"></i>Advance Search
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" data-bind="with: serviceRequestModelGrid">
+                        <div class="form-wizard">
+                            <div class="form-body form-horizontal">
+                                <div class="form-group">
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Movement Date From :</label>
+                                                <div class="col-md-6">
+                                                    <input id="SearchMovementFrom" style="margin-top: 0px;" type="text" title="Movement From" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: MovementFrom, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SearchValidDate }" name="MovementFrom" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Movement Date To :</label>
+                                                <div class="col-md-7">
+                                                    <input id="SearchMovementTo" style="margin-top: 0px;" type="text" title="Movement To" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: MovementTo, format: 'yyyy-MM-dd', readonly: true, open: SearchMovementtoCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="MovementTo" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-3">VCN :</label>
+                                                <div class="col-md-9">
+                                                    <input type="text" id="VCNName" name="name" autocomplete="off" maxlength="15" data-required="1" class="form-control" data-bind="value: VCN">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Vessel Name:</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="VesselName" name="name" autocomplete="off" maxlength="30" data-required="1" class="form-control" data-bind="value: VesselName">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-5">Movement Type:</label>
+                                                <div class="col-md-7">
+                                                    <select id="movementtID" title="Movementype" class="form-control" data-bind="options: $root.arrivalNotificationReferenceData().MovementTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', optionsCaption: 'Choose...', value: MovementType"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group1">
+                                                <div class="col-md-9">
+                                                    <div class="col-md-5 fluid">
+                                                        <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetDataClick">Get Data</button>
+                                                    </div>
+                                                    <div class="col-md-5 fluid">
+                                                        <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ClearFilter">Reset</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div id="tableheader">
+                @if (Model.HasAddPrivilege)
+                {
+                    <a class="button gbtngreen" data-bind="click: $root.addServRequest ">Add New <i class="fa fa-plus"></i></a>
+                }
+            </div>
+            <div data-bind="kendoGrid: {
+    data: LoadServiceDetails,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 20, pageSizes: 20 },
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', width: 100, filterable: true }
+                       , { field: 'VesselNameSort', title: 'Vessel Name', width: 100, filterable: true },
+                       { field: 'MovementNameSort', title: 'Movement Type', width: 100, filterable: true },
+                       { field: 'MovementDateTimeSort', title: 'Movement Date & Time', filterable: true, width: 100 },
+                        { field: 'SubmittedDateTimeSort', title: 'Submitted Date & Time', width: 100, filterable: true },
+                        { title: 'Status', filterable: false, width: 60 },
+                        { field: 'WorkflowInstanceTaskNameSort', title: 'Workflow Status', width: 100, filterable: true },
+                        { title: 'Actions', filterable: false, width: 80 }]
+}">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td data-bind="attr: { 'class': AnyDangerousGoodsonBoard() == 'A' ? 'DangerousGoods' : '' }">
+                        <div class="nowrap"><span data-bind="text: VCN"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: MovementName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(MovementDateTime()).format('YYYY-MM-DD HH:mm')"></span></div>
+                    </td>
+
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(SubmittedDateTime()).format('YYYY-MM-DD HH:mm')"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Statust"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: WorkflowInstanceTaskName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            &nbsp;
+                              @if (Model.HasViewPrivilege)
+                              {
+                            
+                                  <a href="#" data-bind="click: $parent.viewservReqst" title="View"><i class="fa fa-eye"></i></a>
+                              }
+                            @if (Model.HasEditPrivilege)
+                            {    
+                                <a href="#" data-bind="click: $parent.editservReqst, visible: isEditVisible" title="Edit"><i class="fa fa-edit"></i></a>
+                            }
+                            @if (Model.HasDeletePrivilege)
+                            {                            
+                                <a href="#" data-target="#stack9" data-toggle="modal" data-bind="click: $parent.cancelReqst, visible: isCancelVisible" title="Cancel"><i class="fa fa-ban"></i></a>
+                            }
+                                   <a href="#"  data-target="#stack10" data-toggle="modal" data-bind="click: $parent.cancelConfirmReqst, visible: isConfirmCancelVisible" title="Cancel Confirm Request"><i class="fa fa-ban"></i></a>
+                            <a href="#" data-bind="click: $parent.viewWorkFlow" title="View Workflow"><i class="fa fa-stack-exchange"></i></a>
+
+
+                        </div>
+                    </td>
+                </tr>
+            </script>
+
+            <div class="form-body" data-bind="with: servicerequestModel">
+                <div class="form-group">
+                    <div id="stack1" class="modal fade" tabindex="-1" data-width="400">
+                        <div class="modal-dialog" style="width: 500px;">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                    <div class="scroller" style="height: 225px" data-always-visible="1" data-rail-visible1="1">
+                                        <fieldset>
+                                            <legend id="spnTitile1">WorkFlow Remarks</legend>
+                                            <div align="center">
+                                                <textarea rows="3" cols="50" class="form-control" id="WorkFlowRemarks" style="width: 350px; height: 180px; text-align: center; margin: 0px 9.5px 0px 0px; resize: none;" data-bind="value: WorkFlowRemarks" disabled=""></textarea>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <br>
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: servicerequestModel">
+                            @*
+                            <div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+                            *@
+                            <div class="form-group">
+                                <div class="row">
+                                    <fieldset>
+                                        <legend>Agency Details</legend>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Agency Name:</label>
+                                                    <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: RegisteredName"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="display: none">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Cell No:</label>
+                                                    <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: CellularNo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="display: none">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Fax No:</label>
+                                                    <div class="col-md-8 control-label" data-bind="with: VesselData">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: FaxNo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="display: none">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Agency Rep Name:</label>
+                                                    <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: FirstName"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Telephone No:</label>
+                                                    <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: TelephoneNo1 "></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Email ID:</label>
+                                                    <div class="col-md-8 control-label" data-bind="with: VesselData">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: EmailID "></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Submitted By:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: UserName"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Contact No.:</label>
+                                                    <div class="col-md-6 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: ContactNo"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Email ID:</label>
+                                                    <div class="col-md-8 control-label">
+                                                        <label class="col-md-12 displaytxt" data-bind="text: EmailID"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div></fieldset>
+
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="rspace">
+
+                                            <fieldset id="abc">
+                                                <legend>Vessel Details</legend>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">VCN:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: VCN"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Vessel Name:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: VesselName "></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Voyage In:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: VoyageIn"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Reason for Visit:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: ReasonForVisit"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Cargo Type:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: VesselType">: Fruit</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Call Sign:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: CallSign"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">E.T.A:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: ETA"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">E.T.D:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: ETD"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">IMO No.:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: IMONo"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">LOA:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: LengthOverallInM"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Beam:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: BeamInM"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Arr Drft:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: ArrDraft"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Country of Reg.:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: VesselNationality"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">GRT:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: GrossRegisteredTonnageInMT"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">DWT:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: DeadWeightTonnageInMT"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Last Port:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: LastPortOfCall"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Next Port:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: NextPortOfCall"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Tidal Condition:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: Tidal"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Daylight Condition:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: DaylightRestriction"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline">
+                                                    <label class="col-md-5 lwidth">Is Special Nature:</label><div data-bind="with: VesselData">
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: IsSpecialNature"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline" id="divBerthName">
+                                                    <label class="col-md-5 lwidth">Allocated Berth:</label><div>
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: $root.BerthName"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row hline" id="divBollards">
+                                                    <label class="col-md-5 lwidth">Bollards:</label><div>
+                                                        <label class="col-md-7 displaytxt" data-bind="    text: $root.Bollards"></label>
+                                                    </div>
+                                                </div>
+
+
+                                            </fieldset>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="col-md-7 redbox" style="background-color: #d5d5d5;">
+                                            <br>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Movement Type: <span class="required">*</span></label>
+                                                <div class="col-md-5 form-group">
+                                                    <div id="section1">
+                                                        <select id="movtID" title="Movementype" class="form-control print-drop tindent" data-bind="options: $root.arrivalNotificationReferenceData().MovementTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', optionsCaption: 'Choose...', value: MovementType, enable: false, event: { change: $root.eventCurrentdataNew }"></select>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="row">
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-md-6">VCN : <span class="required">*</span></label>
+                                                    <div class="col-md-5">
+                                                        <input id="Vessel" class="zeroborder tindent" name="VCN" onkeydown="VCNKeyDown();" data-bind="kendoAutoComplete: {
+    dataTextField: 'VCN', minLength: 1, pageSize: 1
+    , dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: '/api/ServiceRequest/GetVCNDetailsForServiceRequest', dataType: 'json' }
+        }, schema: {
+            data: function (data) { return data; }, total: function (data) {
+                return data.length;
+            }
+        },
+    }, select: $root.VesselSelect
+}, value: VCN, enable: false "oncopy="return false" onpaste="return false" oncut="return false" />
+                                                    </div>
+                                                </div>
+
+                                                <div id="section2" class="col-md-12" data-bind="visible: MovementType() == 'ARMV'">
+                                                    <div class="form-group">
+                                                     <div class="form-group">
+                                                        <label class="control-label col-md-6">Movement Date & Slot: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control1 col-md-6">                                                               
+                                                                <input id="Datepicker" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: MovementDateTime, format: 'yyyy-MM-dd', open: callMovement, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SlotBlockingDate }" name="Datepicker" maxlength="16" disabled />
+                                                                <span id="spanvdt1" class="validationError" data-bind="validationMessage: MovementDateTime"></span> 
+                                                              </div>
+                                                              <div class="col-md-1"></div>
+                                                              <div class="col-md-5">
+                                                               <input id="MovementSlot1" title="MovementSlot" class="form-control print-drop" data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().MovementSlots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod',  value: MovementSlot, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.MovementSlotChange }" />  
+                                                                <span id="spanmovementslot" class="validationError" data-bind="validationMessage: MovementSlot"></span> 
+                                                               
+                                                            </div>      
+                                                           </div>                                                                                               
+                                                            
+                                                          
+                                                        </div>
+                                                          </div>
+                                                        <div class="form-group">
+                                                             <label class="control-label col-md-6">Preferred Date & Slot: </label>
+                                                        <div class="col-md-5">
+                                                             <div class="form-control1 col-md-6">
+                                                                <input id="PreferredDate" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: PreferredDateTime, format: 'yyyy-MM-dd', open: callPrefferedSlot, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: PreSlotBlockingDate }" name="PreferredDate" maxlength="16" disabled />
+                                                                <span id="spanpfdt" class="validationError" data-bind="validationMessage: PreferredDateTime"></span>
+                                                            </div>
+                                                              <div class="col-md-1"></div>
+                                                              <div class="col-md-5">                                                               
+                                                                @*<select id="Slot1" title="Slot" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().Slots, optionsText: 'SlotPeriod', optionsCaption: 'Choose..', optionsValue: 'SlotPeriod', value: SlotPeriod, enable: $parent.editableView, event: { change: MovementSlotChange1 }"></select> *@
+                                                                 <input id="Slot1" title="Slot" data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().Slots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod', value: SlotPeriod, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.PrefferedSlotChange }" />  
+                                                            </div>      
+                                                           </div>                                                       
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-6">Pilot Exemption: </label>
+                                                            <div class="col-md-5" data-bind="with: VesselData">
+                                                                <label class="col-md-7 displaytxt" style="padding-top: 7px;" data-bind="text: PilotExemption"></label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-6">Side Along Side: <span class="required">*</span></label>
+                                                            <div class="col-md-5">
+                                                                <select id="mtid" title="Side Along Side" class="form-control print-drop tindent iindent" data-bind="options: $root.arrivalNotificationReferenceData().sideAlongSides, optionsText: 'SubCatName', optionsCaption: 'Choose..', optionsValue: 'SubCatCode', value: SideAlongSideCode, enable: $parent.editableView"></select>
+                                                                <span class="validationError" data-bind="validationMessage: SideAlongSideCode"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label class="checkbox-inline">
+                                                                    <input type="checkbox" id="OS" value="N" data-bind="checked: OwnSteam, enable: $parent.editableView" />Own Steam</label>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label class="checkbox-inline">
+                                                                    <input type="checkbox" id="NME" data-bind="checked: NoMainEngine, enable: $parent.editableView" />No Main Engine</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-md-6">
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label class="checkbox-inline">
+                                                                    <input type="checkbox" id="IST" data-bind="checked: IsTidal, enable: false" />Is Tidal</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-6">Draft:</label>
+                                                            <div class="col-md-5">
+                                                                <div class="row">
+                                                                    <div class="col-md-5">
+                                                                        <div class="input-icon right">
+                                                                            <i class="fa fa-info-circle tooltips" data-original-title="meters"></i>
+                                                                            <input type="text" title="Draft FWD" class="form-control zeroborder " placeholder="FWD" maxlength="4" data-bind="value: DraftFWD, event: { change: $parent.dataLoad, keypress: Validatenumeric }, enable: $parent.editableView">
+                                                                            <span id="spanvdft_SH" class="validationError" data-bind="validationMessage: DraftFWD"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2"></div>
+                                                                    <div class="col-md-5">
+                                                                        <div class="input-icon right">
+                                                                            <i class="fa fa-info-circle tooltips" data-original-title="meters"></i>
+                                                                            <input type="text" title="Draft AFT" class="form-control zeroborder " placeholder="AFT" maxlength="4" data-bind="value: DraftAFT, event: { change: $parent.dataLoad, keypress: Validatenumeric }, enable: $parent.editableView">
+                                                                            <span id="spanvaft_SH" class="validationError" data-bind="validationMessage: DraftAFT"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-md-1"></div>
+                                                            <label class="col-md-11">Comments:</label>
+                                                            <div class="col-md-1"></div>
+                                                            <div class="col-md-10">
+                                                                <textarea class="form-control zeroborder " style="resize: none;" rows="5" name="remarks" title="Comments" maxlength="200" data-bind="value: Comments, enable: $parent.editableView" placeholder="Please assist the arrival request. Thank you."></textarea>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="section3" style="display: none;" data-bind="visible: MovementType() == 'SHMV'">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Current Berth:</label>
+                                                        <div class="col-md-5">
+                                                            <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentBerth"></label>
+
+                                                            @* <select id="berthID11" class="form-control" data-bind="options: CurrentBerth, optionsText: 'CurrentBerth', optionsValue: 'CurrentBerth', enable: false"></select>*@
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">To Berth: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+
+                                                            <select title="To Berth" class="form-control print-drop" data-bind="options: $root.berthsData, optionsText: 'BerthName', optionsValue: 'BerthKey', optionsCaption: 'Choose..', value: BerthKey, enable: $parent.editableView, event: { change: $root.selectBerth }"></select>
+
+                                                            <span id="spanvberthcode_SH" class="validationError" data-bind="validationMessage: BerthKey"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Current Bollard No.s:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="input-group">
+                                                                <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentFromBollardName"></label>
+                                                                @*<select id="bollrdID111" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentFromBollardName', optionsValue: 'CurrentFromBollardName', enable: false"></select>*@
+
+                                                                <span class="input-group-addon">to
+                                                                </span>
+                                                                <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentToBollardName"></label>
+                                                                @*<select id="bollrdID112" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentToBollardName', optionsValue: 'CurrentToBollardName', enable: false"></select>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @*   <div class="form-group">
+                                                        <label class="control-label col-md-6">To Bollard No.s: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <div class="row">
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <select id="bollrdID1" title="From Bollard" class="form-control" data-bind="options: ShiftToBerth().Bollards, optionsText: 'BollardName', optionsCaption: 'Choose..', optionsValue: 'FromBollardKey', value: ShiftFromPositionBollard().FromBollardKey, enable: $parent.editableView"></select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2"><span class="input-group-addon" style="line-height: 20px;">to </span></div>
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <select id="bollrdID2" title="To Bollard" class="form-control" data-bind="options: ShiftToBerth().Bollards, optionsText: 'BollardName', optionsValue: 'ToBollardKey', optionsCaption: 'Choose..', value: ShiftToPositionBollard().ToBollardKey, enable: $parent.editableView"></select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Draft: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <div class="row">
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <i class="fa fa-info-circle tooltips" data-original-title="meters"></i>
+                                                                        <input type="text" title="Draft FWD" class="form-control" placeholder="FWD" maxlength="4" data-bind="value: DraftFWD_SHMV, event: { change: $parent.dataLoad, keypress: Validatenumeric }, enable: $parent.editableView">
+                                                                        <span id="spanvdft_SH" class="validationError" data-bind="validationMessage: DraftFWD_SHMV"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2"></div>
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <i class="fa fa-info-circle tooltips" data-original-title="meters"></i>
+                                                                        <input type="text" title="Draft AFT" class="form-control" placeholder="AFT" maxlength="4" data-bind="value: DraftAFT_SHMV, event: { change: $parent.dataLoad, keypress: Validatenumeric }, enable: $parent.editableView">
+                                                                        <span id="spanvaft_SH" class="validationError" data-bind="validationMessage: DraftAFT_SHMV"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Movement Date & Slot: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control1 col-md-6">                                                                
+                                                                  <input id="Datepicker1" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: MovementDateTime, format: 'yyyy-MM-dd', open: callMovement, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SlotBlockingDate }" name="Datepicker1" maxlength="16" disabled />
+                                                                <span id="spanvdt_SH" class="validationError" data-bind="validationMessage: MovementDateTime"></span>
+                                                            </div><div class="col-md-1"></div>
+                                                             <div class="col-md-5">                                                              
+                                                                <input id="MovementSlot2" title="MovementSlot" data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().MovementSlots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod', value: MovementSlot, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.MovementSlotChange }" />  
+                                                                 <span id="spanmovementslot1" class="validationError" data-bind="validationMessage: MovementSlot"></span> 
+                                                             </div>
+                                                         </div>
+                                                    </div>
+                                                     <div class="form-group">
+                                                             <label class="control-label col-md-6">Preferred Date & Slot: </label>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control1 col-md-6">
+                                                                <input id="PreferredDate1" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: PreferredDateTime, format: 'yyyy-MM-dd', open: callPrefferedSlot, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: PreSlotBlockingDate }" name="PreferredDate1" maxlength="16" disabled />
+                                                                <span id="spanpfdt1" class="validationError" data-bind="validationMessage: PreferredDateTime"></span>
+                                                            </div>
+                                                             <div class="col-md-1"></div>
+                                                              <div class="col-md-5">                                                               
+                                                                @*<select id="Slot1" title="Slot" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().Slots, optionsText: 'SlotPeriod', optionsCaption: 'Choose..', optionsValue: 'SlotPeriod', value: SlotPeriod, enable: $parent.editableView, event: { change: MovementSlotChange }"></select>   *@
+                                                                <input id="Slot2" title="Slot" data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().Slots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod', value: SlotPeriod, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.PrefferedSlotChange }" />  
+                                                            </div>    
+                                                        </div>
+                                                        </div>
+                                                       
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Side Along Side: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <select id="mtid1" title="Side Along Side" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().sideAlongSides, optionsText: 'SubCatName', optionsCaption: 'Choose..', optionsValue: 'SubCatCode', value: SideAlongSideCode, enable: $parent.editableView"></select>
+                                                            <span class="validationError" data-bind="validationMessage: SideAlongSideCode"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-bind="checked: OwnSteam, enable: $parent.editableView" value="Y" />Own Steam</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-bind="checked: NoMainEngine, enable: $parent.editableView" value="Y" />No Main Engine</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" id="IST1" data-bind="checked: IsTidal, enable: $parent.editableView, event: { change: ChangeShiftTidal }" />Is Tidal</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Pilot Exemption: </label>
+                                                        <div class="col-md-5" data-bind="with: VesselData">
+                                                            <label class="col-md-7 displaytxt" style="padding-top: 7px;" data-bind="text: PilotExemption"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-1"></div>
+                                                        <label class="col-md-11">Comments:</label>
+                                                        <div class="col-md-1"></div>
+                                                        <div class="col-md-10">
+                                                            <textarea class="form-control" rows="5" name="remarks" maxlength="200" title="Comments" data-bind="value: Comments, enable: $parent.editableView" placeholder="Please assist the shifting request. Thank you."></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="section4" data-bind="visible: MovementType() == 'WRMV'">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Current Berth:</label>
+                                                        <div class="col-md-6">
+
+                                                            <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentBerth"></label>
+                                                            @*<select id="berthID11" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentBerth', enable: false"></select>*@
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Current Bollard No.s:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="input-group">
+                                                                <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentFromBollardName"></label>
+                                                                @*<select id="bollrdID111" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentFromBollardName', enable: false"></select>*@
+
+                                                                <span class="input-group-addon">to
+                                                                </span>
+                                                                <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentToBollardName"></label>
+                                                                @*<select id="bollrdID112" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentToBollardName', enable: false"></select>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Warp Direction: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <select id="warpID" title="Warp Direction" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().getWarpSides, optionsText: 'SubCatName', optionsCaption: 'Choose..', optionsValue: 'SubCatCode', value: Warp, enable: $parent.editableView"></select>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Warp Distance(Mtrs.): <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+
+                                                            <input type="text" title="WarpDistance" class="form-control" placeholder="Distance" maxlength="4" data-bind="value: WarpDistance, enable: $parent.editableView">
+                                                        </div>
+                                                    </div>
+
+                                                    @*  <div class="form-group">
+                                                        <label class="control-label col-md-6">To Bollard No.s: <span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <select id="bollrdID61" title="from Bollard" class="form-control" data-bind="options: $root.warpingBollard().warpingFromBollards, enable: $parent.editableView, optionsCaption: 'Choose..', optionsText: 'BollardName', optionsValue: 'FromBollardKey', value: $root.servicerequestModel().FromBollardKey"></select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2"><span class="input-group-addon" style="line-height: 20px;">to </span></div>
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <select id="bollrdID62" title="To Bollard" class="form-control" data-bind="options: $root.warpingBollard().warpingFromBollards, enable: $parent.editableView, optionsCaption: 'Choose..', optionsText: 'BollardName', optionsValue: 'ToBollardKey', value: $root.servicerequestModel().ToBollardKey"></select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Movement Date & Slot: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control1 col-md-6">                                                                
+                                                               <input id="Datepicker2" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: MovementDateTime, format: 'yyyy-MM-dd', open: callMovement, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SlotBlockingDate }" name="Datepicker2" maxlength="16" disabled />
+                                                                <span id="spanvdt_WR" class="validationError" data-bind="validationMessage: MovementDateTime"></span>
+                                                            </div>
+                                                             <div class="col-md-1"></div>
+                                                             <div class="col-md-5">                                                             
+                                                               <input id="MovementSlot3" title="MovementSlot" data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().MovementSlots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod', value: MovementSlot, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.MovementSlotChange }" />  
+                                                                <span id="spanmovementslot2" class="validationError" data-bind="validationMessage: MovementSlot"></span> 
+                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                             <label class="control-label col-md-6">Preferred Date & Slot: </label>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control1 col-md-6">
+                                                                <input id="PreferredDate2" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: PreferredDateTime, format: 'yyyy-MM-dd', open: callPrefferedSlot, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: PreSlotBlockingDate }" name="PreferredDate2" maxlength="16" disabled />
+                                                                <span id="spanpfdt2" class="validationError" data-bind="validationMessage: PreferredDateTime"></span>
+                                                            </div>
+                                                            <div class="col-md-1"></div>
+                                                              <div class="col-md-5">                                                               
+                                                                @*<select id="Slot1" title="Slot" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().Slots, optionsText: 'SlotPeriod', optionsCaption: 'Choose..', optionsValue: 'SlotPeriod', value: SlotPeriod, enable: $parent.editableView, event: { change: MovementSlotChange }"></select>  *@
+                                                                 <input id="Slot3" title="Slot" data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().Slots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod', value: SlotPeriod, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.PrefferedSlotChange }" />  
+                                                            </div>    
+                                                        </div>
+                                                        </div>
+                                                       
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Side Along Side: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <select id="stid2" title="Side Along Side" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().sideAlongSides, optionsText: 'SubCatName', optionsCaption: 'Choose..', optionsValue: 'SubCatCode', value: SideAlongSideCode, enable: $parent.editableView"></select>
+                                                            <span class="validationError" data-bind="validationMessage: SideAlongSideCode"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-bind="checked: OwnSteam, enable: $parent.editableView" value="Y" />Own Steam</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-bind="checked: NoMainEngine, enable: $parent.editableView" value="Y" />No Main Engine</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" id="isTidalWarp" data-bind="checked: IsTidal, enable: $parent.editableView, event: { change: ChangeWarpingTidal }" value="Y" />Is Tidal</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Pilot Exemption: </label>
+                                                        <div class="col-md-5" data-bind="with: VesselData">
+                                                            <label class="col-md-7 displaytxt" style="padding-top: 7px;" data-bind="text: PilotExemption"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-1"></div>
+                                                        <label class="col-md-11">Comments:</label>
+                                                        <div class="col-md-1"></div>
+                                                        <div class="col-md-10">
+                                                            <textarea class="form-control" rows="5" title="Comments" name="remarks" maxlength="200" data-bind="value: Comments, enable: $parent.editableView" placeholder="Please assist the warping request. Thank you."></textarea>
+                                                            <span class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="section5" style="display: none;" data-bind="visible: MovementType() == 'SGMV'">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Current Berth:</label>
+                                                        <div class="col-md-6">
+
+                                                            <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentBerth"></label>
+                                                            @*<select id="berthID11" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentBerth', enable: false"></select>*@
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Current Bollard No.s:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="input-group">
+                                                                <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentFromBollardName"></label>
+                                                                @*<select id="bollrdID111" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentFromBollardName', enable: false"></select>*@
+
+                                                                <span class="input-group-addon">to
+                                                                </span>
+                                                                <label class="col-md-12 displaytxt" style="padding-top: 7px;" data-bind="text: CurrentToBollardName"></label>
+                                                                @*<select id="bollrdID112" class="form-control" data-bind="options: $root.currentBerthnBollardData, optionsText: 'CurrentToBollardName', enable: false"></select>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                       <div class="form-group">
+                                                        <label class="control-label col-md-6">Movement Date & Slot: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control1 col-md-6">                                                               
+                                                                  <input id="Datepicker3" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: MovementDateTime, format: 'yyyy-MM-dd', open: callMovement, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SlotBlockingDate }" name="Datepicker3" maxlength="16" disabled />
+                                                                <span id="spanvdt_SG" class="validationError" data-bind="validationMessage: MovementDateTime"></span>
+                                                            </div>
+                                                              <div class="col-md-1"></div>
+                                                             <div class="col-md-5">                                                              
+                                                              <input id="MovementSlot4" title="MovementSlot"  data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().MovementSlots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod', value: MovementSlot, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.MovementSlotChange }" />  
+                                                                <span id="spanmovementslot4" class="validationError" data-bind="validationMessage: MovementSlot"></span> 
+                                                             </div>
+                                                        </div>
+                                                         </div>
+                                                        <div class="form-group">
+                                                             <label class="control-label col-md-6">Preferred Date & Slot: </label>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control1 col-md-6">
+                                                                <input id="PreferredDate3" type="text" title="Date" class="form-control date-picker zeroborder tindent" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: PreferredDateTime, format: 'yyyy-MM-dd', open: callPrefferedSlot, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: PreSlotBlockingDate }" name="PreferredDate3" maxlength="16" disabled />
+                                                                <span id="spanpfdt3" class="validationError" data-bind="validationMessage: PreferredDateTime"></span>
+                                                            </div>
+                                                            <div class="col-md-1"></div>
+                                                              <div class="col-md-5">                                                               
+                                                                @*<select id="Slot1" title="Slot" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().Slots, optionsText: 'SlotPeriod', optionsCaption: 'Choose..', optionsValue: 'SlotPeriod', value: SlotPeriod, enable: $parent.editableView, event: { change: MovementSlotChange }"></select>  *@
+                                                               <input id="Slot4" title="Slot" data-bind="kendoDropDownList: { data: $root.arrivalNotificationReferenceData().Slots, dataTextField: 'SlotPeriod', dataValueField: 'SlotPeriod', value: SlotPeriod, enabled: $parent.editableView, optionLabel: 'Choose....', select: $root.PrefferedSlotChange }" />  
+                                                            </div>    
+                                                        </div>
+                                                        </div>                                                       
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Side Along Side: <span class="required">*</span></label>
+                                                        <div class="col-md-5">
+                                                            <select id="mtid3" title="Side Along Side" class="form-control print-drop" data-bind="options: $root.arrivalNotificationReferenceData().sideAlongSides, optionsText: 'SubCatName', optionsCaption: 'Choose..', optionsValue: 'SubCatCode', value: SideAlongSideCode, enable: $parent.editableView"></select>
+                                                            <span class="validationError" data-bind="validationMessage: SideAlongSideCode"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" name="steam" data-bind="checked: OwnSteam, enable: $parent.editableView">Own Steam</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" data-bind="checked: NoMainEngine, enable: $parent.editableView" />No Main Engine</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" id="IsTidalSailing" data-bind="checked: IsTidal, enable: $parent.editableView, event: { change: ChangeSailingTidal }" />Is Tidal</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Pilot Exemption: </label>
+                                                        <div class="col-md-5" data-bind="with: VesselData">
+                                                            <label class="col-md-7 displaytxt" style="padding-top: 7px;" data-bind="text: PilotExemption"></label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Draft:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <i class="fa fa-info-circle tooltips" data-original-title="meters"></i>
+                                                                        <input type="text" title="Draft FWD" class="form-control" placeholder="FWD" maxlength="4" data-bind="value: DraftFWD, event: { change: $parent.dataLoad, keypress: Validatenumeric }, enable: $parent.editableView">
+                                                                        <span id="spanvdft_SH" class="validationError" data-bind="validationMessage: DraftFWD"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2"></div>
+                                                                <div class="col-md-5">
+                                                                    <div class="input-icon right">
+                                                                        <i class="fa fa-info-circle tooltips" data-original-title="meters"></i>
+                                                                        <input type="text" title="Draft AFT" class="form-control" placeholder="AFT" maxlength="4" data-bind="value: DraftAFT, event: { change: $parent.dataLoad, keypress: Validatenumeric }, enable: $parent.editableView">
+                                                                        <span id="spanvaft_SH" class="validationError" data-bind="validationMessage: DraftAFT"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div data-bind="visible: $parent.pasenVisible">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-6">Passengers Embarking:<span class="required">*</span></label>
+                                                            <div class="col-md-5">
+                                                                <input type="text" title="PassengersEmbarking" class="form-control" maxlength="5" data-bind="value: PassengersEmbarking, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric_keypressEvent }">
+                                                                <span id="spanvdt_PE" class="validationError" data-bind="validationMessage: PassengersEmbarking"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-6">Passengers Disembarking:<span class="required">*</span></label>
+                                                            <div class="col-md-5">
+                                                                <input type="text" title="PassengersDisembarking" class="form-control" maxlength="5" data-bind="value: PassengersDisembarking, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric_keypressEvent }">
+                                                                <span id="spanvdt_PD" class="validationError" data-bind="validationMessage: PassengersEmbarking"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-1"></div>
+                                                        <label class="col-md-11">Comments:</label>
+                                                        <div class="col-md-1"></div>
+                                                        <div class="col-md-10">
+                                                            <textarea class="form-control" title="Comments" rows="5" name="remarks" maxlength="200" data-bind="value: Comments, enable: $parent.editableView" placeholder="Please assist the sailing request. Thank you."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Marine Revenue Cleared?</label>
+                                                        <div class="col-md-5">
+                                                            <label class="checkbox-inline">
+                                                                <input type="Checkbox" id="chkid" name="steam" value="Y" data-bind="checked: MarineRevenueCleared, enable: $parent.editableView"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class=" form-group" data-bind="visible: MarineRevenueCleared">
+                                                        <div class="row form-group">
+                                                            <label id="ulid" class="control-label col-md-6" data-bind="visible: $root.isEnableBtn">Upload Document:</label>
+                                                            <div class="col-md-2" id="bwid">
+                                                                <span class="btn btn-xs green fileinput-button" data-bind="visible: $root.isEnableBtn">
+                                                                    <i class="fa fa-plus"></i>
+                                                                    <span>Browse
+                                                                    </span>
+                                                                    <input type="file" name="files[]" id="fileToUpload" multiple data-bind="enable: $parent.editableView">
+                                                                </span>
+                                                                <br />
+                                                                &nbsp;
+                                                     
+                                                  
+                                                 
+                                                            </div>
+                                                            <div class="col-md-2" id="upid">
+                                                                <button type="submit" data-bind="click: $parent.uploadFile, enable: MarineRevenueCleared, visible: $root.isEnableBtn" class="btn btn-xs blue start">
+                                                                    <i class="fa fa-upload" data-bind="visible: $root.isEnableBtn"></i>
+                                                                    <span data-bind="visible: $root.isEnableBtn">Upload
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="form-group col-md-8" style="border: 1px solid #ccc; padding: 5px;">
+                                                                <div class="col-md-9" align="right">
+                                                                    <a id="anchorFile" data-bind="text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }">Document</a>
+                                                                    <span id="spanupload" class="validationError"></span>
+                                                                </div>
+                                                                <div class="col-md-2" style="padding-left: 3px;" id="deldid" data-bind="visible: $root.isEnableBtn"><a href="#" id="anchorDel" class="btn default btn-xs red" data-bind="    click: $root.DeleteDocument, visible: FileName"><i class="fa fa-trash-o"></i>Delete</a></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row" data-bind="visible: $parent.documentVisible">
+                                                <fieldset>
+                                                    <legend>Documents Upload</legend>
+                                                    <div class="row fileupload-buttonbar" data-bind="visible: $parent.editableView">
+                                                        <div class="form-group">
+                                                            <div class="col-md-1"></div>
+                                                            <div class="col-md-4">
+                                                                <select id="selUploadDocs" class="form-control" data-bind="options: $root.arrivalNotificationReferenceData().getDocumenttypes, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', enable: $parent.editableView">
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-1"></div>
+                                                            <div class="col-md-6">
+                                                                <span class="btn btn-sm green fileinput-button">
+                                                                    <i class="fa fa-plus"></i>
+                                                                    <span>Browse
+                                                                    </span>
+                                                                    <input type="file" name="files[]" id="fileToUploadGrid" multiple>
+                                                                </span>
+                                                                <button type="button" data-bind="click: $parent.uploadFileGrid, enable: $parent.editableView" class="btn btn-sm blue start">
+                                                                    <i class="fa fa-upload"></i>
+                                                                    <span>Upload
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped table-bordered table-advance">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="bg-dark">Document Category</th>
+                                                                        <th class="bg-dark">Document Name</th>
+                                                                        <th class="bg-dark"></th>
+
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody data-bind="foreach: ServiceRequestDocuments">
+                                                                    <tr>
+                                                                        <td data-bind="text: DocumentName"></td>
+                                                                        <td><a data-bind="  text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }">Document</a></td>
+                                                                        <td><a href="#" class="btn default btn-xs red" data-bind="click: $root.DeleteDocumentGrid, visible: $root.editableView"><i class="fa fa-trash-o"></i>Delete</a></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                                        <button type="submit" class="btn green" title="Save" data-bind="click: $parent.SaveRequest, visible: $parent.IsSave">Save</button>
+                                                        <button type="submit" class="btn green" title="Update" data-bind="click: $parent.ModifyRequest, visible: $parent.IsUpdate">Update</button>
+                                                        <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetRequest, visible: $parent.IsReset">Reset</button>
+                                                        <button type="submit" class="btn red" title="Cancel" data-bind="click: $parent.Cancel">Cancel</button>
+                                                        <a class="btn purple button-submit" onclick="javascript:window.print();" data-bind="visible: $parent.printView"><i class="fa fa-print"></i>Print</a>
+                                                    </div>
+
+                                                    <div class="form-actions fluid">
+                                                        @{Html.RenderPartial(Url.Content("~/Views/Shared/PendingTaskView.cshtml"));}
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                </form>
+            </div>
+
+        </script>
+
+    <script type="text/html" id="PopUp-template">
+	    <div class="portlet-body" id="popup1" data-bind="with: servicerequestModel">
+		    <div class="table-toolbar">
+			    <div id="stack9" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">
+				    <a href="#tab_0" data-toggle="tab"></a>
+				    <div class="modal-dialog" id="stk">
+					    <div id="mc1" class="modal-content" style="width: 80%">
+						    <div class="modal-body">
+							    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="event: { click: $root.closePopup }"></button>
+							    <div class="scroller" style="height: 150px" data-always-visible="1" data-rail-visible1="1">
+								    <fieldset>
+									    <form action="#" id="form_sample_1" class="form-horizontal">
+										    <label>Reason For Cancel :</label><span class="required" style="color: red">*</span>
+										    <div class="form-group row">
+
+											    <div class="col-md-5">
+												    <textarea rows="5" style="resize: none; width: 180px;" placeholder="Enter Reason" data-bind="value: workflowRemarks, event: { change: $parent.dataLoad }"></textarea>
+												    &nbsp; &nbsp; <span id="spanremarks" class="validationError" style="margin: -5px -100px 0 0px;"></span>
+											    </div>
+										    </div>
+									    </form>
+								    </fieldset>
+							    </div>
+						    </div>
+						    <div class="btns-group ">
+							    <input type="button" data-bind="click: $root.cancelWFRequest" value="Submit" class="btn green"/>
+           <input type="button" data-bind="click: $root.CancelButton" value="Cancel" class="btn red"/>
+						    </div>
+						    <br>
+						    &nbsp;
+					    </div>
+				    </div>
+			    </div>
+
+		    </div>
+	    </div>
+    </script>
+
+ <script type="text/html" id="PopUp1-template">
+            <div class="portlet-body" id="popup2" data-bind="with: servicerequestModel">
+                <div class="table-toolbar">
+                    <div id="stack10" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">
+                        <a href="#tab_0" data-toggle="tab"></a>
+                        <div class="modal-dialog" id="stk1">
+                            <div id="mc11" class="modal-content" style="width: 80%">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="event: { click: $root.closePopup }"></button>
+                                    <div class="scroller" style="height: 150px" data-always-visible="1" data-rail-visible1="1">
+                                        <fieldset>
+                                            <form action="#" id="form_sample_1" class="form-horizontal">
+                                                <label>Reason For Cancel :</label><span class="required" style="color: red">*</span>
+                                                <div class="form-group row">
+
+                                                    <div class="col-md-5">
+                                                        <textarea rows="5" style="resize: none; width: 180px;" placeholder="Enter Reason" data-bind="value: workflowRemarks, event: { change: $parent.dataLoad }"></textarea>
+                                                        &nbsp; &nbsp; <span id="spanremarks1" class="validationError" style="margin: -5px -100px 0 0px;"></span>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="btns-group ">
+                                    <input type="button" data-bind="click: $root.cancelConfirmWFRequest" value="Submit" class="btn green" />
+                                    <input type="button" data-bind="click: $root.CancelButton" value="Cancel" class="btn red"/>
+                                </div>
+                                <br>
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </script>
+    </div>
+</div>
+
+<!-- Main body content ends here for developers-->
+
+<!-- END CONTENT -->
+
+
+
+

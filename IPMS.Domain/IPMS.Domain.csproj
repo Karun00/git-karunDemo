@@ -1,0 +1,832 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E00E43C0-E42A-4793-889F-EAA2DA343C40}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IPMS.Domain</RootNamespace>
+    <AssemblyName>IPMS.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\QA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.1.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DTOS\AddressMapExtension.cs" />
+    <Compile Include="DTOS\AgentAccountMapExtension.cs" />
+    <Compile Include="DTOS\AgentDocumentMapExtension.cs" />
+    <Compile Include="DTOS\AgentMapExtension.cs" />
+    <Compile Include="DTOS\AgentPortsMapExtension.cs" />
+    <Compile Include="DTOS\ArrivalAgentMapExtension.cs" />
+    <Compile Include="DTOS\ArrivalApprovalMapExenstion.cs" />
+    <Compile Include="DTOS\ArrivalCommodityMapExtension.cs" />
+    <Compile Include="DTOS\ArrivalDocumentMapExtension.cs" />
+    <Compile Include="DTOS\ArrivalIMDGTankerMapExtension.cs" />
+    <Compile Include="DTOS\ArrivalNotificationMapExtension.cs" />
+    <Compile Include="DTOS\ArrivalReasonsMapExtension.cs" />
+    <Compile Include="DTOS\AuthorizedContactPersonMapExtension.cs" />
+    <Compile Include="DTOS\AutomatedSlotBlockingMapExtension.cs" />
+    <Compile Include="DTOS\AutomatedSlotConfigurationMapToExtension.cs" />
+    <Compile Include="DTOS\BerthMaintenanceCompletionMapExtension.cs" />
+    <Compile Include="DTOS\BerthMaintenanceMapExtension.cs" />
+    <Compile Include="DTOS\BerthMapExtension.cs" />
+    <Compile Include="DTOS\BerthOccupationDocumentMapExtension.cs" />
+    <Compile Include="DTOS\BerthPlanningConfigurationsMapExtension.cs" />
+    <Compile Include="DTOS\BollardMapExtension.cs" />
+    <Compile Include="DTOS\BudgetedValuesMapExtension.cs" />
+    <Compile Include="DTOS\BunkeringMapExtension.cs" />
+    <Compile Include="DTOS\CargoManifestMapExtension.cs" />
+    <Compile Include="DTOS\ContractorPermitApplicationDetailsMapExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DTOS\ContractorPermitEmployeeDetailsMapExtension.cs" />
+    <Compile Include="DTOS\CraftReminderConfigMapExtention.cs" />
+    <Compile Include="DTOS\DepartureNoticeMapExtension.cs" />
+    <Compile Include="DTOS\DeploymentBudgetMapExtension.cs" />
+    <Compile Include="DTOS\DeploymentPlanMapExtension.cs" />
+    <Compile Include="DTOS\DockingPlanDocumentMapExtension.cs" />
+    <Compile Include="DTOS\DockingPlanMapExtension.cs" />
+    <Compile Include="DTOS\DredgingOperationMapExtension.cs" />
+    <Compile Include="DTOS\DredgingPriorityDocumentMapExtension.cs" />
+    <Compile Include="DTOS\DredgingPriorityMapExtension.cs" />
+    <Compile Include="DTOS\EventScheduleMapExtension.cs" />
+    <Compile Include="DTOS\IMDGInformationMapExtension.cs" />
+    <Compile Include="DTOS\IndividualPermitAppliactionDetailsMapExtension.cs" />
+    <Compile Include="DTOS\IndividualPersonalPermitMapExtension.cs" />
+    <Compile Include="DTOS\IndividualVehiclePermitMapExtension.cs" />
+    <Compile Include="DTOS\MarineRevenuePostingMapExtension.cs" />
+    <Compile Include="DTOS\MaterialCodeMasterMapExtension.cs" />
+    <Compile Include="DTOS\NewsPortMapExtension.cs" />
+    <Compile Include="DTOS\OutTurnVolumeMapExtension.cs" />
+    <Compile Include="DTOS\PermitReasonMapExtension.cs" />
+    <Compile Include="DTOS\PermitRequestAreaMapExtension.cs" />
+    <Compile Include="DTOS\PermitRequestContractorMapExtension.cs" />
+    <Compile Include="DTOS\PermitRequestDocumentMapExtension.cs" />
+    <Compile Include="DTOS\PermitRequestMapExtension.cs" />
+    <Compile Include="DTOS\PermitRequestSubAreaMapExtension.cs" />
+    <Compile Include="DTOS\PermitRequestVerifyedDetailMapExtension.cs" />
+    <Compile Include="DTOS\PermitRequestVerifyedDocumentMapExtension.cs" />
+    <Compile Include="DTOS\PersonalPermitMapExtension.cs" />
+    <Compile Include="DTOS\PortContentMapExtension.cs" />
+    <Compile Include="DTOS\PortContentRoleMapExtension.cs" />
+    <Compile Include="DTOS\PortGeneralConfigsMapExtension.cs" />
+    <Compile Include="DTOS\RailPlanMapExtension.cs" />
+    <Compile Include="DTOS\RevenueAccountStatusMaptoExtension.cs" />
+    <Compile Include="DTOS\RevenuePostingMapExtension.cs" />
+    <Compile Include="DTOS\SAPPostingMapExtension.cs" />
+    <Compile Include="DTOS\ScheduledTaskMapExtension.cs" />
+    <Compile Include="DTOS\Hour24Report625MapExtension.cs" />
+    <Compile Include="DTOS\ReportQueryOperatorMapExtension.cs" />
+    <Compile Include="DTOS\ResourceAllocationConfigRuleMapExtension.cs" />
+    <Compile Include="DTOS\ResourceAllocationMovementTypeRuleMapExtension.cs" />
+    <Compile Include="DTOS\ResourceGangConfigMapExtension.cs" />
+    <Compile Include="DTOS\CraftOutOfCommissionMapExtension.cs" />
+    <Compile Include="DTOS\RevenueStopListMapExtension.cs" />
+    <Compile Include="DTOS\NotificationPortMapExtension.cs" />
+    <Compile Include="DTOS\NotificationRoleMapExtension.cs" />
+    <Compile Include="DTOS\NotificationTemplateMapExtension.cs" />
+    <Compile Include="DTOS\OtherServiceRecordingMapExtension.cs" />
+    <Compile Include="DTOS\PilotageServiceRecordingMapExention.cs" />
+    <Compile Include="DTOS\ReportQueryTemplateMapExtension.cs" />
+    <Compile Include="DTOS\FuelConsumptionDailyLogMapExtension.cs" />
+    <Compile Include="DTOS\FuelReceiptMapExtension.cs" />
+    <Compile Include="DTOS\FuelRequisitionApprovalMapExtension.cs" />
+    <Compile Include="DTOS\FuelRequisitionMapExtension.cs" />
+    <Compile Include="DTOS\ResourceAllocationMapExtension.cs" />
+    <Compile Include="DTOS\ResourceAttendanceDtlMapExtension.cs" />
+    <Compile Include="DTOS\ResourceAttendanceMapExtension.cs" />
+    <Compile Include="DTOS\ExternalDivingRegisterMapExtension.cs" />
+    <Compile Include="DTOS\LocationMapExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DTOS\ConversationMapExtension.cs" />
+    <Compile Include="DTOS\ConversationReplyMapExtension.cs" />
+    <Compile Include="DTOS\ReportBuilderMapExtension.cs" />
+    <Compile Include="DTOS\RosterDtlMapExtension.cs" />
+    <Compile Include="DTOS\RosterGroupMapExtension.cs" />
+    <Compile Include="DTOS\RosterMapExtension.cs" />
+    <Compile Include="DTOS\Section625ABCDMapExtension.cs" />
+    <Compile Include="DTOS\Section625BMapExtension.cs" />
+    <Compile Include="DTOS\Section625BUnionMapExtension.cs" />
+    <Compile Include="DTOS\Section625CDetailMapExtension.cs" />
+    <Compile Include="DTOS\Section625CMapExtension.cs" />
+    <Compile Include="DTOS\Section625CPreventMapExtension.cs" />
+    <Compile Include="DTOS\Section625CRecommendedMapExtension.cs" />
+    <Compile Include="DTOS\Section625DDetailMapExtension.cs" />
+    <Compile Include="DTOS\Section625DMapExtension.cs" />
+    <Compile Include="DTOS\Section625EDetailMapExtension.cs" />
+    <Compile Include="DTOS\Section625EMapExtension.cs" />
+    <Compile Include="DTOS\Section625GDetail1MapExtension.cs" />
+    <Compile Include="DTOS\Section625GDetail2MapExtension.cs" />
+    <Compile Include="DTOS\Section625GMapExtension.cs" />
+    <Compile Include="DTOS\ServiceRequestDocumentMapExtension.cs" />
+    <Compile Include="DTOS\ServiceTypeDesignationMapExtension.cs" />
+    <Compile Include="DTOS\ServiceTypeMapExtension.cs" />
+    <Compile Include="DTOS\ShiftingBerthingTaskExecutionMapExtension.cs" />
+    <Compile Include="DTOS\SlotPriorityConfigurationMapToExtension.cs" />
+    <Compile Include="DTOS\StatementFactMapExtension.cs" />
+    <Compile Include="DTOS\SuppDockUnDockTimeMapExtension.cs" />
+    <Compile Include="DTOS\SuppDryDockDocumentMapExtension.cs" />
+    <Compile Include="DTOS\SuppDryDockExtensionMapExtension.cs" />
+    <Compile Include="DTOS\SuppDryDockMapExtension.cs" />
+    <Compile Include="DTOS\SuppFloatingCraneMapExtension.cs" />
+    <Compile Include="DTOS\SuppHotColdWorkPermitDocumentMapExtension.cs" />
+    <Compile Include="DTOS\SuppHotColdWorkPermitMapExtension.cs" />
+    <Compile Include="DTOS\SuppHotWorkInspectionMapExtension.cs" />
+    <Compile Include="DTOS\SuppMiscServiceMapExtension.cs" />
+    <Compile Include="DTOS\SuppServiceRequestMapExtension.cs" />
+    <Compile Include="DTOS\TerminalDataMapExtension.cs" />
+    <Compile Include="DTOS\TerminalDelayMapExtension.cs" />
+    <Compile Include="DTOS\TerminalOperatorPortMapExtension.cs" />
+    <Compile Include="DTOS\UserPortMapExtension.cs" />
+    <Compile Include="DTOS\UserPreferenceMapExtension.cs" />
+    <Compile Include="DTOS\VehiclePermitMapExtension.cs" />
+    <Compile Include="DTOS\VisitorPermitMapExtension.cs" />
+    <Compile Include="DTOS\WasteDeclarationMapExtension.cs" />
+    <Compile Include="DTOS\WharfVehiclePermitMapExtension.cs" />
+    <Compile Include="DTOS\WorkFlowInstanceMapExtensions.cs" />
+    <Compile Include="DTOS\WorkFlowTaskMapExtension.cs" />
+    <Compile Include="DTOS\SystemNotificationMapExtension.cs" />
+    <Compile Include="DTOS\IncidentMapExtension.cs" />
+    <Compile Include="DTOS\IncidentDocumentMapExtension.cs" />
+    <Compile Include="DTOS\IncidentNatureMapExtension.cs" />
+    <Compile Include="DTOS\DivingCheckListHazardMapExtension.cs" />
+    <Compile Include="DTOS\DivingCheckListMapExtension.cs" />
+    <Compile Include="DTOS\DivingRequestDiverMapExtension.cs" />
+    <Compile Include="DTOS\EmployeeMapExtension.cs" />
+    <Compile Include="DTOS\PilotCertificateMapExtension.cs" />
+    <Compile Include="DTOS\PilotExemptionRequestDocumentMapExtension.cs" />
+    <Compile Include="DTOS\PilotExemptionRequestMapExtension.cs" />
+    <Compile Include="DTOS\PilotMapExtension.cs" />
+    <Compile Include="DTOS\PortMapExtension.cs" />
+    <Compile Include="DTOS\MobileModuleMapExtension.cs" />
+    <Compile Include="DTOS\DivingMapExtesion.cs" />
+    <Compile Include="DTOS\DivingRequestMapExtension.cs" />
+    <Compile Include="DTOS\FireEquipmentMapExtension.cs" />
+    <Compile Include="DTOS\FireProtectionMapExtension.cs" />
+    <Compile Include="DTOS\FloatingCraneMapExtension.cs" />
+    <Compile Include="DTOS\LicenseRequestDocumentMapExtension.cs" />
+    <Compile Include="DTOS\LicenseRequestPortMapExtension.cs" />
+    <Compile Include="DTOS\LicensingRequestMapExtenstion.cs" />
+    <Compile Include="DTOS\PestControlMapExtension.cs" />
+    <Compile Include="DTOS\PollutionControlMapExtension.cs" />
+    <Compile Include="DTOS\ShiftMapExtension.cs" />
+    <Compile Include="DTOS\ResourceEmployeeGroupsMapExtension.cs" />
+    <Compile Include="DTOS\ResourceGroupMapExtension.cs" />
+    <Compile Include="DTOS\ResourceRosterMapExtension.cs" />
+    <Compile Include="DTOS\StevedoreMapExtension.cs" />
+    <Compile Include="DTOS\VesselAgentChangeDocumentMapExtension.cs" />
+    <Compile Include="DTOS\VesselArrestDocumentMapExtension.cs" />
+    <Compile Include="DTOS\VesselArrestImmobilizationSAMSAStopMapExtension.cs" />
+    <Compile Include="DTOS\VesselCallMapExtenstion.cs" />
+    <Compile Include="DTOS\CraftMapExtention.cs" />
+    <Compile Include="DTOS\NewsMapExtension.cs" />
+    <Compile Include="DTOS\RolePrivilegeMapExtension.cs" />
+    <Compile Include="DTOS\SuperCategoryMapExtension.cs" />
+    <Compile Include="DTOS\VesselCallAnchorageMapExtension.cs" />
+    <Compile Include="DTOS\VesselCallMovementMapExtenstion.cs" />
+    <Compile Include="DTOS\ServiceRequestWarpingMapExtension.cs" />
+    <Compile Include="DTOS\ServiceRequestShiftingMapExtension.cs" />
+    <Compile Include="DTOS\ServiceRequestSailingMapExtension.cs" />
+    <Compile Include="DTOS\ServiceRequestMapExtension.cs" />
+    <Compile Include="DTOS\DocumentMapExtension.cs" />
+    <Compile Include="DTOS\SubCategoryMapExtenstion.cs" />
+    <Compile Include="DTOS\UserMapExtention.cs" />
+    <Compile Include="DTOS\VesselCertificateDetailMapExtension.cs" />
+    <Compile Include="DTOS\VesselEngineMapExtension.cs" />
+    <Compile Include="DTOS\VesselETAChangeMapExtension.cs" />
+    <Compile Include="DTOS\VesselAgentChangeMapExtenstion.cs" />
+    <Compile Include="DTOS\VesselGearMapExtension.cs" />
+    <Compile Include="DTOS\VesselGrabMapExtension.cs" />
+    <Compile Include="DTOS\VesselHatchHoldMapExtension.cs" />
+    <Compile Include="DTOS\VesselMapExtenstion.cs" />
+    <Compile Include="DTOS\EntityMapExtension.cs" />
+    <Compile Include="DTOS\ModuleMapExtension.cs" />
+    <Compile Include="DTOS\QuayMapExtension.cs" />
+    <Compile Include="DTOS\TerminalOperatorBerthMapExtension.cs" />
+    <Compile Include="DTOS\TerminalOperatorCargoHandlingMapExtention.cs" />
+    <Compile Include="DTOS\TerminalOperatorMapExtension.cs" />
+    <Compile Include="DTOS\VesselSAMSAStopDocumentMapExtension.cs" />
+    <Compile Include="DTOS\WorkFlowTaskRoleMapExtension.cs" />
+    <Compile Include="GlobalConstants.cs" />
+    <Compile Include="Models\Dredging\BerthOccupationDocument.cs" />
+    <Compile Include="Models\Dredging\DeploymentBudget.cs" />
+    <Compile Include="Models\Dredging\DeploymentPlan.cs" />
+    <Compile Include="Models\Dredging\DredgingOperation.cs" />
+    <Compile Include="Models\Dredging\DredgingPriority.cs" />
+    <Compile Include="Models\Dredging\DredgingPriorityDocument.cs" />
+    <Compile Include="Models\Fuel Consumption\FuelConsumptionDailyLog.cs" />
+    <Compile Include="Models\Fuel Consumption\FuelReceipt.cs" />
+    <Compile Include="Models\Fuel Consumption\FuelRequisition.cs" />
+    <Compile Include="Models\Fuel Consumption\FuelRequisitionApproval.cs" />
+    <Compile Include="Models\General Features\AgentAccount.cs" />
+    <Compile Include="Models\General Features\BerthCargo.cs" />
+    <Compile Include="Models\General Features\BerthReasonForVisit.cs" />
+    <Compile Include="Models\General Features\BerthVesselType.cs" />
+    <Compile Include="Models\General Features\ChangePasswordLog.cs" />
+    <Compile Include="Models\General Features\Code.cs" />
+    <Compile Include="Models\General Features\CodeDefinition.cs" />
+    <Compile Include="Models\General Features\CodeDtl.cs" />
+    <Compile Include="Models\General Features\AgentDocument.cs" />
+    <Compile Include="Models\General Features\Address.cs" />
+    <Compile Include="Models\General Features\Agent.cs" />
+    <Compile Include="Models\General Features\AgentPort.cs" />
+    <Compile Include="Models\General Features\AuthorizedContactPerson.cs" />
+    <Compile Include="Models\General Features\Berth.cs" />
+    <Compile Include="Models\General Features\Bollard.cs" />
+    <Compile Include="Models\General Features\CommonAllData.cs" />
+    <Compile Include="Models\General Features\Conversation.cs" />
+    <Compile Include="Models\General Features\ConversationReply.cs" />
+    <Compile Include="Models\General Features\EventSchedule.cs" />
+    <Compile Include="Models\General Features\EventScheduleTask.cs" />
+    <Compile Include="Models\General Features\EventScheduleTrack.cs" />
+    <Compile Include="Models\General Features\Marpol.cs" />
+    <Compile Include="Models\General Features\NewsPort.cs" />
+    <Compile Include="Models\General Features\PortContent.cs" />
+    <Compile Include="Models\General Features\PortContentRole.cs" />
+    <Compile Include="Models\General Features\PortGeneralConfig.cs" />
+    <Compile Include="Models\General Features\ReportQueryLookup.cs" />
+    <Compile Include="Models\General Features\ReportQueryDataTypeOperator.cs" />
+    <Compile Include="Models\General Features\ReportQueryTemplate.cs" />
+    <Compile Include="Models\General Features\ResetPasswordLogs.cs" />
+    <Compile Include="Models\General Features\TerminalOperatorPort.cs" />
+    <Compile Include="Models\General Features\UserPreference.cs" />
+    <Compile Include="Models\General Features\Craft.cs" />
+    <Compile Include="Models\General Features\CraftOutOfCommission.cs" />
+    <Compile Include="Models\General Features\CraftReminderConfig.cs" />
+    <Compile Include="Models\General Features\Department.cs" />
+    <Compile Include="Models\General Features\Incident.cs" />
+    <Compile Include="Models\General Features\IncidentDocument.cs" />
+    <Compile Include="Models\General Features\IncidentNature.cs" />
+    <Compile Include="Models\General Features\NotificationPort.cs" />
+    <Compile Include="Models\General Features\PortConfiguration.cs" />
+    <Compile Include="Models\General Features\ReportBuilder.cs" />
+    <Compile Include="Models\General Features\ReportQueryOperator.cs" />
+    <Compile Include="Models\General Features\SystemNotification.cs" />
+    <Compile Include="Models\General Features\Document.cs" />
+    <Compile Include="Models\General Features\Employee.cs" />
+    <Compile Include="Models\General Features\Entity.cs" />
+    <Compile Include="Models\General Features\EntityPrivilege.cs" />
+    <Compile Include="Models\General Features\Notification.cs" />
+    <Compile Include="Models\General Features\NotificationRole.cs" />
+    <Compile Include="Models\General Features\NotificationTemplate.cs" />
+    <Compile Include="Models\General Features\Port.cs" />
+    <Compile Include="Models\General Features\Quay.cs" />
+    <Compile Include="Models\General Features\RolePrivilege.cs" />
+    <Compile Include="Models\General Features\TerminalOperatorBerth.cs" />
+    <Compile Include="Models\General Features\TerminalOperatorCargoHandling.cs" />
+    <Compile Include="Models\General Features\UserPort.cs" />
+    <Compile Include="Models\General Features\UserRole.cs" />
+    <Compile Include="Models\Logging\AuditTrail.cs" />
+    <Compile Include="Models\Logging\AuditTrailConfiguration.cs" />
+    <Compile Include="Models\Logging\Log.cs" />
+    <Compile Include="Models\Alerts\EmailAlert.cs" />
+    <Compile Include="Models\Alerts\SmsAlert.cs" />
+    <Compile Include="Models\General Features\Module.cs" />
+    <Compile Include="Models\General Features\News.cs" />
+    <Compile Include="Models\Marine Revenue\MaterialCodeMaster.cs" />
+    <Compile Include="Models\Marine Revenue\MaterialCodePort.cs" />
+    <Compile Include="Models\Marine Revenue\RevenueAccountStatus.cs" />
+    <Compile Include="Models\Marine Revenue\RevenuePosting.cs" />
+    <Compile Include="Models\Marine Revenue\RevenuePostingDtl.cs" />
+    <Compile Include="Models\Marine Revenue\RevenueStopList.cs" />
+    <Compile Include="Models\Operations\BerthMaintenance.cs" />
+    <Compile Include="Models\Operations\BerthMaintenanceApproval.cs" />
+    <Compile Include="Models\Operations\BerthMaintenanceCompApproval.cs" />
+    <Compile Include="Models\Operations\BerthMaintenanceCompletion.cs" />
+    <Compile Include="Models\Operations\BerthPlanningConfigurations.cs" />
+    <Compile Include="Models\Operations\BudgetedValues.cs" />
+    <Compile Include="Models\Operations\CargoManifest.cs" />
+    <Compile Include="Models\Operations\CargoManifestDtl.cs" />
+    <Compile Include="Models\Operations\FinancialYear.cs" />
+    <Compile Include="Models\Operations\StatementCommodity.cs" />
+    <Compile Include="Models\Operations\StatementFact.cs" />
+    <Compile Include="Models\Operations\StatementFactBunker.cs" />
+    <Compile Include="Models\Operations\StatementFactEvent.cs" />
+    <Compile Include="Models\Operations\TptDocumentUpload.cs" />
+    <Compile Include="Models\SAP\SAPInvoiceItem.cs" />
+    <Compile Include="Models\SAP\SAPPosting.cs" />
+    <Compile Include="Models\Security\ContractorPermitApplicationDetails.cs" />
+    <Compile Include="Models\Security\ContractorPermitEmployeeDetails.cs" />
+    <Compile Include="Models\Security\IndividualPermitApplicationDetails.cs" />
+    <Compile Include="Models\Security\IndividualPersonalPermit.cs" />
+    <Compile Include="Models\Security\IndividualVehiclePermit.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Security\PermitReason.cs" />
+    <Compile Include="Models\Security\PermitRequest.cs" />
+    <Compile Include="Models\Security\PermitRequestAccessGates.cs" />
+    <Compile Include="Models\Security\PermitRequestArea.cs" />
+    <Compile Include="Models\Security\PermitRequestContractor.cs" />
+    <Compile Include="Models\Security\PermitRequestDocument.cs" />
+    <Compile Include="Models\Security\PermitRequestSubArea.cs" />
+    <Compile Include="Models\Security\PermitRequestVerifyedDetail.cs" />
+    <Compile Include="Models\Security\PermitRequestVerifyedDocument.cs" />
+    <Compile Include="Models\Security\PersonalPermit.cs" />
+    <Compile Include="Models\Security\VehiclePermit.cs" />
+    <Compile Include="Models\Security\VehiclePermitRequirementCode.cs" />
+    <Compile Include="Models\Security\VisitorPermit.cs" />
+    <Compile Include="Models\Security\WharfVehiclePermit.cs" />
+    <Compile Include="Models\Supplementary Services\DockingUndockingTime.cs" />
+    <Compile Include="Models\Supplementary Services\SuppDockUnDockTime.cs" />
+    <Compile Include="Models\Supplementary Services\SuppDryDock.cs" />
+    <Compile Include="Models\Supplementary Services\SuppDryDockDocument.cs" />
+    <Compile Include="Models\Supplementary Services\SuppDryDockExtension.cs" />
+    <Compile Include="Models\Supplementary Services\SuppFloatingCrane.cs" />
+    <Compile Include="Models\Supplementary Services\SuppFloatingCraneService.cs" />
+    <Compile Include="Models\Supplementary Services\SuppHotColdWork.cs" />
+    <Compile Include="Models\Supplementary Services\SuppHotColdWorkDocument.cs" />
+    <Compile Include="Models\Supplementary Services\SuppHotColdWorkPermit.cs" />
+    <Compile Include="Models\Supplementary Services\SuppHotColdWorkPermitDocument.cs" />
+    <Compile Include="Models\Supplementary Services\SuppHotWorkInspection.cs" />
+    <Compile Include="Models\Supplementary Services\SuppMiscService.cs" />
+    <Compile Include="Models\Supplementary Services\SuppServiceRequest.cs" />
+    <Compile Include="Models\Supplementary Services\SuppServiceResourceAlloc.cs" />
+    <Compile Include="Models\Supplementary Services\SuppWaterService.cs" />
+    <Compile Include="Models\Vessel Management\ArrivalAgent.cs" />
+    <Compile Include="Models\Vessel Management\ArrivalApproval.cs" />
+    <Compile Include="Models\Vessel Management\ArrivalCommodity.cs" />
+    <Compile Include="Models\Vessel Management\ArrivalDocument.cs" />
+    <Compile Include="Models\Vessel Management\ArrivalIMDGTanker.cs" />
+    <Compile Include="Models\Vessel Management\ArrivalNotification.cs" />
+    <Compile Include="Models\Vessel Management\ArrivalReason.cs" />
+    <Compile Include="Models\Vessel Management\BerthingTaskExecution.cs" />
+    <Compile Include="Models\Vessel Management\Bunkering.cs" />
+    <Compile Include="Models\Vessel Management\DepartureNotice.cs" />
+    <Compile Include="Models\Vessel Management\Diving.cs" />
+    <Compile Include="Models\Vessel Management\DivingCheckList.cs" />
+    <Compile Include="Models\Vessel Management\DivingCheckListHazard.cs" />
+    <Compile Include="Models\Vessel Management\DivingOccupationApproval.cs" />
+    <Compile Include="Models\Vessel Management\DivingRequest.cs" />
+    <Compile Include="Models\Vessel Management\DivingRequestDiver.cs" />
+    <Compile Include="Models\Vessel Management\DockingPlan.cs" />
+    <Compile Include="Models\Vessel Management\DockingPlanDocument.cs" />
+    <Compile Include="Models\Vessel Management\Draft.cs" />
+    <Compile Include="Models\Vessel Management\ExternalDivingRegister.cs" />
+    <Compile Include="Models\Vessel Management\FireEquipment.cs" />
+    <Compile Include="Models\Vessel Management\FireProtection.cs" />
+    <Compile Include="Models\Vessel Management\FloatingCrane.cs" />
+    <Compile Include="Models\Vessel Management\FloatingCraneTaskExecution.cs" />
+    <Compile Include="Models\Vessel Management\IMDGInformation.cs" />
+    <Compile Include="Models\Vessel Management\LicenseRequest.cs" />
+    <Compile Include="Models\Vessel Management\LicenseRequestDocument.cs" />
+    <Compile Include="Models\Vessel Management\LicenseRequestPort.cs" />
+    <Compile Include="Models\Vessel Management\Location.cs" />
+    <Compile Include="Models\Vessel Management\MovementResourceAllocation.cs" />
+    <Compile Include="Models\Vessel Management\PestControl.cs" />
+    <Compile Include="Models\Vessel Management\Pilot.cs" />
+    <Compile Include="Models\Vessel Management\PilotageTaskExecution.cs" />
+    <Compile Include="Models\Vessel Management\PilotBoatTaskExecution.cs" />
+    <Compile Include="Models\Vessel Management\PilotCertificate.cs" />
+    <Compile Include="Models\Vessel Management\PilotExemptionRequest.cs" />
+    <Compile Include="Models\Vessel Management\PilotExemptionRequestDocument.cs" />
+    <Compile Include="Models\Vessel Management\PollutionControl.cs" />
+    <Compile Include="Models\Vessel Management\PortRegistry.cs" />
+    <Compile Include="Models\Vessel Management\ServiceRequest.cs" />
+    <Compile Include="Models\Vessel Management\ServiceRequestApproval.cs" />
+    <Compile Include="Models\Vessel Management\ServiceRequestDocument.cs" />
+    <Compile Include="Models\Vessel Management\ServiceRequestSailing.cs" />
+    <Compile Include="Models\Vessel Management\ServiceRequestShifting.cs" />
+    <Compile Include="Models\Vessel Management\ServiceRequestWarping.cs" />
+    <Compile Include="Models\Vessel Management\Shift.cs" />
+    <Compile Include="Models\Vessel Management\Stevedore.cs" />
+    <Compile Include="Models\Vessel Management\TugWorkboatTaskExecution.cs" />
+    <Compile Include="Models\Vessel Management\Vessel.cs" />
+    <Compile Include="Models\Vessel Management\VesselAgentChange.cs" />
+    <Compile Include="Models\Vessel Management\VesselAgentChangeApproval.cs" />
+    <Compile Include="Models\Vessel Management\VesselAgentChangeDocument.cs" />
+    <Compile Include="Models\Vessel Management\VesselApproval.cs" />
+    <Compile Include="Models\Vessel Management\VesselArrestDocument.cs" />
+    <Compile Include="Models\Vessel Management\VesselArrestImmobilizationSAMSA.cs" />
+    <Compile Include="Models\Vessel Management\VesselCall.cs" />
+    <Compile Include="Models\Vessel Management\VesselCallAnchorage.cs" />
+    <Compile Include="Models\Vessel Management\VesselCallMovement.cs" />
+    <Compile Include="Models\Vessel Management\VesselCertificateDetail.cs" />
+    <Compile Include="Models\Vessel Management\VesselEngine.cs" />
+    <Compile Include="Models\Vessel Management\VesselETAChange.cs" />
+    <Compile Include="Models\Vessel Management\VesselGear.cs" />
+    <Compile Include="Models\Vessel Management\VesselGrab.cs" />
+    <Compile Include="Models\Vessel Management\VesselHatchHold.cs" />
+    <Compile Include="Models\Vessel Management\VesselSAMSAStopDocument.cs" />
+    <Compile Include="Models\Vessel Management\VoyageMonitoring.cs" />
+    <Compile Include="Models\Vessel Management\WasteDeclaration.cs" />
+    <Compile Include="Models\Vessel Management\WaterServiceTaskExecution.cs" />
+    <Compile Include="Models\Vessel Traffic Services\AutomatedSlotBlocking.cs" />
+    <Compile Include="Models\Vessel Traffic Services\AutomatedSlotConfiguration.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Hour24Report625.cs" />
+    <Compile Include="Models\Vessel Traffic Services\OtherServiceRecording.cs" />
+    <Compile Include="Models\Vessel Traffic Services\PilotageServiceRecording.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceAllocation.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceAllocationConfigRule.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceAllocationMovementTypeRule.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceAttendance.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceAttendanceDtl.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceEmployeeGroup.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceGangConfig.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceGroup.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ResourceRoster.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Roster.cs" />
+    <Compile Include="Models\Vessel Traffic Services\RosterDtl.cs" />
+    <Compile Include="Models\Vessel Traffic Services\RosterGroup.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625ABCD.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625B.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625BUnion.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625C.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625CDetail.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625CPrevent.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625CRecommended.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625D.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625DDetail.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625E.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625EDetail.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625G.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625GDetail1.cs" />
+    <Compile Include="Models\Vessel Traffic Services\Section625GDetail2.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ServiceType.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ServiceTypeDesignation.cs" />
+    <Compile Include="Models\Vessel Traffic Services\ShiftingBerthingTaskExecution.cs" />
+    <Compile Include="Models\Vessel Traffic Services\SlotOverRidingReasons.cs" />
+    <Compile Include="Models\Vessel Traffic Services\SlotPriorityConfiguration.cs" />
+    <Compile Include="Models\WorkFlow\WorkflowInstance.cs" />
+    <Compile Include="Models\WorkFlow\WorkflowProcess.cs" />
+    <Compile Include="Models\WorkFlow\WorkflowTaskRole.cs" />
+    <Compile Include="Models\WorkFlow\WorkflowTask.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\General Features\Role.cs" />
+    <Compile Include="Models\General Features\SubCategory.cs" />
+    <Compile Include="Models\General Features\SuperCategory.cs" />
+    <Compile Include="Models\General Features\TerminalOperator.cs" />
+    <Compile Include="Models\General Features\User.cs" />
+    <Compile Include="ValueObjects\AccountLoginModel.cs" />
+    <Compile Include="ValueObjects\AgentAccountVO.cs" />
+    <Compile Include="ValueObjects\AnchorageDataVO.cs" />
+    <Compile Include="ValueObjects\ArrivalAgentVO.cs" />
+    <Compile Include="ValueObjects\ArrivalApprovalVO.cs" />
+    <Compile Include="ValueObjects\ArrivalDocumentVo.cs" />
+    <Compile Include="ValueObjects\ArrivalIMDGTankerVo.cs" />
+    <Compile Include="ValueObjects\AgentDetailsVO.cs" />
+    <Compile Include="ValueObjects\ArrivalCommodityVo.cs" />
+    <Compile Include="ValueObjects\ArrivalNotificationDetails.cs" />
+    <Compile Include="ValueObjects\AddressVO.cs" />
+    <Compile Include="ValueObjects\AgentDocumentsVO.cs" />
+    <Compile Include="ValueObjects\AgentPortsVO.cs" />
+    <Compile Include="ValueObjects\AgentVO.cs" />
+    <Compile Include="ValueObjects\ArrivalNotificationVO.cs" />
+    <Compile Include="ValueObjects\ArrivalReasonVO.cs" />
+    <Compile Include="ValueObjects\AuthorizedContactPersonVO.cs" />
+    <Compile Include="ValueObjects\AutomatedSlotBlockingVO.cs" />
+    <Compile Include="ValueObjects\AutomatedSlotConfigurationReferenceDataVO.cs" />
+    <Compile Include="ValueObjects\AutomatedSlotConfigurationVO.cs" />
+    <Compile Include="ValueObjects\BerthMaintenanceCompletionVO.cs" />
+    <Compile Include="ValueObjects\BerthMaintenanceVO.cs" />
+    <Compile Include="ValueObjects\BerthMasterDetails.cs" />
+    <Compile Include="ValueObjects\BerthOccupationDocumentVO.cs" />
+    <Compile Include="ValueObjects\BerthPlanningConfigurationsVO.cs" />
+    <Compile Include="ValueObjects\BerthPlanningVO.cs" />
+    <Compile Include="ValueObjects\BerthPreSchedulingVO.cs" />
+    <Compile Include="ValueObjects\BerthVO.cs" />
+    <Compile Include="ValueObjects\BollardMasterDetails.cs" />
+    <Compile Include="ValueObjects\AuditLogDetails.cs" />
+    <Compile Include="ValueObjects\BudgetedValuesVO.cs" />
+    <Compile Include="ValueObjects\BunkeringVO.cs" />
+    <Compile Include="ValueObjects\CargoManifestVO.cs" />
+    <Compile Include="ValueObjects\CompanyVO.cs" />
+    <Compile Include="ValueObjects\ContractorPermitApplicationDetailsVO.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ValueObjects\ContractorPermitEmployeeDetailsVO.cs" />
+    <Compile Include="ValueObjects\IndividualPermitAppliactionDetailsVO.cs" />
+    <Compile Include="ValueObjects\IndividualPersonalPermitVO.cs" />
+    <Compile Include="ValueObjects\IndividualVehiclePermitVO.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ValueObjects\MarpolVO.cs" />
+    <Compile Include="ValueObjects\NewsPortVO.cs" />
+    <Compile Include="ValueObjects\NotificationVO.cs" />
+    <Compile Include="ValueObjects\PermitReasonVO.cs" />
+    <Compile Include="ValueObjects\PermitRequestSubAreaVO.cs" />
+    <Compile Include="ValueObjects\SAPMarineOrderReturnVO.cs" />
+    <Compile Include="ValueObjects\SAPMarineOrderOrderItemsInXVO.cs" />
+    <Compile Include="ValueObjects\SAPMarineOrderOrderHeaderInXVO.cs" />
+    <Compile Include="ValueObjects\PlannedMovementsVO.cs" />
+    <Compile Include="ValueObjects\CraftReminderConfigVO.cs" />
+    <Compile Include="ValueObjects\DepartureNoticeVO.cs" />
+    <Compile Include="ValueObjects\DeploymentPlanVO.cs" />
+    <Compile Include="ValueObjects\DockingPlanVO.cs" />
+    <Compile Include="ValueObjects\DredgingOperationVO.cs" />
+    <Compile Include="ValueObjects\DredgingPriorityVO.cs" />
+    <Compile Include="ValueObjects\FinancialYearVO.cs" />
+    <Compile Include="ValueObjects\IMDGInformationVO.cs" />
+    <Compile Include="ValueObjects\MarineRevenuePostingVO.cs" />
+    <Compile Include="ValueObjects\MaterialCodeMasterVO.cs" />
+    <Compile Include="ValueObjects\PermitRequestAreaVO.cs" />
+    <Compile Include="ValueObjects\PermitRequestContractorVO.cs" />
+    <Compile Include="ValueObjects\PermitRequestDocumentVO.cs" />
+    <Compile Include="ValueObjects\PermitRequestVerifyedDetailVO.cs" />
+    <Compile Include="ValueObjects\PermitRequestVerifyedDocumentVO.cs" />
+    <Compile Include="ValueObjects\PermitRequestVO.cs" />
+    <Compile Include="ValueObjects\PersonalPermitVO.cs" />
+    <Compile Include="ValueObjects\PortContentRoleVO.cs" />
+    <Compile Include="ValueObjects\PortContentVO.cs" />
+    <Compile Include="ValueObjects\PortEntryPassApplicationReferenceVO.cs" />
+    <Compile Include="ValueObjects\PortGeneralConfigsVO.cs" />
+    <Compile Include="ValueObjects\PortInformationReferenceVO.cs" />
+    <Compile Include="ValueObjects\PortLimitDataVO.cs" />
+    <Compile Include="ValueObjects\PortRegistryVO.cs" />
+    <Compile Include="ValueObjects\ResourceAllocationConfigVO.cs" />
+    <Compile Include="ValueObjects\EventScheduleVO.cs" />
+    <Compile Include="ValueObjects\ResourceCalendarAttendanceVO.cs" />
+    <Compile Include="ValueObjects\ResourceCalendarSearchVO.cs" />
+    <Compile Include="ValueObjects\ResourceCalendarSlotDetailsVO.cs" />
+    <Compile Include="ValueObjects\ResourceCalendarSlotVO.cs" />
+    <Compile Include="ValueObjects\ResourceCalendarVO.cs" />
+    <Compile Include="ValueObjects\RevenuePostingDtlVO.cs" />
+    <Compile Include="ValueObjects\RevenuePostingSectionsVO.cs" />
+    <Compile Include="ValueObjects\RevenuePostingVO.cs" />
+    <Compile Include="ValueObjects\RevenueStopReferenceDataVO.cs" />
+    <Compile Include="ValueObjects\SAPArrivalResponseVO.cs" />
+    <Compile Include="ValueObjects\SAPArrivalVO.cs" />
+    <Compile Include="ValueObjects\SAPInvoiceItemVO.cs" />
+    <Compile Include="ValueObjects\SAPInvoiceVO.cs" />
+    <Compile Include="ValueObjects\SAPMarineOrderItemsInVO.cs" />
+    <Compile Include="ValueObjects\SAPMarineOrderScheduleLinesVO.cs" />
+    <Compile Include="ValueObjects\SAPMarineOrderScheduleLineSXVO.cs" />
+    <Compile Include="ValueObjects\SAPMarineOrderVO.cs" />
+    <Compile Include="ValueObjects\SAPPostingVO.cs" />
+    <Compile Include="ValueObjects\SAPVesselCreateMESSTABVO.cs" />
+    <Compile Include="ValueObjects\SAPVesselCreateVO.cs" />
+    <Compile Include="ValueObjects\ScheduledTaskExecutionVO.cs" />
+    <Compile Include="ValueObjects\Hour24Report625VO.cs" />
+    <Compile Include="ValueObjects\Hour24ReportReferenceDataVO.cs" />
+    <Compile Include="ValueObjects\IdNameVO.cs" />
+    <Compile Include="ValueObjects\ScheduledTasksVO.cs" />
+    <Compile Include="ValueObjects\CraftOutOfCommissionVO.cs" />
+    <Compile Include="ValueObjects\FuelConsumptionDailyLogVO.cs" />
+    <Compile Include="ValueObjects\FuelReceiptVO.cs" />
+    <Compile Include="ValueObjects\FuelRequisitionApprovalVO.cs" />
+    <Compile Include="ValueObjects\FuelRequisitionVO.cs" />
+    <Compile Include="ValueObjects\Months.cs" />
+    <Compile Include="ValueObjects\MovementResourceAllocationVO.cs" />
+    <Compile Include="ValueObjects\NotificationPortVO.cs" />
+    <Compile Include="ValueObjects\NotificationRoleVO.cs" />
+    <Compile Include="ValueObjects\NotificationTemplateVO.cs" />
+    <Compile Include="ValueObjects\OtherServiceRecordingVO.cs" />
+    <Compile Include="ValueObjects\PilotageServiceRecordingVO.cs" />
+    <Compile Include="ValueObjects\PrivilegeVO.cs" />
+    <Compile Include="ValueObjects\RAConfigruleReferenceVO.cs" />
+    <Compile Include="ValueObjects\ReportLookUpVO.cs" />
+    <Compile Include="ValueObjects\ReportQueryDataTypeOperatorVO.cs" />
+    <Compile Include="ValueObjects\ReportQueryOperatorVO.cs" />
+    <Compile Include="ValueObjects\ReportQueryTemplateVO.cs" />
+    <Compile Include="ValueObjects\GroupedRosterReferenceVO.cs" />
+    <Compile Include="ValueObjects\GroupedRosterVO.cs" />
+    <Compile Include="ValueObjects\ResourceAllocationConfigRuleVO.cs" />
+    <Compile Include="ValueObjects\ResourceAllocationMovementTypeRuleVO.cs" />
+    <Compile Include="ValueObjects\ResourceAllocationReferenceDataVO.cs" />
+    <Compile Include="ValueObjects\ResourceAllocationSlotVO.cs" />
+    <Compile Include="ValueObjects\ResourceAllocationVO.cs" />
+    <Compile Include="ValueObjects\ResourceAttendanceVO.cs" />
+    <Compile Include="ValueObjects\ResourceAttendanceDtlVO.cs" />
+    <Compile Include="ValueObjects\GroupedPendingTaskVO.cs" />
+    <Compile Include="ValueObjects\ExternalDivingRegisterVO.cs" />
+    <Compile Include="ValueObjects\PendingTaskReferenceVO.cs" />
+    <Compile Include="ValueObjects\ReportBuilderVO.cs" />
+    <Compile Include="ValueObjects\ReportCategoryColumnVO.cs" />
+    <Compile Include="ValueObjects\pilotExemptionDetailsVO.cs" />
+    <Compile Include="ValueObjects\ResourceGangConfigVO.cs" />
+    <Compile Include="ValueObjects\RevenueAccountStatusVO.cs" />
+    <Compile Include="ValueObjects\RevenueStopListVO.cs" />
+    <Compile Include="ValueObjects\ResourceSlotVO.cs" />
+    <Compile Include="ValueObjects\RosterDtlVO.cs" />
+    <Compile Include="ValueObjects\RosterGroupVO.cs" />
+    <Compile Include="ValueObjects\RosterReferenceVO.cs" />
+    <Compile Include="ValueObjects\RosterVO.cs" />
+    <Compile Include="ValueObjects\Section625ABCDVO.cs" />
+    <Compile Include="ValueObjects\Section625BUnionVO.cs" />
+    <Compile Include="ValueObjects\Section625BVO.cs" />
+    <Compile Include="ValueObjects\Section625CDetailVO.cs" />
+    <Compile Include="ValueObjects\Section625CPreventVO.cs" />
+    <Compile Include="ValueObjects\Section625CRecommendedVO.cs" />
+    <Compile Include="ValueObjects\Section625CVO.cs" />
+    <Compile Include="ValueObjects\Section625DDetailVO.cs" />
+    <Compile Include="ValueObjects\Section625DVO.cs" />
+    <Compile Include="ValueObjects\Section625EDetailVO.cs" />
+    <Compile Include="ValueObjects\Section625EVO.cs" />
+    <Compile Include="ValueObjects\Section625GDetail1VO .cs" />
+    <Compile Include="ValueObjects\Section625GDetail2VO.cs" />
+    <Compile Include="ValueObjects\Section625GVO.cs" />
+    <Compile Include="ValueObjects\ServiceRecordingVO.cs" />
+    <Compile Include="ValueObjects\ServiceRequestVCNsForDryDockExts.cs" />
+    <Compile Include="ValueObjects\ServiceTypeDesignationVO.cs" />
+    <Compile Include="ValueObjects\ServiceTypeVO.cs" />
+    <Compile Include="ValueObjects\ShiftingBerthingTaskExecutionVO.cs" />
+    <Compile Include="ValueObjects\SlotOverRidingReasonsVO.cs" />
+    <Compile Include="ValueObjects\SlotPriorityConfigurationVO.cs" />
+    <Compile Include="ValueObjects\StatementFactVO.cs" />
+    <Compile Include="ValueObjects\SubAreaOfAccessOfRBVO.cs" />
+    <Compile Include="ValueObjects\SuppDockUnDockTimeVO.cs" />
+    <Compile Include="ValueObjects\SuppDryDockDocumentVO.cs" />
+    <Compile Include="ValueObjects\SuppDryDockExtensionVO.cs" />
+    <Compile Include="ValueObjects\SuppDryDockVO.cs" />
+    <Compile Include="ValueObjects\SuppFloatingCraneVO.cs" />
+    <Compile Include="ValueObjects\SuppHotColdWorkPermitDocumentVO.cs" />
+    <Compile Include="ValueObjects\SuppHotColdWorkPermitVO.cs" />
+    <Compile Include="ValueObjects\SuppHotWorkInspectionVO.cs" />
+    <Compile Include="ValueObjects\SuppMiscServiceVO.cs" />
+    <Compile Include="ValueObjects\SuppScheduledDryDockVO.cs" />
+    <Compile Include="ValueObjects\SuppServiceRequestVO.cs" />
+    <Compile Include="ValueObjects\TerminalOperatorPortVO.cs" />
+    <Compile Include="ValueObjects\TptDocumentUploadVO.cs" />
+    <Compile Include="ValueObjects\UserConversationVO.cs" />
+    <Compile Include="ValueObjects\LocationVO.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ValueObjects\ConversationVO.cs" />
+    <Compile Include="ValueObjects\ConversationReplyVO.cs" />
+    <Compile Include="ValueObjects\DashBoardVO.cs" />
+    <Compile Include="ValueObjects\UserPortVO.cs" />
+    <Compile Include="ValueObjects\UserPreferenceVO.cs" />
+    <Compile Include="ValueObjects\VehiclePermitVO.cs" />
+    <Compile Include="ValueObjects\VisitorPermitVO.cs" />
+    <Compile Include="ValueObjects\WasteDeclarationVO.cs" />
+    <Compile Include="ValueObjects\WharfVehiclePermitVO.cs" />
+    <Compile Include="ValueObjects\WorkFlowInstanceVO.cs" />
+    <Compile Include="ValueObjects\WorkFlowTaskRoleVO.cs" />
+    <Compile Include="ValueObjects\WorkFlowTaskVO.cs" />
+    <Compile Include="ValueObjects\WorkFlowList_NotMappedVO.cs" />
+    <Compile Include="ValueObjects\WorkFlowTaskReferenceVO.cs" />
+    <Compile Include="ValueObjects\DivingCheckListVO.cs" />
+    <Compile Include="ValueObjects\SystemNotificationVO.cs" />
+    <Compile Include="ValueObjects\IncidentVO.cs" />
+    <Compile Include="ValueObjects\IncidentDocumentVO.cs" />
+    <Compile Include="ValueObjects\IncidentNatureVO.cs" />
+    <Compile Include="ValueObjects\DepartmentVO.cs" />
+    <Compile Include="ValueObjects\DivingCheckListHazardVO.cs" />
+    <Compile Include="ValueObjects\DivingRequestDiverVO.cs" />
+    <Compile Include="ValueObjects\MobileModuleVO.cs" />
+    <Compile Include="ValueObjects\PilotCertificateVO.cs" />
+    <Compile Include="ValueObjects\PilotExemptionRequestDocumentVO.cs" />
+    <Compile Include="ValueObjects\PilotexemptionRequestReferenceVO.cs" />
+    <Compile Include="ValueObjects\PilotExemptionRequestVO.cs" />
+    <Compile Include="ValueObjects\PortVO.cs" />
+    <Compile Include="ValueObjects\DivingRequestVO.cs" />
+    <Compile Include="ValueObjects\DivingVO.cs" />
+    <Compile Include="ValueObjects\FireEquipmentVO.cs" />
+    <Compile Include="ValueObjects\FireProtectionVO.cs" />
+    <Compile Include="ValueObjects\FloatingCraneVO.cs" />
+    <Compile Include="ValueObjects\LicenseRequestDocumentVO.cs" />
+    <Compile Include="ValueObjects\LicenseRequestPortVO.cs" />
+    <Compile Include="ValueObjects\LicenseRequestReferenceVO.cs" />
+    <Compile Include="ValueObjects\LicenseRequestVO.cs" />
+    <Compile Include="ValueObjects\PestControlVO.cs" />
+    <Compile Include="ValueObjects\PollutionControlVO.cs" />
+    <Compile Include="ValueObjects\ResourceEmployeeGroupVO.cs" />
+    <Compile Include="ValueObjects\ResourceGroupVO.cs" />
+    <Compile Include="ValueObjects\ResourceRosterVO.cs" />
+    <Compile Include="ValueObjects\ShiftVO.cs" />
+    <Compile Include="ValueObjects\StevedoreVO.cs" />
+    <Compile Include="ValueObjects\VesselAgentChangeDocumentVO.cs" />
+    <Compile Include="ValueObjects\VesselApprovalVO.cs" />
+    <Compile Include="ValueObjects\VesselArrestDocumentVO.cs" />
+    <Compile Include="ValueObjects\VesselArrestImmobilizationSAMSAStopVO.cs" />
+    <Compile Include="ValueObjects\VesselCallVO.cs" />
+    <Compile Include="ValueObjects\CraftReferenceVO.cs" />
+    <Compile Include="ValueObjects\CraftVO.cs" />
+    <Compile Include="ValueObjects\NewsVO.cs" />
+    <Compile Include="ValueObjects\PioltVO.cs" />
+    <Compile Include="ValueObjects\BollardVO.cs" />
+    <Compile Include="ValueObjects\RoleVO.cs" />
+    <Compile Include="ValueObjects\ServiceRequestWarpingVO.cs" />
+    <Compile Include="ValueObjects\ServiceRequestShiftingVO.cs" />
+    <Compile Include="ValueObjects\ServiceRequestSailingVO.cs" />
+    <Compile Include="ValueObjects\ServiceRequest_VO.cs" />
+    <Compile Include="ValueObjects\ServiceRequestCureentBerthnBollards.cs" />
+    <Compile Include="ValueObjects\PendingTaskVO.cs" />
+    <Compile Include="ValueObjects\ServiceRequestDetails.cs" />
+    <Compile Include="ValueObjects\DocumentVO.cs" />
+    <Compile Include="ValueObjects\ArrivalNotificationReferenceVO.cs" />
+    <Compile Include="ValueObjects\EntityVO.cs" />
+    <Compile Include="ValueObjects\ModuleVO.cs" />
+    <Compile Include="ValueObjects\NotificationDetails.cs" />
+    <Compile Include="ValueObjects\EmployeeMasterDetails.cs" />
+    <Compile Include="ValueObjects\PendingRegistrationVerification.cs" />
+    <Compile Include="ValueObjects\QuayMasterDetails.cs" />
+    <Compile Include="ValueObjects\QuayVO.cs" />
+    <Compile Include="ValueObjects\ServiceRequestVCNDetails.cs" />
+    <Compile Include="ValueObjects\ServiceRequestVO.cs" />
+    <Compile Include="ValueObjects\SubCategoryVO.cs" />
+    <Compile Include="ValueObjects\SuperCategoryVO.cs" />
+    <Compile Include="ValueObjects\TerminalOperatorBerthsVO.cs" />
+    <Compile Include="ValueObjects\TerminalOperatorCargoHandlingVO.cs" />
+    <Compile Include="ValueObjects\TerminalOperatorMasterDetails.cs" />
+    <Compile Include="ValueObjects\TerminalOperatorVO.cs" />
+    <Compile Include="ValueObjects\UserDetails.cs" />
+    <Compile Include="ValueObjects\UserMasterVO.cs" />
+    <Compile Include="ValueObjects\UserReferenceDataVO.cs" />
+    <Compile Include="ValueObjects\VesselCallAnchorageVO.cs" />
+    <Compile Include="ValueObjects\VesselCallMovementVO.cs" />
+    <Compile Include="ValueObjects\VesselCertificateDetailVO.cs" />
+    <Compile Include="ValueObjects\VesselEngineVO.cs" />
+    <Compile Include="ValueObjects\VesselETAChangeVO.cs" />
+    <Compile Include="ValueObjects\VesselAgentChangeVO.cs" />
+    <Compile Include="ValueObjects\VesselAgentReferenceVO.cs" />
+    <Compile Include="ValueObjects\VesselGearVO.cs" />
+    <Compile Include="ValueObjects\VesselGrabVO.cs" />
+    <Compile Include="ValueObjects\VesselHatchHoldVO.cs" />
+    <Compile Include="ValueObjects\VesselRegistrationReferenceVO.cs" />
+    <Compile Include="ValueObjects\VesselSAMSAStopDocumentVO.cs" />
+    <Compile Include="ValueObjects\VesselVO.cs" />
+    <Compile Include="ValueObjects\VoyageMonitoringVO.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="CodeTemplates\ReverseEngineerCodeFirst\Context.tt" />
+    <None Include="CodeTemplates\ReverseEngineerCodeFirst\Entity.tt" />
+    <None Include="CodeTemplates\ReverseEngineerCodeFirst\Mapping.tt" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IPMS.Core.Repository\Core.Repository.csproj">
+      <Project>{7a02df10-6661-4268-8bc0-b4d62478b934}</Project>
+      <Name>Core.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

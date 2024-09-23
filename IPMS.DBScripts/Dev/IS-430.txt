@@ -1,0 +1,2118 @@
+IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (
+                        N'[dbo].[usp_Service_Request_Auto_Email_Rule1]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[usp_Service_Request_Auto_Email_Rule1]
+GO
+
+CREATE PROCEDURE [dbo].[usp_Service_Request_Auto_Email_Rule1]
+AS
+   BEGIN
+      SET  NOCOUNT ON
+      SET  XACT_ABORT ON
+
+      DECLARE @duration   INT
+      DECLARE @Index   INT
+      DECLARE @eventscheduletrackid   INT
+      DECLARE @eventscheduletaskid   INT
+      DECLARE @reference   NVARCHAR (12)
+      DECLARE @WorkflowInstanceId   INT
+      DECLARE @portcode   NVARCHAR (2)
+      DECLARE @usertypeid   INT
+      DECLARE @usertype   NVARCHAR (4)
+
+      DECLARE @EventScheduleTrack TABLE
+                                  (
+                                     EventScheduleTrackID   INT
+                                                               IDENTITY (1, 1),
+                                     EventScheduleTaskID    INT,
+                                     NotificationId         INT,
+                                     Reference              NVARCHAR (12),
+                                     WorkflowInstanceId     INT,
+                                     WorkflowProcessId      INT
+                                  )
+
+      DECLARE @pendingServiceRequests TABLE
+                                      (
+                                         PendingServiceRequestID   INT
+                                                                      IDENTITY (1, 1),
+                                         ServiceRequestId          INT,
+                                         VCN                       NVARCHAR (12),
+                                         ToPositionPortCode        NVARCHAR (2),
+                                         ToPositionQuayCode        NVARCHAR (4),
+                                         ToPositionBerthCode       NVARCHAR (4),
+                                         ToPositionBollardCode     NVARCHAR (4),
+                                         MovementType              NVARCHAR (4),
+                                         MovementDateTime          DATETIME,
+                                         CurrentDatetime           DATETIME,
+                                         WorkflowTaskCode          NVARCHAR (4),
+                                         WorkflowInstanceId        INT,
+                                         PortCode                  NVARCHAR (2),
+                                         duration                  INT,
+                                         CreatedBy                 INT
+                                      )
+      DECLARE @ServiceRequestRule1TempTable TABLE
+                                            (
+                                               EntityID                   INT,
+                                               NotificationTemplateCode   NVARCHAR (4),
+                                               [DateTime]                 DATETIME,
+                                               Reference                  NVARCHAR (12),
+                                               RecordStatus               NVARCHAR (1),
+                                               EmailStatus                NVARCHAR (1),
+                                               SMSStatus                  NVARCHAR (1),
+                                               WorkflowTaskCode           NVARCHAR (4),
+                                               SystemNotificationStatus   NVARCHAR (1),
+                                               UserID                     INT,
+                                               CreatedBy                  INT,
+                                               CreatedDate                DATETIME,
+                                               ModifiedBy                 INT,
+                                               ModifiedDate               DATETIME,
+                                               PortCode                   NVARCHAR (2),
+                                               UserTypeId                 INT,
+                                               UserType                   NVARCHAR (4)
+                                            )
+      DECLARE @RecordCnt   INT
+      SET @duration = 250
+      SET @Index = 1
+
+      SET @eventscheduletaskid = 0
+      SELECT @eventscheduletaskid = EST.EventScheduleTaskID
+        FROM EventScheduleTask EST
+       WHERE upper (EST.EventScheduleTaskName) =
+                'USP_SERVICE_REQUEST_AUTO_EMAIL_RULE1'
+
+
+      SELECT @duration =
+                  CONVERT (INT, substring (EventScheduleTime, 1, 2)) * 60
+                + CONVERT (INT, substring (EventScheduleTime, 4, 2))
+        FROM EventSchedule
+       WHERE EventScheduleID =
+                (SELECT EventScheduleID
+                   FROM EventScheduleTask
+                  WHERE EventScheduleTaskID = @eventscheduletaskid)
+
+      --print 'Duration ' + convert(varchar,@duration)
+
+      --Fethching Service Request details which are approve but not Confirmed and inserting into @pendingServiceRequests
+      INSERT INTO @pendingServiceRequests (ServiceRequestId,
+                                           VCN,
+                                           ToPositionPortCode,
+                                           ToPositionQuayCode,
+                                           ToPositionBerthCode,
+                                           ToPositionBollardCode,
+                                           MovementType,
+                                           MovementDateTime,
+                                           CurrentDatetime,
+                                           WorkflowTaskCode,
+                                           WorkflowInstanceId,
+                                           PortCode,
+                                           duration,
+                                           CreatedBy)
+         SELECT SR.ServiceRequestID,
+                SR.VCN,
+                VC.ToPositionPortCode,
+                VC.ToPositionQuayCode,
+                VC.ToPositionBerthCode,
+                VC.FromPositionBollardCode,
+                SR.MovementType,
+                SR.MovementDateTime,
+                getdate () AS CurrentDatetime,
+                WI.WorkflowTaskCode,
+                WI.WorkflowInstanceId,
+                WI.PortCode,
+                --datediff (hour, getdate (), SR.MovementDateTime) duration_hours,
+                datediff (minute, getdate (), SR.MovementDateTime)
+                   AS duration_minutes,
+                SR.CreatedBy
+           FROM ServiceRequest SR
+                INNER JOIN WorkflowInstance WI
+                   ON WI.WorkflowInstanceId = SR.WorkflowInstanceID
+                INNER JOIN VesselCall VC ON VC.VCN = SR.VCN
+                INNER JOIN ArrivalNotification an ON an.VCN = SR.VCN
+                INNER JOIN
+                (SELECT VCN
+                   FROM (SELECT count (AR.VCN) reasoncount, AR.VCN
+                           FROM ArrivalReason AR
+                                INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                          WHERE     VC.ATD IS NULL
+                                AND AR.vcn IN (SELECT VCN
+                                                 FROM ArrivalReason
+                                                WHERE Reason = 'BUNK')
+                         GROUP BY AR.VCN) a
+                  WHERE reasoncount > 1
+                 UNION
+                 SELECT AR.VCN
+                   FROM ArrivalReason AR
+                        INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                  WHERE     VC.ATD IS NULL
+                        AND AR.vcn IN (SELECT VCN
+                                         FROM ArrivalReason
+                                        WHERE Reason != 'BUNK')
+                 GROUP BY AR.VCN) BA
+                   ON BA.VCN = SR.VCN
+          WHERE     WI.WorkflowTaskCode =
+                       (SELECT PC.ConfigValue
+                          FROM PortGeneralConfig PC
+                         WHERE     PC.PortCode = WI.Portcode
+                               AND PC.ConfigName = 'ApproveCode')
+                AND datediff (minute, getdate (), SR.MovementDateTime) <=
+                       @duration
+                AND SR.ServiceRequestID NOT IN (SELECT CONVERT (
+                                                          INT,
+                                                          EST.Reference)
+                                                  FROM EventScheduleTrack EST
+                                                 WHERE EST.EventScheduleTaskID =
+                                                          @eventscheduletaskid)
+
+      SELECT @RecordCnt = COUNT (ServiceRequestID)
+      FROM @pendingServiceRequests
+
+      --  print '@pendingServiceRequests record count : ' + convert(varchar,@Index)
+
+      WHILE (@Index <= @RecordCnt)
+      BEGIN
+         BEGIN TRY
+            BEGIN TRANSACTION
+
+            SELECT @WorkflowInstanceId = PR.WorkflowInstanceId,
+                   @portcode = PR.PortCode,
+                   @reference = PR.ServiceRequestID,
+                   @usertypeid = PR.CreatedBy,
+                   @usertype =
+                      coalesce ( (SELECT UserType
+                                    FROM Users
+                                   WHERE UserId = PR.CreatedBy),
+                                'EMP')
+            FROM @pendingServiceRequests PR
+            WHERE PendingServiceRequestID = @Index
+
+            --    print 'Reference : ' + @reference
+
+            INSERT INTO @ServiceRequestRule1TempTable
+            VALUES (0,
+                    N'SRC1',
+                    getdate (),
+                    @reference,
+                    N'A',
+                    'O',
+                    'O',
+                    'SBRS',
+                    'O',
+                    0,
+                    1,
+                    getdate (),
+                    NULL,
+                    getdate (),
+                    @portcode,
+                    @usertypeid,
+                    @usertype)
+
+            SELECT @eventscheduletrackid = SCOPE_IDENTITY ();
+
+            --    print @eventscheduletrackid
+
+            INSERT INTO @EventScheduleTrack (EventScheduleTaskID,
+                                             NotificationId,
+                                             Reference,
+                                             WorkflowInstanceId)
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference,
+                    @WorkflowInstanceId)
+
+            --Final Insertion Tables
+            INSERT INTO EventScheduleTrack (EventScheduleTaskID,
+                                            NotificationId,
+                                            Reference,
+                                            WorkflowInstanceId)
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference,
+                    @WorkflowInstanceId)
+
+            SELECT @Index = @Index + 1
+            COMMIT TRANSACTION
+         END TRY
+         BEGIN CATCH
+            IF @@TRANCOUNT > 0
+               ROLLBACK TRANSACTION
+         END CATCH
+      END
+
+      SELECT * FROM @ServiceRequestRule1TempTable
+   END
+   GO
+   
+   
+   IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (
+                        N'[dbo].[usp_Service_Request_Auto_Email_Rule2]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[usp_Service_Request_Auto_Email_Rule2]
+GO
+
+CREATE PROCEDURE [dbo].[usp_Service_Request_Auto_Email_Rule2]
+AS
+   BEGIN
+      SET  NOCOUNT ON
+      SET  XACT_ABORT ON
+
+      DECLARE @duration   INT
+      DECLARE @Index   INT
+      DECLARE @eventscheduletrackid   INT
+      DECLARE @eventscheduletaskid   INT
+      DECLARE @reference   NVARCHAR (12)
+      DECLARE @WorkflowInstanceId   INT
+      DECLARE @portcode   NVARCHAR (2)
+      DECLARE @usertypeid   INT
+      DECLARE @usertype   NVARCHAR (4)
+      DECLARE @EventScheduleTrack TABLE
+                                  (
+                                     EventScheduleTrackID   INT
+                                                               IDENTITY (1, 1),
+                                     EventScheduleTaskID    INT,
+                                     NotificationId         INT,
+                                     Reference              NVARCHAR (12),
+                                     WorkflowInstanceId     INT,
+                                     WorkflowProcessId      INT
+                                  )
+
+      DECLARE @pendingServiceRequests TABLE
+                                      (
+                                         PendingServiceRequestID   INT
+                                                                      IDENTITY (1, 1),
+                                         ServiceRequestId          INT,
+                                         VCN                       NVARCHAR (12),
+                                         ToPositionPortCode        NVARCHAR (2),
+                                         ToPositionQuayCode        NVARCHAR (4),
+                                         ToPositionBerthCode       NVARCHAR (4),
+                                         ToPositionBollardCode     NVARCHAR (4),
+                                         MovementType              NVARCHAR (4),
+                                         MovementDateTime          DATETIME,
+                                         CurrentDatetime           DATETIME,
+                                         WorkflowTaskCode          NVARCHAR (4),
+                                         WorkflowInstanceId        INT,
+                                         PortCode                  NVARCHAR (2),
+                                         duration                  INT,
+                                         CreatedBy                 INT
+                                      )
+      DECLARE @ServiceRequestRule2TempTable TABLE
+                                            (
+                                               EntityID                   INT,
+                                               NotificationTemplateCode   NVARCHAR (4),
+                                               [DateTime]                 DATETIME,
+                                               Reference                  NVARCHAR (12),
+                                               RecordStatus               NVARCHAR (1),
+                                               EmailStatus                NVARCHAR (1),
+                                               SMSStatus                  NVARCHAR (1),
+                                               WorkflowTaskCode           NVARCHAR (4),
+                                               SystemNotificationStatus   NVARCHAR (1),
+                                               UserID                     INT,
+                                               CreatedBy                  INT,
+                                               CreatedDate                DATETIME,
+                                               ModifiedBy                 INT,
+                                               ModifiedDate               DATETIME,
+                                               PortCode                   NVARCHAR (2),
+                                               UserTypeId                 INT,
+                                               UserType                   NVARCHAR (4)
+                                            )
+      DECLARE @RecordCnt   INT
+      SET @duration = 250
+      SET @Index = 1
+
+      SET @eventscheduletaskid = 0
+      SELECT @eventscheduletaskid = EST.EventScheduleTaskID
+        FROM EventScheduleTask EST
+       WHERE upper (EST.EventScheduleTaskName) =
+                'USP_SERVICE_REQUEST_AUTO_EMAIL_RULE2'
+
+      SELECT @duration =
+                  CONVERT (INT, substring (EventScheduleTime, 1, 2)) * 60
+                + CONVERT (INT, substring (EventScheduleTime, 4, 2))
+        FROM EventSchedule
+       WHERE EventScheduleID =
+                (SELECT EventScheduleID
+                   FROM EventScheduleTask
+                  WHERE EventScheduleTaskID = @eventscheduletaskid)
+
+      --print 'Duration ' + convert(varchar,@duration)
+      --Fethching Service Request details which are approve but not Confirmed and inserting into @pendingServiceRequests
+      INSERT INTO @pendingServiceRequests (ServiceRequestId,
+                                           VCN,
+                                           ToPositionPortCode,
+                                           ToPositionQuayCode,
+                                           ToPositionBerthCode,
+                                           ToPositionBollardCode,
+                                           MovementType,
+                                           MovementDateTime,
+                                           CurrentDatetime,
+                                           WorkflowTaskCode,
+                                           WorkflowInstanceId,
+                                           PortCode,
+                                           duration,
+                                           CreatedBy)
+         SELECT SR.ServiceRequestID,
+                SR.VCN,
+                VC.ToPositionPortCode,
+                VC.ToPositionQuayCode,
+                VC.ToPositionBerthCode,
+                VC.FromPositionBollardCode,
+                SR.MovementType,
+                SR.MovementDateTime,
+                getdate () AS CurrentDatetime,
+                WI.WorkflowTaskCode,
+                WI.WorkflowInstanceId,
+                WI.PortCode,
+                --datediff (hour, getdate (), SR.MovementDateTime) duration_hours,
+                datediff (minute, getdate (), SR.MovementDateTime)
+                   AS duration_minutes,
+                SR.CreatedBy
+           FROM ServiceRequest SR
+                INNER JOIN WorkflowInstance WI
+                   ON WI.WorkflowInstanceId = SR.WorkflowInstanceID
+                INNER JOIN VesselCall VC ON VC.VCN = SR.VCN
+                INNER JOIN ArrivalNotification an ON an.VCN = SR.VCN
+                INNER JOIN
+                (SELECT VCN
+                   FROM (SELECT count (AR.VCN) reasoncount, AR.VCN
+                           FROM ArrivalReason AR
+                                INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                          WHERE     VC.ATD IS NULL
+                                AND AR.vcn IN (SELECT VCN
+                                                 FROM ArrivalReason
+                                                WHERE Reason = 'BUNK')
+                         GROUP BY AR.VCN) a
+                  WHERE reasoncount > 1
+                 UNION
+                 SELECT AR.VCN
+                   FROM ArrivalReason AR
+                        INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                  WHERE     VC.ATD IS NULL
+                        AND AR.vcn IN (SELECT VCN
+                                         FROM ArrivalReason
+                                        WHERE Reason != 'BUNK')
+                 GROUP BY AR.VCN) BA
+                   ON BA.VCN = SR.VCN
+          WHERE     WI.WorkflowTaskCode =
+                       (SELECT PC.ConfigValue
+                          FROM PortGeneralConfig PC
+                         WHERE     PC.PortCode = WI.Portcode
+                               AND PC.ConfigName = 'ApproveCode')
+                AND datediff (minute, getdate (), SR.MovementDateTime) <=
+                       @duration
+                AND SR.ServiceRequestID NOT IN (SELECT CONVERT (
+                                                          INT,
+                                                          EST.Reference)
+                                                  FROM EventScheduleTrack EST
+                                                 WHERE EST.EventScheduleTaskID =
+                                                          @eventscheduletaskid);
+
+      SELECT @RecordCnt = COUNT (ServiceRequestID)
+      FROM @pendingServiceRequests
+
+      --  print '@pendingServiceRequests record count : ' + convert(varchar,@Index)
+      WHILE (@Index <= @RecordCnt)
+      BEGIN
+         BEGIN TRY
+            BEGIN TRANSACTION
+
+            SELECT @WorkflowInstanceId = PR.WorkflowInstanceId,
+                   @portcode = PR.PortCode,
+                   @reference = PR.ServiceRequestID,
+                   @usertypeid = PR.CreatedBy,
+                   @usertype =
+                      coalesce ( (SELECT UserType
+                                    FROM Users
+                                   WHERE UserId = PR.CreatedBy),
+                                'EMP')
+            FROM @pendingServiceRequests PR
+            WHERE PendingServiceRequestID = @Index
+
+            --    print 'Reference : ' + @reference
+
+            INSERT INTO @ServiceRequestRule2TempTable
+            VALUES (0,
+                    N'SRC2',
+                    getdate (),
+                    @reference,
+                    N'A',
+                    'O',
+                    'O',
+                    'SBRS',
+                    'O',
+                    0,
+                    1,
+                    getdate (),
+                    NULL,
+                    getdate (),
+                    @portcode,
+                    @usertypeid,
+                    @usertype)
+
+            SELECT @eventscheduletrackid = SCOPE_IDENTITY ();
+
+            --    print @eventscheduletrackid
+
+            INSERT INTO @EventScheduleTrack (EventScheduleTaskID,
+                                             NotificationId,
+                                             Reference,
+                                             WorkflowInstanceId)
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference,
+                    @WorkflowInstanceId)
+
+            --Final Insertion Tables
+            INSERT INTO EventScheduleTrack (EventScheduleTaskID,
+                                            NotificationId,
+                                            Reference,
+                                            WorkflowInstanceId)
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference,
+                    @WorkflowInstanceId)
+
+            SELECT @Index = @Index + 1
+            COMMIT TRANSACTION
+         END TRY
+         BEGIN CATCH
+            IF @@TRANCOUNT > 0
+               ROLLBACK TRANSACTION
+         END CATCH
+      END
+
+      SELECT * FROM @ServiceRequestRule2TempTable
+   END
+   
+   
+   GO
+   IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (
+                        N'[dbo].[usp_Service_Request_Auto_Email_Rule3]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[usp_Service_Request_Auto_Email_Rule3]
+GO
+
+CREATE PROCEDURE [dbo].[usp_Service_Request_Auto_Email_Rule3]
+AS
+   BEGIN
+      SET  NOCOUNT ON
+      SET  XACT_ABORT ON
+      DECLARE @duration   INT
+      DECLARE @Index   INT
+      DECLARE @eventscheduletrackid   INT
+      DECLARE @eventscheduletaskid   INT
+      DECLARE @reference   NVARCHAR (12)
+      DECLARE @WorkflowInstanceId   INT
+      DECLARE @portcode   NVARCHAR (2)
+      DECLARE @MovementType   NVARCHAR (4)
+      DECLARE @BPWorkflowInstanceId   INT
+      DECLARE @EventScheduleTrack TABLE
+                                  (
+                                     EventScheduleTrackID   INT
+                                                               IDENTITY (1, 1),
+                                     EventScheduleTaskID    INT,
+                                     NotificationId         INT,
+                                     Reference              NVARCHAR (12),
+                                     WorkflowInstanceId     INT,
+                                     WorkflowProcessId      INT
+                                  )
+
+      DECLARE @usertypeid   INT
+      DECLARE @usertype   NVARCHAR (4)
+      DECLARE @pendingServiceRequests TABLE
+                                      (
+                                         PendingServiceRequestID   INT
+                                                                      IDENTITY (1, 1),
+                                         ServiceRequestId          INT,
+                                         VCN                       NVARCHAR (12),
+                                         ToPositionPortCode        NVARCHAR (2),
+                                         ToPositionQuayCode        NVARCHAR (4),
+                                         ToPositionBerthCode       NVARCHAR (4),
+                                         ToPositionBollardCode     NVARCHAR (4),
+                                         MovementType              NVARCHAR (4),
+                                         MovementDateTime          DATETIME,
+                                         CurrentDatetime           DATETIME,
+                                         WorkflowTaskCode          NVARCHAR (4),
+                                         WorkflowInstanceId        INT,
+                                         PortCode                  NVARCHAR (2),
+                                         BPWorkflowInstanceId      INT,
+                                         duration                  INT,
+                                         CreatedBy                 INT
+                                      )
+      DECLARE @ServiceRequestRule3TempTable TABLE
+                                            (
+                                               EntityID                   INT,
+                                               NotificationTemplateCode   NVARCHAR (4),
+                                               [DateTime]                 DATETIME,
+                                               Reference                  NVARCHAR (12),
+                                               RecordStatus               NVARCHAR (1),
+                                               EmailStatus                NVARCHAR (1),
+                                               SMSStatus                  NVARCHAR (1),
+                                               WorkflowTaskCode           NVARCHAR (4),
+                                               SystemNotificationStatus   NVARCHAR (1),
+                                               UserID                     INT,
+                                               CreatedBy                  INT,
+                                               CreatedDate                DATETIME,
+                                               ModifiedBy                 INT,
+                                               ModifiedDate               DATETIME,
+                                               PortCode                   NVARCHAR (2),
+                                               UserTypeId                 INT,
+                                               UserType                   NVARCHAR (4)
+                                            )
+      DECLARE @RecordCnt   INT
+      SET @duration = 250
+      SET @Index = 1
+
+      SET @eventscheduletaskid = 0
+      SELECT @eventscheduletaskid = EST.EventScheduleTaskID
+        FROM EventScheduleTask EST
+       WHERE upper (EST.EventScheduleTaskName) =
+                'USP_SERVICE_REQUEST_AUTO_EMAIL_RULE3'
+
+      SELECT @duration =
+                  CONVERT (INT, substring (EventScheduleTime, 1, 2)) * 60
+                + CONVERT (INT, substring (EventScheduleTime, 4, 2))
+        FROM EventSchedule
+       WHERE EventScheduleID =
+                (SELECT EventScheduleID
+                   FROM EventScheduleTask
+                  WHERE EventScheduleTaskID = @eventscheduletaskid)
+
+      --print 'Duration ' + convert(varchar,@duration)
+      --Fethching Service Request details which are approve but not Confirmed and inserting into @pendingServiceRequests
+      INSERT INTO @pendingServiceRequests (ServiceRequestId,
+                                           VCN,
+                                           ToPositionPortCode,
+                                           ToPositionQuayCode,
+                                           ToPositionBerthCode,
+                                           ToPositionBollardCode,
+                                           MovementType,
+                                           MovementDateTime,
+                                           CurrentDatetime,
+                                           WorkflowTaskCode,
+                                           WorkflowInstanceId,
+                                           PortCode,
+                                           BPWorkflowInstanceId,
+                                           duration,
+                                           CreatedBy)
+         SELECT SR.ServiceRequestID,
+                SR.VCN,
+                VC.ToPositionPortCode,
+                VC.ToPositionQuayCode,
+                VC.ToPositionBerthCode,
+                VC.FromPositionBollardCode,
+                SR.MovementType,
+                SR.MovementDateTime,
+                getdate () AS CurrentDatetime,
+                WI.WorkflowTaskCode,
+                WI.WorkflowInstanceId,
+                WI.PortCode,
+                SR.BPWorkflowInstanceId,
+                --datediff (hour, getdate (), SR.MovementDateTime) duration_hours,
+                datediff (minute, getdate (), SR.MovementDateTime)
+                   AS duration_minutes,
+                SR.CreatedBy
+           FROM ServiceRequest SR
+                INNER JOIN WorkflowInstance WI
+                   ON WI.WorkflowInstanceId = SR.WorkflowInstanceID
+                INNER JOIN VesselCall VC ON VC.VCN = SR.VCN
+                INNER JOIN ArrivalNotification an ON an.VCN = SR.VCN
+                INNER JOIN
+                (SELECT VCN
+                   FROM (SELECT count (AR.VCN) reasoncount, AR.VCN
+                           FROM ArrivalReason AR
+                                INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                          WHERE     VC.ATD IS NULL
+                                AND AR.vcn IN (SELECT VCN
+                                                 FROM ArrivalReason
+                                                WHERE Reason = 'BUNK')
+                         GROUP BY AR.VCN) a
+                  WHERE reasoncount > 1
+                 UNION
+                 SELECT AR.VCN
+                   FROM ArrivalReason AR
+                        INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                  WHERE     VC.ATD IS NULL
+                        AND AR.vcn IN (SELECT VCN
+                                         FROM ArrivalReason
+                                        WHERE Reason != 'BUNK')
+                 GROUP BY AR.VCN) BA
+                   ON BA.VCN = SR.VCN
+          WHERE     WI.WorkflowTaskCode =
+                       (SELECT PC.ConfigValue
+                          FROM PortGeneralConfig PC
+                         WHERE     PC.PortCode = WI.Portcode
+                               AND PC.ConfigName = 'ApproveCode')
+                AND datediff (minute, getdate (), SR.MovementDateTime) <=
+                       @duration
+                AND SR.ServiceRequestID NOT IN (SELECT CONVERT (
+                                                          INT,
+                                                          EST.Reference)
+                                                  FROM EventScheduleTrack EST
+                                                 WHERE EST.EventScheduleTaskID =
+                                                          @eventscheduletaskid);
+
+      --Fethching Service Request Shifting details inserting into @pendingServiceRequests
+      INSERT INTO @pendingServiceRequests (ServiceRequestId,
+                                           VCN,
+                                           ToPositionPortCode,
+                                           ToPositionQuayCode,
+                                           ToPositionBerthCode,
+                                           ToPositionBollardCode,
+                                           MovementType,
+                                           MovementDateTime,
+                                           CurrentDatetime,
+                                           WorkflowTaskCode,
+                                           WorkflowInstanceId,
+                                           PortCode,
+                                           BPWorkflowInstanceId,
+                                           duration,
+                                           CreatedBy)
+         SELECT SR.ServiceRequestID,
+                SR.VCN,
+                VC.ToPositionPortCode,
+                VC.ToPositionQuayCode,
+                VC.ToPositionBerthCode,
+                VC.FromPositionBollardCode,
+                SR.MovementType,
+                SR.MovementDateTime,
+                getdate () AS CurrentDatetime,
+                WI.WorkflowTaskCode,
+                WI.WorkflowInstanceId,
+                WI.PortCode,
+                SR.BPWorkflowInstanceId,
+                --datediff (hour, getdate (), SR.MovementDateTime) duration_hours,
+                datediff (minute, getdate (), SR.MovementDateTime)
+                   AS duration_minutes,
+                SR.CreatedBy
+           FROM ServiceRequest SR
+                INNER JOIN WorkflowInstance WI
+                   ON WI.WorkflowInstanceId = SR.BPWorkflowInstanceId
+                INNER JOIN VesselCall VC ON VC.VCN = SR.VCN
+                INNER JOIN ArrivalNotification an ON an.VCN = SR.VCN
+                INNER JOIN
+                (SELECT VCN
+                   FROM (SELECT count (AR.VCN) reasoncount, AR.VCN
+                           FROM ArrivalReason AR
+                                INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                          WHERE     VC.ATD IS NULL
+                                AND AR.vcn IN (SELECT VCN
+                                                 FROM ArrivalReason
+                                                WHERE Reason = 'BUNK')
+                         GROUP BY AR.VCN) a
+                  WHERE reasoncount > 1
+                 UNION
+                 SELECT AR.VCN
+                   FROM ArrivalReason AR
+                        INNER JOIN VesselCall VC ON VC.VCN = AR.VCN
+                  WHERE     VC.ATD IS NULL
+                        AND AR.vcn IN (SELECT VCN
+                                         FROM ArrivalReason
+                                        WHERE Reason != 'BUNK')
+                 GROUP BY AR.VCN) BA
+                   ON BA.VCN = SR.VCN
+          WHERE     SR.MovementType = 'SHMV'
+                AND SR.BPWorkflowInstanceId IS NOT NULL
+                AND SR.WorkflowInstanceID IS NULL
+                AND SR.RecordStatus = 'A'
+                AND datediff (minute, getdate (), SR.MovementDateTime) <=
+                       @duration
+                AND SR.ServiceRequestID NOT IN (SELECT CONVERT (
+                                                          INT,
+                                                          EST.Reference)
+                                                  FROM EventScheduleTrack EST
+                                                 WHERE EST.EventScheduleTaskID =
+                                                          @eventscheduletaskid);
+
+
+      SELECT @RecordCnt = COUNT (ServiceRequestID)
+      FROM @pendingServiceRequests
+
+
+      --  print '@pendingServiceRequests record count : ' + convert(varchar,@Index)
+      WHILE (@Index <= @RecordCnt)
+      BEGIN
+         BEGIN TRY
+            BEGIN TRANSACTION
+
+            SELECT @WorkflowInstanceId = PR.WorkflowInstanceId,
+                   @BPWorkflowInstanceId = PR.BPWorkflowInstanceId,
+                   @portcode = PR.PortCode,
+                   @reference = PR.ServiceRequestID,
+                   @MovementType = PR.MovementType,
+                   @usertypeid = PR.CreatedBy,
+                   @usertype =
+                      coalesce ( (SELECT UserType
+                                    FROM Users
+                                   WHERE UserId = PR.CreatedBy),
+                                'EMP')
+            FROM @pendingServiceRequests PR
+            WHERE PendingServiceRequestID = @Index
+
+            --    print 'Reference : ' + @reference
+
+            INSERT INTO @ServiceRequestRule3TempTable
+            VALUES (0,
+                    N'SRVC',
+                    getdate (),
+                    @reference,
+                    N'A',
+                    'O',
+                    'O',
+                    'SBRS',
+                    'O',
+                    0,
+                    1,
+                    getdate (),
+                    NULL,
+                    getdate (),
+                    @portcode,
+                    @usertypeid,
+                    @usertype)
+
+            SELECT @eventscheduletrackid = SCOPE_IDENTITY ();
+
+            --    print @eventscheduletrackid
+
+            DECLARE @WorkflowProcessId   INT
+            DECLARE @RoleId   INT
+            DECLARE @FromTaskCode   NVARCHAR (4)
+            DECLARE @ToTaskCode   NVARCHAR (4)
+            DECLARE @ReferenceData   NVARCHAR (MAX)
+            DECLARE @CreatedBy   INT
+            DECLARE @CreatedDate   DATETIME
+
+
+            SELECT @RoleId = WP.RoleId,
+                   @FromTaskCode = WP.ToTaskCode,
+                   @ReferenceData = WP.ReferenceData,
+                   @CreatedBy = WP.CreatedBy
+              FROM WorkflowProcess WP
+                   INNER JOIN WorkflowInstance WI
+                      ON WP.WorkflowProcessId = WI.WorkflowProcessId
+             WHERE WI.WorkflowInstanceId = @WorkflowInstanceId
+
+            SELECT @ToTaskCode =
+                      (SELECT PC.ConfigValue
+                         FROM PortGeneralConfig PC
+                        WHERE     PC.PortCode = @portcode
+                              AND PC.ConfigName = 'CancelCode')
+
+            --print @RoleId; print @FromTaskCode; print @ReferenceData; print @CreatedBy; print @CreatedDate; print @ToTaskCode;print @RecordStatus
+
+            SELECT @CreatedDate = (SELECT getdate ())
+
+            --Raising Cancellation Service Request
+            EXEC usp_WorkflowProcess_dml @WorkflowProcessId OUTPUT,
+                                         @WorkflowInstanceId,
+                                         @RoleId,
+                                         @FromTaskCode,
+                                         @ToTaskCode,
+                                         @ReferenceData,
+                                         'Auto Service Request Cancel',
+                                         'A',
+                                         @CreatedBy,
+                                         @CreatedDate,
+                                         @CreatedBy,
+                                         @CreatedDate
+
+
+            UPDATE WorkflowInstance
+               SET WorkflowTaskCode = @ToTaskCode,
+                   ModifiedDate = @CreatedDate,
+                   ModifiedBy =
+                      (SELECT userid
+                         FROM Users
+                        WHERE UPPER (UserName) = 'ADMIN')
+             WHERE WorkflowInstanceId = @WorkflowInstanceId
+
+            --For Shiftng cancellaion-----.
+
+            IF @MovementType = 'SHMV'
+               BEGIN
+                  SELECT @RoleId = WP.RoleId,
+                         @FromTaskCode = WP.ToTaskCode,
+                         @ReferenceData = WP.ReferenceData,
+                         @CreatedBy = WP.CreatedBy
+                    FROM WorkflowProcess WP
+                         INNER JOIN WorkflowInstance WI
+                            ON WP.WorkflowProcessId = WI.WorkflowProcessId
+                   WHERE WI.WorkflowInstanceId = @BPWorkflowInstanceId
+
+                  SELECT @CreatedDate = (SELECT getdate ())
+
+                  --Raising Cancellation Service Request
+                  EXEC usp_WorkflowProcess_dml @WorkflowProcessId OUTPUT,
+                                               @BPWorkflowInstanceId,
+                                               @RoleId,
+                                               @FromTaskCode,
+                                               @ToTaskCode,
+                                               @ReferenceData,
+                                               'Auto Service Request Cancel',
+                                               'A',
+                                               @CreatedBy,
+                                               @CreatedDate,
+                                               @CreatedBy,
+                                               @CreatedDate
+
+
+                  UPDATE WorkflowInstance
+                     SET WorkflowTaskCode = @ToTaskCode,
+                         ModifiedDate = @CreatedDate,
+                         ModifiedBy =
+                            (SELECT userid
+                               FROM Users
+                              WHERE UPPER (UserName) = 'ADMIN')
+                   WHERE WorkflowInstanceId = @BPWorkflowInstanceId
+               END
+
+            -----------------------------
+
+            UPDATE ServiceRequest
+               SET RecordStatus = 'I',
+                   ModifiedBy =
+                      (SELECT userid
+                         FROM Users
+                        WHERE UPPER (UserName) = 'ADMIN'),
+                   ModifiedDate = getdate ()
+             WHERE ServiceRequestID = CAST (@reference AS INT);
+
+            UPDATE VesselCallMovement
+               SET RecordStatus = 'I',
+                   ModifiedBy =
+                      (SELECT userid
+                         FROM Users
+                        WHERE UPPER (UserName) = 'ADMIN'),
+                   ModifiedDate = getdate (),
+                   MovementStatus = 'MPEN',
+                   FromPositionQuayCode = NULL,
+                   FromPositionBerthCode = NULL,
+                   FromPositionBollardCode = NULL,
+                   ToPositionQuayCode = NULL,
+                   ToPositionBerthCode = NULL,
+                   ToPositionBollardCode = NULL,
+                   ToPositionPortCode = NULL
+             WHERE ServiceRequestID = CAST (@reference AS INT);
+
+            INSERT INTO @EventScheduleTrack (EventScheduleTaskID,
+                                             NotificationId,
+                                             Reference,
+                                             WorkflowInstanceId,
+                                             WorkflowProcessId)
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference,
+                    @WorkflowInstanceId,
+                    @WorkflowProcessId)
+
+            --Final Insertion Tables
+            INSERT INTO EventScheduleTrack (EventScheduleTaskID,
+                                            NotificationId,
+                                            Reference,
+                                            WorkflowInstanceId,
+                                            WorkflowProcessId)
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference,
+                    @WorkflowInstanceId,
+                    @WorkflowProcessId)
+
+
+            SELECT @Index = @Index + 1
+            COMMIT TRANSACTION
+         END TRY
+         BEGIN CATCH
+            IF @@TRANCOUNT > 0
+               ROLLBACK TRANSACTION
+         END CATCH
+      END
+
+      SELECT * FROM @ServiceRequestRule3TempTable
+   END
+  
+   GO
+   IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (N'[dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_DAILY]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_DAILY]
+GO
+CREATE PROCEDURE [dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_DAILY] 
+AS 
+   BEGIN 
+      DECLARE @Index   INT 
+      DECLARE @reference   NVARCHAR (12) 
+      DECLARE @eventscheduletrackid   INT 
+      DECLARE @eventscheduletaskid   INT 
+      DECLARE @errmsg   NVARCHAR (MAX) 
+      DECLARE @p_CreatedBy   INT 
+      --For Workflow Related 
+      DECLARE @p_EntityId   INT 
+      DECLARE @p_WorkflowTaskCode   NVARCHAR (4) 
+      DECLARE @p_CraftReminderConfigID   INT 
+      DECLARE @p_WorkflowInstanceId   INT 
+      DECLARE @p_WorkflowProcessId   INT 
+      DECLARE @Tokens   NVARCHAR (MAX) 
+      DECLARE @p_ReferenceDataOUT   NVARCHAR (MAX) 
+      DECLARE @p_ReferenceData   NVARCHAR (MAX) 
+      DECLARE @p_Date   DATETIME 
+      DECLARE @SQLString   NVARCHAR (500); 
+      DECLARE @ParmDefinition   NVARCHAR (500); 
+      DECLARE @p_RoleId   INT 
+      SET  NOCOUNT ON 
+      --- 
+      DECLARE @EventScheduleTrack TABLE 
+                                  ( 
+                                     EventScheduleTrackID   INT 
+                                                               IDENTITY (1, 1), 
+                                     EventScheduleTaskID    INT, 
+                                     NotificationId         INT, 
+                                     Reference              NVARCHAR (12), 
+                                     WorkflowInstanceId     INT, 
+                                     WorkflowProcessId      INT 
+                                  ) 
+      DECLARE @CraftReminderConfig TABLE 
+                                   ( 
+                                      PendingCraftReminderID   INT 
+                                                                  IDENTITY (1, 1), 
+                                      CraftReminderConfigID    INT, 
+                                      CraftID                  INT, 
+                                      DateOfValidity           DATETIME, 
+                                      AlertPeriod              NVARCHAR (4), 
+                                      AlertOccurance           INT, 
+                                      ExpectedDate             DATETIME 
+                                   ) 
+      DECLARE @CraftReminderDailyTempTable TABLE 
+                                           ( 
+                                              EntityID                   INT, 
+                                              NotificationTemplateCode   NVARCHAR (4), 
+                                              [DateTime]                 DATETIME, 
+                                              Reference                  NVARCHAR (12), 
+                                              RecordStatus               NVARCHAR (1), 
+                                              EmailStatus                NVARCHAR (1), 
+                                              SMSStatus                  NVARCHAR (1), 
+                                              WorkflowTaskCode           NVARCHAR (4), 
+                                              SystemNotificationStatus   NVARCHAR (1), 
+                                              UserID                     INT, 
+                                              CreatedBy                  INT, 
+                                              CreatedDate                DATETIME, 
+                                              ModifiedBy                 INT, 
+                                              ModifiedDate               DATETIME, 
+                                              PortCode                   NVARCHAR (2), 
+                                              UserTypeId                 INT, 
+                                              UserType                   NVARCHAR (4) 
+                                           ) 
+      DECLARE @RecordCnt   INT 
+      SET @Index = 1 
+ 
+      SET @eventscheduletaskid = 0 
+      SELECT @eventscheduletaskid = EST.EventScheduleTaskID 
+        FROM EventScheduleTask EST 
+       WHERE upper (EST.EventScheduleTaskName) = 
+                'USP_CRAFT_REMINDER_AUTO_EMAIL_DAILY' 
+ 
+      --To Fetch Craft Reminder Configuration Entity Id and Tokens 
+      SELECT @p_Date = getdate (), 
+             @p_EntityId = E.EntityID, 
+             @Tokens = 
+                replace ( 
+                   replace (E.Tokens, 'PortCode', 'P.PortCode'), 
+                   'DateOfValidity', 
+                   '[dbo].[udf_FormatDateTime](DateOfValidity,''YYYY/MM/DD'') + '' '' + [dbo].[udf_FormatDateTime](DateOfValidity,''HH:MM 24'') as DateOfValidity') 
+        FROM Entity E 
+       WHERE EntityCode = 'CRAFTRECONFIG' 
+      -- 
+ 
+      --To Fetch Admin Userid 
+      SELECT @p_CreatedBy = UserID 
+      FROM Users 
+      WHERE UserID = (SELECT MIN (UserID) 
+                        FROM UserRole 
+                       WHERE RoleID = (SELECT RoleID 
+                                         FROM [Role] 
+                                        WHERE RoleCode = 'ADMN')) 
+ 
+ 
+      INSERT INTO @CraftReminderConfig 
+         SELECT CC.CraftReminderConfigID, 
+                CC.CraftID, 
+                CC.DateOfValidity, 
+                CC.AlertPeriod, 
+                CC.AlertOccurance, 
+                cast ( 
+                   (DATEADD (day, CC.AlertOccurance * -1, CC.DateOfValidity)) AS DATE) 
+                   AS [ExpectedDayDate] 
+           FROM (SELECT CC1.CraftReminderConfigID, 
+                        CC1.CraftID, 
+                        CC1.DateOfValidity, 
+                        CC1.AlertPeriod1 AS AlertPeriod, 
+                        CC1.AlertOccurance1 AS AlertOccurance 
+                   FROM CraftReminderConfig CC1 
+                  WHERE     CC1.AlertPeriod1 = 'CADS' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF') 
+                 UNION 
+                 SELECT CC2.CraftReminderConfigID, 
+                        CC2.CraftID, 
+                        CC2.DateOfValidity, 
+                        CC2.AlertPeriod2 AS AlertPeriod, 
+                        CC2.AlertOccurance2 AS AlertOccurance 
+                   FROM CraftReminderConfig CC2 
+                  WHERE     CC2.AlertPeriod2 = 'CADS' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF') 
+                 UNION 
+                 SELECT CC3.CraftReminderConfigID, 
+                        CC3.CraftID, 
+                        CC3.DateOfValidity, 
+                        CC3.AlertPeriod3 AS AlertPeriod, 
+                        CC3.AlertOccurance3 AS AlertOccurance 
+                   FROM CraftReminderConfig CC3 
+                  WHERE     CC3.AlertPeriod3 = 'CADS' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF')) CC 
+          WHERE     CC.AlertOccurance > 0 
+                AND CC.AlertOccurance < 367   -- NOTE : Note more than an Year 
+                AND CASE 
+                       WHEN cast ( 
+                               (DATEADD (day, 
+                                         (CC.AlertOccurance * -1), 
+                                         CC.DateOfValidity)) AS DATE) = 
+                               cast (getdate () AS DATE) 
+                       THEN 
+                          1 
+                       ELSE 
+                          0 
+                    END = 1 
+                AND CraftReminderConfigID NOT IN (SELECT CONVERT (INT, 
+                                                                  Reference) 
+                                                    FROM EventScheduleTrack 
+                                                   WHERE EventScheduleTaskID = 
+                                                            @eventscheduletaskid); 
+ 
+      SELECT @RecordCnt = COUNT (CraftReminderConfigID) 
+      FROM @CraftReminderConfig 
+ 
+      --  Print @RecordCnt; 
+ 
+      WHILE (@Index <= @RecordCnt) 
+      BEGIN 
+         BEGIN TRY 
+            BEGIN TRANSACTION 
+ 
+            DECLARE @portcode   NVARCHAR (2) 
+            DECLARE @craftid   INT 
+ 
+            SELECT @reference = CraftReminderConfigID, 
+                   @craftid = CraftID 
+            FROM @CraftReminderConfig 
+            WHERE PendingCraftReminderID = @Index 
+ 
+            SELECT @portcode = PortCode 
+            FROM Craft 
+            WHERE CraftID = @craftid 
+ 
+            --To Fetch Intial WorkflowStatus code for Craft Reminder Configuration from WorkflowTask 
+            SELECT @p_WorkflowTaskCode = ConfigValue 
+              FROM PortGeneralConfig 
+             WHERE     PortCode = @portcode 
+                   AND ConfigName = 'WorkFlowInitialStatus' 
+ 
+            INSERT INTO @CraftReminderDailyTempTable 
+            VALUES (0, 
+                    N'CRCD', 
+                    getdate (), 
+                    @reference, 
+                    N'A', 
+                    'O', 
+                    'O', 
+                    'SBRS', 
+                    'O', 
+                    0, 
+                    @p_CreatedBy, 
+                    getdate (), 
+                    @p_CreatedBy, 
+                    getdate (), 
+                    @portcode, 
+                    0, 
+                    'EMP') 
+ 
+            --Fetching Tokens data 
+            SET @SQLString = 
+                     N'SELECT @p_ReferenceDataOUT =[dbo].[ToJSON] ((SELECT ' 
+                   + @Tokens 
+                   + ' FROM CraftReminderConfig CRC INNER JOIN Craft C ON CRC.CraftID = C.CraftID INNER JOIN Port P ON P.PortCode = C.PortCode LEFT JOIN Entity E ON E.EntityCode = ''CRAFTRECONFIG'' WHERE CRC.CraftReminderConfigID = @id FOR XML PATH , ROOT ))'; 
+            --set @ParmDefinition = N'@id int, @p_ReferenceDataOUT nvarchar(MAX) OUTPUT' 
+            SET @ParmDefinition = 
+                   N'@id int, @p_ReferenceDataOUT nvarchar(MAX) OUTPUT' 
+ 
+            SET @p_CraftReminderConfigID = CAST (@reference AS INT) 
+ 
+            EXECUTE sp_executesql @SQLString, 
+                                  @ParmDefinition, 
+                                  @id   = @p_CraftReminderConfigID, 
+                                  @p_ReferenceDataOUT = @p_ReferenceData OUTPUT; 
+ 
+            --Raising WorkflowInstance 
+            EXECUTE dbo.usp_WorkflowInstance_dml @p_WorkflowInstanceId OUTPUT, 
+                                                 @p_EntityID, 
+                                                 @PortCode, 
+                                                 @reference, 
+                                                 @p_WorkflowTaskCode, 
+                                                 0, 
+                                                 'EMP', 
+                                                 'A', 
+                                                 @p_CreatedBy, 
+                                                 @p_Date, 
+                                                 @p_CreatedBy, 
+                                                 @p_Date 
+ 
+            --Inserting data into Workflowprocess table 
+            SELECT EntityID, 
+                   RoleID, 
+                   Step, 
+                   PortCode 
+              INTO #TempRole 
+              FROM WorkflowTaskRole 
+             WHERE     EntityID = @p_EntityId 
+                   AND PortCode = @portcode 
+                   AND Step = 
+                          (SELECT min (Step) 
+                             FROM WorkflowTask 
+                            WHERE     PortCode = @portcode 
+                                  AND EntityID = @p_EntityId) 
+ 
+            WHILE (SELECT Count (1) FROM #TempRole) > 0 
+            BEGIN 
+               SELECT TOP 1 
+                      @p_RoleId = Roleid 
+               FROM #TempRole 
+               EXECUTE dbo.usp_WorkflowProcess_dml @p_WorkflowProcessId OUTPUT, 
+                                                   @p_WorkflowInstanceId, 
+                                                   @p_RoleId, 
+                                                   @p_WorkflowTaskCode, 
+                                                   @p_WorkflowTaskCode, 
+                                                   @p_ReferenceData, 
+                                                   'New Weekly Craft Reminder Task', 
+                                                   'A', 
+                                                   @p_CreatedBy, 
+                                                   @p_Date, 
+                                                   @p_CreatedBy, 
+                                                   @p_Date 
+ 
+               DELETE #TempRole 
+                WHERE Roleid = @p_RoleId 
+            END 
+ 
+            DROP TABLE #TempRole 
+            --- 
+            SELECT @eventscheduletrackid = SCOPE_IDENTITY (); 
+ 
+            --    print @eventscheduletrackid 
+ 
+            INSERT INTO @EventScheduleTrack (EventScheduleTaskID, 
+                                             NotificationId, 
+                                             Reference, 
+                                             WorkflowInstanceId) 
+            VALUES (@eventscheduletaskid, 
+                    @eventscheduletrackid, 
+                    @reference, 
+                    NULL) 
+ 
+            --Final Insertion Tables 
+            INSERT INTO EventScheduleTrack (EventScheduleTaskID, 
+                                            NotificationId, 
+                                            Reference, 
+                                            WorkflowInstanceId) 
+            VALUES (@eventscheduletaskid, 
+                    @eventscheduletrackid, 
+                    @reference, 
+                    NULL) 
+ 
+            SELECT @Index = @Index + 1 
+            COMMIT TRANSACTION 
+         END TRY 
+         BEGIN CATCH 
+            IF @@TRANCOUNT > 0 
+               ROLLBACK TRANSACTION 
+ 
+            BEGIN 
+               SELECT @errmsg = 
+                           ' ErrorMessage = ' 
+                         + ERROR_MESSAGE () 
+                         + char (13) 
+                         + char (10) 
+ 
+               INSERT INTO [Log] (Date, 
+                                  Thread, 
+                                  Level, 
+                                  Logger, 
+                                  Message, 
+                                  Exception) 
+                  VALUES ( 
+                            getdate (), 
+                            9999, 
+                            N'ERROR', 
+                            N'Failed to execute USP_CRAFT_REMINDER_AUTO_EMAIL_DAILY', 
+                            @errmsg, 
+                            N'') 
+            END 
+         END CATCH 
+      END 
+ 
+      SELECT * FROM @CraftReminderDailyTempTable 
+   END
+   
+   GO
+   IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (N'[dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_WEEKLY]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_WEEKLY]
+GO
+CREATE PROCEDURE [dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_WEEKLY] 
+AS 
+   BEGIN 
+      DECLARE @Index   INT 
+      DECLARE @reference   NVARCHAR (12) 
+      DECLARE @eventscheduletrackid   INT 
+      DECLARE @eventscheduletaskid   INT 
+      DECLARE @errmsg   NVARCHAR (MAX) 
+      DECLARE @p_CreatedBy   INT 
+      --For Workflow Related 
+      DECLARE @p_EntityId   INT 
+      DECLARE @p_WorkflowTaskCode   NVARCHAR (4) 
+      DECLARE @p_CraftReminderConfigID   INT 
+      DECLARE @p_WorkflowInstanceId   INT 
+      DECLARE @p_WorkflowProcessId   INT 
+      DECLARE @Tokens   NVARCHAR (MAX) 
+      DECLARE @p_ReferenceDataOUT   NVARCHAR (MAX) 
+      DECLARE @p_ReferenceData   NVARCHAR (MAX) 
+      DECLARE @p_Date   DATETIME 
+      DECLARE @SQLString   NVARCHAR (500); 
+      DECLARE @ParmDefinition   NVARCHAR (500); 
+      DECLARE @p_RoleId   INT 
+      --- 
+      SET  NOCOUNT ON 
+ 
+      DECLARE @EventScheduleTrack TABLE 
+                                  ( 
+                                     EventScheduleTrackID   INT 
+                                                               IDENTITY (1, 1), 
+                                     EventScheduleTaskID    INT, 
+                                     NotificationId         INT, 
+                                     Reference              NVARCHAR (12), 
+                                     WorkflowInstanceId     INT, 
+                                     WorkflowProcessId      INT 
+                                  ) 
+      DECLARE @CraftReminderConfig TABLE 
+                                   ( 
+                                      PendingCraftReminderID   INT 
+                                                                  IDENTITY (1, 1), 
+                                      CraftReminderConfigID    INT, 
+                                      CraftID                  INT, 
+                                      DateOfValidity           DATETIME, 
+                                      AlertPeriod              NVARCHAR (4), 
+                                      AlertOccurance           INT, 
+                                      ExpectedDate             DATETIME 
+                                   ) 
+      DECLARE @CraftReminderWeeklyTempTable TABLE 
+                                            ( 
+                                               EntityID                   INT, 
+                                               NotificationTemplateCode   NVARCHAR (4), 
+                                               [DateTime]                 DATETIME, 
+                                               Reference                  NVARCHAR (12), 
+                                               RecordStatus               NVARCHAR (1), 
+                                               EmailStatus                NVARCHAR (1), 
+                                               SMSStatus                  NVARCHAR (1), 
+                                               WorkflowTaskCode           NVARCHAR (4), 
+                                               SystemNotificationStatus   NVARCHAR (1), 
+                                               UserID                     INT, 
+                                               CreatedBy                  INT, 
+                                               CreatedDate                DATETIME, 
+                                               ModifiedBy                 INT, 
+                                               ModifiedDate               DATETIME, 
+                                               PortCode                   NVARCHAR (2), 
+                                               UserTypeId                 INT, 
+                                               UserType                   NVARCHAR (4) 
+                                            ) 
+      DECLARE @RecordCnt   INT 
+      SET @Index = 1 
+      SET @eventscheduletaskid = 0 
+      SELECT @eventscheduletaskid = EST.EventScheduleTaskID 
+        FROM EventScheduleTask EST 
+       WHERE upper (EST.EventScheduleTaskName) = 
+                'USP_CRAFT_REMINDER_AUTO_EMAIL_WEEKLY' 
+ 
+      --To Fetch Craft Reminder Configuration Entity Id and Tokens 
+      SELECT @p_Date = getdate (), 
+             @p_EntityId = E.EntityID, 
+             @Tokens = 
+                replace ( 
+                   replace (E.Tokens, 'PortCode', 'P.PortCode'), 
+                   'DateOfValidity', 
+                   '[dbo].[udf_FormatDateTime](DateOfValidity,''YYYY/MM/DD'') + '' '' + [dbo].[udf_FormatDateTime](DateOfValidity,''HH:MM 24'') as DateOfValidity') 
+        FROM Entity E 
+       WHERE EntityCode = 'CRAFTRECONFIG' 
+      -- 
+ 
+      --To Fetch Admin Userid 
+      SELECT @p_CreatedBy = UserID 
+      FROM Users 
+      WHERE UserID = (SELECT MIN (UserID) 
+                        FROM UserRole 
+                       WHERE RoleID = (SELECT RoleID 
+                                         FROM [Role] 
+                                        WHERE RoleCode = 'ADMN')) 
+ 
+ 
+      INSERT INTO @CraftReminderConfig 
+         SELECT CC.CraftReminderConfigID, 
+                CC.CraftID, 
+                CC.DateOfValidity, 
+                CC.AlertPeriod, 
+                CC.AlertOccurance, 
+                cast ( 
+                   (DATEADD (ww, CC.AlertOccurance * -1, CC.DateOfValidity)) AS DATE) 
+           FROM (SELECT CC1.CraftReminderConfigID, 
+                        CC1.CraftID, 
+                        CC1.DateOfValidity, 
+                        CC1.AlertPeriod1 AS AlertPeriod, 
+                        CC1.AlertOccurance1 AS AlertOccurance 
+                   FROM CraftReminderConfig CC1 
+                  WHERE     CC1.AlertPeriod1 = 'CAWK' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF') 
+                 UNION 
+                 SELECT CC2.CraftReminderConfigID, 
+                        CC2.CraftID, 
+                        CC2.DateOfValidity, 
+                        CC2.AlertPeriod2 AS AlertPeriod, 
+                        CC2.AlertOccurance2 AS AlertOccurance 
+                   FROM CraftReminderConfig CC2 
+                  WHERE     CC2.AlertPeriod2 = 'CAWK' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF') 
+                 UNION 
+                 SELECT CC3.CraftReminderConfigID, 
+                        CC3.CraftID, 
+                        CC3.DateOfValidity, 
+                        CC3.AlertPeriod3 AS AlertPeriod, 
+                        CC3.AlertOccurance3 AS AlertOccurance 
+                   FROM CraftReminderConfig CC3 
+                  WHERE     CC3.AlertPeriod3 = 'CAWK' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF')) CC 
+          WHERE     CC.AlertOccurance > 0 
+                AND CC.AlertOccurance < 54    -- NOTE : Note more than an Year 
+                AND CASE 
+                       WHEN cast ( 
+                               (DATEADD (ww, 
+                                         (CC.AlertOccurance * -1), 
+                                         CC.DateOfValidity)) AS DATE) = 
+                               cast (getdate () AS DATE) 
+                       THEN 
+                          1 
+                       ELSE 
+                          0 
+                    END = 1 
+                AND CraftReminderConfigID NOT IN (SELECT CONVERT (INT, 
+                                                                  Reference) 
+                                                    FROM EventScheduleTrack 
+                                                   WHERE EventScheduleTaskID = 
+                                                            @eventscheduletaskid); 
+ 
+      SELECT @RecordCnt = COUNT (CraftReminderConfigID) 
+      FROM @CraftReminderConfig 
+ 
+      --  Print @RecordCnt; 
+ 
+      WHILE (@Index <= @RecordCnt) 
+      BEGIN 
+         BEGIN TRY 
+            BEGIN TRANSACTION 
+ 
+            DECLARE @portcode   NVARCHAR (2) 
+            DECLARE @craftid   INT 
+ 
+            SELECT @reference = CraftReminderConfigID, 
+                   @craftid = CraftID 
+    FROM @CraftReminderConfig 
+            WHERE PendingCraftReminderID = @Index 
+ 
+            SELECT @portcode = PortCode 
+            FROM Craft 
+            WHERE CraftID = @craftid 
+ 
+            --print 'Reference : ' + @reference 
+ 
+            --To Fetch Intial WorkflowStatus code for Craft Reminder Configuration from WorkflowTask 
+            SELECT @p_WorkflowTaskCode = ConfigValue 
+              FROM PortGeneralConfig 
+             WHERE     PortCode = @portcode 
+                   AND ConfigName = 'WorkFlowInitialStatus' 
+ 
+            INSERT INTO @CraftReminderWeeklyTempTable 
+            VALUES (0, 
+                    N'CRCW', 
+                    getdate (), 
+                    @reference, 
+                    N'A', 
+                    'O', 
+                    'O', 
+                    'SBRS', 
+                    'O', 
+                    0, 
+                    @p_CreatedBy, 
+                    getdate (), 
+                    @p_CreatedBy, 
+                    getdate (), 
+                    @portcode, 
+                    0, 
+                    'EMP') 
+ 
+            --Fetching Tokens data 
+            SET @SQLString = 
+                     N'SELECT @p_ReferenceDataOUT =[dbo].[ToJSON] ((SELECT ' 
+                   + @Tokens 
+                   + ' FROM CraftReminderConfig CRC INNER JOIN Craft C ON CRC.CraftID = C.CraftID INNER JOIN Port P ON P.PortCode = C.PortCode LEFT JOIN Entity E ON E.EntityCode = ''CRAFTRECONFIG'' WHERE CRC.CraftReminderConfigID = @id FOR XML PATH , ROOT ))'; 
+            --set @ParmDefinition = N'@id int, @p_ReferenceDataOUT nvarchar(MAX) OUTPUT' 
+            SET @ParmDefinition = 
+                   N'@id int, @p_ReferenceDataOUT nvarchar(MAX) OUTPUT' 
+ 
+            SET @p_CraftReminderConfigID = CAST (@reference AS INT) 
+ 
+            EXECUTE sp_executesql @SQLString, 
+                                  @ParmDefinition, 
+                                  @id   = @p_CraftReminderConfigID, 
+                                  @p_ReferenceDataOUT = @p_ReferenceData OUTPUT; 
+            --Raising WorkflowInstance 
+            EXECUTE dbo.usp_WorkflowInstance_dml @p_WorkflowInstanceId OUTPUT, 
+                                                 @p_EntityID, 
+                                                 @PortCode, 
+                                                 @reference, 
+                                                 @p_WorkflowTaskCode, 
+                                                 0, 
+                                                 'EMP', 
+                                                 'A', 
+                                                 @p_CreatedBy, 
+                                                 @p_Date, 
+                                                 @p_CreatedBy, 
+                                                 @p_Date 
+ 
+            --Inserting data into Workflowprocess table 
+            SELECT EntityID, 
+                   RoleID, 
+                   Step, 
+                   PortCode 
+              INTO #TempRole 
+              FROM WorkflowTaskRole 
+             WHERE     EntityID = @p_EntityId 
+                   AND PortCode = @portcode 
+                   AND Step = 
+                          (SELECT min (Step) 
+                             FROM WorkflowTask 
+                            WHERE     PortCode = @portcode 
+                                  AND EntityID = @p_EntityId) 
+ 
+            WHILE (SELECT Count (1) FROM #TempRole) > 0 
+            BEGIN 
+               SELECT TOP 1 
+                      @p_RoleId = Roleid 
+               FROM #TempRole 
+               EXECUTE dbo.usp_WorkflowProcess_dml @p_WorkflowProcessId OUTPUT, 
+                                                   @p_WorkflowInstanceId, 
+                                                   @p_RoleId, 
+                                                   @p_WorkflowTaskCode, 
+                                                   @p_WorkflowTaskCode, 
+                @p_ReferenceData, 
+                                                   'New Weekly Craft Reminder Task', 
+                                                   'A', 
+                                                   @p_CreatedBy, 
+                                                   @p_Date, 
+                                                   @p_CreatedBy, 
+                                                   @p_Date 
+ 
+               DELETE #TempRole 
+                WHERE Roleid = @p_RoleId 
+            END 
+ 
+            DROP TABLE #TempRole 
+            --- 
+ 
+            SELECT @eventscheduletrackid = SCOPE_IDENTITY (); 
+ 
+            --    print @eventscheduletrackid 
+ 
+            INSERT INTO @EventScheduleTrack (EventScheduleTaskID, 
+                                             NotificationId, 
+                                             Reference, 
+                                             WorkflowInstanceId) 
+            VALUES (@eventscheduletaskid, 
+                    @eventscheduletrackid, 
+                    @reference, 
+                    NULL) 
+ 
+            --Final Insertion Tables 
+            INSERT INTO EventScheduleTrack (EventScheduleTaskID, 
+                                            NotificationId, 
+                                            Reference, 
+                                            WorkflowInstanceId) 
+            VALUES (@eventscheduletaskid, 
+                    @eventscheduletrackid, 
+                    @reference, 
+                    NULL) 
+ 
+            SELECT @Index = @Index + 1 
+            COMMIT TRANSACTION 
+         END TRY 
+         BEGIN CATCH 
+            IF @@TRANCOUNT > 0 
+               ROLLBACK TRANSACTION 
+ 
+            BEGIN 
+               SELECT @errmsg = 
+                           ' ErrorMessage = ' 
+                         + ERROR_MESSAGE () 
+                         + char (13) 
+                         + char (10) 
+ 
+               INSERT INTO [Log] (Date, 
+                                  Thread, 
+                                  Level, 
+                                  Logger, 
+                                  Message, 
+                                  Exception) 
+                  VALUES ( 
+                            getdate (), 
+                            9999, 
+                            N'ERROR', 
+                            N'Failed to execute USP_CRAFT_REMINDER_AUTO_EMAIL_WEEKLY', 
+                            @errmsg, 
+                            N'') 
+            END 
+         END CATCH 
+      END 
+ 
+      SELECT * FROM @CraftReminderWeeklyTempTable 
+   END
+   GO
+   
+   IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (N'[dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_MONTHLY]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_MONTHLY]
+GO
+CREATE PROCEDURE [dbo].[USP_CRAFT_REMINDER_AUTO_EMAIL_MONTHLY] 
+AS 
+   BEGIN 
+      DECLARE @Index   INT 
+      DECLARE @reference   NVARCHAR (12) 
+      DECLARE @eventscheduletrackid   INT 
+      DECLARE @eventscheduletaskid   INT 
+      DECLARE @errmsg   NVARCHAR (MAX) 
+      DECLARE @p_CreatedBy   INT 
+ 
+      --For Workflow Related 
+      DECLARE @p_EntityId   INT 
+      DECLARE @p_WorkflowTaskCode   NVARCHAR (4) 
+      DECLARE @p_CraftReminderConfigID   INT 
+      DECLARE @p_WorkflowInstanceId   INT 
+      DECLARE @p_WorkflowProcessId   INT 
+      DECLARE @Tokens   NVARCHAR (MAX) 
+      DECLARE @p_ReferenceDataOUT   NVARCHAR (MAX) 
+      DECLARE @p_ReferenceData   NVARCHAR (MAX) 
+      DECLARE @p_Date   DATETIME 
+      DECLARE @SQLString   NVARCHAR (500); 
+      DECLARE @ParmDefinition   NVARCHAR (500); 
+      DECLARE @p_RoleId   INT 
+      --- 
+      SET  NOCOUNT ON 
+      DECLARE @EventScheduleTrack TABLE 
+                                  ( 
+                                     EventScheduleTrackID   INT 
+                                                               IDENTITY (1, 1), 
+                                     EventScheduleTaskID    INT, 
+                                     NotificationId         INT, 
+                                     Reference              NVARCHAR (12), 
+                                     WorkflowInstanceId     INT, 
+                                     WorkflowProcessId      INT 
+                                  ) 
+      DECLARE @CraftReminderConfig TABLE 
+                                   ( 
+                                      PendingCraftReminderID   INT 
+                                                                  IDENTITY (1, 1), 
+                                      CraftReminderConfigID    INT, 
+                                      CraftID                  INT, 
+                                      DateOfValidity           DATETIME, 
+                                      AlertPeriod              NVARCHAR (4), 
+                                      AlertOccurance           INT, 
+                                      ExpectedDate             DATETIME 
+                                   ) 
+      DECLARE @CraftReminderMonthlyTempTable TABLE 
+                                             ( 
+                                                EntityID                   INT, 
+                                                NotificationTemplateCode   NVARCHAR (4), 
+                                                [DateTime]                 DATETIME, 
+                                                Reference                  NVARCHAR (12), 
+                                                RecordStatus               NVARCHAR (1), 
+                                                EmailStatus                NVARCHAR (1), 
+                                                SMSStatus                  NVARCHAR (1), 
+                                                WorkflowTaskCode           NVARCHAR (4), 
+                                                SystemNotificationStatus   NVARCHAR (1), 
+                                                UserID                     INT, 
+                                                CreatedBy                  INT, 
+                                                CreatedDate                DATETIME, 
+                                                ModifiedBy                 INT, 
+                                                ModifiedDate               DATETIME, 
+                                                PortCode                   NVARCHAR (2), 
+                                                UserTypeId                 INT, 
+                                                UserType                   NVARCHAR (4) 
+                                             ) 
+      DECLARE @RecordCnt   INT 
+      SET @Index = 1 
+ 
+      SET @eventscheduletaskid = 0 
+      SELECT @eventscheduletaskid = EST.EventScheduleTaskID 
+        FROM EventScheduleTask EST 
+     WHERE upper (EST.EventScheduleTaskName) = 
+                'USP_CRAFT_REMINDER_AUTO_EMAIL_MONTHLY' 
+ 
+      --To Fetch Craft Reminder Configuration Entity Id and Tokens 
+      SELECT @p_Date = getdate (), 
+             @p_EntityId = E.EntityID, 
+             @Tokens = 
+                replace ( 
+                   replace (E.Tokens, 'PortCode', 'P.PortCode'), 
+                   'DateOfValidity', 
+                   '[dbo].[udf_FormatDateTime](DateOfValidity,''YYYY/MM/DD'') + '' '' + [dbo].[udf_FormatDateTime](DateOfValidity,''HH:MM 24'') as DateOfValidity') 
+        FROM Entity E 
+       WHERE EntityCode = 'CRAFTRECONFIG' 
+      -- 
+ 
+      --To Fetch Admin Userid 
+      SELECT @p_CreatedBy = UserID 
+      FROM Users 
+      WHERE UserID = (SELECT MIN (UserID) 
+                        FROM UserRole 
+                       WHERE RoleID = (SELECT RoleID 
+                                         FROM [Role] 
+                                        WHERE RoleCode = 'ADMN')) 
+ 
+ 
+      INSERT INTO @CraftReminderConfig 
+         SELECT CC.CraftReminderConfigID, 
+                CC.CraftID, 
+                CC.DateOfValidity, 
+                CC.AlertPeriod, 
+                CC.AlertOccurance, 
+                cast ( 
+                   (DATEADD (mm, CC.AlertOccurance * -1, CC.DateOfValidity)) AS DATE) 
+                   AS [ExpectedDate] 
+           FROM (SELECT CC1.CraftReminderConfigID, 
+                        CC1.CraftID, 
+                        CC1.DateOfValidity, 
+                        CC1.AlertPeriod1 AS AlertPeriod, 
+                        CC1.AlertOccurance1 AS AlertOccurance 
+                   FROM CraftReminderConfig CC1 
+                  WHERE     CC1.AlertPeriod1 = 'CAMS' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF') 
+                 UNION 
+                 SELECT CC2.CraftReminderConfigID, 
+                        CC2.CraftID, 
+                        CC2.DateOfValidity, 
+                        CC2.AlertPeriod2 AS AlertPeriod, 
+                        CC2.AlertOccurance2 AS AlertOccurance 
+                   FROM CraftReminderConfig CC2 
+                  WHERE     CC2.AlertPeriod2 = 'CAMS' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF') 
+                 UNION 
+                 SELECT CC3.CraftReminderConfigID, 
+                        CC3.CraftID, 
+                        CC3.DateOfValidity, 
+                        CC3.AlertPeriod3 AS AlertPeriod, 
+                        CC3.AlertOccurance3 AS AlertOccurance 
+                   FROM CraftReminderConfig CC3 
+                  WHERE     CC3.AlertPeriod3 = 'CAMS' 
+                        AND (IsFinal = 'N' OR IsFinal = 'NF')) CC 
+          WHERE     CC.AlertOccurance > 0 
+                AND CC.AlertOccurance < 13    -- NOTE : Note more than an Year 
+                AND CASE 
+                       WHEN cast ( 
+                               (DATEADD (mm, 
+                                         (CC.AlertOccurance * -1), 
+                                         CC.DateOfValidity)) AS DATE) = 
+                               cast (getdate () AS DATE) 
+                       THEN 
+                          1 
+                       ELSE 
+                          0 
+                    END = 1 
+                AND CraftReminderConfigID NOT IN (SELECT CONVERT (INT, 
+                                                                  Reference) 
+                                                    FROM EventScheduleTrack 
+                                                   WHERE EventScheduleTaskID = 
+                                                            @eventscheduletaskid); 
+ 
+      SELECT @RecordCnt = COUNT (CraftReminderConfigID) 
+      FROM @CraftReminderConfig 
+ 
+      --Print @RecordCnt; 
+ 
+      WHILE (@Index <= @RecordCnt) 
+      BEGIN 
+         BEGIN TRY 
+            BEGIN TRANSACTION 
+ 
+            DECLARE @portcode   NVARCHAR (2) 
+            DECLARE @craftid   INT 
+ 
+            SELECT @reference = CraftReminderConfigID, 
+                   @craftid = CraftID 
+            FROM @CraftReminderConfig 
+            WHERE PendingCraftReminderID = @Index 
+ 
+            SELECT @portcode = PortCode 
+            FROM Craft 
+            WHERE CraftID = @craftid 
+            --To Fetch Intial WorkflowStatus code for Craft Reminder Configuration from WorkflowTask 
+            SELECT @p_WorkflowTaskCode = ConfigValue 
+              FROM PortGeneralConfig 
+             WHERE     PortCode = @portcode 
+                   AND ConfigName = 'WorkFlowInitialStatus' 
+ 
+            INSERT INTO @CraftReminderMonthlyTempTable 
+            VALUES (0, 
+                    N'CRCM', 
+                    getdate (), 
+                    @reference, 
+                    N'A', 
+                    'O', 
+                    'O', 
+                    'SBRS', 
+                    'O', 
+                    0, 
+                    @p_CreatedBy, 
+                    getdate (), 
+                    @p_CreatedBy, 
+                    getdate (), 
+                    @portcode, 
+                    0, 
+                    'EMP') 
+ 
+            --Fetching Tokens data 
+            SET @SQLString = 
+                     N'SELECT @p_ReferenceDataOUT =[dbo].[ToJSON] ((SELECT ' 
+                   + @Tokens 
+                   + ' FROM CraftReminderConfig CRC INNER JOIN Craft C ON CRC.CraftID = C.CraftID INNER JOIN Port P ON P.PortCode = C.PortCode LEFT JOIN Entity E ON E.EntityCode = ''CRAFTRECONFIG'' WHERE CRC.CraftReminderConfigID = @id FOR XML PATH , ROOT ))'; 
+            --set @ParmDefinition = N'@id int, @p_ReferenceDataOUT nvarchar(MAX) OUTPUT' 
+            SET @ParmDefinition = 
+                   N'@id int, @p_ReferenceDataOUT nvarchar(MAX) OUTPUT' 
+ 
+            SET @p_CraftReminderConfigID = CAST (@reference AS INT) 
+ 
+            EXECUTE sp_executesql @SQLString, 
+                                  @ParmDefinition, 
+                                  @id   = @p_CraftReminderConfigID, 
+                                  @p_ReferenceDataOUT = @p_ReferenceData OUTPUT; 
+ 
+            --Raising WorkflowInstance 
+            EXECUTE dbo.usp_WorkflowInstance_dml @p_WorkflowInstanceId OUTPUT, 
+                                                 @p_EntityID, 
+                                                 @PortCode, 
+                                                 @reference, 
+                                                 @p_WorkflowTaskCode, 
+                                                 0, 
+                                                 'EMP', 
+                                                 'A', 
+                                                 @p_CreatedBy, 
+                                                 @p_Date, 
+                                                 @p_CreatedBy, 
+                                                 @p_Date 
+ 
+            --Inserting data into Workflowprocess table 
+            SELECT EntityID, 
+                   RoleID, 
+                   Step, 
+                   PortCode 
+              INTO #TempRole 
+              FROM WorkflowTaskRole 
+             WHERE     EntityID = @p_EntityId 
+                   AND PortCode = @portcode 
+                   AND Step = 
+                          (SELECT min (Step) 
+                             FROM WorkflowTask 
+                            WHERE     PortCode = @portcode 
+                                  AND EntityID = @p_EntityId) 
+ 
+            WHILE (SELECT Count (1) FROM #TempRole) > 0 
+            BEGIN 
+               SELECT TOP 1 
+                      @p_RoleId = Roleid 
+               FROM #TempRole 
+               EXECUTE dbo.usp_WorkflowProcess_dml @p_WorkflowProcessId OUTPUT, 
+                                                   @p_WorkflowInstanceId, 
+                                                   @p_RoleId, 
+                                                   @p_WorkflowTaskCode, 
+                                                   @p_WorkflowTaskCode, 
+                          @p_ReferenceData, 
+                                                   'New Monthly Craft Reminder Task', 
+                                                   'A', 
+                                                   @p_CreatedBy, 
+                                                   @p_Date, 
+                                                   @p_CreatedBy, 
+                                                   @p_Date 
+ 
+               DELETE #TempRole 
+                WHERE Roleid = @p_RoleId 
+            END 
+ 
+            DROP TABLE #TempRole 
+            --- 
+ 
+            --print @p_WorkflowProcessId 
+            SELECT @eventscheduletrackid = SCOPE_IDENTITY (); 
+ 
+            --print @eventscheduletrackid 
+ 
+            INSERT INTO @EventScheduleTrack (EventScheduleTaskID, 
+                                             NotificationId, 
+                                             Reference, 
+                                             WorkflowInstanceId) 
+            VALUES (@eventscheduletaskid, 
+                    @eventscheduletrackid, 
+                    @reference, 
+                    @p_WorkflowInstanceId) 
+ 
+            --Final Insertion Tables 
+            INSERT INTO EventScheduleTrack (EventScheduleTaskID, 
+                                            NotificationId, 
+                                            Reference, 
+                                            WorkflowInstanceId, 
+                                            WorkflowProcessId) 
+            VALUES (@eventscheduletaskid, 
+                    @eventscheduletrackid, 
+                    @reference, 
+                    @p_WorkflowInstanceId, 
+                    @p_WorkflowProcessId) 
+ 
+            SELECT @Index = @Index + 1 
+            COMMIT TRANSACTION 
+         END TRY 
+         BEGIN CATCH 
+            IF @@TRANCOUNT > 0 
+               ROLLBACK TRANSACTION 
+ 
+            BEGIN 
+               SELECT @errmsg = 
+                           ' ErrorMessage = ' 
+                         + ERROR_MESSAGE () 
+                         + char (13) 
+                         + char (10) 
+ 
+               INSERT INTO [Log] (Date, 
+                                  Thread, 
+                                  Level, 
+                                  Logger, 
+                                  Message, 
+                                  Exception) 
+                  VALUES ( 
+                            getdate (), 
+                            9999, 
+                            N'ERROR', 
+                            N'Failed to execute USP_CRAFT_REMINDER_AUTO_EMAIL_MONTHLY', 
+                            @errmsg, 
+                            N'') 
+            END 
+         END CATCH 
+      END 
+ 
+      SELECT * FROM @CraftReminderMonthlyTempTable 
+   END
+GO
+Update Entity set Tokens='CraftName,DateOfValidity,ParticularsNo,PortCode,PortName' where EntityID=15 and EntityCode='CRAFTRECONFIG'
+GO
+
+IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (N'[dbo].[USP_AURA_NOTCONFIRMED_AUTO_EMAIL]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[USP_AURA_NOTCONFIRMED_AUTO_EMAIL]
+GO
+CREATE PROCEDURE [dbo].[USP_AURA_NOTCONFIRMED_AUTO_EMAIL]
+AS
+   BEGIN
+      SET  NOCOUNT ON
+      SET  XACT_ABORT ON
+
+      DECLARE @Index   INT
+      DECLARE @eventscheduletrackid   INT
+      DECLARE @eventscheduletaskid   INT
+      DECLARE @reference   NVARCHAR (12)
+      DECLARE @portcode   NVARCHAR (2)
+      DECLARE @createdBy   INT
+      DECLARE @modifiedBy   INT
+
+      DECLARE @EventScheduleTrack TABLE
+                                  (
+                                     EventScheduleTrackID   INT
+                                                               IDENTITY (1, 1),
+                                     EventScheduleTaskID    INT,
+                                     NotificationId         INT,
+                                     Reference              NVARCHAR (12),
+                                     WorkflowInstanceId     INT,
+                                     WorkflowProcessId      INT
+                                  )
+      DECLARE @pendingResourceAckConfirmations TABLE
+                                       (
+                                          PendingRequestID       INT
+                                                                    IDENTITY (1, 1),
+                                          ResourceAllocationID   INT,
+                                          CreatedBy              INT,
+                                          ModifiedBy             INT,
+                                          PortCode               NVARCHAR (2)
+                                          )      
+                                          
+
+      DECLARE @ResourceAllocationAckTempTable TABLE 
+                                            ( 
+                                               EntityID                   INT, 
+                                               NotificationTemplateCode   NVARCHAR (4), 
+                                               [DateTime]                 DATETIME, 
+                                               Reference                  NVARCHAR (12), 
+                                               RecordStatus               NVARCHAR (1), 
+                                               EmailStatus                NVARCHAR (1), 
+                                               SMSStatus                  NVARCHAR (1), 
+                                               WorkflowTaskCode           NVARCHAR (4), 
+                                               SystemNotificationStatus   NVARCHAR (1), 
+                                               UserID                     INT, 
+                                               CreatedBy                  INT, 
+                                               CreatedDate                DATETIME, 
+                                               ModifiedBy                 INT, 
+                                               ModifiedDate               DATETIME, 
+                                               PortCode                   NVARCHAR (2), 
+                                               UserTypeId                 INT, 
+                                               UserType    NVARCHAR (4) 
+                                            ) 
+      DECLARE @RecordCnt   INT
+      SET @Index = 1
+      SET @eventscheduletaskid = 0
+      SELECT @eventscheduletaskid = EST.EventScheduleTaskID
+      FROM EventScheduleTask EST
+      WHERE upper (EST.EventScheduleTaskName) =
+                'USP_AURA_NOTCONFIRMED_AUTO_EMAIL'
+
+      INSERT INTO @pendingResourceAckConfirmations (ResourceAllocationID,
+                                            CreatedBy,
+                                            ModifiedBy,
+                                            PortCode)
+      SELECT
+      RA.ResourceAllocationID,
+      RA.CreatedBy,
+      RA.ModifiedBy,
+      COALESCE (AN.PortCode, 'DB')
+      FROM ResourceAllocation RA
+             LEFT JOIN ServiceRequest SR
+                ON     SR.ServiceRequestID = RA.ServiceReferenceID
+                   AND RA.ServiceReferenceType = 'VTSR'
+             LEFT JOIN SuppServiceRequest SSR
+                ON     SSR.SuppServiceRequestID = RA.ServiceReferenceID
+                   AND RA.ServiceReferenceType = 'SUPP'
+             LEFT JOIN ArrivalNotification AN
+                ON (AN.VCN = SR.VCN OR AN.VCN = SSR.VCN)
+             LEFT JOIN Users RM ON RM.UserID = RA.ResourceID
+             LEFT JOIN UserPort UP ON UP.UserID = RM.UserID
+       WHERE     RA.TaskStatus = 'CFRI'
+             AND RA.ResourceID IS NOT NULL
+             AND DATEDIFF (mi, RA.ModifiedDate, getdate ()) <= 5
+             AND RA.ResourceAllocationID NOT IN (SELECT CONVERT (
+                                                          INT,
+                                                          EST.Reference)
+                                                  FROM EventScheduleTrack EST
+                                                 WHERE EST.EventScheduleTaskID =
+                                                          @eventscheduletaskid)
+
+    SELECT @RecordCnt = COUNT (ResourceAllocationID)
+      FROM @pendingResourceAckConfirmations
+
+      WHILE (@Index <= @RecordCnt)
+      BEGIN
+         BEGIN TRY
+            BEGIN TRANSACTION
+
+            SELECT
+                   @portcode = PR.PortCode,
+                   @reference = CONVERT(varchar(12),PR.ResourceAllocationID),
+                   @createdBy = PR.CreatedBy,
+                   @modifiedBy=PR.ModifiedBy
+            FROM @pendingResourceAckConfirmations PR
+            WHERE PendingRequestID = @Index
+
+
+             INSERT INTO @ResourceAllocationAckTempTable 
+            VALUES (0, 
+                    N'RAAK', 
+                    getdate (), 
+                    @reference, 
+                    N'A', 
+                    'O', 
+                    'O', 
+                    'WFCO', 
+                    'O', 
+                    0, 
+                    @createdBy, 
+                    getdate (), 
+                    @modifiedBy, 
+                    getdate (), 
+                    @portcode, 
+                    0,
+                    'EMP') 
+
+            SELECT @eventscheduletrackid = SCOPE_IDENTITY ();
+
+            --    print @eventscheduletrackid
+
+            INSERT INTO @EventScheduleTrack (EventScheduleTaskID,
+                                             NotificationId,
+                                             Reference
+                                             )
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference
+                    )
+
+            --Final Insertion Tables
+            INSERT INTO EventScheduleTrack (EventScheduleTaskID,
+                                            NotificationId,
+                                            Reference
+                                            )
+            VALUES (@eventscheduletaskid,
+                    @eventscheduletrackid,
+                    @reference
+                    )
+
+            SELECT @Index = @Index + 1
+            COMMIT TRANSACTION
+         END TRY
+         BEGIN CATCH
+            IF @@TRANCOUNT > 0
+               ROLLBACK TRANSACTION
+         END CATCH
+      END
+
+      SELECT * FROM @ResourceAllocationAckTempTable
+   END
+

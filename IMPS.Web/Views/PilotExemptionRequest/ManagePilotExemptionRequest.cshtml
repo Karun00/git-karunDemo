@@ -1,0 +1,578 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Pilot Exemption Request";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var PilotID = 0;
+    var showViewOnLoad = false;
+    if (ViewBag.PilotID != null)
+    {
+        PilotID = ViewBag.PilotID;
+        showViewOnLoad = true;
+    }
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/PilotExemptionRequestModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/PilotExemptionRequestViewModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/WorkflowTaskExecution.js"></script>
+}
+@section ko_apply
+{
+    var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+    var viewModel = new IPMSROOT.PilotExemptionRequestViewModel("@PilotID", showOnLoad);
+    ko.applyBindingsWithValidation(viewModel, $("#PilotExemptionRequest")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<style>
+    a.highlight:hover {
+        color: #ff0000;
+    }
+
+    .focus1:focus {
+        color: #f00;
+        border: dotted 1px #000;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#txtCaptachCode").val('');
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+@*ondragstart="return false" draggable="false" oncopy="return false" onpaste="return false" oncut="return false"*@
+<div class="portlet portlet-body form" id="PilotExemptionRequest" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+    <div class="clearfix"></div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet" id="form_wizard_1">
+                    <div class="portlet-body form">
+                        <form action="#" class="form-horizontal" id="submit_form">
+                            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+
+                                <div class="form-body" data-bind="with: pilotexemptionrequestModel ">
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend>Pilot Exemption Request</legend>
+                                            <div style="font-size: 20px; text-align: center; color: #e02222; margin-bottom: 20px;">
+                                                <span>The User Should Have Made The Payment Before Filing The Application.</span>
+                                                <br />
+                                            </div>
+
+                                            <div class="clearfix">
+                                                <br />
+                                            </div>
+                                            <div class="clearfix">
+                                                <br />
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Port:<span class="required">*</span> </label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <select id="port" name="port" class="form-control" data-bind="options: $root.portReferenceData().Ports, optionsText: 'PortName', optionsValue: 'PortCode', value: $root.pilotexemptionrequestModel().PortCode, optionsCaption: 'Select...', enable: $parent.IsEnable"></select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Full Name:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" name="Fullname" ondragover="PreventDrop(event)" data-bind="value: FirstName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEnable" class="form-control" maxlength="30" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Surname:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" name="Surname" ondragover="PreventDrop(event)" data-bind="value: Surname, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEnable" class="form-control" maxlength="30" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Nationality:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <select id="nationality" class="form-control" data-bind="options: $root.portReferenceData().PilotNationalitys, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: $root.pilotexemptionrequestModel().NationalityCode, optionsCaption: 'Select...', enable: $parent.IsEnable"></select>
+                                                                <span id="isNationality" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">ID No.: <span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" name="IDNo" ondragover="PreventDrop(event)" data-bind="value: IDNo, event: { keypress: ValidateAlphanumeric }, enable: $parent.IsEnable" class="form-control" maxlength="30" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Date of Birth:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="DateofBirth" class="form-control" type="text" onkeypress="return false;" ondragover="PreventDrop(event)" onkeydown="PreventBackSpace();" data-bind=" kendoDatePicker: { value: DateofBirth, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, open: calmaxtoday, readonly: true, event: { keypress: $root.ValidateDate }, enable: $parent.IsEnable }" name="DateofBirth" maxlength="10" />
+                                                                <span id="isDateofBirthMsg" class="validationError" data-bind="visible: $parent.isDateofBirthMsg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Certificate of Competency:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <textarea class="form-control" style="resize: none;" ondragover="PreventDrop(event)" data-bind="value: Certificate_of_Competency, event: { keypress: ValidateAlphanumeric }, enable: $parent.IsEnable" maxlength="200"></textarea>
+                                                            <span id="isCertificate_of_CompetencyMsg" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Date Issued:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="IssuedDate" type="text" onkeypress="return false;" ondragover="PreventDrop(event)" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: IssuedDate, change: CalcIssuedDate, open: calmaxtoday, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, readonly: true, event: { keypress: $root.ValidateDate }, enable: $parent.IsEnable }" class="form-control" name="IssuedDate" maxlength="10" />
+                                                                <span id="isIssuedDateMsg" class="validationError" data-bind="visible: $parent.isIssuedDateMsg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Date of Renewal:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="RenewalDate1" type="text" onkeypress="return false;" ondragover="PreventDrop(event)" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: RenewalDate, format: 'yyyy-MM-dd', change: CalcRenewalDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: $root.ValidateDate }, enable: $parent.IsEnable" class="form-control" name="RenewalDate" maxlength="10" />
+                                                                <span id="isRenewalDateMsg" class="validationError" data-bind="visible: $parent.isRenewalDateMsg"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Issuing Authority:<span class="required">*</span></label>
+                                                        <div class="col-md-6 control-label displaytxt">
+                                                              <label class="col-md-6 displaytxt" name="IssuingAuthority"   data-bind="text: IssuingAuthority"></label>
+                                                            @*<input type="text" name="IssuingAuthority" ondragover="PreventDrop(event)" data-bind="value: IssuingAuthority, enable: $parent.IsEnable" class="form-control" maxlength="50" />*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Invoice Recipient:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" name="InvoiceRecipient" id="InvoiceRecipient" ondragover="PreventDrop(event)" data-bind="value: InvoiceRecipient, enable: $parent.IsEnable" class="form-control" maxlength="50" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Pilot Exemption Request License Recipient:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" name="LicenseRecipient" id="LicenseRecipient" ondragover="PreventDrop(event)" data-bind="value: LicenseRecipient, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEnable" class="form-control" maxlength="30" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div style="margin-right: 5px;">
+                                                        <fieldset>
+                                                            <legend>Principal Place of Residential</legend>
+                                                            <div class="col-md-12" data-bind="with: ResidentialAddress ">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Number and street:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="ResidentialAddressstreet" id="ResidentialAddressstreet" ondragover="PreventDrop(event)" onblur="ResidentialAddressstreetChange(this);" onchange="ResidentialAddressstreetChange(this);" class="form-control" data-bind="value: NumberStreet, event: { keypress: ValidateAlphanumeric }, enable: $root.IsEnable" maxlength="200" />
+                                                                        <span id="isResidentialAddressstreetMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12" data-bind="with: ResidentialAddress ">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Suburb:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="ResidentialAddresssuburb" id="ResidentialAddresssuburb" ondragover="PreventDrop(event)" onblur="ResidentialAddresssuburbChange(this);" onchange="ResidentialAddresssuburbChange(this);" class="form-control" data-bind="value: Suburb, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsEnable" maxlength="50" />
+                                                                        <span id="isResidentialAddresssuburbMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12" data-bind="with: ResidentialAddress ">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Town/city:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="ResidentialAddresstowncity" id="ResidentialAddresstowncity" ondragover="PreventDrop(event)" onblur="ResidentialAddresstowncityChange(this);" onchange="ResidentialAddresstowncityChange(this);" class="form-control" data-bind="value: TownCity, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsEnable" maxlength="50" />
+                                                                        <span id="isResidentialAddresstowncityMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="col-md-12" data-bind="with: ResidentialAddress">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Country:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <select name="ResidentialAddressCountry" id="ResidentialAddressCountry" ondragover="PreventDrop(event)" onchange="ResidentialAddressCountryChange(this);" class="form-control" data-bind="options: $root.portReferenceData().PilotNationalitys, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: CountryCode, optionsCaption: 'Select...', enable: $root.IsEnable"></select>
+                                                                        @*<span id="isResidentialAddressCountryMsg" class="validationError"></span>*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="col-md-12" data-bind="with: ResidentialAddress ">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Postal Code:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="PostalCode" id="ResidentialAddressPostalCode" ondragover="PreventDrop(event)" onblur="ResidentialAddressPostalCodeChange(this);" onchange="ResidentialAddressPostalCodeChange(this);" class="form-control" data-bind=" value: PostalCode, event: { keypress: Validatenumeric }, enable: $root.IsEnable" maxlength="15" />
+                                                                        <span id="isResidentialAddressPostalCodeMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Telephone No.:<span class="required">*</span></label>
+                                                                    <div class="col-md-4">
+                                                                        <input name="phone" type="text" id="phone" class="form-control" ondragover="PreventDrop(event)" data-bind=" value: ContactNo, event: { keyup: HandleContactnumber, keypress: Validatenumeric }, enable: $parent.IsEnable" maxlength="13" />
+                                                                        <span id="isphoneMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Mobile No.:</label>
+                                                                    <div class="col-md-4">
+                                                                        <input type="text" id="Mobileno" name="CellNo" ondragover="PreventDrop(event)" data-bind="value: CellNo, event: { keyup: HandleMobilenumber, keypress: Validatenumeric }, enable: $parent.IsEnable" class="form-control" maxlength="13" />
+                                                                        <span id="isCellNoMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Email Address:<span class="required">*</span></label>
+                                                                    <div class="col-md-4">
+                                                                        <input type="text" name="EmailID" ondragover="PreventDrop(event)" data-bind="value: EmailID, event: { keypress: ValidateAlphanumeric }, enable: $parent.IsEnable " class="form-control" maxlength="150" />
+                                                                        <span id="isEmailIDMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div style="margin-left: 5px;">
+                                                        <fieldset style="height: 225px;">
+                                                            <legend>Postal Address</legend>
+                                                            <div class="col-md-11">
+                                                                <div>
+                                                                    <label>
+                                                                        <input type="checkbox" name="postaltoo" id="chkBuisinessAddress" ondragover="PreventDrop(event)" data-bind="checked: AddressCheckbox, click: $root.selectedChoices, enable: $root.IsEnable ">Same as 'Principal Place of Residential'
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12" data-bind="with: PostalAddress">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Number and street:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="PostalAddressNumberStreet" id="PostalAddressNumberStreet" ondragover="PreventDrop(event)" onblur="PostalAddressNumberStreetChange(this);" onchange="PostalAddressNumberStreetChange(this);" class="form-control" data-bind="value: NumberStreet, event: { keypress: ValidateAlphanumeric }, enable: $root.IsEnable" maxlength="200">
+                                                                        <span id="isPostalAddressNumberStreetMsg" class="validationError"></span>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12" data-bind="with: PostalAddress">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Suburb:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="PostalAddresssuburb" id="PostalAddresssuburb" ondragover="PreventDrop(event)" onblur="PostalAddresssuburbChange(this);" onchange="PostalAddresssuburbChange(this);" class="form-control" data-bind="value: Suburb, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsEnable" maxlength="50">
+                                                                        <span id="isPostalAddresssuburbMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12" data-bind="with: PostalAddress">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Town/city:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="PostalAddressTownCity" id="PostalAddressTownCity" ondragover="PreventDrop(event)" onblur="PostalAddressTownCityChange(this);" onchange="PostalAddressTownCityChange(this);" class="form-control" data-bind="value: TownCity, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsEnable" maxlength="50">
+                                                                        <span id="isPostalAddressTownCityMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="col-md-12" data-bind="with: PostalAddress">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Country:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <select name="PostalAddressCountry" id="PostalAddressCountry" ondragover="PreventDrop(event)" onchange="PostalAddressCountryChange(this);" class="form-control" data-bind="options: $root.portReferenceData().PilotNationalitys, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: CountryCode, optionsCaption: 'Select...', enable: $root.IsEnable"></select>
+                                                                        @*<span id="isPostalAddressCountryMsg" class="validationError"></span>*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="col-md-12" data-bind="with: PostalAddress">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Postal Code:<span class="required">*</span></label>
+                                                                    <div class="col-md-6">
+                                                                        <input type="text" name="PostalAddressPostalCode" class="form-control" id="PostalAddressPostalCode" ondragover="PreventDrop(event)" onblur="PostalAddressPostalCodeChange(this);" onchange="PostalAddressPostalCodeChange(this);" data-bind=" value: PostalCode, event: { keypress: Validatenumeric }, enable: $root.IsEnable" maxlength="15">
+                                                                        <span id="isPostalAddressPostalCodeMsg" class="validationError"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row"></div>
+                                            <div class="row">
+                                                <div class="col-md-6"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="txtline"></div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-2"></div>
+                                                        <h5><span style="color: blue"><strong>Record of No. of Movements Completed</strong></span></h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h5><span style="color: blue"><strong>At Least 2 Movements Are Required To Be During Night Hours</strong></span></h5>
+                                                </div>
+                                            </div>
+                                            <div class="table-toolbar">
+                                                <div id="tableheader">
+                                                    @*@if(Model.HasAddPrivilege){  *@
+                                                    <a class="button gbtngreen" data-bind="click: $root.AddNewRowtotable, visible: $root.IsEnable ">Add New <i class="fa fa-plus"></i></a>
+                                                    @* }*@
+                                                </div>
+                                                <div class="table-scrollable">
+                                                    <table cellpadding="0" cellspacing="0" border="0" id="tblmovementsdetails" class="tinytable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Date<span class="required">*</span></th>
+                                                                <th>Vessel<span class="required">*</span></th>
+                                                                <th>Pilot Role<span class="required">*</span></th>
+                                                                <th>Movement<span class="required">*</span></th>
+                                                                <th>Remarks</th>
+                                                                <th><span></span></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody data-bind="foreach: PilotExemptionRequest, enable: $root.IsEnable ">
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="text" class="form-control" id="MovementDate" ondragover="PreventDrop(event)" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: MovementDate, format: 'yyyy-MM-dd', open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enable: $root.IsEnable }" maxlength="15" />
+                                                                </td>
+                                                                <td>
+                                                                    <input id="autocompleteAN" class="form-control" name="VCN" ondragover="PreventDrop(event)"
+                                                                        data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName',
+    dataValueField: 'VesselID',
+    minLength: 1, pageSize: 1,
+    dataSource: {
+        serverFiltering: true,
+        transport: { read: { url: '/api/PilotExemptionRequest/GetVesselNames', dataType: 'json' } },
+        schema: { data: function (data) { return data; }, total: function (data) { return data.length; } },
+    },
+    value: VesselName,
+    select: $root.VesselSelect
+}, enable: $root.IsEnable" />
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" data-bind="options: $root.portReferenceData().PilotRoles, optionsText: 'SubCatName', optionsValue: 'SubCatCode', optionsCaption: 'Select...', value: PilotRoleCode, enable: $root.IsEnable "></select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" data-bind="options: $root.portReferenceData().MovementDetails, optionsText: 'SubCatName', optionsValue: 'SubCatCode', optionsCaption: 'Select...', value: MovementTypeCode, enable: $root.IsEnable"></select>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" ondragover="PreventDrop(event)" data-bind="value: Remarks, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }, enable: $root.IsEnable" maxlength="200" />
+                                                                </td>
+                                                                <td>
+                                                                    <a href='#' class="focus1" id="RemoveAddNewRowtotable" data-bind="click: $root.RemoveAddNewRowtotable, visible: $root.IsEnable" title="Delete"><i class="fa fa-ban"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix">
+                                                <br />
+                                            </div>
+                                            <div class="row" data-bind="visible: $root.IsEnable ">
+                                                <div class="fileupload-buttonbar">
+                                                    <div class="form-group">
+                                                        <fieldset>
+                                                            <legend>Upload Documents</legend>
+                                                            <div class="col-md-12">
+                                                                <div class="col-md-5">
+                                                                    <div class="col-md-7">
+                                                                        <div class="col-md-4">Document Category</div>
+                                                                        <div class="col-md-7">
+                                                                            <select name="documents" id="selUploadDocs" class="form-control" data-bind="options: $root.portReferenceData().DocumentsTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: $root.pilotexemptionrequestModel().DocumentType, optionsCaption: 'Select...'">
+                                                                            </select>
+                                                                            <span id="spanmultiplepfileToUpload1" class="validationError" data-bind="visible: $parent.ismultiplepfileToUpload"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-5">
+                                                                        <span class="btn btn-xs green fileinput-button">
+                                                                            <i class="fa fa-plus"></i>
+                                                                            <span>Browse</span>
+                                                                            <input type="file" name="files[]" id="fileToUpload" data-bind="enable: $root.IsEnable" multiple>
+                                                                        </span>
+                                                                        <button type="submit" data-bind="click: $parent.multipleuploadFile, visible: $root.IsEnable" class="btn btn-xs blue start">
+                                                                            <i class="fa fa-upload" data-bind=" enable: $parent.IsEditable"></i>
+                                                                            <span>Upload</span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" data-bind="visible: $parent.ismultiplepfileToUpload">
+                                                <div class="form-group">
+                                                    <div class="col-md-2">
+                                                        &nbsp;&nbsp; <span id="spanmultiplepfileToUpload" class="validationError" data-bind="visible: $parent.ismultiplepfileToUpload"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered table-advance">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="bg-dark">Document Category</th>
+                                                                <th class="bg-dark">Document Name</th>
+                                                                <th class="bg-dark"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody data-bind="foreach: PilotExemptionRequestDocument">
+                                                            <tr>
+                                                                <td data-bind="text: DocumentName"></td>
+
+                                                                <td><a data-bind="text FileName">Document</a></td>
+
+
+
+                                                                <td class="NeedToHide"><a href="#" class="btn default btn-xs red" data-bind="click: $root.multipleDeleteDocument, visible: $root.IsEnable">
+                                                                    <i class="fa fa-trash-o" data-bind="visible: $root.IsEnable"></i>Delete</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>&nbsp;</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>&nbsp;</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" data-bind="visible: $root.IsEnable">
+                                                <div class="col-md-12">
+                                                    <div style="margin-right: 5px;">
+                                                        <fieldset>
+                                                            <legend>Security Code</legend>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <label id="lblCaptach" class="col-md-11" style="font-family: Zapf Chancery, cursive; text-align: center; padding-top: 8px; width: 148px; height: 30px; border: 1px solid #f00; color: #060; background: url(../../Content/Images/Background/texture-bg.jpg); font-size: 18px;" data-bind="text: $root.CaptachText">sample text </label>
+                                                                    <i class=" fa fa-refresh" title="Refresh" data-bind="click: RefreshCaptach" style="font-size: 20px; margin-top: 7px; margin-left: 7px;"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label col-md-4">
+                                                                            Enter Security Code:<span class="required">*</span>
+                                                                        </label>
+                                                                        <div class="col-md-3">
+                                                                            <input type="text" id="txtCaptachCode" style="width: 150px;" class="form-control" name="intcharacter" maxlength="6" onchange="ChangeCaptachCode();">
+                                                                            <span id="spanCaptachCode" class="validationErrorL"></span>
+                                                                        </div>
+                                                                        <div class="col-md-5">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+                                    <div class="btns-group form-actions fluid">
+                                        <button type="submit" class="btn green" title="Save" data-bind="click: $root.saveptilotexemptionRequest, visible: $parent.IsEnable">Save</button>
+                                        <button type="submit" class="btn blue" title="Reset" data-bind="click: $root.ResetPilotExemptionRequest, visible: $parent.IsEnable">Reset</button>
+                                        <button type="button" class="btn red" title="Cancel" data-bind="click: $root.CancelPilotExemptionRequest">Cancel</button>
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        @{
+                                            Html.RenderPartial(Url.Content("~/Views/Shared/PendingTaskView.cshtml"));
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

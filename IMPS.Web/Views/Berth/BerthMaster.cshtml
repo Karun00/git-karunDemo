@@ -1,0 +1,421 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "Berth";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/BerthModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/BerthViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.BerthViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#BerthMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="BerthMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<!-- Main body content starts here for developers-->
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addBerth ">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: berthList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: {
+        extra: false, operators: {
+            string: {
+                startswith: 'Starts with',
+                eq: 'Is equal to',
+                neq: 'Is not equal to'
+            },
+            number: {
+                eq: 'Is equal to',
+                neq: 'Is not equal to'
+            }
+        }
+    },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'BerthCodeSort', title: 'Berth Code', width: 120, filterable: true },
+              { field: 'BerthNameSort', title: 'Berth Name', width: 120, filterable: true },
+              { field: 'ShortNameSort', title: 'Short Name', width: 120, filterable: true },
+              { field: 'PortNameSort', title: 'Port Name', width: 110, filterable: true },
+              { field: 'QuayNameSort', title: 'Quay Name', width: 120, filterable: true },
+              { field: 'BerthTypeSort', title: 'Berth Type', width: 120, filterable: true },
+              { field: 'FromMeterSort', title: 'From Meter', filterable: true, width: 120, type: 'number' },
+              { field: 'ToMeterSort', title: 'To Meter', filterable: true, width: 120, type: 'number' },
+              { field: 'LengthMSort', title: 'Length (m)', filterable: true, width: 120, type: 'number' },
+              { field: 'DraftMSort', title: 'Draft (m)', filterable: true, width: 110, type: 'number' },
+              { title: 'Status', filterable: false, width: 80 },
+              { title: 'Actions', filterable: false, width: 80 }],
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: BerthCode"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: BerthName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ShortName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: PortName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: QuayName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: BerthTypeName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: FromMeter"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ToMeter"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Lengthm"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Draftm"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Statust"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                &nbsp;
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.viewberth" title="View"><i class="fa fa-eye"></i></a>
+                            }
+                                &nbsp;
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.editberth" title="Edit"><i class="fa fa-edit"></i></a>
+                            }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind="validationMessage: field"></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet portlet-body form">
+                    <form action="#" id="form_sample_1" class="form-horizontal">
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                            <div class="form-body" data-bind="with: berthModel">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Berth Details</legend>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Berth Code:<span class="required">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <input id="BerthCode" type="text" class="form-control" maxlength="4" data-bind="value: BerthCode, enable: $parent.IsCodeEnable, event: { keyup: HandleBerthCodeKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }" name="Berthcode" />
+                                                        <span id="spanberthcode" class="validationError" data-bind="visible: $parent.UniqueCodeVisible">This Berth Code already exists</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Berth Name:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="BerthName" type="text" class="form-control" maxlength="15" data-bind="value: BerthName, enable: $parent.editableView, event: { keyup: HandleBerthNameKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }" name="Berthname" />
+                                                        <span id="spanberthname" class="validationError" data-bind="visible: $parent.UniqueNameVisible">This Berth Name already exists</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Short Name:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="ShortName" type="text" maxlength="10" data-bind="value: ShortName, enable: $parent.editableView, event: { keyup: HandleBerthShortNameKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }" class="form-control" name="shortname" />
+                                                        <span id="spanshortname" class="validationError" data-bind="visible: $parent.UniqueShortNameVisible">This Short Name already exists</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Berth Type:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="btype" name="Berthtype" data-bind="kendoDropDownList: { data: $parent.berthTypeValues, value: BerthType, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...', enabled: $parent.editableView }, event: { change: $parent.subscribeBerthtypes }" />
+                                                        <span id="spanberthtype" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Port Name:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="port" name="portname" data-bind="kendoDropDownList: { index: 0, data: $parent.portValues, value: PortCode, dataTextField: 'PortName', dataValueField: 'PortCode', optionLabel: 'Select...', enabled: $parent.IsCodeEnable }" />
+                                                        <span id="spanportid" class="validationError" data-bind="validationMessage: PortCode"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Quay Name:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="quay" name="quayname" data-bind="kendoDropDownList: { data: $parent.quayValues, value: QuayCode, dataTextField: 'QuayName', dataValueField: 'QuayCode', optionLabel: 'Select...', enabled: $parent.IsCodeEnable }, event: { change: $parent.subscribeQuaytypes } " />
+                                                        <span id="spanquayid" class="validationError" data-bind="validationMessage: QuayCode "></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">
+                                                        From Meter:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="FromMeter" name="frommeter" type="text" maxlength="8" data-bind="value: FromMeter, enable: $parent.IsFromToEnable, event: { keypress: ValidateNumericDecimal, keyup: HandleFromMeterKeyUp }" class="form-control" />
+                                                        <span id="spanfrommeterid" class="validationError" data-bind="visible: $parent.IsFromMeterVisible"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        To Meter:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="ToMeter" name="tometer" type="text" maxlength="8" data-bind="value: ToMeter, enable: $parent.IsFromToEnable, event: { keypress: ValidateNumericDecimal, keyup: HandleToMeterKeyUp }" class="form-control" />
+                                                        <span id="spantometerid" class="validationError" data-bind="visible: $parent.IsToMeterVisible"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">
+                                                        Length (m):                                                    	
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="LengthM" type="text" name="lengthm" maxlength="8" readonly="true" data-bind="value: IsLength, enable: $parent.IsCodeEnable" class="form-control" />
+                                                        <span id="spanlength" class="validationError" style="display: none"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Draft (m):<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="DraftM" type="text" name="draftm" maxlength="8" data-bind="value: Draftm, enable: $parent.editableView, event: { keypress: ValidateNumericDecimal, change: $parent.subscribedatachanges }" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">
+                                                        Tidal Draft (m):                                                    
+                                                    </label>
+                                                    <div class="col-md-6" style="height: 27px;">
+                                                        <input id="TDraft" type="text" name="TDraft" maxlength="8" data-bind="value: TidalDraft, enable: $parent.editableView, event: { keypress: ValidateNumericDecimal, change: $parent.subscribedatachanges }" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">
+                                                        Cargo Handled:<span id="cargospan" class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="cargoType" class="form-control" name="cargoHandled" required data-bind="kendoMultiSelect: { dataTextField: 'SubCatName', dataValueField: 'SubCatCode', data: $parent.cargoTypeValues, value: CargoType, enable: $parent.editableView, optionLabel: 'Select...' }, event: { change: $parent.subscribeCargotypes }" />
+                                                        <span id="spancargoTypeid" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">
+                                                        Vessel Type:<span id="vesselspan" class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="vesselType"  class="form-control" name="vesseltype" required data-bind="kendoMultiSelect: { data: $parent.vesselTypeValues, value: VesselType, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', enable: $parent.editableView, optionLabel: 'Select...' }, event: { change: $parent.subscribeVesseltypes }"/>
+                                                        <span id="spanvesselTypeid" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">
+                                                        Reason For Visit:<span id="reasonspan" class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="reasonType" class="form-control" name="reasonforvisit" required data-bind="kendoMultiSelect: { dataTextField: 'SubCatName', dataValueField: 'SubCatCode',optionLabel: 'Select...', data: $parent.reasonTypeValues, value: ReasonForVisitType, enable: $parent.editableView }, event: { change: $parent.subscribeReasontypes }" />
+                                                        <span id="spanreasonTypeid" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-6">Status:</label>
+                                                    <div class="col-md-6">
+                                                        <input id="Status" name="status" class="form-control" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView }, event: { change: $parent.subscribedatachanges } " />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <br>
+                                    </fieldset>
+                                </div>
+
+                                <div class="btns-group form-actions fluid">
+                                    <button type="submit" class="btn green" title="Save" data-bind="click: $parent.SaveBerth, visible: $parent.IsSave, enable: $parent.IsSave">Save</button>
+                                    <button type="submit" class="btn green" title="Update" data-bind="click: $parent.ModifyBerth, visible: $parent.IsUpdate, enable: $parent.IsUpdate">Update</button>
+                                    <button type="submit" class="btn blue" title="Reset" data-bind="click: $parent.ResetBerth, visible: $parent.IsReset">Reset</button>
+                                    <button type="submit" class="btn red" title="Cancel" data-bind="click: $parent.cancel">Cancel</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+
+                <div id="grid" data-bind="kendoGrid: {
+    data: berthValues,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: {
+        extra: false,
+        operators: {
+            string: {
+                startswith: 'Starts with',
+                eq: 'Is equal to',
+                neq: 'Is not equal to'
+            },
+            number: {
+                eq: 'Is equal to',
+                neq: 'Is not equal to'
+            }
+        }
+    },
+    rowTemplate: 'rowTmpl1',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'BerthCodeSort', title: 'Berth Code', width: 120, filterable: false },
+              { field: 'BerthNameSort', title: 'Berth Name', width: 120, filterable: false },
+              { field: 'ShortNameSort', title: 'Short Name', width: 120, filterable: false },
+              { field: 'PortNameSort', title: 'Port Name', width: 100, filterable: false },
+              { field: 'QuayNameSort', title: 'Quay Name', width: 120, filterable: false },
+              { field: 'BerthTypeSort', title: 'Berth Type', width: 100, filterable: false },
+              { field: 'FromMeterSort', title: 'From Meter', filterable: false, width: 120, type: 'number' },
+              { field: 'ToMeterSort', title: 'To Meter', filterable: false, width: 100, type: 'number' },
+              { field: 'LengthMSort', title: 'Length ', filterable: false, width: 80, type: 'number' },
+              { field: 'DraftM', title: 'Draft', filterable: false, width: 80, type: 'number' },
+              { title: 'Status', filterable: false, width: 50 }]
+}">
+                </div>
+
+                <script id="rowTmpl1" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: BerthCode"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: BerthName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: ShortName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: PortName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: QuayName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: BerthTypeName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: FromMeter"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ToMeter"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Lengthm"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Draftm"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: Statust"></span></div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+    </div>
+</div>
+<!-- Main body content ends here for developers-->
+
+<!-- END CONTENT -->

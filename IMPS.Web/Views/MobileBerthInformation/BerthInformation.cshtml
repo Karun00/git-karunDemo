@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "BerthInformation";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/MobileBerthModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/MobileBerthViewModel.js"></script>
+}
+@section ko_apply
+{
+var vm = new IPMSROOT.MobileBerthViewModel();
+    ko.applyBindingsWithValidation(vm, $("#ulBerthInformation")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });   
+}
+<div class="topbar">
+    <div class="user">Welcome Steve</div>
+    <div class="topicons">
+        <a href="@Url.Action("Features", "MobileFeatures")"><i class="back"></i></a>
+        <a href="@Url.Action("DashBoard", "Mobile")"><i class="home"></i></a>
+        <a href="@Url.Action("Logout", "Mobile")"><i class="logout"></i></a>
+    </div>
+</div>
+<form action="" method="get">
+    <div class="form-body" data-bind="with: mobileBerthModel" id="ulBerthInformation">
+        <div class="row hline bold">
+            <label class="col6 aliner">Quay:</label><i class="select">
+                <select data-bind="options: $root.masterQuays, optionsText: 'QuayName', optionsValue: 'QuayKey', value: selectedQuayKey "></select></i>
+        </div>
+
+        <div class="row hline bold">
+            <label class="col6 aliner">Berth No:</label><i class="select">
+                <select data-bind="options: Berths, optionsText: 'BerthName', optionsValue: 'BerthKey', value: selectedBerthKey"></select></i>
+        </div>
+        <br>
+        <div class="list">
+            <div class="row hline">
+                <label class="col6 aliner">Berth No:</label><label class="col6.last" data-bind="text: selectedBerth().BerthName">IV 6</label>
+            </div>
+            <div class="row hline">
+                <label class="col6 aliner">Draft:</label><label class="col6.last" data-bind="text: selectedBerth().Draftm">13 Meters</label>
+            </div>
+            <div class="row hline">
+                <label class="col6 aliner">Max Tidal Draft:</label><label class="col6.last">??</label>
+            </div>
+            <div class="row hline">
+                <label class="col6 aliner">Length:</label><label class="col6.last" data-bind="text: selectedBerth().Lengthm"></label>
+            </div>
+            <div class="row hline">
+                <label class="col6 aliner">From (Bow) Bollard:</label><label class="col6.last">??</label>
+            </div>
+            <div class="row hline">
+                <label class="col6 aliner">To (Stern) Bollard:</label><label class="col6.last">??</label>
+            </div>
+            <div class="row hline">
+                <label class="col6 aliner">Cargo Handled:</label><label class="col6.last" data-bind="text: selectedBerth().CargoDetails"></label>
+            </div>
+        </div>
+    </div>
+</form>

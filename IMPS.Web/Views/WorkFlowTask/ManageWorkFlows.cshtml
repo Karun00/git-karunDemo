@@ -1,0 +1,182 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "News";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/WorkFlowTaskModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/WorkFlowTaskViewModel.js"></script>
+}
+@section ko_apply{
+var viewModel = new IPMSROOT.WorkFlowTaskViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#WorkFlowTaskMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="WorkFlowTaskMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<script type="text/html" id="List-template">
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+            <div id="tablewrapper15">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addWorkFlowTask">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div id="WorkFlowTaskGrid" data-bind="kendoGrid: {
+    data: WorkFlowTaskDataList,
+    groupable: false,
+    sortable: true,
+    scrollable: false,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 20, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'EntityNameSort', title: 'Entity Name', filterable: true, width: 20 },
+              { title: 'Actions', filterable: false, width: 80 }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap" data-bind="text: EntityName"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="javascript:;" title="View" data-bind="click: $root.viewWorkFlowTask"><i class="fa fa-eye"></i></a>
+                                }&nbsp; &nbsp;
+                                 @if (Model.HasEditPrivilege)
+                                 {
+                                     <a href="javascript:;" title="Edit" data-bind="click: $root.editWorkFlowTask"><i class="fa fa-edit"></i></a>
+                                 }&nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="Form-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="clearfix"></div>
+        <div class="portlet portlet-body">
+            <form action="#" class="form-horizontal">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body" data-bind="with: workflowtaskModel">
+                        <div>
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Work Flow Task Details</legend>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Entity:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <select id="entity" name="entityname" class="form-control input-small select2me" data-bind="options: $root.workflowRefernceData().Entities_List, optionsText: 'EntityName', optionsCaption: 'Select...', optionsValue: 'EntityID', value: EntityID, enable: $parent.editableView, event: { change: $parent.ChangeEntity }"></select>
+                                                    <span id="spanventity" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="table-toolbar">
+                                            <div id="tableheader1">
+                                                <a class="button gbtngreen" data-bind="click: $root.AddNewTask, visible: $parent.IsAdd">Add New <i class="fa fa-plus"></i></a>
+                                                <div class="search" style="display: none">
+                                                    <select id="columns" onchange="sorter.search('query')"></select>
+                                                    <input type="text" id="query" onkeyup="sorter.search('query')" placeholder="Search" />
+                                                    <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="gridhead">Work Flow Tasks Assigning</div>
+                                            <div class="table-scrollable">
+
+                                                <table border="0" id="tblQualities" class="tinytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Task Name</th>
+                                                            <th>Step</th>
+                                                            <th>Next Step</th>
+                                                            <th>Validity Period</th>
+                                                            <th>Has Notification</th>
+                                                            <th>Has Remarks</th>
+                                                            <th>API Url</th>
+                                                            <th style="width: 250px;">Role</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody data-bind="foreach: WorkFlowTaskVO">
+                                                        <tr>
+                                                            <td>
+                                                                <select class="form-control" name="wfevent" id="wfevent" data-bind="options: $root.workflowRefernceData().WorkFlowEvents_List, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: WorkflowTaskCode, enable: $root.IsCodeEnable, event: { change: ChangeWorkflowTask }"></select>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control" data-bind="value: Step, enable: $root.IsCodeEnable" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control" data-bind="value: NextStep, enable: $root.IsCodeEnable" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control" data-bind="value: ValidityPeriod, enable: $root.IsCodeEnable" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" id="HasNotification" data-bind="checked: HasNotification, enable: $root.IsCodeEnable" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" id="HasRemarks" data-bind="checked: HasRemarks, enable: $root.IsCodeEnable" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control" data-bind="value: APIUrl, enable: $root.IsCodeEnable" />
+                                                            </td>
+                                                            <td>
+                                                                @*<select class="form-control" name="wfevent6" id="wfevent6" data-bind="options: $root.workflowRefernceData().Role_List, optionsText: 'RoleName', optionsCaption: 'Select...', optionsValue: 'RoleID', value: RoleID, enable: $root.IsCodeEnable, event: { change: ChangeRoleForStep }"></select>*@
+                                                                <input id="MultiSelect" class="form-control" data-bind="kendoMultiSelect: { dataTextField: 'RoleName', dataValueField: 'RoleID', data: $root.workflowRefernceData().Role_List, value: arrayRoles, optionsCaption: 'Select...', enabled: $root.IsCodeEnable }, event: { change: ChangeRoleForStep }" />
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="btns-group form-actions fluid">
+                            <button type="submit" class="btn green" data-bind="click: $root.saveTask, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                            <button type="submit" class="btn green" title="Update" data-bind="click: $root.updateTask, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                            @*<button type="submit" class="btn blue" title="Reset" data-bind="click: $root.ResetRequest, visible: $root.IsReset">Reset</button>*@
+                            <button type="button" class="btn red" data-bind="click: $root.Cancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+

@@ -1,0 +1,260 @@
+﻿@*@model IPMS.Domain.ValueObjects.PrivilegeVO*@
+
+@{
+	ViewBag.Title = "MBerthPlanningGISView";
+    Layout="~/Views/Shared/_IPMSMBerthPlanningGIS.cshtml";
+}
+
+@section scripts
+{
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7kxIP3DwxxzA22aeApiGKugh9cctlEHA">
+    </script>
+<script src="~/Scripts/Application/Model/BerthPlanningGISModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/MBerthPlanningGISViewModel.js"></script>
+<link href="~/Content/Styles/opentip.css" rel="stylesheet" />
+<style>
+    .modal-header {
+        padding: 2px 10px;
+    }
+
+    .modal-body {
+        padding: 0;
+        margin-top: -1px;
+    }
+
+        .modal-body table {
+            width: 100%;
+        }
+
+            .modal-body table tr th, .modal-body table tr td {
+                padding: 0 2px;
+            }
+
+            .modal-body table tr th {
+                color: #ffff;
+                background: #9E9E9E;
+            }
+
+    .modal-header {
+        color: #fff;
+        background: #333;
+    }
+
+    .modal-content {
+        border: 1px solid #999;
+        border-radius: 0;
+    }
+
+    .close {
+        text-indent: 0;
+        color: #fff;
+        background-image: none !important;
+        opacity: 1;
+    }
+</style>
+}
+@section ko_apply
+{
+    var viewModel = new IPMSROOT.BerthPlanningGISViewModel();
+    ko.applyBindings(viewModel, $("#MBerthPlanningGIS")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="clearfix"></div>
+<div class="row" id="AutoBerthPlanning">
+    <div class="col-sm-12">
+        @*<div>
+            <button id="AnchorVessel">AnchorVessel</button>
+        </div>*@
+        @*POPUP started here*@
+@*For Berthed POPUP Screen *@
+        <div class="container">
+            <div class="modal fade" id="popupdivberthed" role="dialog">
+                <div class="modal-dialog gis-pop">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Berthed Vessels</h4>
+                        </div>
+                        <div class="modal-body pop-height">
+                            <table border="1" id="tblberthed">
+                                <tr>
+                                    <th>Vessel Name</th>
+                                    <th>VCN</th>
+                                    <th>ReasonforVisit</th>
+                                    <th>ATA</th>
+                                    <th>ATB</th>
+                                    <th>Berth Name</th>
+                                    <th>Agent Name</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*For Sailed POPUP Screen *@
+        <div class="container">
+            <div class="modal fade" id="popupdivsailed" role="dialog">
+                <div class="modal-dialog gis-pop">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Sailed Vessels</h4>
+                        </div>
+                        <div class="modal-body pop-height">
+                            <table border="1" id="tblsailed">
+                                <tr>
+                                    <th>Vessel Name</th>
+                                    <th>VCN</th>
+                                    <th>ATUB</th>
+                                    <th>ATD</th>
+                                    <th>PortName</th>
+                                    <th>Agent Name</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*For Anchored POPUP Screen*@
+        <div class="container">
+            <div class="modal fade" id="popupdivanchored" role="dialog">
+                <div class="modal-dialog gis-pop">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Anchored Vessels</h4>
+                        </div>
+                        <div class="modal-body pop-height">
+                            <table border="1" id="tblanchored">
+                                <tr>
+                                    <th>Vessel Name</th>
+                                    <th>VCN</th>
+                                    <th>AnchorageReason</th>
+                                    <th>AnchorPosition</th>
+                                    <th>BearingDistanceFromBreakWater</th>
+                                    <th>Agent Name</th>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*For AnchoreVessel POPUP Screen*@
+        <div class="container">
+            <div class="modal fade" id="popupdivanchorVessel" role="dialog">
+                <div class="modal-dialog gis-pop">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Anchor Vessel</h4>
+                        </div>
+                        <div class="modal-body pop-height">
+                            <div class="row">
+                                <div class="col-md-4 head">Vessel Name</div>
+                                <div class="col-md-8" id="VesselName"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Vessel Type</div>
+                                <div class="col-md-8" id="VesselType"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">DeadWeightTonnageInMT</div>
+                                <div class="col-md-8" id="DeadWeightTonnageInMT"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">IMONo</div>
+                                <div class="col-md-8" id="IMONo"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">VCN</div>
+                                <div class="col-md-8" id="VCN"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Next Port</div>
+                                <div class="col-md-8" id="NextPortOfCall"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">ETA</div>
+                                <div class="col-md-8" id="ETA"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">ETD</div>
+                                <div class="col-md-8" id="ETD"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Reason for visit</div>
+                                <div class="col-md-8" id="ReasonforvisitName"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Cargo Types</div>
+                                <div class="col-md-8" id="CargoTypes"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">ArrDraft</div>
+                                <div class="col-md-8" id="ArrDraft"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">DepDraft</div>
+                                <div class="col-md-8" id="DepDraft"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Last Port</div>
+                                <div class="col-md-8" id="LastPortOfCall"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Reason</div>
+                                <div class="col-md-8" id="Reason"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Anchor Position</div>
+                                <div class="col-md-8" id="AnchorPosition"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">BearingDistanceFromBreakWater</div>
+                                <div class="col-md-8" id="BearingDistanceFromBreakWater"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Port Of Registry</div>
+                                <div class="col-md-8" id="PortOfRegistry"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">LengthOverallInM</div>
+                                <div class="col-md-8" id="LengthOverallInM"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">BeamInM</div>
+                                <div class="col-md-8" id="BeamInM"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">GrossRegisteredTonnageInMT</div>
+                                <div class="col-md-8" id="GrossRegisteredTonnageInMT"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Vessel Nationality</div>
+                                <div class="col-md-8" id="VesselNationality"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Agent Name</div>
+                                <div class="col-md-8" id="AgentName"><span></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 head">Vessel Build Year</div>
+                                <div class="col-md-8" id="VesselBuildYear"><span></span></div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*POPUP end here*@   
+    <div id="map_canvas"></div>
+    </div>
+</div>
+
+

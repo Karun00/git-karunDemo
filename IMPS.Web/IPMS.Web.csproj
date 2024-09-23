@@ -1,0 +1,2132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{952643C7-BF52-468E-8567-1257C91BC85E}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IPMS.Web</RootNamespace>
+    <AssemblyName>IPMS.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.0.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.1.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Owin.1.0.0\lib\net45\Microsoft.AspNet.SignalR.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.1.1\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.2.0.2\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.2.0.2\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.2.0.2\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.WebHelpers.3.1.1\lib\net45\Microsoft.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Json">
+      <HintPath>..\packages\System.Json.4.0.20126.16343\lib\net40\System.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.ServiceModel">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DynamicData">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.0.0\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.2\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.1\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Services">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.EnterpriseServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebActivator, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebActivator.1.3.2\lib\NETFramework40\WebActivator.dll</HintPath>
+    </Reference>
+    <Reference Include="WebApi.OutputCache.Core">
+      <HintPath>..\packages\Strathweb.CacheOutput.WebApi2.0.5\lib\net45\WebApi.OutputCache.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="WebApi.OutputCache.V2">
+      <HintPath>..\packages\Strathweb.CacheOutput.WebApi2.0.5\lib\net45\WebApi.OutputCache.V2.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.3.1.1\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.3.1.1\lib\net45\WebMatrix.WebData.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\itextsharp.dll" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\anchor-reasons.jpg" />
+    <Content Include="Content\Images\arrows16X16.png" />
+    <Content Include="Content\Images\autocomplete.png" />
+    <Content Include="Content\Images\avatar2.jpg" />
+    <Content Include="Content\Images\back.png" />
+    <Content Include="Content\Images\Background\new1.jpg" />
+    <Content Include="Content\Images\Background\new2.jpg" />
+    <Content Include="Content\Images\Background\new3.jpg" />
+    <Content Include="Content\Images\Background\new4.jpg" />
+    <Content Include="Content\Images\Background\new5.jpg" />
+    <Content Include="Content\Images\Background\new6.jpg" />
+    <Content Include="Content\Images\Background\new7.jpg" />
+    <Content Include="Content\Images\Background\new8.jpg" />
+    <Content Include="Content\Images\Background\new9.jpg" />
+    <Content Include="Content\Images\Background\texture-bg.jpg" />
+    <Content Include="Content\Images\berthed.png" />
+    <Content Include="Content\Images\body_bg.jpg" />
+    <Content Include="Content\Images\buttons-top-edge-cut.png" />
+    <Content Include="Content\Images\buttons.png" />
+    <Content Include="Content\Images\disclaimer.png" />
+    <Content Include="Content\Images\email-logo.jpg" />
+    <Content Include="Content\Images\email-temp-address-icon.jpg" />
+    <Content Include="Content\Images\email-temp-fax-icon.jpg" />
+    <Content Include="Content\Images\email-temp-mobile-icon.jpg" />
+    <Content Include="Content\Images\email-temp-phone-icon.jpg" />
+    <Content Include="Content\Images\header_bg.jpg" />
+    <Content Include="Content\Images\ico_excel.png" />
+    <Content Include="Content\Images\ico_pdf.gif" />
+    <Content Include="Content\Images\ie.png" />
+    <Content Include="Content\Images\ipms.jpg" />
+    <Content Include="Content\Images\login-logo.jpg" />
+    <Content Include="Content\Images\map.jpg" />
+    <Content Include="Content\Images\mobile-icon-pic.png" />
+    <Content Include="Content\Images\mobile-icon-cam.png" />
+    <Content Include="Content\Images\mob-icon-approve.png" />
+    <Content Include="Content\Images\mob-icon-pending-approvals.png" />
+    <Content Include="Content\Images\mob-icon-reject.png" />
+    <Content Include="Content\Images\mob-icon-view.png" />
+    <Content Include="Content\Images\mobile-back.png" />
+    <Content Include="Content\Images\bottom-bar.jpg" />
+    <Content Include="Content\Images\Cancel.png" />
+    <Content Include="Content\Images\Check.png" />
+    <Content Include="Content\Images\mobile-dashboard-arrow.png" />
+    <Content Include="Content\Images\favicon.ico" />
+    <Content Include="Content\Images\first.png" />
+    <Content Include="Content\Images\gif-load.gif" />
+    <Content Include="Content\Images\header.jpg" />
+    <Content Include="Content\Images\hlist-arrow.gif" />
+    <Content Include="Content\Images\mobile-icon-features.png" />
+    <Content Include="Content\Images\mobile-icon-notifications.png" />
+    <Content Include="Content\Images\mobile-icon-report.png" />
+    <Content Include="Content\Images\mobile-icon-schedule.png" />
+    <Content Include="Content\Images\mobile-icon-tasks.png" />
+    <Content Include="Content\Images\last.png" />
+    <Content Include="Content\Images\logo.jpg" />
+    <Content Include="Content\Images\mobile-login.jpg" />
+    <Content Include="Content\Images\nav-icon.png" />
+    <Content Include="Content\Images\next.png" />
+    <Content Include="Content\Images\offline\Error_Pop_BLcrv.gif" />
+    <Content Include="Content\Images\offline\Error_Pop_BLine.gif" />
+    <Content Include="Content\Images\offline\Error_Pop_BRcrv.gif" />
+    <Content Include="Content\Images\offline\Error_Pop_Lcrv.gif" />
+    <Content Include="Content\Images\offline\Error_Pop_Lvline.gif" />
+    <Content Include="Content\Images\offline\Error_Pop_Rcrv.gif" />
+    <Content Include="Content\Images\offline\Error_Pop_Rvline.gif" />
+    <Content Include="Content\Images\previous.png" />
+    <Content Include="Content\Images\print-logo.jpg" />
+    <Content Include="Content\Images\sailed.png" />
+    <Content Include="Content\Images\select2.png" />
+    <Content Include="Content\Images\sprite.png" />
+    <Content Include="Content\Images\sprite_all.png" />
+    <Content Include="Content\Images\sprite_grid-green.png" />
+    <Content Include="Content\Images\sprite_grid.png" />
+    <Content Include="Content\Images\sprite_grid1.png" />
+    <Content Include="Content\Images\style.css" />
+    <Content Include="Content\Images\topr.jpg" />
+    <Content Include="Content\Images\transet-logo-email-sign.png" />
+    <Content Include="Content\Images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\Images\uniform-bg-input-focus.png" />
+    <Content Include="Content\Images\uniform-bg-input.png" />
+    <Content Include="Content\Images\uniform-sprite.png" />
+    <Content Include="Content\Images\uniform-sprite_original.png" />
+    <Content Include="Content\Images\vesselbert.png" />
+    <Content Include="Content\Images\vesselconf.png" />
+    <Content Include="Content\Images\vesselsch.png" />
+    <Content Include="Content\Images\wp8_icons.png" />
+    <Content Include="Content\Images\wp8_inverseicons.png" />
+    <Content Include="Content\MobileDesignAndScripts\js\jquery.min.js" />
+    <Content Include="Content\MobileDesignAndScripts\js\jquery.mobile-1.3.0-rc.1.js" />
+    <Content Include="Content\MobileDesignAndScripts\js\kendo.all.min.js" />
+    <Content Include="Content\MobileDesignAndScripts\Scripts\knockout-3.2.0.debug.js" />
+    <Content Include="Content\MobileDesignAndScripts\Scripts\knockout-3.2.0.js" />
+    <Content Include="Content\MobileDesignAndScripts\styles\images\back.png" />
+    <Content Include="Content\MobileDesignAndScripts\styles\images\wp8_icons.png" />
+    <Content Include="Content\MobileDesignAndScripts\styles\images\wp8_inverseicons.png" />
+    <Content Include="Content\MobileDesignAndScripts\styles\jquery.mobile-1.3.0-rc.1.css" />
+    <Content Include="Content\MobileDesignAndScripts\styles\kendo.common.min.css" />
+    <Content Include="Content\MobileDesignAndScripts\styles\kendo.default.min.css" />
+    <Content Include="Content\MobileDesignAndScripts\styles\kendo.mobile.all.min.css" />
+    <Content Include="Content\MobileDesignAndScripts\styles\kendo.rtl.min.css" />
+    <Content Include="Content\Reports\ReportViewer.aspx" />
+    <Content Include="Content\resourceAllocation.css" />
+    <Content Include="Content\Styles\allports.css" />
+    <Content Include="Content\Styles\AutoSlotting.css" />
+    <Content Include="Content\Styles\blue.css" />
+    <Content Include="Content\Styles\bootstrap.min.css" />
+    <Content Include="Content\Styles\byrei-dyndiv_0.5.css" />
+    <Content Include="Content\Styles\contents.css" />
+    <Content Include="Content\Styles\images\drag.png" />
+    <Content Include="Content\Styles\jquery-ui.css" />
+    <Content Include="Content\Styles\jquery.confirm.css" />
+    <Content Include="Content\Styles\jquery.ui.chatbox.css" />
+    <Content Include="Content\Styles\mobile_style.css" />
+    <Content Include="Content\Styles\custom.css" />
+    <Content Include="Content\Styles\datepicker.css" />
+    <Content Include="Content\Styles\default.css" />
+    <Content Include="Content\Styles\editor.css" />
+    <Content Include="Content\Styles\font-awesome.css" />
+    <Content Include="Content\Styles\font-awesome.min.css" />
+    <Content Include="Content\Styles\grid-style.css" />
+    <Content Include="Content\Styles\icons.png" />
+    <Content Include="Content\Styles\jquery.fileupload-ui.css" />
+    <Content Include="Content\Styles\kendo.black.min.css" />
+    <Content Include="Content\Styles\kendo.common.min.css" />
+    <Content Include="Content\Styles\kendo.default.min.css" />
+    <Content Include="Content\Styles\kendo.mobile.all.min.css" />
+    <Content Include="Content\Styles\kendo.rtl.min.css" />
+    <Content Include="Content\Styles\login-soft.css" />
+    <Content Include="Content\Styles\mobile-style.css" />
+    <Content Include="Content\Styles\MobileCustom.css" />
+    <Content Include="Content\Styles\offline.css" />
+    <Content Include="Content\Styles\opentip.css" />
+    <Content Include="Content\Styles\plugins.css" />
+    <Content Include="Content\Styles\ResourceAllocation.css" />
+    <Content Include="Content\Styles\select2_metro.css" />
+    <Content Include="Content\Styles\style-metronic.css" />
+    <Content Include="Content\Styles\style-responsive.css" />
+    <Content Include="Content\Styles\style.css" />
+    <Content Include="Content\Styles\toastr.css" />
+    <Content Include="Content\Styles\toastr.min.css" />
+    <Content Include="Content\Styles\uniform.default.css" />
+    <Content Include="Content\Styles\font.css" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\Styles\mobile-zebra-dialog.css" />
+    <Content Include="error.htm" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Forbidden.htm" />
+    <Content Include="Global.asax" />
+    <Content Include="InternalError.htm" />
+    <Content Include="MvcReportViewer.aspx" />
+    <Content Include="PageNotFound.htm" />
+    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\Application\AgentRegisration.js" />
+    <Content Include="Scripts\Application\AgentVerify.js" />
+    <Content Include="Scripts\Application\BerthMaster.js" />
+    <Content Include="Scripts\Application\IpmsRoot.js" />
+    <Content Include="Scripts\Application\Model\AgentDetailsModel.js" />
+    <Content Include="Scripts\Application\Model\AgentRegistrationModel.js" />
+    <Content Include="Scripts\Application\Model\AgentViewModel.js" />
+    <Content Include="Scripts\Application\Model\ArrivalNotificationModel.js" />
+    <Content Include="Scripts\Application\Model\AutomatedSlotBlockingModel.js" />
+    <Content Include="Scripts\Application\Model\AutomatedSlotConfigurationModel.js" />
+    <Content Include="Scripts\Application\Model\AutomatedResourceSchedulingModel.js" />
+    <Content Include="Scripts\Application\Model\AutomatedSlottingModel.js" />
+    <Content Include="Scripts\Application\Model\BerthMaintenanceCompletionModel.js" />
+    <Content Include="Scripts\Application\Model\BerthMaintenanceModel.js" />
+    <Content Include="Scripts\Application\Model\BerthModel.js" />
+    <Content Include="Scripts\Application\Model\AgentModel.js" />
+    <Content Include="Scripts\Application\Model\BerthPlanningConfigurationsModel.js" />
+    <Content Include="Scripts\Application\Model\BerthPlanningGISModel.js" />
+    <Content Include="Scripts\Application\Model\BerthPlanningModel.js" />
+    <Content Include="Scripts\Application\Model\BerthPlanningTableModel.js" />
+    <Content Include="Scripts\Application\Model\BerthPreSchedulingModel.js" />
+    <Content Include="Scripts\Application\Model\BollardModel.js" />
+    <Content Include="Scripts\Application\Model\AuditLogModel.js" />
+    <Content Include="Scripts\Application\Model\BudgetedValuesModel.js" />
+    <Content Include="Scripts\Application\Model\CargoManifestModel.js" />
+    <Content Include="Scripts\Application\Model\CargoTypeDashBoardModel.js" />
+    <Content Include="Scripts\Application\Model\ChangeETAModel.js" />
+    <Content Include="Scripts\Application\Model\ChangePasswordModel.js" />
+    <Content Include="Scripts\Application\Model\DepartureNoticeModel.js" />
+    <Content Include="Scripts\Application\Model\DredgingOperationModel.js" />
+    <Content Include="Scripts\Application\Model\DredgingPriorityModel.js" />
+    <Content Include="Scripts\Application\Model\DryDockSchedulerModel.js" />
+    <Content Include="Scripts\Application\Model\IncidentReportModel.js" />
+    <Content Include="Scripts\Application\Model\InternalEmployeePermitModel.js" />
+    <Content Include="Scripts\Application\Model\LocationModel.js" />
+    <Content Include="Scripts\Application\Model\MarineRevenueModel.js" />
+    <Content Include="Scripts\Application\Model\MarpolModel.js" />
+    <Content Include="Scripts\Application\Model\MaterialCodeMasterModel.js" />
+    <Content Include="Scripts\Application\Model\PlannedMovementsModel.js" />
+    <Content Include="Scripts\Application\Model\PortEntryPassApplicationModel.js" />
+    <Content Include="Scripts\Application\Model\PortInformationModel.js" />
+    <Content Include="Scripts\Application\Model\SAPPostingModel.js" />
+    <Content Include="Scripts\Application\Model\ServiceTypeDesignationModel.js" />
+    <Content Include="Scripts\Application\Model\ServiceTypeModel.js" />
+    <Content Include="Scripts\Application\Model\SuppDryDockApplicationModel.js" />
+    <Content Include="Scripts\Application\Model\SuppDryDockExtensionModel.js" />
+    <Content Include="Scripts\Application\Model\SuppMiscServiceModel.js" />
+    <Content Include="Scripts\Application\Model\TfrDocumentUploadModel.js" />
+    <Content Include="Scripts\Application\Model\TotalMovementsDashboardModel.js" />
+    <Content Include="Scripts\Application\Model\TptDocumentUploadModel.js" />
+    <Content Include="Scripts\Application\Model\UserPreferenceModel.js" />
+    <Content Include="Scripts\Application\Model\CraftReminderConfigModel.js" />
+    <Content Include="Scripts\Application\Model\DeploymentPlanModel.js" />
+    <Content Include="Scripts\Application\Model\DockingPlanModel.js" />
+    <Content Include="Scripts\Application\Model\FuelReceiptModel.js" />
+    <Content Include="Scripts\Application\Model\Hour24AndSection625Model.js" />
+    <Content Include="Scripts\Application\Model\PortGeneralConfigsModel.js" />
+    <Content Include="Scripts\Application\Model\ResourceAllocationConfigRuleModel.js" />
+    <Content Include="Scripts\Application\Model\FuelRequisitionModel.js" />
+    <Content Include="Scripts\Application\Model\CraftInCommissionModel.js" />
+    <Content Include="Scripts\Application\Model\CraftOutOfCommissionModel.js" />
+    <Content Include="Scripts\Application\Model\RevenueStopModel.js" />
+    <Content Include="Scripts\Application\Model\FuelConsumptionDailyLogModel.js" />
+    <Content Include="Scripts\Application\Model\ResourceAllocationModel.js" />
+    <Content Include="Scripts\Application\Model\ResourceAttendanceModel.js" />
+    <Content Include="Scripts\Application\Model\ExternalDivingRegisterModel.js" />
+    <Content Include="Scripts\Application\Model\MobileConversationModel.js" />
+    <Content Include="Scripts\Application\Model\DashBoardModel.js" />
+    <Content Include="Scripts\Application\Model\ReportBuilderModel.js" />
+    <Content Include="Scripts\Application\Model\RosterModel.js" />
+    <Content Include="Scripts\Application\Model\StatementFactModel.js" />
+    <Content Include="Scripts\Application\Model\SuppDockUnDockTimeModel.js" />
+    <Content Include="Scripts\Application\Model\SuppHotWorkInspectionModel.js" />
+    <Content Include="Scripts\Application\Model\SupplementaryServiceRequestModel.js" />
+    <Content Include="Scripts\Application\Model\SuppServiceResourceAllocModel.js" />
+    <Content Include="Scripts\Application\Model\TerminalOperatorModel_org.js" />
+    <Content Include="Scripts\Application\Model\UserPreferenceModel.js" />
+    <Content Include="Scripts\Application\Model\VesselSAPPostingModel.js" />
+    <Content Include="Scripts\Application\Model\WegoBerthDashBoardModel.js" />
+    <Content Include="Scripts\Application\Model\WegoDashBoardModel.js" />
+    <Content Include="Scripts\Application\Model\WorkFlowTaskModel.js" />
+    <Content Include="Scripts\Application\Model\DivingTaskExecutionModel.js" />
+    <Content Include="Scripts\Application\Model\EventSchedulerModel.js" />
+    <Content Include="Scripts\Application\Model\MobileIncidentReportModel.js" />
+    <Content Include="Scripts\Application\Model\MobileBerthModel.js" />
+    <Content Include="Scripts\Application\Model\MobileModel.js" />
+    <Content Include="Scripts\Application\Model\CraftMasterModel.js" />
+    <Content Include="Scripts\Application\Model\DivingRequestModel.js" />
+    <Content Include="Scripts\Application\Model\ElectronicNotificationsModel.js" />
+    <Content Include="Scripts\Application\Model\EmployeeModel.js" />
+    <Content Include="Scripts\Application\Model\EntityModel.js" />
+    <Content Include="Scripts\Application\Model\LicensingRequestModel.js" />
+    <Content Include="Scripts\Application\Model\ModuleModel.js" />
+    <Content Include="Scripts\Application\Model\ModuleMasterModel.js" />
+    <Content Include="Scripts\Application\Model\NewsModel.js" />
+    <Content Include="Scripts\Application\Model\NotificationsModel.js" />
+    <Content Include="Scripts\Application\Model\PilotExemptionRequestListViewUpdate.js" />
+    <Content Include="Scripts\Application\Model\PilotExemptionRequestModel.js" />
+    <Content Include="Scripts\Application\Model\PortModel.js" />
+    <Content Include="Scripts\Application\Model\QuayModel.js" />
+    <Content Include="Scripts\Application\Model\ResourceGroupModel.js" />
+    <Content Include="Scripts\Application\Model\RolePrivilegeModel.js" />
+    <Content Include="Scripts\Application\Model\ServiceRequestModel.js" />
+    <Content Include="Scripts\Application\Model\ShiftModel.js" />
+    <Content Include="Scripts\Application\Model\SubCategoryModel.js" />
+    <Content Include="Scripts\Application\Model\SuperCategoryModel.js" />
+    <Content Include="Scripts\Application\Model\TerminalOperatorModel.js" />
+    <Content Include="Scripts\Application\Model\UserModel.js" />
+    <Content Include="Scripts\Application\Model\VesselAgentChangeModel.js" />
+    <Content Include="Scripts\Application\Model\VesselArrestImmobilizationSAMSAStopModel.js" />
+    <Content Include="Scripts\Application\Model\VesselCallAnchorageModel.js" />
+    <Content Include="Scripts\Application\Model\UserRegistrationModel.js" />
+    <Content Include="Scripts\Application\Model\VesselRegistrationModel.js" />
+    <Content Include="Scripts\Application\Model\VoyageMonitoringModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AgentDetailsViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AgentRegistrationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AgentViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ArrivalNotificationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AutomatedSlotBlockingViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AutomatedSlotConfigurationViewmodel.js" />
+    <Content Include="Scripts\Application\ViewModel\AutomatedResourceSchedulingViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AutomatedSlottingViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AutoSlotting.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthMaintenanceCompletionViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthMaintenanceViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthPlanningConfigurationsViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthPlanningGISViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthPlanningTableViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthPlanningViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthPreSchedulingViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BerthViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AgentViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BollardViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AuditLogViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\BudgetedValuesViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\CargoManifestViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\CargoTypeDashBoardViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ChangeETAViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ChangePasswordViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DepartureNoticeViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DredgingOperationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DredgingPriorityViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DryDockSchedulerViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\IncidentReportViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\InternalEmployeePermitViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\LicensingRequestLISTViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\LocationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MarineRevenueViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MarpolViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MaterialCodeMasterViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MBerthPlanningGISViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\PlannedMovementsViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\PortEntryPassApplicationListforSSACheck.js" />
+    <Content Include="Scripts\Application\ViewModel\PortEntryPassApplicationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\PortInformationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SAPPostingViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ServiceTypeDesignationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ServiceTypeViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SuppDryDockApplicationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SuppDryDockExtensionViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SuppMiscServiceViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\TfrDocumentUploadViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\TotalMovementsDashboardViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\TptDocumentUploadViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\TrainMonitoringViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\UserPreferenceViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\CraftReminderConfigViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DeploymentPlanViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DockingPlanViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\FuelReceiptViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\Hour24AndSection625ViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\PortGeneralConfigsViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ResourceAllocationConfigRuleViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\FuelRequisitionViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\CraftInCommissionViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\CraftOutOfCommissionViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\RevenueStopViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\FuelConsumptionDailyLogViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ResourceAllocationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ResourceAttendanceViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DashBoardViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ExternalDivingRegisterViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MobileConversationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ReportBuilderViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\RosterViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ShiftViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\StatementFactViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SuppDockUnDockTimeViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SuppHotWorkInspectionViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SupplementaryServiceRequestViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\TerminalOperatorViewModell_org.js" />
+    <Content Include="Scripts\Application\ViewModel\UserPreferenceViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\VesselSAPPostingViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\WegoBerthDashBoardViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\WegoDashBoardViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\WorkflowTaskExecution.js" />
+    <Content Include="Scripts\Application\ViewModel\SuppServiceResourceAllocViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\WorkFlowTaskViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DivingTaskExecutionViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\EventSchedulerViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MobileBerthViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MobileIncidentReportViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\MobileViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\CraftMasterViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\DivingRequestViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ElectronicNotificationsViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\EmployeeViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\EntityViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\LicensingRequestViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ModuleViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ModuleMasterViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\NewsViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\NotificationsViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\PilotExemptionRequestListViewUpdateViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\PilotExemptionRequestViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\PortViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\AccountLoginViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\QuayViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ResourceGroupViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\RolePrivilegeViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\ServiceRequestViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SubCategoryViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\SuperCategoryViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\TerminalOperatorViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\UserRegistrationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\UserViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\VesselAgentChangeViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\VesselArrestImmobilizationSAMSAStopViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\VesselCallAnchorageViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\VesselRegistrationViewModel.js" />
+    <Content Include="Scripts\Application\ViewModel\VoyageMonitoringViewModel.js" />
+    <Content Include="Scripts\BerthingRules.js" />
+    <Content Include="Scripts\BerthPlanningGIS.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\imageMapResizer.min.js" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.4.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <Content Include="Scripts\jquery.1.11.1.js" />
+    <Content Include="Scripts\jquery.signalR-2.1.1.js" />
+    <Content Include="Scripts\jquery.signalR-2.1.1.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\knockout-3.3.0.debug.js" />
+    <Content Include="Scripts\knockout-3.3.0.js" />
+    <Content Include="Scripts\Lib\adapter-jquery.js" />
+    <Content Include="Scripts\Lib\app.js" />
+    <Content Include="Scripts\Lib\bootbox.min.js" />
+    <Content Include="Scripts\Lib\bootstrap-datepicker.js" />
+    <Content Include="Scripts\Lib\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\Lib\bootstrap-maxlength.min.js" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff" />
+    <Content Include="Content\fonts\DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff" />
+    <Content Include="Content\fonts\k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff" />
+    <Content Include="Content\fonts\MTP_ySUJH_bn48VBG8sNSnhCUOGz7vYGh680lGh-uXM.woff" />
+    <Content Include="Content\Images\Background\1.jpg" />
+    <Content Include="Content\Images\Background\2.jpg" />
+    <Content Include="Content\Images\Background\3.jpg" />
+    <Content Include="Content\Images\Background\4.jpg" />
+    <Content Include="Content\Images\Background\5.jpg" />
+    <Content Include="Content\Images\About.png" />
+    <Content Include="Content\Images\abt_us.png" />
+    <Content Include="Content\Images\accept-icon.png" />
+    <Content Include="Content\Images\actAdd.png" />
+    <Content Include="Content\Images\ajax-loading.gif" />
+    <Content Include="Content\Images\ajax-modal-loading.gif" />
+    <Content Include="Content\Images\ajaxLoader.gif" />
+    <Content Include="Content\Images\arrow-down.png" />
+    <Content Include="Content\Images\arrow.png" />
+    <Content Include="Content\Images\arrow2.png" />
+    <Content Include="Content\Images\arrow_left.png" />
+    <Content Include="Content\Images\arrow_right.png" />
+    <Content Include="Content\Images\attach.gif" />
+    <Content Include="Content\Images\avatar.png" />
+    <Content Include="Content\Images\avatar1.jpg" />
+    <Content Include="Content\Images\avatar1_small.jpg" />
+    <Content Include="Content\Images\bag.gif" />
+    <Content Include="Content\Images\bag.png" />
+    <Content Include="Content\Images\berth-occupancy-graph-web.jpg" />
+    <Content Include="Content\Images\berth-occupancy.png" />
+    <Content Include="Content\Images\berth-utilization-graph.jpg" />
+    <Content Include="Content\Images\berth-utilization.png" />
+    <Content Include="Content\Images\bg-opacity.png" />
+    <Content Include="Content\Images\bg-white-lock.png" />
+    <Content Include="Content\Images\bg-white.png" />
+    <Content Include="Content\Images\bL.png" />
+    <Content Include="Content\Images\blockarrowdown.png" />
+    <Content Include="Content\Images\blockarrowup.png" />
+    <Content Include="Content\Images\bM.png" />
+    <Content Include="Content\Images\bR.png" />
+    <Content Include="Content\Images\btn_add.gif" />
+    <Content Include="Content\Images\btn_add_master.gif" />
+    <Content Include="Content\Images\btn_cancel.gif" />
+    <Content Include="Content\Images\btn_cancel_master.gif" />
+    <Content Include="Content\Images\btn_delete.gif" />
+    <Content Include="Content\Images\btn_getdata.gif" />
+    <Content Include="Content\Images\btn_getdata.png" />
+    <Content Include="Content\Images\btn_L.png" />
+    <Content Include="Content\Images\btn_R.png" />
+    <Content Include="Content\Images\btn_report-by-filter.gif" />
+    <Content Include="Content\Images\btn_save.gif" />
+    <Content Include="Content\Images\btn_save1.gif" />
+    <Content Include="Content\Images\btn_save_cont.gif" />
+    <Content Include="Content\Images\btn_save_exit.gif" />
+    <Content Include="Content\Images\btn_save_master.gif" />
+    <Content Include="Content\Images\btn_search.gif" />
+    <Content Include="Content\Images\btn_search.png" />
+    <Content Include="Content\Images\btn_search1.png" />
+    <Content Include="Content\Images\btn_select.gif" />
+    <Content Include="Content\Images\btn_submit.gif" />
+    <Content Include="Content\Images\btn_update.gif" />
+    <Content Include="Content\Images\btn_update_cont.gif" />
+    <Content Include="Content\Images\btn_update_exit.gif" />
+    <Content Include="Content\Images\Bulk.jpg" />
+    <Content Include="Content\Images\bullet_black.png" />
+    <Content Include="Content\Images\bullet_blue.png" />
+    <Content Include="Content\Images\calendar1.png" />
+    <Content Include="Content\Images\Calender.png" />
+    <Content Include="Content\Images\ChangePassword.png" />
+    <Content Include="Content\Images\close-button.png" />
+    <Content Include="Content\Images\close.gif" />
+    <Content Include="Content\Images\commodity-handled-graph.jpg" />
+    <Content Include="Content\Images\commodity-handled.png" />
+    <Content Include="Content\Images\crv-bl.gif" />
+    <Content Include="Content\Images\crv-br.gif" />
+    <Content Include="Content\Images\crv-l.gif" />
+    <Content Include="Content\Images\crv-r.gif" />
+    <Content Include="Content\Images\crv_B.gif" />
+    <Content Include="Content\Images\crv_BL.gif" />
+    <Content Include="Content\Images\crv_BR.gif" />
+    <Content Include="Content\Images\crv_L.gif" />
+    <Content Include="Content\Images\crv_lineB.gif" />
+    <Content Include="Content\Images\crv_lineL.gif" />
+    <Content Include="Content\Images\crv_lineR.gif" />
+    <Content Include="Content\Images\crv_lineTop.gif" />
+    <Content Include="Content\Images\crv_M.gif" />
+    <Content Include="Content\Images\crv_R.gif" />
+    <Content Include="Content\Images\Ctr.png" />
+    <Content Include="Content\Images\cursor_text.gif" />
+    <Content Include="Content\Images\custom-select-bg.png" />
+    <Content Include="Content\Images\datatable-row-openclose.png" />
+    <Content Include="Content\Images\db-ds-pic.jpg" />
+    <Content Include="Content\Images\db-rc-pic.jpg" />
+    <Content Include="Content\Images\db-vm-pic.jpg" />
+    <Content Include="Content\Images\delay-statistics-graph-web.jpg" />
+    <Content Include="Content\Images\delay-statistics.png" />
+    <Content Include="Content\Images\delete.png" />
+    <Content Include="Content\Images\dshBrd.png" />
+    <Content Include="Content\Images\edit.png" />
+    <Content Include="Content\Images\export.gif" />
+    <Content Include="Content\Images\filter.gif" />
+    <Content Include="Content\Images\first.gif" />
+    <Content Include="Content\Images\Flags\ad.png" />
+    <Content Include="Content\Images\Flags\ae.png" />
+    <Content Include="Content\Images\Flags\af.png" />
+    <Content Include="Content\Images\Flags\ag.png" />
+    <Content Include="Content\Images\Flags\ai.png" />
+    <Content Include="Content\Images\Flags\al.png" />
+    <Content Include="Content\Images\Flags\am.png" />
+    <Content Include="Content\Images\Flags\an.png" />
+    <Content Include="Content\Images\Flags\ao.png" />
+    <Content Include="Content\Images\Flags\ar.png" />
+    <Content Include="Content\Images\Flags\as.png" />
+    <Content Include="Content\Images\Flags\at.png" />
+    <Content Include="Content\Images\Flags\au.png" />
+    <Content Include="Content\Images\Flags\aw.png" />
+    <Content Include="Content\Images\Flags\ax.png" />
+    <Content Include="Content\Images\Flags\az.png" />
+    <Content Include="Content\Images\Flags\ba.png" />
+    <Content Include="Content\Images\Flags\bb.png" />
+    <Content Include="Content\Images\Flags\bd.png" />
+    <Content Include="Content\Images\Flags\be.png" />
+    <Content Include="Content\Images\Flags\bf.png" />
+    <Content Include="Content\Images\Flags\bg.png" />
+    <Content Include="Content\Images\Flags\bh.png" />
+    <Content Include="Content\Images\Flags\bi.png" />
+    <Content Include="Content\Images\Flags\bj.png" />
+    <Content Include="Content\Images\Flags\bm.png" />
+    <Content Include="Content\Images\Flags\bn.png" />
+    <Content Include="Content\Images\Flags\bo.png" />
+    <Content Include="Content\Images\Flags\br.png" />
+    <Content Include="Content\Images\Flags\bs.png" />
+    <Content Include="Content\Images\Flags\bt.png" />
+    <Content Include="Content\Images\Flags\bv.png" />
+    <Content Include="Content\Images\Flags\bw.png" />
+    <Content Include="Content\Images\Flags\by.png" />
+    <Content Include="Content\Images\Flags\bz.png" />
+    <Content Include="Content\Images\Flags\ca.png" />
+    <Content Include="Content\Images\Flags\catalonia.png" />
+    <Content Include="Content\Images\Flags\cc.png" />
+    <Content Include="Content\Images\Flags\cd.png" />
+    <Content Include="Content\Images\Flags\cf.png" />
+    <Content Include="Content\Images\Flags\cg.png" />
+    <Content Include="Content\Images\Flags\ch.png" />
+    <Content Include="Content\Images\Flags\ci.png" />
+    <Content Include="Content\Images\Flags\ck.png" />
+    <Content Include="Content\Images\Flags\cl.png" />
+    <Content Include="Content\Images\Flags\cm.png" />
+    <Content Include="Content\Images\Flags\cn.png" />
+    <Content Include="Content\Images\Flags\co.png" />
+    <Content Include="Content\Images\Flags\cr.png" />
+    <Content Include="Content\Images\Flags\cs.png" />
+    <Content Include="Content\Images\Flags\cu.png" />
+    <Content Include="Content\Images\Flags\cv.png" />
+    <Content Include="Content\Images\Flags\cx.png" />
+    <Content Include="Content\Images\Flags\cy.png" />
+    <Content Include="Content\Images\Flags\cz.png" />
+    <Content Include="Content\Images\Flags\de.png" />
+    <Content Include="Content\Images\Flags\dj.png" />
+    <Content Include="Content\Images\Flags\dk.png" />
+    <Content Include="Content\Images\Flags\dm.png" />
+    <Content Include="Content\Images\Flags\do.png" />
+    <Content Include="Content\Images\Flags\dz.png" />
+    <Content Include="Content\Images\Flags\ec.png" />
+    <Content Include="Content\Images\Flags\ee.png" />
+    <Content Include="Content\Images\Flags\eg.png" />
+    <Content Include="Content\Images\Flags\eh.png" />
+    <Content Include="Content\Images\Flags\england.png" />
+    <Content Include="Content\Images\Flags\er.png" />
+    <Content Include="Content\Images\Flags\es.png" />
+    <Content Include="Content\Images\Flags\et.png" />
+    <Content Include="Content\Images\Flags\europeanunion.png" />
+    <Content Include="Content\Images\Flags\fam.png" />
+    <Content Include="Content\Images\Flags\fi.png" />
+    <Content Include="Content\Images\Flags\fj.png" />
+    <Content Include="Content\Images\Flags\fk.png" />
+    <Content Include="Content\Images\Flags\fm.png" />
+    <Content Include="Content\Images\Flags\fo.png" />
+    <Content Include="Content\Images\Flags\fr.png" />
+    <Content Include="Content\Images\Flags\ga.png" />
+    <Content Include="Content\Images\Flags\gb.png" />
+    <Content Include="Content\Images\Flags\gd.png" />
+    <Content Include="Content\Images\Flags\ge.png" />
+    <Content Include="Content\Images\Flags\gf.png" />
+    <Content Include="Content\Images\Flags\gh.png" />
+    <Content Include="Content\Images\Flags\gi.png" />
+    <Content Include="Content\Images\Flags\gl.png" />
+    <Content Include="Content\Images\Flags\gm.png" />
+    <Content Include="Content\Images\Flags\gn.png" />
+    <Content Include="Content\Images\Flags\gp.png" />
+    <Content Include="Content\Images\Flags\gq.png" />
+    <Content Include="Content\Images\Flags\gr.png" />
+    <Content Include="Content\Images\Flags\gs.png" />
+    <Content Include="Content\Images\Flags\gt.png" />
+    <Content Include="Content\Images\Flags\gu.png" />
+    <Content Include="Content\Images\Flags\gw.png" />
+    <Content Include="Content\Images\Flags\gy.png" />
+    <Content Include="Content\Images\Flags\hk.png" />
+    <Content Include="Content\Images\Flags\hm.png" />
+    <Content Include="Content\Images\Flags\hn.png" />
+    <Content Include="Content\Images\Flags\hr.png" />
+    <Content Include="Content\Images\Flags\ht.png" />
+    <Content Include="Content\Images\Flags\hu.png" />
+    <Content Include="Content\Images\Flags\id.png" />
+    <Content Include="Content\Images\Flags\ie.png" />
+    <Content Include="Content\Images\Flags\il.png" />
+    <Content Include="Content\Images\Flags\in.png" />
+    <Content Include="Content\Images\Flags\io.png" />
+    <Content Include="Content\Images\Flags\iq.png" />
+    <Content Include="Content\Images\Flags\ir.png" />
+    <Content Include="Content\Images\Flags\is.png" />
+    <Content Include="Content\Images\Flags\it.png" />
+    <Content Include="Content\Images\Flags\jm.png" />
+    <Content Include="Content\Images\Flags\jo.png" />
+    <Content Include="Content\Images\Flags\jp.png" />
+    <Content Include="Content\Images\Flags\ke.png" />
+    <Content Include="Content\Images\Flags\kg.png" />
+    <Content Include="Content\Images\Flags\kh.png" />
+    <Content Include="Content\Images\Flags\ki.png" />
+    <Content Include="Content\Images\Flags\km.png" />
+    <Content Include="Content\Images\Flags\kn.png" />
+    <Content Include="Content\Images\Flags\kp.png" />
+    <Content Include="Content\Images\Flags\kr.png" />
+    <Content Include="Content\Images\Flags\kw.png" />
+    <Content Include="Content\Images\Flags\ky.png" />
+    <Content Include="Content\Images\Flags\kz.png" />
+    <Content Include="Content\Images\Flags\la.png" />
+    <Content Include="Content\Images\Flags\lb.png" />
+    <Content Include="Content\Images\Flags\lc.png" />
+    <Content Include="Content\Images\Flags\li.png" />
+    <Content Include="Content\Images\Flags\lk.png" />
+    <Content Include="Content\Images\Flags\lr.png" />
+    <Content Include="Content\Images\Flags\ls.png" />
+    <Content Include="Content\Images\Flags\lt.png" />
+    <Content Include="Content\Images\Flags\lu.png" />
+    <Content Include="Content\Images\Flags\lv.png" />
+    <Content Include="Content\Images\Flags\ly.png" />
+    <Content Include="Content\Images\Flags\ma.png" />
+    <Content Include="Content\Images\Flags\mc.png" />
+    <Content Include="Content\Images\Flags\md.png" />
+    <Content Include="Content\Images\Flags\me.png" />
+    <Content Include="Content\Images\Flags\mg.png" />
+    <Content Include="Content\Images\Flags\mh.png" />
+    <Content Include="Content\Images\Flags\mk.png" />
+    <Content Include="Content\Images\Flags\ml.png" />
+    <Content Include="Content\Images\Flags\mm.png" />
+    <Content Include="Content\Images\Flags\mn.png" />
+    <Content Include="Content\Images\Flags\mo.png" />
+    <Content Include="Content\Images\Flags\mp.png" />
+    <Content Include="Content\Images\Flags\mq.png" />
+    <Content Include="Content\Images\Flags\mr.png" />
+    <Content Include="Content\Images\Flags\ms.png" />
+    <Content Include="Content\Images\Flags\mt.png" />
+    <Content Include="Content\Images\Flags\mu.png" />
+    <Content Include="Content\Images\Flags\mv.png" />
+    <Content Include="Content\Images\Flags\mw.png" />
+    <Content Include="Content\Images\Flags\mx.png" />
+    <Content Include="Content\Images\Flags\my.png" />
+    <Content Include="Content\Images\Flags\mz.png" />
+    <Content Include="Content\Images\Flags\na.png" />
+    <Content Include="Content\Images\Flags\nc.png" />
+    <Content Include="Content\Images\Flags\ne.png" />
+    <Content Include="Content\Images\Flags\nf.png" />
+    <Content Include="Content\Images\Flags\ng.png" />
+    <Content Include="Content\Images\Flags\ni.png" />
+    <Content Include="Content\Images\Flags\nl.png" />
+    <Content Include="Content\Images\Flags\no.png" />
+    <Content Include="Content\Images\Flags\np.png" />
+    <Content Include="Content\Images\Flags\nr.png" />
+    <Content Include="Content\Images\Flags\nu.png" />
+    <Content Include="Content\Images\Flags\nz.png" />
+    <Content Include="Content\Images\Flags\om.png" />
+    <Content Include="Content\Images\Flags\pa.png" />
+    <Content Include="Content\Images\Flags\pe.png" />
+    <Content Include="Content\Images\Flags\pf.png" />
+    <Content Include="Content\Images\Flags\pg.png" />
+    <Content Include="Content\Images\Flags\ph.png" />
+    <Content Include="Content\Images\Flags\pk.png" />
+    <Content Include="Content\Images\Flags\pl.png" />
+    <Content Include="Content\Images\Flags\pm.png" />
+    <Content Include="Content\Images\Flags\pn.png" />
+    <Content Include="Content\Images\Flags\pr.png" />
+    <Content Include="Content\Images\Flags\ps.png" />
+    <Content Include="Content\Images\Flags\pt.png" />
+    <Content Include="Content\Images\Flags\pw.png" />
+    <Content Include="Content\Images\Flags\py.png" />
+    <Content Include="Content\Images\Flags\qa.png" />
+    <Content Include="Content\Images\Flags\re.png" />
+    <Content Include="Content\Images\Flags\readme.txt" />
+    <Content Include="Content\Images\Flags\ro.png" />
+    <Content Include="Content\Images\Flags\rs.png" />
+    <Content Include="Content\Images\Flags\ru.png" />
+    <Content Include="Content\Images\Flags\rw.png" />
+    <Content Include="Content\Images\Flags\sa.png" />
+    <Content Include="Content\Images\Flags\sb.png" />
+    <Content Include="Content\Images\Flags\sc.png" />
+    <Content Include="Content\Images\Flags\scotland.png" />
+    <Content Include="Content\Images\Flags\sd.png" />
+    <Content Include="Content\Images\Flags\se.png" />
+    <Content Include="Content\Images\Flags\sg.png" />
+    <Content Include="Content\Images\Flags\sh.png" />
+    <Content Include="Content\Images\Flags\si.png" />
+    <Content Include="Content\Images\Flags\sj.png" />
+    <Content Include="Content\Images\Flags\sk.png" />
+    <Content Include="Content\Images\Flags\sl.png" />
+    <Content Include="Content\Images\Flags\sm.png" />
+    <Content Include="Content\Images\Flags\sn.png" />
+    <Content Include="Content\Images\Flags\so.png" />
+    <Content Include="Content\Images\Flags\sr.png" />
+    <Content Include="Content\Images\Flags\st.png" />
+    <Content Include="Content\Images\Flags\sv.png" />
+    <Content Include="Content\Images\Flags\sy.png" />
+    <Content Include="Content\Images\Flags\sz.png" />
+    <Content Include="Content\Images\Flags\tc.png" />
+    <Content Include="Content\Images\Flags\td.png" />
+    <Content Include="Content\Images\Flags\tf.png" />
+    <Content Include="Content\Images\Flags\tg.png" />
+    <Content Include="Content\Images\Flags\th.png" />
+    <Content Include="Content\Images\Flags\tj.png" />
+    <Content Include="Content\Images\Flags\tk.png" />
+    <Content Include="Content\Images\Flags\tl.png" />
+    <Content Include="Content\Images\Flags\tm.png" />
+    <Content Include="Content\Images\Flags\tn.png" />
+    <Content Include="Content\Images\Flags\to.png" />
+    <Content Include="Content\Images\Flags\tr.png" />
+    <Content Include="Content\Images\Flags\tt.png" />
+    <Content Include="Content\Images\Flags\tv.png" />
+    <Content Include="Content\Images\Flags\tw.png" />
+    <Content Include="Content\Images\Flags\tz.png" />
+    <Content Include="Content\Images\Flags\ua.png" />
+    <Content Include="Content\Images\Flags\ug.png" />
+    <Content Include="Content\Images\Flags\um.png" />
+    <Content Include="Content\Images\Flags\us.png" />
+    <Content Include="Content\Images\Flags\uy.png" />
+    <Content Include="Content\Images\Flags\uz.png" />
+    <Content Include="Content\Images\Flags\va.png" />
+    <Content Include="Content\Images\Flags\vc.png" />
+    <Content Include="Content\Images\Flags\ve.png" />
+    <Content Include="Content\Images\Flags\vg.png" />
+    <Content Include="Content\Images\Flags\vi.png" />
+    <Content Include="Content\Images\Flags\vn.png" />
+    <Content Include="Content\Images\Flags\vu.png" />
+    <Content Include="Content\Images\Flags\wales.png" />
+    <Content Include="Content\Images\Flags\wf.png" />
+    <Content Include="Content\Images\Flags\ws.png" />
+    <Content Include="Content\Images\Flags\ye.png" />
+    <Content Include="Content\Images\Flags\yt.png" />
+    <Content Include="Content\Images\Flags\za.png" />
+    <Content Include="Content\Images\Flags\zm.png" />
+    <Content Include="Content\Images\Flags\zw.png" />
+    <Content Include="Content\Images\form-arrow.png" />
+    <Content Include="Content\Images\form-arrowo.png" />
+    <Content Include="Content\Images\generateReport.gif" />
+    <Content Include="Content\Images\go.gif" />
+    <Content Include="Content\Images\go.png" />
+    <Content Include="Content\Images\gotopage.gif" />
+    <Content Include="Content\Images\graph-1.jpg" />
+    <Content Include="Content\Images\graph-2.jpg" />
+    <Content Include="Content\Images\GrdRec_View.png" />
+    <Content Include="Content\Images\GridHBg.gif" />
+    <Content Include="Content\Images\grouptree.gif" />
+    <Content Include="Content\Images\grouptreepressed.gif" />
+    <Content Include="Content\Images\hdr_nav.png" />
+    <Content Include="Content\Images\header_bg1.png" />
+    <Content Include="Content\Images\header_bg2.png" />
+    <Content Include="Content\Images\header_bg_curve.png" />
+    <Content Include="Content\Images\help-question.jpg" />
+    <Content Include="Content\Images\help.png" />
+    <Content Include="Content\Images\home.png" />
+    <Content Include="Content\Images\home1.png" />
+    <Content Include="Content\Images\hor-menu-red-arrow.png" />
+    <Content Include="Content\Images\hor-menu-search-close-white.png" />
+    <Content Include="Content\Images\hor-menu-search-close.png" />
+    <Content Include="Content\Images\hor-menu-search.jpg" />
+    <Content Include="Content\Images\hor-menu-search.png" />
+    <Content Include="Content\Images\icon-color-close.png" />
+    <Content Include="Content\Images\icon-color.png" />
+    <Content Include="Content\Images\icon-first.gif" />
+    <Content Include="Content\Images\icon-img-down.png" />
+    <Content Include="Content\Images\icon-img-up.png" />
+    <Content Include="Content\Images\icon-last.gif" />
+    <Content Include="Content\Images\icon-next.gif" />
+    <Content Include="Content\Images\icon-previous.gif" />
+    <Content Include="Content\Images\icon_edit.png" />
+    <Content Include="Content\Images\icon_view.png" />
+    <Content Include="Content\Images\inbox-nav-arrow-blue.png" />
+    <Content Include="Content\Images\injury-graph.jpg" />
+    <Content Include="Content\Images\inner_Logo.ico" />
+    <Content Include="Content\Images\input-spinner.gif" />
+    <Content Include="Content\Images\invalid.png" />
+    <Content Include="Content\Images\isps-clearance.png" />
+    <Content Include="Content\Images\K-base.png" />
+    <Content Include="Content\Images\KPCL-INR-LOGO.png" />
+    <Content Include="Content\Images\KPCL_Nav_Strip.gif" />
+    <Content Include="Content\Images\last.gif" />
+    <Content Include="Content\Images\Lgnbl.png" />
+    <Content Include="Content\Images\Lgnbm.png" />
+    <Content Include="Content\Images\Lgnbr.png" />
+    <Content Include="Content\Images\lgnDoc.png" />
+    <Content Include="Content\Images\LgnLeft.png" />
+    <Content Include="Content\Images\Lgnlm.png" />
+    <Content Include="Content\Images\LgnMdl.png" />
+    <Content Include="Content\Images\LgnName.png" />
+    <Content Include="Content\Images\lgnPict.png" />
+    <Content Include="Content\Images\LgnRight.png" />
+    <Content Include="Content\Images\Lgnrm.png" />
+    <Content Include="Content\Images\LgnStrp.jpg" />
+    <Content Include="Content\Images\Lgntl.png" />
+    <Content Include="Content\Images\Lgntm.png" />
+    <Content Include="Content\Images\Lgntr.png" />
+    <Content Include="Content\Images\lightHouse.jpg" />
+    <Content Include="Content\Images\loading.gif" />
+    <Content Include="Content\Images\login-arrow.png" />
+    <Content Include="Content\Images\login_bg_left.png" />
+    <Content Include="Content\Images\login_bg_left1.png" />
+    <Content Include="Content\Images\login_bg_middle.png" />
+    <Content Include="Content\Images\login_bg_middle1.png" />
+    <Content Include="Content\Images\login_bg_right.png" />
+    <Content Include="Content\Images\login_bg_right1.png" />
+    <Content Include="Content\Images\login_btn.png" />
+    <Content Include="Content\Images\login_btn_hover.png" />
+    <Content Include="Content\Images\Login_icon.png" />
+    <Content Include="Content\Images\logo-big.png" />
+    <Content Include="Content\Images\logo.png" />
+    <Content Include="Content\Images\logo1.png" />
+    <Content Include="Content\Images\Logout.png" />
+    <Content Include="Content\Images\Master_Img.png" />
+    <Content Include="Content\Images\Master_Img1.png" />
+    <Content Include="Content\Images\Master_Img2.png" />
+    <Content Include="Content\Images\Master_Img3.png" />
+    <Content Include="Content\Images\Mbu.png" />
+    <Content Include="Content\Images\MDel.png" />
+    <Content Include="Content\Images\Member.png" />
+    <Content Include="Content\Images\menu-toggler.png" />
+    <Content Include="Content\Images\menu.png" />
+    <Content Include="Content\Images\message.png" />
+    <Content Include="Content\Images\minus.gif" />
+    <Content Include="Content\Images\modal-gloss.png" />
+    <Content Include="Content\Images\mS.png" />
+    <Content Include="Content\Images\Navayuga-Infotech-Logo1.png" />
+    <Content Include="Content\Images\nav_Arw.gif" />
+    <Content Include="Content\Images\newsbox_left.png" />
+    <Content Include="Content\Images\newsbox_left1.png" />
+    <Content Include="Content\Images\newsbox_middle.png" />
+    <Content Include="Content\Images\newsbox_middle1.png" />
+    <Content Include="Content\Images\newsbox_right.png" />
+    <Content Include="Content\Images\newsbox_right1.png" />
+    <Content Include="Content\Images\next.gif" />
+    <Content Include="Content\Images\NonOper.jpg" />
+    <Content Include="Content\Images\notifcation_icon.png" />
+    <Content Include="Content\Images\overlay-icon.png" />
+    <Content Include="Content\Images\pinkshade.jpg" />
+    <Content Include="Content\Images\plus.gif" />
+    <Content Include="Content\Images\portlet-collapse-icon-white.png" />
+    <Content Include="Content\Images\portlet-collapse-icon.png" />
+    <Content Include="Content\Images\portlet-config-icon-white.png" />
+    <Content Include="Content\Images\portlet-config-icon.png" />
+    <Content Include="Content\Images\portlet-expand-icon-white.png" />
+    <Content Include="Content\Images\portlet-expand-icon.png" />
+    <Content Include="Content\Images\portlet-reload-icon-white.png" />
+    <Content Include="Content\Images\portlet-reload-icon.png" />
+    <Content Include="Content\Images\portlet-remove-icon-white.png" />
+    <Content Include="Content\Images\portlet-remove-icon.png" />
+    <Content Include="Content\Images\prev.gif" />
+    <Content Include="Content\Images\print.gif" />
+    <Content Include="Content\Images\prtycommodityBg.jpg" />
+    <Content Include="Content\Images\Rec_Add.png" />
+    <Content Include="Content\Images\Rec_Cancel.png" />
+    <Content Include="Content\Images\Rec_Delete.png" />
+    <Content Include="Content\Images\Rec_Edit.png" />
+    <Content Include="Content\Images\Rec_flsc.png" />
+    <Content Include="Content\Images\Rec_flsc_over.png" />
+    <Content Include="Content\Images\Rec_Save.png" />
+    <Content Include="Content\Images\Rec_Search.png" />
+    <Content Include="Content\Images\Rec_Thm.png" />
+    <Content Include="Content\Images\Rec_Thm_H.png" />
+    <Content Include="Content\Images\Rec_View.png" />
+    <Content Include="Content\Images\red_asterisk.png" />
+    <Content Include="Content\Images\refresh.gif" />
+    <Content Include="Content\Images\remove-icon-small.png" />
+    <Content Include="Content\Images\remove-icon.png" />
+    <Content Include="Content\Images\resent.gif" />
+    <Content Include="Content\Images\reset.gif" />
+    <Content Include="Content\Images\reset.png" />
+    <Content Include="Content\Images\resource-utilizatin.png" />
+    <Content Include="Content\Images\Revert.gif" />
+    <Content Include="Content\Images\rpt_next.gif" />
+    <Content Include="Content\Images\rpt_prev.gif" />
+    <Content Include="Content\Images\safety-statistics.png" />
+    <Content Include="Content\Images\search-icon-blue.png" />
+    <Content Include="Content\Images\search-icon-brown.png" />
+    <Content Include="Content\Images\search-icon-purple.png" />
+    <Content Include="Content\Images\search-icon-red.png" />
+    <Content Include="Content\Images\search-icon-white.png" />
+    <Content Include="Content\Images\search-icon.png" />
+    <Content Include="Content\Images\search.gif" />
+    <Content Include="Content\Images\select-caret.png" />
+    <Content Include="Content\Images\settings.png" />
+    <Content Include="Content\Images\sidebar-menu-arrow-green-reverse.png" />
+    <Content Include="Content\Images\sidebar-menu-arrow-green.png" />
+    <Content Include="Content\Images\sidebar-menu-arrow-reverse.png" />
+    <Content Include="Content\Images\sidebar-menu-arrow-right.png" />
+    <Content Include="Content\Images\sidebar-menu-arrow.png" />
+    <Content Include="Content\Images\sidebar-search-close-blue.png" />
+    <Content Include="Content\Images\sidebar-search-close-brown.png" />
+    <Content Include="Content\Images\sidebar-search-close-light.png" />
+    <Content Include="Content\Images\sidebar-search-close-purple.png" />
+    <Content Include="Content\Images\sidebar-search-close.png" />
+    <Content Include="Content\Images\sidebar-toggler-blue.jpg" />
+    <Content Include="Content\Images\sidebar-toggler-brown.jpg" />
+    <Content Include="Content\Images\sidebar-toggler-light.jpg" />
+    <Content Include="Content\Images\sidebar-toggler-purple.jpg" />
+    <Content Include="Content\Images\sidebar-toggler.jpg" />
+    <Content Include="Content\Images\sidebar-toggler.png" />
+    <Content Include="Content\Images\sm-close.png" />
+    <Content Include="Content\Images\sm-closeo.png" />
+    <Content Include="Content\Images\Social\amazon.png" />
+    <Content Include="Content\Images\Social\behance.png" />
+    <Content Include="Content\Images\Social\blogger.png" />
+    <Content Include="Content\Images\Social\deviantart.png" />
+    <Content Include="Content\Images\Social\dribbble.png" />
+    <Content Include="Content\Images\Social\dropbox.png" />
+    <Content Include="Content\Images\Social\evernote.png" />
+    <Content Include="Content\Images\Social\facebook.png" />
+    <Content Include="Content\Images\Social\forrst.png" />
+    <Content Include="Content\Images\Social\github.png" />
+    <Content Include="Content\Images\Social\googleplus.png" />
+    <Content Include="Content\Images\Social\instagram.png" />
+    <Content Include="Content\Images\Social\jolicloud.png" />
+    <Content Include="Content\Images\Social\last-fm.png" />
+    <Content Include="Content\Images\Social\linkedin.png" />
+    <Content Include="Content\Images\Social\picasa.png" />
+    <Content Include="Content\Images\Social\pintrest.png" />
+    <Content Include="Content\Images\Social\reddit.png" />
+    <Content Include="Content\Images\Social\rss.png" />
+    <Content Include="Content\Images\Social\skype.png" />
+    <Content Include="Content\Images\Social\spotify.png" />
+    <Content Include="Content\Images\Social\stumbleupon.png" />
+    <Content Include="Content\Images\Social\tumblr.png" />
+    <Content Include="Content\Images\Social\twitter.png" />
+    <Content Include="Content\Images\Social\vimeo.png" />
+    <Content Include="Content\Images\Social\vk.png" />
+    <Content Include="Content\Images\Social\wordpress.png" />
+    <Content Include="Content\Images\Social\xing.png" />
+    <Content Include="Content\Images\Social\yahoo.png" />
+    <Content Include="Content\Images\Social\youtube.png" />
+    <Content Include="Content\Images\sortable.gif" />
+    <Content Include="Content\Images\sorted_down.gif" />
+    <Content Include="Content\Images\sorted_up.gif" />
+    <Content Include="Content\Images\spacer.gif" />
+    <Content Include="Content\Images\sprite-16-black.png" />
+    <Content Include="Content\Images\StkcmdtyBg.jpg" />
+    <Content Include="Content\Images\syncfusion-icons-white.png" />
+    <Content Include="Content\Images\syncfusion-icons.png" />
+    <Content Include="Content\Images\tab_bg.png" />
+    <Content Include="Content\Images\tab_over_bg.png" />
+    <Content Include="Content\Images\task_icon.png" />
+    <Content Include="Content\Images\ThkStrip.jpg" />
+    <Content Include="Content\Images\title_logo.png" />
+    <Content Include="Content\Images\tL.png" />
+    <Content Include="Content\Images\tM.png" />
+    <Content Include="Content\Images\tMUsr.png" />
+    <Content Include="Content\Images\tR.png" />
+    <Content Include="Content\Images\transnet_logo_large.png" />
+    <Content Include="Content\Images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\Images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\Images\useicon.jpg" />
+    <Content Include="Content\Images\usericon.png" />
+    <Content Include="Content\Images\userlgn.png" />
+    <Content Include="Content\Images\UsrLogout.png" />
+    <Content Include="Content\Images\UsrSsn.png" />
+    <Content Include="Content\Images\valid.png" />
+    <Content Include="Content\Images\verify.png" />
+    <Content Include="Content\Images\vessel-movements.png" />
+    <Content Include="Content\Images\view.png" />
+    <Content Include="Content\Images\WhmsLeftDown.jpg" />
+    <Content Include="Content\Images\WhmsLefttop.jpg" />
+    <Content Include="Content\Images\WhmsMdl.jpg" />
+    <Content Include="Content\Images\WhmsMdlTop.jpg" />
+    <Content Include="Content\Images\WhmsRightDown.jpg" />
+    <Content Include="Content\Images\WhmsRightTop.jpg" />
+    <Content Include="Content\Images\wms-hdr.jpg" />
+    <Content Include="Content\Images\wms-Stck.jpg" />
+    <Content Include="Content\Images\wms-StckH.jpg" />
+    <Content Include="Content\Images\wrimg.png" />
+    <Content Include="Scripts\Application\AgentMaster.js" />
+    <Content Include="Scripts\Application\AgentDetails.js" />
+    <Content Include="Scripts\Application\AgentRegView.js" />
+    <Content Include="Scripts\Application\Model\AccountLoginModel.js" />
+    <Content Include="Scripts\Application\PendingAgentVerification.js" />
+    <Content Include="Scripts\Application\PortMaster.js" />
+    <Content Include="Scripts\Application\Ports.js" />
+    <Content Include="Scripts\Lib\bootstrap.min.js" />
+    <Content Include="Scripts\Lib\bootstrap.touchspin.js" />
+    <Content Include="Scripts\Lib\byrei-dyndiv_1.0rc1-src.js" />
+    <Content Include="Scripts\Lib\chat-window.js" />
+    <Content Include="Scripts\Lib\ckeditor.js" />
+    <Content Include="Scripts\Lib\config.js" />
+    <Content Include="Scripts\Lib\DT_bootstrap.js" />
+    <Content Include="Scripts\Lib\en.js" />
+    <Content Include="Scripts\Lib\form-components.js" />
+    <Content Include="Scripts\Lib\form-validation.js" />
+    <Content Include="Scripts\Lib\form-wizard.js" />
+    <Content Include="Scripts\Lib\Globalize.min.js" />
+    <Content Include="Scripts\Lib\grid-script.js" />
+    <Content Include="Scripts\Lib\jquery-1.9.1.js" />
+    <Content Include="Scripts\Lib\jquery-2.0.3.min.js" />
+    <Content Include="Scripts\Lib\jquery-migrate-1.2.1.min.js" />
+    <Content Include="Scripts\Lib\jquery-ui.js" />
+    <Content Include="Scripts\Lib\jquery.backstretch.min.js" />
+    <Content Include="Scripts\Lib\jquery.blockui.min.js" />
+    <Content Include="Scripts\Lib\jquery.bootstrap.wizard.min.js" />
+    <Content Include="Scripts\Lib\jquery.cokie.min.js" />
+    <Content Include="Scripts\Lib\jquery.confirm.js" />
+    <Content Include="Scripts\Lib\jquery.dataTables.js" />
+    <Content Include="Scripts\Lib\jquery.input-ip-address-control-1.0.min.js" />
+    <Content Include="Scripts\Lib\jquery.min.js" />
+    <Content Include="Scripts\Lib\jquery.multi-select.js" />
+    <Content Include="Scripts\Lib\jquery.quicksearch.js" />
+    <Content Include="Scripts\Lib\jquery.slimscroll.min.js" />
+    <Content Include="Scripts\Lib\jquery.ui.chatbox.js" />
+    <Content Include="Scripts\Lib\jquery.ui.chatbox1.js" />
+    <Content Include="Scripts\Lib\jquery.uniform.js" />
+    <Content Include="Scripts\Lib\jquery.uniform.min.js" />
+    <Content Include="Scripts\Lib\jquery.validate.min.js" />
+    <Content Include="Scripts\Lib\jspdf.min.js" />
+    <Content Include="Scripts\Lib\kendo.all.min.js" />
+    <Content Include="Scripts\Lib\kendo.mobile.min.js" />
+    <Content Include="Scripts\Lib\kendo.sortable.min.js" />
+    <Content Include="Scripts\Lib\kendo.web.min.js" />
+    <Content Include="Scripts\Lib\kinetic-v5.0.1.min.js" />
+    <Content Include="Scripts\Lib\knockout-3.0.0.debug.js" />
+    <Content Include="Scripts\Lib\knockout-3.0.0.js" />
+    <Content Include="Scripts\Lib\knockout-3.1.0.js" />
+    <Content Include="Scripts\Lib\knockout-3.3.0.debug.js" />
+    <Content Include="Scripts\Lib\knockout-kendo.min.js" />
+    <Content Include="Scripts\Lib\knockout-sortable.min.js" />
+    <Content Include="Scripts\Lib\knockout.mapping-latest.debug.js" />
+    <Content Include="Scripts\Lib\knockout.mapping-latest.js" />
+    <Content Include="Scripts\Lib\knockout.validation.debug.js" />
+    <Content Include="Scripts\Lib\knockout.validation.js" />
+    <Content Include="Scripts\Lib\KnockOut.Validation.rules.js" />
+    <Content Include="Scripts\Lib\login-soft.js" />
+    <Content Include="Scripts\Lib\modernizr-2.6.2.js" />
+    <Content Include="Scripts\Lib\moment-range.bare.js" />
+    <Content Include="Scripts\Lib\moment-range.bare.min.js" />
+    <Content Include="Scripts\Lib\moment-range.js" />
+    <Content Include="Scripts\Lib\moment-range.min.js" />
+    <Content Include="Scripts\Lib\moment.js" />
+    <Content Include="Scripts\Lib\newsTicker.js" />
+    <Content Include="Scripts\Lib\opentip.js" />
+    <Content Include="Scripts\Lib\select2.min.js" />
+    <Content Include="Scripts\Lib\skins\mono\icons.png" />
+    <Content Include="Scripts\Lib\skins\moono\editor.css" />
+    <Content Include="Scripts\Lib\skins\moono\icons.png" />
+    <Content Include="Scripts\Lib\spinner.min.js" />
+    <Content Include="Scripts\Lib\styles.js" />
+    <Content Include="Scripts\Lib\toastr.js" />
+    <Content Include="Scripts\Lib\toastr.min.js" />
+    <Content Include="Scripts\Lib\twitter-bootstrap-hover-dropdown.min.js" />
+    <Content Include="Scripts\Lib\mobile-zebra-dialog.js" />
+    <Content Include="Scripts\npm.js" />
+    <Content Include="Uploads\Log.txt" />
+    <Content Include="Views\CargoManifest\CargoManifest.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\TerminalOperatorMaster\TerminalOperatorMaster.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adapters\ISecurityAdapter.cs" />
+    <Compile Include="Adapters\SecurityAdapter.cs" />
+    <Compile Include="Common\DynamicJson.cs" />
+    <Compile Include="Content\Reports\ReportViewer.aspx.cs">
+      <DependentUpon>ReportViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Content\Reports\ReportViewer.aspx.designer.cs">
+      <DependentUpon>ReportViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\API\AccountController.cs" />
+    <Compile Include="Controllers\API\AgentController.cs" />
+    <Compile Include="Controllers\API\ApiControllerBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\API\ArrivalNotificationController.cs" />
+    <Compile Include="Controllers\API\AutomatedSlotBlockingController.cs" />
+    <Compile Include="Controllers\API\AutomatedSlotConfigurationController.cs" />
+    <Compile Include="Controllers\API\AutomatedResourceSchedulingController.cs" />
+    <Compile Include="Controllers\API\AutomatedSlottingController.cs" />
+    <Compile Include="Controllers\API\BerthController.cs" />
+    <Compile Include="Controllers\API\BerthMaintenanceCompletionController.cs" />
+    <Compile Include="Controllers\API\BerthMaintenanceController.cs" />
+    <Compile Include="Controllers\API\BerthPlanningConfigurationsController.cs" />
+    <Compile Include="Controllers\API\BerthPlanningController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\API\BerthPlanningTableController.cs" />
+    <Compile Include="Controllers\API\BerthPreSchedulingController.cs" />
+    <Compile Include="Controllers\API\BollardsController.cs" />
+    <Compile Include="Controllers\API\AuditLogController.cs" />
+    <Compile Include="Controllers\API\BudgetedValuesController.cs" />
+    <Compile Include="Controllers\API\CargoManifestController.cs" />
+    <Compile Include="Controllers\API\DepartureNoticeController.cs" />
+    <Compile Include="Controllers\API\DockingPlanController.cs" />
+    <Compile Include="Controllers\API\DredgingOperationController.cs" />
+    <Compile Include="Controllers\API\DredgingPriorityController.cs" />
+    <Compile Include="Controllers\API\DryDockSchedulerController.cs" />
+    <Compile Include="Controllers\API\LocationController.cs" />
+    <Compile Include="Controllers\API\MarineRevenueController.cs" />
+    <Compile Include="Controllers\API\MarpolController.cs" />
+    <Compile Include="Controllers\API\MaterialCodeMasterController.cs" />
+    <Compile Include="Controllers\API\NotificationPublisherController.cs" />
+    <Compile Include="Controllers\API\PortEntryPassApplicationController.cs" />
+    <Compile Include="Controllers\API\PortInformationController.cs" />
+    <Compile Include="Controllers\API\RevenueStopListController.cs" />
+    <Compile Include="Controllers\API\SAPPostingController.cs" />
+    <Compile Include="Controllers\API\ServiceTypeController.cs" />
+    <Compile Include="Controllers\API\ServiceTypeDesignationController.cs" />
+    <Compile Include="Controllers\API\SuppDryDockController.cs" />
+    <Compile Include="Controllers\API\SuppDryDockExtensionController.cs" />
+    <Compile Include="Controllers\API\SuppMiscServiceController.cs" />
+    <Compile Include="Controllers\API\TptDocumentUploadController.cs" />
+    <Compile Include="Controllers\API\UserPreferenceController.cs" />
+    <Compile Include="Controllers\API\CraftReminderConfigController.cs" />
+    <Compile Include="Controllers\API\DeploymentPlanController.cs" />
+    <Compile Include="Controllers\API\FuelReceiptController.cs" />
+    <Compile Include="Controllers\API\EventSchedulerController.cs" />
+    <Compile Include="Controllers\API\Hour24AndSection625Controller.cs" />
+    <Compile Include="Controllers\API\DashBoardontroller.cs" />
+    <Compile Include="Controllers\API\MobileScheduledTasksController.cs" />
+    <Compile Include="Controllers\API\CraftOutOfCommissionController.cs" />
+    <Compile Include="Controllers\API\FuelConsumptionDailyLogController.cs" />
+    <Compile Include="Controllers\API\PortGeneralConfigsController.cs" />
+    <Compile Include="Controllers\API\ResourceAllocationConfigRuleController.cs" />
+    <Compile Include="Controllers\API\FuelRequisitionController.cs" />
+    <Compile Include="Controllers\API\ResourceAllocationController.cs" />
+    <Compile Include="Controllers\API\ResourceAttendanceController.cs" />
+    <Compile Include="Controllers\API\ExternalDivingRegisterController.cs" />
+    <Compile Include="Controllers\API\MobileConversationController.cs" />
+    <Compile Include="Controllers\API\MobileIncidentReportingController.cs" />
+    <Compile Include="Controllers\API\ReportBuilderController.cs" />
+    <Compile Include="Controllers\API\RosterController.cs" />
+    <Compile Include="Controllers\API\StatementFactController.cs" />
+    <Compile Include="Controllers\API\SuppDockUnDockTimeController.cs" />
+    <Compile Include="Controllers\API\SuppHotWorkInspectionController.cs" />
+    <Compile Include="Controllers\API\SupplementaryServiceExtensionController.cs" />
+    <Compile Include="Controllers\API\SupplymentaryServiceRequestController.cs" />
+    <Compile Include="Controllers\API\SuppServiceResourceAllocController.cs" />
+    <Compile Include="Controllers\API\VesselSAPPostingController.cs" />
+    <Compile Include="Controllers\API\WorkFlowTaskController.cs" />
+    <Compile Include="Controllers\API\DivingRequestController.cs" />
+    <Compile Include="Controllers\API\FileController.cs" />
+    <Compile Include="Controllers\API\CraftController.cs" />
+    <Compile Include="Controllers\API\EntitiesController.cs" />
+    <Compile Include="Controllers\API\LicensingRequestController.cs" />
+    <Compile Include="Controllers\API\MobileController.cs" />
+    <Compile Include="Controllers\API\ModuleController.cs" />
+    <Compile Include="Controllers\API\PilotExemptionRequestController.cs" />
+    <Compile Include="Controllers\API\ResourceGroupingController.cs" />
+    <Compile Include="Controllers\API\RolePrivilegeController.cs" />
+    <Compile Include="Controllers\API\ShiftController.cs" />
+    <Compile Include="Controllers\API\VesselArrestImmobilizationSAMSAStopController.cs" />
+    <Compile Include="Controllers\API\VesselCallAnchorageController.cs" />
+    <Compile Include="Controllers\API\UserRegistrationController.cs" />
+    <Compile Include="Controllers\API\VesselETAChangeController.cs" />
+    <Compile Include="Controllers\API\EmployeeController.cs" />
+    <Compile Include="Controllers\API\ElectronicNotificationsController.cs" />
+    <Compile Include="Controllers\API\NewsController.cs" />
+    <Compile Include="Controllers\API\QuayController.cs" />
+    <Compile Include="Controllers\API\ServiceRequestController.cs" />
+    <Compile Include="Controllers\API\SubCategoriesController.cs" />
+    <Compile Include="Controllers\API\SuperCategoriesController.cs" />
+    <Compile Include="Controllers\API\TerminalOperatorController.cs" />
+    <Compile Include="Controllers\API\UserController.cs" />
+    <Compile Include="Controllers\API\VesselAgentChangeController.cs" />
+    <Compile Include="Controllers\API\VesselRegistrationController.cs" />
+    <Compile Include="Controllers\API\VoyageMonitoringController.cs" />
+    <Compile Include="Controllers\ChatHubs\ChatHub.cs" />
+    <Compile Include="Controllers\ChatHubs\Startup.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="Controllers\API\PortsController.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\MVC\AccountController.cs" />
+    <Compile Include="Controllers\MVC\AgentController.cs" />
+    <Compile Include="Controllers\MVC\ArrivalNotificationController.cs" />
+    <Compile Include="Controllers\MVC\AutomatedSlotBlockingController.cs" />
+    <Compile Include="Controllers\MVC\AutomatedSlotConfigurationController.cs" />
+    <Compile Include="Controllers\MVC\AutomatedResourceSchedulingController.cs" />
+    <Compile Include="Controllers\MVC\AutomatedSlottingController.cs" />
+    <Compile Include="Controllers\MVC\BerthController.cs" />
+    <Compile Include="Controllers\MVC\BerthMaintenanceCompletionController.cs" />
+    <Compile Include="Controllers\MVC\BerthPlanningConfigurationsController.cs" />
+    <Compile Include="Controllers\MVC\BerthPlanningController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\MVC\BollardsController.cs" />
+    <Compile Include="Controllers\MVC\AuditLogController.cs" />
+    <Compile Include="Controllers\MVC\BudgetedValuesController.cs" />
+    <Compile Include="Controllers\MVC\CargoManifestController.cs" />
+    <Compile Include="Controllers\MVC\MarpolController.cs" />
+    <Compile Include="Controllers\MVC\WegoBerthDashBoardController.cs" />
+    <Compile Include="Controllers\MVC\WegoDashBoardController.cs" />
+    <Compile Include="Controllers\MVC\WelcomeController.cs" />
+    <Compile Include="Controllers\MVC\DepartureNoticeController.cs" />
+    <Compile Include="Controllers\MVC\DockingPlanController.cs" />
+    <Compile Include="Controllers\MVC\DredgingOperationController.cs" />
+    <Compile Include="Controllers\MVC\DredgingPriorityController.cs" />
+    <Compile Include="Controllers\MVC\DryDockSchedulerController.cs" />
+    <Compile Include="Controllers\MVC\IncidentReportingController.cs" />
+    <Compile Include="Controllers\MVC\LocationController.cs" />
+    <Compile Include="Controllers\MVC\MarineRevenueController.cs" />
+    <Compile Include="Controllers\MVC\MaterialCodeMasterController.cs" />
+    <Compile Include="Controllers\MVC\PlannedMovementsController.cs" />
+    <Compile Include="Controllers\MVC\PortEntryPassApplicationController.cs" />
+    <Compile Include="Controllers\MVC\PortInformationController.cs" />
+    <Compile Include="Controllers\MVC\SAPPostingController.cs" />
+    <Compile Include="Controllers\MVC\ServiceTypeController.cs" />
+    <Compile Include="Controllers\MVC\ServiceTypeDesignationController.cs" />
+    <Compile Include="Controllers\MVC\SuppDryDockController.cs" />
+    <Compile Include="Controllers\MVC\SuppDryDockExtensionController.cs" />
+    <Compile Include="Controllers\MVC\SuppMiscServiceController.cs" />
+    <Compile Include="Controllers\MVC\TptDocumentUploadController.cs" />
+    <Compile Include="Controllers\MVC\UserPreferenceController.cs" />
+    <Compile Include="Controllers\MVC\CraftReminderConfigController.cs" />
+    <Compile Include="Controllers\MVC\DeploymentPlanController.cs" />
+    <Compile Include="Controllers\MVC\FuelReceiptController.cs" />
+    <Compile Include="Controllers\MVC\EventSchedulerController.cs" />
+    <Compile Include="Controllers\MVC\Hour24AndSection625Controller.cs" />
+    <Compile Include="Controllers\MVC\PortGeneralConfigsController.cs" />
+    <Compile Include="Controllers\MVC\ResourceAllocationConfigRuleController.cs" />
+    <Compile Include="Controllers\MVC\FuelRequisitionController.cs" />
+    <Compile Include="Controllers\MVC\CraftOutOfCommissionController.cs" />
+    <Compile Include="Controllers\MVC\RevenueStopController.cs" />
+    <Compile Include="Controllers\MVC\FuelConsumptionDailyLogController.cs" />
+    <Compile Include="Controllers\MVC\IpmsBaseController.cs" />
+    <Compile Include="Controllers\MVC\ResourceAllocationController.cs" />
+    <Compile Include="Controllers\MVC\ResourceAttendanceController.cs" />
+    <Compile Include="Controllers\MVC\ExternalDivingRegisterController.cs" />
+    <Compile Include="Controllers\MVC\MobileConversationController.cs" />
+    <Compile Include="Controllers\MVC\RosterController.cs" />
+    <Compile Include="Controllers\MVC\StatementFactController.cs" />
+    <Compile Include="Controllers\MVC\SuppDockUnDockTimeController.cs" />
+    <Compile Include="Controllers\MVC\SuppHotWorkInspectionController.cs" />
+    <Compile Include="Controllers\MVC\SupplementaryServiceController.cs" />
+    <Compile Include="Controllers\MVC\SuppServiceResourceAllocController.cs" />
+    <Compile Include="Controllers\MVC\VesselSAPPostingController.cs" />
+    <Compile Include="Controllers\MVC\WorkFlowTaskController.cs" />
+    <Compile Include="Controllers\MVC\MobileIncidentReportingController.cs" />
+    <Compile Include="Controllers\MVC\MobileWorkFlowController.cs" />
+    <Compile Include="Controllers\MVC\MobileBerthInformationController.cs" />
+    <Compile Include="Controllers\MVC\MobilePlannedMovementsController.cs" />
+    <Compile Include="Controllers\MVC\MobileController.cs" />
+    <Compile Include="Controllers\MVC\MobileFeaturesController.cs" />
+    <Compile Include="Controllers\MVC\MobileNotificationController.cs" />
+    <Compile Include="Controllers\MVC\DivingRequestController.cs" />
+    <Compile Include="Controllers\MVC\FileDownloadController.cs" />
+    <Compile Include="Controllers\MVC\CraftMasterController.cs" />
+    <Compile Include="Controllers\MVC\DashBoardController.cs" />
+    <Compile Include="Controllers\MVC\EmployeeController.cs" />
+    <Compile Include="Controllers\MVC\EntitiesController.cs" />
+    <Compile Include="Controllers\MVC\LicensingRequestController.cs" />
+    <Compile Include="Controllers\MVC\ModuleController.cs" />
+    <Compile Include="Controllers\MVC\BerthMaintenanceController.cs" />
+    <Compile Include="Controllers\MVC\PilotExemptionRequestController.cs" />
+    <Compile Include="Controllers\MVC\ResourceGroupingController.cs" />
+    <Compile Include="Controllers\MVC\RolePrivilegeController.cs" />
+    <Compile Include="Controllers\MVC\ShiftController.cs" />
+    <Compile Include="Controllers\MVC\VesselArrestImmobilizationSAMSAStopController.cs" />
+    <Compile Include="Controllers\MVC\VesselCallAnchorageController.cs" />
+    <Compile Include="Controllers\MVC\UserRegistrationController.cs" />
+    <Compile Include="Controllers\MVC\ElectronicNotificationsController.cs" />
+    <Compile Include="Controllers\MVC\ManageQuaysController.cs" />
+    <Compile Include="Controllers\MVC\MobileOfflineController.cs" />
+    <Compile Include="Controllers\MVC\NewsController .cs" />
+    <Compile Include="Controllers\MVC\PortsController.cs" />
+    <Compile Include="Controllers\MVC\ReportController.cs" />
+    <Compile Include="Controllers\MVC\ServiceRequestController.cs" />
+    <Compile Include="Controllers\MVC\SubCategoriesController.cs" />
+    <Compile Include="Controllers\MVC\SuperCategoriesController.cs" />
+    <Compile Include="Controllers\MVC\TerminalOperatorMasterController.cs" />
+    <Compile Include="Controllers\MVC\UserController.cs" />
+    <Compile Include="Controllers\MVC\VesselAgentChangeController.cs" />
+    <Compile Include="Controllers\MVC\VesselETAChangeController.cs" />
+    <Compile Include="Controllers\MVC\VesselRegistrationController.cs" />
+    <Compile Include="Controllers\MVC\VoyageMonitoringController.cs" />
+    <Compile Include="Filters\LogUserActivityAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceProxies\Clients\AgentClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ArrivalNotificationClient.cs" />
+    <Compile Include="ServiceProxies\Clients\AutomatedSlotBlockingClient.cs" />
+    <Compile Include="ServiceProxies\Clients\AutomatedSlotConfigurationClient.cs" />
+    <Compile Include="ServiceProxies\Clients\AutomatedResourceSchedulingClient.cs" />
+    <Compile Include="ServiceProxies\Clients\AutomatedSlottingClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BerthClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BerthMaintenanceClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BerthMaintenanceCompletionClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BerthPlanningClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BerthPlanningConfigurationsClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BerthPreSchedulingClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BollardClient.cs" />
+    <Compile Include="ServiceProxies\Clients\AuditLogClient.cs" />
+    <Compile Include="ServiceProxies\Clients\BudgetedValuesClient.cs" />
+    <Compile Include="ServiceProxies\Clients\CargoManifestClient.cs" />
+    <Compile Include="ServiceProxies\Clients\CommonClient.cs" />
+    <Compile Include="ServiceProxies\Clients\DepartureNoticeClient.cs" />
+    <Compile Include="ServiceProxies\Clients\DockingPlanClient.cs" />
+    <Compile Include="ServiceProxies\Clients\DredgingPriorityClient.cs" />
+    <Compile Include="ServiceProxies\Clients\DryDockSchedulerClient.cs" />
+    <Compile Include="ServiceProxies\Clients\LocationClient.cs" />
+    <Compile Include="ServiceProxies\Clients\MarineRevenueClient.cs" />
+    <Compile Include="ServiceProxies\Clients\MarpolClient.cs" />
+    <Compile Include="ServiceProxies\Clients\MaterialCodeMasterClient.cs" />
+    <Compile Include="ServiceProxies\Clients\NotificationPublisherClient.cs" />
+    <Compile Include="ServiceProxies\Clients\PortEntryPassApplicationServiceClient.cs" />
+    <Compile Include="ServiceProxies\Clients\PortInformationClient.cs" />
+    <Compile Include="ServiceProxies\Clients\RevenueStopListService.cs" />
+    <Compile Include="ServiceProxies\Clients\SAPPostingClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ServiceTypeClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ServiceTypeDesignationClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SuppDryDockClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SuppDryDockExtensionClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SuppMiscServiceRecordingClient.cs" />
+    <Compile Include="ServiceProxies\Clients\TptDocumentUploadClient.cs" />
+    <Compile Include="ServiceProxies\Clients\UserPreferenceClient.cs" />
+    <Compile Include="ServiceProxies\Clients\CraftReminderConfigClient.cs" />
+    <Compile Include="ServiceProxies\Clients\DeploymentPlanClient.cs" />
+    <Compile Include="ServiceProxies\Clients\EventSchedulerClient.cs" />
+    <Compile Include="ServiceProxies\Clients\FuelReceiptClient.cs" />
+    <Compile Include="ServiceProxies\Clients\Hour24Report625ServiceClient.cs" />
+    <Compile Include="ServiceProxies\Clients\MobileScheduledTasksClient.cs" />
+    <Compile Include="ServiceProxies\Clients\CraftOutOfCommissionClient.cs" />
+    <Compile Include="ServiceProxies\Clients\FuelConsumptionDailyLogClient.cs" />
+    <Compile Include="ServiceProxies\Clients\PortGeneralConfigsClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ResourceAllocationConfigRuleClient.cs" />
+    <Compile Include="ServiceProxies\Clients\FuelRequisitionClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ResourceAllocationServiceClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ResourceAttendanceClient.cs" />
+    <Compile Include="ServiceProxies\Clients\DashBoardClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ExternalDivingRegisterClient.cs" />
+    <Compile Include="ServiceProxies\Clients\MobileConversationClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ReportBuilderClient.cs" />
+    <Compile Include="ServiceProxies\Clients\RosterClient.cs" />
+    <Compile Include="ServiceProxies\Clients\StatementFactClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SuppDockUnDockTimeClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SuppHotWorkInspectionClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SupplymentaryServiceRequestClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SuppServiceResourceAllocClient.cs" />
+    <Compile Include="ServiceProxies\Clients\VesselSAPPostingClient.cs" />
+    <Compile Include="ServiceProxies\Clients\WorkFlowTaskClient.cs" />
+    <Compile Include="ServiceProxies\Clients\MobileIncidentReportClient.cs" />
+    <Compile Include="ServiceProxies\Clients\DivingRequestClient.cs" />
+    <Compile Include="ServiceProxies\Clients\FileClient.cs" />
+    <Compile Include="ServiceProxies\Clients\MobileClient.cs" />
+    <Compile Include="ServiceProxies\Clients\CraftmasterClient.cs" />
+    <Compile Include="ServiceProxies\Clients\EntityClient.cs" />
+    <Compile Include="ServiceProxies\Clients\LicensingRequestClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ModuleClient.cs" />
+    <Compile Include="ServiceProxies\Clients\NewsClient.cs" />
+    <Compile Include="ServiceProxies\Clients\PilotExemptionRequestClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ResourceGroupClient.cs" />
+    <Compile Include="ServiceProxies\Clients\RolePrivilegeClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ServiceRequestClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ElectronicNotificationsClient.cs" />
+    <Compile Include="ServiceProxies\Clients\EmailClient.cs" />
+    <Compile Include="ServiceProxies\Clients\EmployeeClient.cs" />
+    <Compile Include="ServiceProxies\Clients\QuayClient.cs" />
+    <Compile Include="ServiceProxies\Clients\ShiftClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SubCategoryClient.cs" />
+    <Compile Include="ServiceProxies\Clients\SuperCategoryClient.cs" />
+    <Compile Include="ServiceProxies\Clients\TerminalOperatorClient.cs" />
+    <Compile Include="ServiceProxies\Clients\UserClient.cs" />
+    <Compile Include="ServiceProxies\Clients\VesselArrestImmobilizationSAMSAStopClient.cs" />
+    <Compile Include="ServiceProxies\Clients\VesselCallAnchorageClient.cs" />
+    <Compile Include="ServiceProxies\Clients\VesselRegistrationClient.cs" />
+    <Compile Include="ServiceProxies\Clients\VoyageMonitoringClient.cs" />
+    <Compile Include="ServiceProxies\Contracts\IAutomatedSlotBlockingService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBudgetedValuesService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IDepartureNoticeService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IDockingPlanService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IDredgingPriorityService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IDryDockSchedulerService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ILocationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IMarineRevenueService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IMarpolService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IMaterialCodeMasterService.cs" />
+    <Compile Include="ServiceProxies\Contracts\INotificationPublisherService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IPortEntryPassApplicationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IPortInformationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IRevenueStopListService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISAPPostingService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IServiceTypeDesignationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IServiceTypeService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISuppDryDockExtensionService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISuppDryDockService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISuppMiscServiceRecordingService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ITptDocumentUploadService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IUserPreferenceService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ICraftReminderConfigService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IDeploymentPlanService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IEventSchedulerService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IFuelReceiptService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IHour24Report625Service.cs" />
+    <Compile Include="ServiceProxies\Contracts\IMobileScheduledTasksService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IAutomatedSlotConfigurationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBerthPlanningConfigurationsService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ICargoManifestService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ICraftOutOfCommissionService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IFuelConsumptionDailyLogService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IPortGeneralConfigsService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IResourceAllocationConfigRuleService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IFuelRequisitionService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IResourceAllocationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IResourceAttendanceService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IAutomatedResourceSchedulingService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IAutomatedSlottingService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBerthPreSchedulingService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IExternalDivingRegisterService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IMobileConversationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IDashBoardService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IMobileIncidentReportService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IReportBuilderService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IRosterService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IStatementFactService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISuppDockUnDockTimeService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISuppHotWorkInspectionService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISupplymentaryServiceRequestService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISuppServiceResourceAllocService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IVesselSAPPostingService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IWorkFlowTaskService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBerthMaintenanceCompletionService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBerthMaintenanceService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IMobileService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBerthPlanningService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ICraftMasterService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IDivingRequestService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IEntityService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IFileService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ILicensingRequestService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IModuleService.cs" />
+    <Compile Include="ServiceProxies\Contracts\INewsService.cs" />
+    <Compile Include="ServiceProxies\Clients\VesselETAChangeClient.cs" />
+    <Compile Include="ServiceProxies\Clients\VesselAgentChangeClient.cs" />
+    <Compile Include="ServiceProxies\Contracts\IPilotExemptionRequestService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IResourceGroupService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IRolePrivilegeService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IServiceRequestService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IArrivalNotificationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ICommonService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IElectronicNotificationsService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IAgentService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IAuditLogService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBerthService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IBollardService.cs" />
+    <Compile Include="ServiceProxies\Clients\AccountClient.cs" />
+    <Compile Include="ServiceProxies\Contracts\IAccountService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IEmailService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IEmployeeService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IPortService.cs" />
+    <Compile Include="ServiceProxies\Clients\PortClient.cs" />
+    <Compile Include="ServiceProxies\Contracts\IQuayService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IShiftService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISubCategoryService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ISuperCategoryService.cs" />
+    <Compile Include="ServiceProxies\Contracts\ITerminalOperatorService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IUserService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IVesselArrestImmobilizationSAMSAStopService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IVesselCallAnchorageService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IVesselETAChangeService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IVesselAgentChangeService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IVesselRegistrationService.cs" />
+    <Compile Include="ServiceProxies\Contracts\IVoyageMonitoringService.cs" />
+    <Compile Include="ServiceProxies\UserClientBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="packages.config" />
+    <Content Include="Views\Ports\ManagePorts.cshtml" />
+    <Content Include="Views\Ports\DashBoard.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Ports\PortMaster.cshtml" />
+    <Content Include="Views\Shared\_IPMSLayout.cshtml" />
+    <Content Include="Views\Agent\Registration.cshtml" />
+    <Content Include="Views\ArrivalNotification\ArrivalNotification.cshtml" />
+    <Content Include="Views\Shared\_IPMSFooter.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Shared\_IPMSHeader.cshtml" />
+    <Content Include="Views\Shared\_IPMSSideNavigation.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\LoginNew.cshtml" />
+    <Content Include="Views\Bollards\ManageBollards.cshtml" />
+    <Content Include="Views\Berth\BerthMaster.cshtml" />
+    <Content Include="Views\AppicantRegistration\AppicantRegistration.cshtml" />
+    <Content Include="Views\UserPreference\DashBoardConfiguration.cshtml" />
+    <Content Include="Views\Home\Home.cshtml" />
+    <Content Include="Views\ManageQuays\ManageQuays.cshtml" />
+    <Content Include="Views\AuditLog\ManageAuditLog.cshtml" />
+    <Content Include="Views\Agent\AgentMaster.cshtml" />
+    <Content Include="Content\Styles\toastr.less" />
+    <Content Include="Scripts\Lib\toastr.min.js.map" />
+    <Content Include="Views\Report\SampleReport.cshtml" />
+    <Content Include="Views\MobileOffline\PendingTasks.cshtml" />
+    <Content Include="Views\MobileOffline\Manifest.cshtml" />
+    <Content Include="Views\User\UserMaster.cshtml" />
+    <Content Include="Views\ElectronicNotifications\ManageElectronicNotifications.cshtml" />
+    <Content Include="Views\Employee\EmployeeMaster.cshtml" />
+    <Content Include="Content\Images\kendoui.ttf" />
+    <Content Include="Content\Images\kendoui.woff" />
+    <Content Include="Content\MobileDesignAndScripts\styles\images\kendoui.ttf" />
+    <Content Include="Content\MobileDesignAndScripts\styles\images\kendoui.woff" />
+    <Content Include="images\kendoui.woff" />
+    <Content Include="Content\Styles\images\kendoui.woff" />
+    <Content Include="Views\ServiceRequest\ManageServiceRequest.cshtml" />
+    <Content Include="Views\News\ManageNews.cshtml" />
+    <Content Include="Views\SubCategories\ManageSubCategories.cshtml" />
+    <Content Include="Views\SuperCategories\ManageSuperCategories.cshtml" />
+    <Content Include="Views\VesselETAChange\ChangeETA.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Module\ModuleMaster.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\CraftMaster\ManageCraftmaster.cshtml" />
+    <Content Include="Views\VesselAgentChange\ManageVesselAgentChangeRequest.cshtml" />
+    <Content Include="Views\LicensingRequest\ManageLicensingRequest.cshtml" />
+    <Content Include="Views\Entities\Entities.cshtml" />
+    <Content Include="Views\VesselCallAnchorage\VesselCallAnchorage.cshtml" />
+    <Content Include="Views\UserRegistration\UserRegistration.cshtml" />
+    <Content Include="Views\Agent\NewAgentRegistration.cshtml" />
+    <Content Include="Views\Shared\_IPMSPlain.cshtml" />
+    <Content Include="Views\RolePrivilege\RolePrivilege.cshtml" />
+    <Content Include="Views\VesselRegistration\VesselRegistration.cshtml" />
+    <Content Include="Views\BerthPlanning\AutoBerthPlanning.cshtml" />
+    <Content Include="Views\Shared\_IPMSBerthPlanning.cshtml" />
+    <Content Include="Views\VesselArrestImmobilizationSAMSAStop\VesselArrestImmobilizationSAMSAStop.cshtml" />
+    <Content Include="Views\BerthPlanning\BerthPreScheduling.cshtml" />
+    <Content Include="Views\Report\ArrivalNotification.cshtml" />
+    <Content Include="Views\BerthMaintenance\BerthMaintenance.cshtml" />
+    <Content Include="Views\Shared\_LayoutMobile.cshtml" />
+    <Content Include="Views\Mobile\DashBoard.cshtml" />
+    <Content Include="Views\MobileNotification\Notifications.cshtml" />
+    <Content Include="Views\MobileFeatures\Features.cshtml" />
+    <Content Include="Views\MobilePlannedMovements\PlannedMovements.cshtml" />
+    <Content Include="Views\MobileBerthInformation\BerthInformation.cshtml" />
+    <Content Include="Views\MobileWorkFlow\PendingApprovals.cshtml" />
+    <Content Include="Views\Account\Login.Mobile.cshtml" />
+    <Content Include="Views\VoyageMonitoring\ManageVoyageMonitoring.cshtml" />
+    <Content Include="Views\PilotExemptionRequest\ManagePilotExemptionRequest.cshtml" />
+    <Content Include="Views\DivingRequest\ManageDivingRequest.cshtml" />
+    <Content Include="Views\PilotExemptionRequest\ListUpdatePilotExemptionRequest.cshtml" />
+    <Content Include="Views\DivingRequest\DivingTaskExecution.cshtml" />
+    <Content Include="Views\DivingRequest\DivingRequestOccupation.cshtml" />
+    <Content Include="Views\MobileIncidentReporting\IncidentReporting.cshtml" />
+    <Content Include="Views\WorkFlowTask\ManageWorkFlows.cshtml" />
+    <Content Include="Views\Report\AnchorageReport.cshtml" />
+    <Content Include="Views\Report\CargoTypeReport.cshtml" />
+    <Content Include="Views\Report\CraftMasterReport.cshtml" />
+    <Content Include="Views\Report\ETA.cshtml" />
+    <Content Include="Views\Report\ToatalnoofMovementsReport.cshtml" />
+    <Content Include="Views\Report\Incidentreport.cshtml" />
+    <Content Include="Views\Report\Visitreportsummary.cshtml" />
+    <Content Include="Views\Shift\ManageShift.cshtml" />
+    <Content Include="Views\MobileConversation\Conversations.cshtml" />
+    <Content Include="Views\EventScheduler\ManageEventScheduler.cshtml" />
+    <Content Include="Views\Shared\PendingTaskView.cshtml" />
+    <Content Include="Views\ResourceGrouping\ManageResourceGrouping.cshtml" />
+    <Content Include="Views\Report\ManageReportBuilder.cshtml" />
+    <Content Include="Views\SupplementaryService\SupplementaryServiceRequest.cshtml" />
+    <Content Include="Views\BerthMaintenanceCompletion\BerthMaintenanceCompletion.cshtml" />
+    <Content Include="Views\AutomatedSlotting\AutomatedSlotting.cshtml" />
+    <Content Include="Views\Report\Weatherreport.cshtml" />
+    <Content Include="Views\Report\SAFREPreport.cshtml" />
+    <Content Include="Views\Report\Completemovementreport.cshtml" />
+    <Content Include="Views\ExternalDivingRegister\ExternalDivingRegister.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\BerthPlanning\BerthPlanningTable.cshtml" />
+    <Content Include="Views\StatementFact\StatementFact.cshtml" />
+    <Content Include="Views\Roster\ManageRoster.cshtml" />
+    <Content Include="Views\ResourceAttendance\ManageResourceAttendance.cshtml" />
+    <Content Include="Views\SuppHotWorkInspection\SuppHotWorkInspection.cshtml" />
+    <Content Include="Views\FuelConsumptionDailyLog\FuelConsumptionDailyLog.cshtml" />
+    <Content Include="Views\SuppServiceResourceAlloc\SuppServiceResourceAlloc.cshtml" />
+    <Content Include="Views\AutomatedSlotConfiguration\AutomatedSlotConfigurationMaster.cshtml" />
+    <Content Include="Views\Report\CargoVolumes.cshtml" />
+    <Content Include="Views\Report\CommodityHandle.cshtml" />
+    <Content Include="Views\Report\GrossRegisteredTonnage.cshtml" />
+    <Content Include="Views\Report\IncidentsChart.cshtml" />
+    <Content Include="Views\Report\OperationalDelays.cshtml" />
+    <Content Include="Views\Report\VesselArrivals.cshtml" />
+    <Content Include="Views\Report\VesselMovements.cshtml" />
+    <Content Include="Views\SuppHotWorkInspection\SuppHotWorkInspection.cshtml" />
+    <Content Include="Views\SupplementaryService\SupplementaryServiceExtension.cshtml" />
+    <Content Include="Views\SuppDockUnDockTime\SuppDockUnDockTime.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\ResourceAllocation\ManageResourceAllocation.cshtml" />
+    <Content Include="Views\RevenueStop\ManageRevenueStop.cshtml" />
+    <Content Include="Views\AutomatedResourceScheduling\AutomatedResourceScheduling.cshtml" />
+    <Content Include="Views\BerthPlanningConfigurations\BerthPlanningConfigurations.cshtml" />
+    <Content Include="Views\ResourceAllocationConfigRule\ResourceAllocationConfigRule.cshtml" />
+    <Content Include="Views\FuelRequisition\FuelRequisition.cshtml" />
+    <Content Include="Views\Hour24AndSection625\Hour24AndSection625.cshtml" />
+    <Content Include="Views\Shared\_TestLayout.cshtml" />
+    <Content Include="Views\CraftOutOfCommission\CraftOutOfCommission.cshtml" />
+    <Content Include="Views\CraftOutOfCommission\CraftInCommission.cshtml" />
+    <Content Include="Views\FuelReceipt\FuelReceipt.cshtml" />
+    <Content Include="Views\ResourceAllocation\ManageResourceAllocation.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Report\AnchorageWaitingTimeRep.cshtml" />
+    <Content Include="Views\Report\BerthOccupancyRep.cshtml" />
+    <Content Include="Views\Report\BerthUtilizationRep.cshtml" />
+    <Content Include="Views\Report\CommidityHandledRep.cshtml" />
+    <Content Include="Views\Report\DelaysRep.cshtml" />
+    <Content Include="Views\Report\DwellRep.cshtml" />
+    <Content Include="Views\Report\FuelUsageRep.cshtml" />
+    <Content Include="Views\Report\IMDGRep.cshtml" />
+    <Content Include="Views\Report\ISPSRep.cshtml" />
+    <Content Include="Views\Report\ListofBunkeringLicense.cshtml" />
+    <Content Include="Views\Report\ListofDivingLicenses.cshtml" />
+    <Content Include="Views\Report\ListofLicensedTerminalOper.cshtml" />
+    <Content Include="Views\Report\ListofRegAgentsRep.cshtml" />
+    <Content Include="Views\Report\ListofWasteDisposalLicense.cshtml" />
+    <Content Include="Views\Report\PortHealthClerance.cshtml" />
+    <Content Include="Views\Report\RailTurnAroundTime.cshtml" />
+    <Content Include="Views\Report\ShipTurnaroundtime.cshtml" />
+    <Content Include="Views\Report\StatTerminalOperPerfRep.cshtml" />
+    <Content Include="Views\Report\StatVolumeActBudgRep.cshtml" />
+    <Content Include="Views\Report\SuppServicesRep.cshtml" />
+    <Content Include="Views\Report\TerminalOperPerfRep.cshtml" />
+    <Content Include="Views\Report\TruckTurnaroundTime.cshtml" />
+    <Content Include="Views\PortGeneralConfigs\PortGeneralConfigs.cshtml" />
+    <Content Include="Views\AutomatedSlotting\AutomatedSlot.cshtml" />
+    <Content Include="Views\Hour24AndSection625\Hour24AndSection625List.cshtml" />
+    <Content Include="Views\CraftReminderConfig\ManageCraftsReminderConfig.cshtml" />
+    <Content Include="Views\Mobile\Manifest.cshtml" />
+    <Content Include="Views\DeploymentPlan\DeploymentPlan.cshtml" />
+    <Content Include="Views\Report\DashISPSRep.cshtml" />
+    <Content Include="Views\Report\DashCommodityHandled.cshtml" />
+    <Content Include="Views\BerthPlanning\BerthPlanningGIS.cshtml" />
+    <Content Include="Views\Shared\_IPMSBerthPlanningHeader.cshtml" />
+    <Content Include="Views\Shared\_IPMSAutomatedSlotting.cshtml" />
+    <Content Include="Views\Shared\_IPMSAutoSlottingHeader.cshtml" />
+    <Content Include="Views\Location\Location.cshtml" />
+    <Content Include="Views\Report\DashVesselMovements.cshtml" />
+    <Content Include="Views\Report\DashBerthOccupancy.cshtml" />
+    <Content Include="Views\BudgetedValues\BudgetedValues.cshtml" />
+    <Content Include="Views\DockingPlan\DockingPlan.cshtml" />
+    <Content Include="Views\DryDockScheduler\DryDockScheduler.cshtml" />
+    <Content Include="Views\ServiceTypeDesignation\ServiceTypeDesignation.cshtml" />
+    <Content Include="Views\ServiceType\ServiceType.cshtml" />
+    <Content Include="Views\SuppDryDock\SuppDryDockApplication.cshtml" />
+    <Content Include="Views\SuppMiscService\SuppMiscService.cshtml" />
+    <Content Include="Views\DepartureNotice\DepartureNotice.cshtml" />
+    <Content Include="Views\SuppDryDockExtension\SuppDryDockExtension.cshtml" />
+    <Content Include="Views\DredgingOperation\BerthOccupation.cshtml" />
+    <Content Include="Views\DredgingOperation\DredgingVolume.cshtml" />
+    <Content Include="Views\DredgingPriority\DredgingPriority.cshtml" />
+    <Content Include="Views\PortInformation\PortInformation.cshtml" />
+    <Content Include="Views\PortInformation\PortInformationMaster.cshtml" />
+    <Content Include="Views\Shared\NotFound.cshtml" />
+    <Content Include="Views\PortEntryPassApplication\ManageInternalEmployeePermit.cshtml" />
+    <Content Include="Views\PortEntryPassApplication\ManageInternalEmployeePermitApprove.cshtml" />
+    <Content Include="Views\PortEntryPassApplication\ManagePermitOffice.cshtml" />
+    <Content Include="Views\PortEntryPassApplication\ManagePortEntryPassApplication.cshtml" />
+    <Content Include="Views\PortEntryPassApplication\ManagePortEntryPassApplicationList.cshtml" />
+    <Content Include="Views\PortEntryPassApplication\ManagePortEntryPassApplicationListforSAPSCheck.cshtml" />
+    <Content Include="Views\PortEntryPassApplication\ManagePortEntryPassApplicationListforSSACheck.cshtml" />
+    <Content Include="Views\MarineRevenue\MarineRevenue.cshtml" />
+    <Content Include="Views\Report\MgmtAnchReasonNoofVessel.cshtml" />
+    <Content Include="Views\Report\MgmtAnchReasonTimeinHrs.cshtml" />
+    <Content Include="Views\Report\MgmtBerthDelays.cshtml" />
+    <Content Include="Views\Report\MgmtMonthAvgAnchrTime.cshtml" />
+    <Content Include="Views\Report\MgmtNoofArrivals.cshtml" />
+    <Content Include="Views\Report\MgmtPilotDelays.cshtml" />
+    <Content Include="Views\Report\MgmtTotGT.cshtml" />
+    <Content Include="Views\Report\MgmtTotNoofMoves.cshtml" />
+    <Content Include="Views\Report\MgmtTugAvailable.cshtml" />
+    <Content Include="Views\Report\MgmtTugtDelays.cshtml" />
+    <Content Include="Views\Report\MgmtTugUtilization.cshtml" />
+    <Content Include="Views\Report\ServiceDelivery.cshtml" />
+    <Content Include="Views\Report\DashBerthUtilization.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\MaterialCodeMaster\MaterialCodeMaster.cshtml" />
+    <Content Include="Views\LicensingRequest\ManageLicensingRequestList.cshtml" />
+    <Content Include="Views\PlannedMovements\ManagePlannedMovements.cshtml" />
+    <Content Include="Views\IncidentReporting\IncidentReporting.cshtml" />
+    <Content Include="Views\Report\DashResourceUtilization.cshtml" />
+    <Content Include="Views\SAPPosting\SAPPosting.cshtml" />
+    <Content Include="Views\VesselSAPPosting\VesselSAPPosting.cshtml" />
+    <Content Include="Views\TPTDocumentUpload\TPTDocumentUpload.cshtml" />
+    <Content Include="Views\TFRDocumentUpload\TFRDocumentUpload.cshtml" />
+    <Content Include="Views\TFRDocumentUpload\TrainMonitoring.cshtml" />
+    <Content Include="TPT_Templates\TNPA_ArrivalAndDepartureTimeUploadTemplate.csv" />
+    <Content Include="TPT_Templates\TNPA_OutturnVolumesDailyUploadTemplate.csv" />
+    <Content Include="TPT_Templates\TNPA_RailChangeNotificationUploadTemplate.csv" />
+    <Content Include="TPT_Templates\TNPA_RailPlanUploadTemplate.csv" />
+    <Content Include="TPT_Templates\TNPA_TerminalDataWeeklyUploadTemplate.csv" />
+    <Content Include="TPT_Templates\TNPA_TerminalDelaysDailyUploadTemplate.csv" />
+    <Content Include="Views\Report\TptDelaysRep.cshtml" />
+    <Content Include="Views\Account\TermsAndConditions.cshtml" />
+    <Content Include="Views\Report\SapInvoiceReport.cshtml" />
+    <Content Include="Views\Report\TugAvailableUtilizationReport.cshtml" />
+    <Content Include="Views\Report\NewUsersReport.cshtml" />
+    <Content Include="Views\Report\AuditTrailUsersReport.cshtml" />
+    <Content Include="Views\Report\LastLogonDaterep.cshtml" />
+    <Content Include="Views\Report\RolesPerUserreport.cshtml" />
+    <Content Include="Views\Welcome\Welcome.cshtml" />
+    <Content Include="Views\Report\MonthMovmReport.cshtml" />
+    <Content Include="Views\Shared\_IPMSPlannedMovements.cshtml" />
+    <Content Include="Views\Shared\_IPMSPlannedMovementsHeader.cshtml" />
+    <Content Include="Views\DepartureNotice\MDepartureNotice.cshtml" />
+    <Content Include="Views\Shared\_IPMSMobileView.cshtml" />
+    <Content Include="Views\ServiceRequest\MServiceRequest.cshtml" />
+    <Content Include="images\KMZ\CTCBerthLines.KMZ" />
+    <Content Include="images\KMZ\CTCBerthPoints.KMZ" />
+    <Content Include="images\KMZ\CTCBollards.KMZ" />
+    <Content Include="images\KMZ\CTCFloatingBuoys.KMZ" />
+    <Content Include="images\KMZ\CTCQuays.KMZ" />
+    <Content Include="images\KMZ\DBNBerths.KMZ" />
+    <Content Include="images\KMZ\DBNBollards.KMZ" />
+    <Content Include="images\KMZ\DBNquays.KMZ" />
+    <Content Include="images\KMZ\ELDBerths.KMZ" />
+    <Content Include="images\KMZ\ELDBollards.KMZ" />
+    <Content Include="images\KMZ\ELDBreakwaters.KMZ" />
+    <Content Include="images\KMZ\ELDEmbankments.KMZ" />
+    <Content Include="images\KMZ\ELDMooringJetty.KMZ" />
+    <Content Include="images\KMZ\ELDQuays.KMZ" />
+    <Content Include="images\KMZ\ELDShoreline.KMZ" />
+    <Content Include="images\KMZ\ELNBerths.KMZ" />
+    <Content Include="images\KMZ\ELNBollards.KMZ" />
+    <Content Include="images\KMZ\ELNBreakwaters.KMZ" />
+    <Content Include="images\KMZ\ELNEmbankments.KMZ" />
+    <Content Include="images\KMZ\ELNMooringJetty.KMZ" />
+    <Content Include="images\KMZ\ELNQuays.KMZ" />
+    <Content Include="images\KMZ\ELNShoreline.KMZ" />
+    <Content Include="images\KMZ\MBYBerthLines.KMZ" />
+    <Content Include="images\KMZ\MBYBollards.KMZ" />
+    <Content Include="images\KMZ\MBYBreakwaters.KMZ" />
+    <Content Include="images\KMZ\MBYEmbankments.KMZ" />
+    <Content Include="images\KMZ\MBYMooringJetty.KMZ" />
+    <Content Include="images\KMZ\MBYQuayEdge.KMZ" />
+    <Content Include="images\KMZ\MBYShoreline.KMZ" />
+    <Content Include="images\KMZ\NGQBerthLines.KMZ" />
+    <Content Include="images\KMZ\NGQBollards.KMZ" />
+    <Content Include="images\KMZ\NGQQuayLines.KMZ" />
+    <Content Include="images\KMZ\PEZBerthLines.KMZ" />
+    <Content Include="images\KMZ\PEZBollards.KMZ" />
+    <Content Include="images\KMZ\PEZQuayLines.KMZ" />
+    <Content Include="images\KMZ\RBRBerthLines.KMZ" />
+    <Content Include="images\KMZ\RBRBollards.KMZ" />
+    <Content Include="images\KMZ\RBRQuayLines.KMZ" />
+    <Content Include="images\KMZ\SBSBerthLines.KMZ" />
+    <Content Include="images\KMZ\SBSBerthPoints.KMZ" />
+    <Content Include="images\KMZ\SBSBollards.KMZ" />
+    <Content Include="images\KMZ\SBSFloatingBuoys.KMZ" />
+    <Content Include="images\KMZ\SBSQuays.KMZ" />
+    <Content Include="Settings.StyleCop">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\images\kendoui.woff" />
+    <None Include="Properties\PublishProfiles\IPMS-Green.pubxml" />
+    <None Include="Properties\PublishProfiles\QA.pubxml" />
+    <Content Include="Views\Report\MOPSDelayReport.cshtml" />
+    <Content Include="Views\Report\AuditTrailMisReport.cshtml" />
+    <Content Include="Views\Report\WegoDetailedReport.cshtml" />
+    <Content Include="Views\AutomatedSlotBlocking\AutomatedSlotBlocking.cshtml" />
+    <Content Include="Views\WegoDashBoard\WegoDashBoard.cshtml" />
+    <Content Include="Views\WegoBerthDashBoard\WegoBerthDashBoard.cshtml" />
+    <Content Include="Views\Marpol\Marpol.cshtml" />
+    <Content Include="Views\Report\SAPPostingReport.cshtml" />
+    <Content Include="Views\Report\WasteDeclarationReport.cshtml" />
+    <Content Include="Views\Report\SlotsOveriddenReport.cshtml" />
+    <Content Include="Views\Report\MarineServiceDelayReport.cshtml" />
+    <Content Include="Views\BerthPlanning\MBerthPlanningGIS.cshtml" />
+    <Content Include="Views\Shared\_IPMSMBerthPlanningGIS.cshtml" />
+    <Content Include="Views\Ports\AllPorts.cshtml" />
+    <Content Include="Views\Report\IMDGSummaryReport.cshtml" />
+    <Content Include="Views\Report\MOPSSummaryReport.cshtml" />
+    <Content Include="Scripts\jquery-2.1.4.min.map" />
+    <Content Include="Scripts\version.json" />
+    <Content Include="Views\Report\CargoTypeDashboard.cshtml" />
+    <Content Include="Views\Ports\ShipsinPorts.cshtml" />
+    <Content Include="Views\BerthPlanning\DeskBerthPlanningGIS.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.QA.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="App_Start\TempFiles\" />
+    <Folder Include="CSS\fonts\" />
+    <Folder Include="obj\Models\" />
+    <Folder Include="Views\DashBoard\" />
+    <Folder Include="Views\Operations\" />
+    <Folder Include="Views\RosterGroup\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IPMS.Core.Repository\Core.Repository.csproj">
+      <Project>{7a02df10-6661-4268-8bc0-b4d62478b934}</Project>
+      <Name>Core.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Data\IPMS.Data.csproj">
+      <Project>{d090ea4b-08b0-4d64-9c7a-b9795b4544f7}</Project>
+      <Name>IPMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Domain\IPMS.Domain.csproj">
+      <Project>{e00e43c0-e42a-4793-889f-eaa2da343c40}</Project>
+      <Name>IPMS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MvcReportViewer\MvcReportViewer.csproj">
+      <Project>{6353720d-c784-4c00-a7b7-d652542fbcc9}</Project>
+      <Name>MvcReportViewer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>50195</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:50195/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>if exist "$(TargetDir)MvcReportViewer.aspx" move /Y "$(TargetDir)MvcReportViewer.aspx" "$(ProjectDir)MvcReportViewer.aspx"
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

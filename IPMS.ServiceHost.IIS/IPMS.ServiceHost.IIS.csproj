@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{89722F44-0FE6-4195-93D7-78765F6E8B7E}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IPMS.ServiceHost.IIS</RootNamespace>
+    <AssemblyName>IPMS.ServiceHost.IIS</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AccountService.svc" />
+    <Content Include="AutomatedResourceSchedulingService.svc" />
+    <Content Include="AutomatedSlotBlockingService.svc" />
+    <Content Include="BerthPlanningConfigurationsService.svc" />
+    <Content Include="BerthService.svc" />
+    <Content Include="BiztalkAnchorageResponseService.svc" />
+    <Content Include="BiztalkInvoiceResponseService.svc" />
+    <Content Include="BiztalkMarineOrderResponseService.svc" />
+    <Content Include="BiztalkPortLimitResponseService.svc" />
+    <Content Include="BiztalkResponseService.svc" />
+    <Content Include="BiztalkVesselCreateResponseService.svc" />
+    <Content Include="BollardService.svc" />
+    <Content Include="AgentService.svc" />
+    <Content Include="AuditLogService.svc" />
+    <Content Include="ArrivalNotificationService.svc" />
+    <Content Include="BudgetedValuesService.svc" />
+    <Content Include="CommonService.svc" />
+    <Content Include="BerthPlanningService.svc" />
+    <Content Include="BerthMaintenanceCompletionService.svc" />
+    <Content Include="BerthMaintenanceService.svc" />
+    <Content Include="AutomatedSlotConfigurationService.svc" />
+    <Content Include="MarpolService.svc" />
+    <Content Include="MaterialCodeMasterService.svc" />
+    <Content Include="NotificationPublisherService.svc" />
+    <Content Include="RevenueStopListService.svc" />
+    <Content Include="MarineRevenueService.svc" />
+    <Content Include="SAPInvoiceService.svc" />
+    <Content Include="SAPMarineOrderChangeService.svc" />
+    <Content Include="SAPMarineOrderCreateService.svc" />
+    <Content Include="SAPPostingService.svc" />
+    <Content Include="SAPVesselArrivalChangeService.svc" />
+    <Content Include="SAPVesselArrivalService.svc" />
+    <Content Include="SAPVesselCreateService.svc" />
+    <Content Include="SuppDryDockExtensionService.svc" />
+    <Content Include="DryDockSchedulerService.svc" />
+    <Content Include="ServiceTypeDesignationService.svc" />
+    <Content Include="ServiceTypeService.svc" />
+    <Content Include="DepartureNoticeService.svc" />
+    <Content Include="LocationService.svc" />
+    <Content Include="SuppMiscServiceRecordingService.svc" />
+    <Content Include="PortInformationService.svc" />
+    <Content Include="PortEntryPassApplicationService.svc" />
+    <Content Include="SuppDryDockService.svc" />
+    <Content Include="DredgingPriorityService.svc" />
+    <Content Include="DockingPlanService.svc" />
+    <Content Include="Hour24Report625Service.svc" />
+    <Content Include="ResourceAllocationService.svc" />
+    <Content Include="CraftOutOfCommissionService.svc" />
+    <Content Include="CraftReminderConfigService.svc" />
+    <Content Include="DeploymentPlanService.svc" />
+    <Content Include="ExternalDivingRegisterService.svc" />
+    <Content Include="PortGeneralConfigsService.svc" />
+    <Content Include="ResourceAllocationConfigRuleService.svc" />
+    <Content Include="EventSchedulerService.svc" />
+    <Content Include="FuelConsumptionDailyLogService.svc" />
+    <Content Include="FuelReceiptService.svc" />
+    <Content Include="FuelRequisitionService.svc" />
+    <Content Include="SuppDockUnDockTimeService.svc" />
+    <Content Include="MobileScheduledTasksService.svc" />
+    <Content Include="SuppHotWorkInspectionService.svc" />
+    <Content Include="SuppServiceResourceAllocService.svc" />
+    <Content Include="SupplymentaryServiceRequestService.svc" />
+    <Content Include="StatementFactService.svc" />
+    <Content Include="BerthPreSchedulingService.svc" />
+    <Content Include="CargoManifestService.svc" />
+    <Content Include="RosterService.svc" />
+    <Content Include="ResourceAttendanceService.svc" />
+    <Content Include="AutomatedSlottingService.svc" />
+    <Content Include="ShiftService.svc" />
+    <Content Include="ResourceGroupService.svc" />
+    <Content Include="ReportBuilderService.svc" />
+    <Content Include="DashBoardService.svc" />
+    <Content Include="MobileConversationService.svc" />
+    <Content Include="SubCategoryService.svc" />
+    <Content Include="TptDocumentUploadService.svc" />
+    <Content Include="UserPreferenceService.svc" />
+    <Content Include="VesselSAPPostingService.svc" />
+    <Content Include="WorkFlowTaskService.svc" />
+    <Content Include="MobileIncidentReportService.svc" />
+    <Content Include="FileService.svc" />
+    <Content Include="DivingRequestService.svc" />
+    <Content Include="LicensingRequestService.svc" />
+    <Content Include="PilotExemptionRequestService.svc" />
+    <Content Include="MobileService.svc" />
+    <Content Include="VoyageMonitoringService.svc" />
+    <Content Include="VesselRegistrationService.svc" />
+    <Content Include="VesselArrestImmobilizationSAMSAStopService.svc" />
+    <Content Include="VesselCallAnchorageService.svc" />
+    <Content Include="ModuleService.svc" />
+    <Content Include="VesselETAChangeService.svc" />
+    <Content Include="EntityService.svc" />
+    <Content Include="SuperCategoryService.svc" />
+    <Content Include="NewsService.svc" />
+    <Content Include="CraftService.svc" />
+    <Content Include="PortService.svc" />
+    <Content Include="RolePrivilegeService.svc" />
+    <Content Include="ServiceRequestService.svc" />
+    <Content Include="EmployeeService.svc" />
+    <Content Include="ElectronicNotificationsService.svc" />
+    <Content Include="UserService.svc" />
+    <Content Include="EmailService.svc" />
+    <Content Include="QuayService.svc" />
+    <Content Include="TerminalOperatorService.svc" />
+    <Content Include="VesselAgentChangeService.svc" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\qa.pubxml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.QA.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IPMS.Core.Repository\Core.Repository.csproj">
+      <Project>{7a02df10-6661-4268-8bc0-b4d62478b934}</Project>
+      <Name>Core.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Domain\IPMS.Domain.csproj">
+      <Project>{e00e43c0-e42a-4793-889f-eaa2da343c40}</Project>
+      <Name>IPMS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Services\IPMS.Services.csproj">
+      <Project>{19f71bf8-3ec2-4100-bf3a-4b78a9f09cc5}</Project>
+      <Name>IPMS.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>57669</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51352/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

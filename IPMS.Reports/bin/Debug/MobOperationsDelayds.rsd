@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition">
+  <DataSet Name="">
+    <Query>
+      <DataSourceReference>tnpadev</DataSourceReference>
+      <CommandType>StoredProcedure</CommandType>
+      <CommandText>usp_Mobrpt_OperationsDelayreport</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Berthnotavailable">
+        <DataField>Berthnotavailable</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Channnelnotclear">
+        <DataField>Channnelnotclear</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="PortClerance">
+        <DataField>PortClerance</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="CargoOpertionsinProgress">
+        <DataField>CargoOpertionsinProgress</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="AwaitingTide">
+        <DataField>AwaitingTide</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="BerthingServicesDelayed">
+        <DataField>BerthingServicesDelayed</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="BadWeather">
+        <DataField>BadWeather</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="TugnotAvailable">
+        <DataField>TugnotAvailable</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="PilotBoardingDelayed">
+        <DataField>PilotBoardingDelayed</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="EngineFailure">
+        <DataField>EngineFailure</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

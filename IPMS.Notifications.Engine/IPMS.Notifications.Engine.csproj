@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{10972792-16A1-4A13-8547-0CBDCB38FA45}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IPMS.Notifications.Engine.IPMS.Notifications.Engine</RootNamespace>
+    <AssemblyName>IPMS.Notifications.Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\QA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AgentRegistrationNotifier.cs" />
+    <Compile Include="ArrivalNotificationNotifier.cs" />
+    <Compile Include="AutomatedResourceAllocationNotifier.cs" />
+    <Compile Include="AutomatedSlottingNotificationNotifier.cs" />
+    <Compile Include="BerthMaintenanceApprovalNotifier.cs" />
+    <Compile Include="BerthMaintenanceCompletionNotifier.cs" />
+    <Compile Include="BerthOccupationNotifier.cs" />
+    <Compile Include="BerthPreSchedulingNotifier.cs" />
+    <Compile Include="CraftOutOfCommissionNotifier.cs" />
+    <Compile Include="CraftReminderNotifier.cs" />
+    <Compile Include="DepartureNoticeNotifier.cs" />
+    <Compile Include="DHMArrivalNotificationNotifier.cs" />
+    <Compile Include="DivingRequestOccupationNotifier.cs" />
+    <Compile Include="DivingRequestOnCompletionNotifier.cs" />
+    <Compile Include="DockingPlanNotifier.cs" />
+    <Compile Include="DredgingPriorityNotifier.cs" />
+    <Compile Include="DredgingVolumeNotifier.cs" />
+    <Compile Include="EmailSender.cs" />
+    <Compile Include="ExternalDivingOnCompletionNotificationNotifier.cs" />
+    <Compile Include="FuelReceiptNotifier.cs" />
+    <Compile Include="FuelRequisitionNotifier.cs" />
+    <Compile Include="Hour24Report625Notifier.cs" />
+    <Compile Include="IMDGArrivalNotificationNotifier.cs" />
+    <Compile Include="ISPSArrivalNotificationNotifier.cs" />
+    <Compile Include="Library.cs" />
+    <Compile Include="LicensingRequestNotifier.cs" />
+    <Compile Include="MobileScheduleNotifier.cs" />
+    <Compile Include="MobileScheduleTaskNotifier.cs" />
+    <Compile Include="NotificationEngine.cs" />
+    <Compile Include="Notifier.cs" />
+    <Compile Include="PHArrivalNotificationNotifier.cs" />
+    <Compile Include="PilotExemptionRequestNotifier.cs" />
+    <Compile Include="PortEntryPassApplicationNotifier.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceRecordingNotifier.cs" />
+    <Compile Include="ServiceRequesNotifier.cs" />
+    <Compile Include="ServiceRequestShiftingNotifier.cs" />
+    <Compile Include="SMSSender.cs" />
+    <Compile Include="SSAverificationNotifier.cs" />
+    <Compile Include="StatementFactNotifier.cs" />
+    <Compile Include="SuppDockUnDockTimeNotifier.cs" />
+    <Compile Include="SuppDryDockExtensionNotifier.cs" />
+    <Compile Include="SuppDryDockNotifier.cs" />
+    <Compile Include="SupplymentaryServiceRequestNotifier.cs" />
+    <Compile Include="SuppServiceResourceAllocNotifier.cs" />
+    <Compile Include="UserNotifier.cs" />
+    <Compile Include="UserRegistrationNotifier.cs" />
+    <Compile Include="VesselAgentChangeNotifier.cs" />
+    <Compile Include="VesselArrestImmobilizationSAMSAStopNotifier.cs" />
+    <Compile Include="VesselCallAnchorageNotifier.cs" />
+    <Compile Include="VesselETAChangeNotifier.cs" />
+    <Compile Include="VesselRegistrationNotifier.cs" />
+    <Compile Include="WDArrivalNotificationNotifier.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IPMS.Core.Repository\Core.Repository.csproj">
+      <Project>{7a02df10-6661-4268-8bc0-b4d62478b934}</Project>
+      <Name>Core.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Data\IPMS.Data.csproj">
+      <Project>{d090ea4b-08b0-4d64-9c7a-b9795b4544f7}</Project>
+      <Name>IPMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Domain\IPMS.Domain.csproj">
+      <Project>{e00e43c0-e42a-4793-889f-eaa2da343c40}</Project>
+      <Name>IPMS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Repository\IPMS.Repository.csproj">
+      <Project>{8e84d313-d5d5-4915-acb3-2ac2ffaef552}</Project>
+      <Name>IPMS.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Services\IPMS.Services.csproj">
+      <Project>{19f71bf8-3ec2-4100-bf3a-4b78a9f09cc5}</Project>
+      <Name>IPMS.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

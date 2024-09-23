@@ -1,0 +1,465 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Manage Revenue Stop";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts{
+
+    <script src="~/Scripts/Application/Model/RevenueStopModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/RevenueStopViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.RevenueStopViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#RevenueStop")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<style>
+    select {
+        text-transform: none;
+        width: 100%;
+        border-radius: 2px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="RevenueStop">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'RevenueStopList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'RevenueStopForm-template' }"></div>
+</div>
+<script type="text/html" id="RevenueStopList-template">
+    <div class="portlet-body">
+
+        <div class="table-toolbar">
+
+            <div>
+                <a class="button gbtngreen" data-bind="click: $root.addRevenueStop">Add New <i class="fa fa-plus"></i></a>
+
+                <div class="search" style="border: none; padding: 0; margin-top: 5px;">
+                    <select id="columns" onchange="sorter.search('query')" style="display: none;"></select>
+                </div>
+            </div>
+
+            <div id="vesselList" data-bind="kendoGrid: {
+    data: revenuestopList,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'AgentIDSort', title: 'Agent Code', width: 65, filterable: true }
+                       , { field: 'AccountNoSort', title: 'AccountNo.', width: 80, filterable: true },
+                       { field: 'RegisteredNameSort', title: 'Agent Name', width: 60, filterable: true },
+                       { field: 'AccountStatusNameSort', title: 'Revenue Account Status', width: 60, filterable: true },
+                        { field: 'StopDateSort', title: 'Stop Date', width: 80, filterable: true },
+                        { title: 'Actions', width: 35, filterable: false }]
+}">
+            </div>
+
+            <script id="rowTmpl" type="text/html">
+                <tr data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+
+                    <td>
+                        <div class="nowrap"><span data-bind="text: RegistrationNumber"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: AccountNo"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: RegisteredName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: AccountStatusName"></span></div>
+                    </td>
+                    <td>
+
+                        <div class="nowrap"><span data-bind="text: StopDate"></span></div>
+
+                    </td>
+
+                    <td>
+                        <div class="nowrap">
+                            <a href="#" data-bind="click: $parent.Viewrevenuestop" title="View"><i class="fa fa-eye"></i></a>
+                            <a href="#" data-bind="click: $parent.Editrevenuestop" title="Edit"><i class="fa fa-edit"></i></a>&nbsp; &nbsp;                                   
+                        </div>
+                    </td>
+                </tr>
+                <div data-bind="visible: revenuestopList().length == 0">
+                    No Records Found...
+                </div>
+
+            </script>
+
+
+
+        </div>
+
+    </div>
+    <div class="row">
+    </div>
+</script>
+<div class="clearfix"></div>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="RevenueStopForm-template">
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="row">
+            <form action="#" class="form-horizontal" id="submit_form">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body" data-bind="with: revenueStopModel">
+                        <div class="alert alert-danger display-none">
+                            <button class="close" data-dismiss="alert"></button>
+                            You have some form errors. Please check below.
+                        </div>
+                        <div class="alert alert-success display-none">
+                            <button class="close" data-dismiss="alert"></button>
+                            Your form validation is successful!
+                        </div>
+                        <div class="form-group">
+                            <fieldset>
+                                <legend>Revenue Stop Details</legend>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        
+                                            <div class=" form-group col-md-6">
+                                                <label class="control-label col-md-4">AgentName : <span class="required">*</span></label>
+                                                <div class="col-md-5">
+                                                    <input id="Vessel" name="RegisteredName" class="form-control" data-bind="kendoAutoComplete: {
+        dataTextField: 'RegisteredName', minLength: 1, pageSize: 1
+        , dataSource: {
+            serverFiltering: true,
+            transport: {
+                read: { url: 'api/Getagentdetails', dataType: 'json' }
+            }, schema: {
+                data: function (data) { return data; }, total: function (data) {
+                    return data.length;
+                }
+            },
+        },
+        value: RegisteredName, select: $root.AgentnameSelect
+    }, enable: $root.IsMultiselectEnable" />
+                                                </div>
+                                                <span class="validationError" data-bind="validationMessage: RegisteredName"></span>
+                                            </div>
+                                            
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label col-md-4">Agent Code:</label>
+                                            <div class="col-md-5">
+                                                <input type="text" name="" class="form-control" data-bind="value: RegistrationNumber, event: { keypress: ValidateAlphanumeric }, enable: $parent.isview" maxlength="30" readonly="readonly">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label col-md-4">Harbor Account:</label>
+                                            <div class="col-md-5">
+                                                <div class="input-icon">
+                                                    <input type="text" name="" class="form-control" data-bind="value: AccountNo, event: { keypress: ValidateAlphanumeric }, enable: $parent.isview" maxlength="30" readonly="readonly">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label col-md-4">Stop Date: <span class="required">*</span></label>
+                                            <div class="col-md-5">
+                                                <div class="form-control">
+                                                    <input type="text" id="StopDate" class="date-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: StopDate, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: $root.ValidateDate }, enable: $parent.isview" name="StopDate" maxlength="10" />
+                                                    <span class="validationError" data-bind="validationMessage: StopDate"></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix">
+                                    <br>
+                                </div>
+                                &nbsp;
+                                    <fieldset>
+                                        <legend>Revenue Account Status</legend>
+                                        <div class="row ">
+                                            <div class="radio-list">
+                                                <div data-bind="foreach: $root.revenuestoplistReferenceData().RevenueAccountStatus">
+                                                    <div class="col-md-3">
+                                                        <input name="revenuestatusrediobutton" id="revenuestatusrediobutton" type="radio" class="radio-inline" data-bind=" checkedValue: SubCatCode, checked: $root.revenueStopModel().AccountStatus, click: $parent.toggleAssociation"><label data-bind="    text: SubCatName"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                            </fieldset>
+                        </div>
+                        <div class="btns-group form-actions fluid">
+                            <button type="submit" class="btn green" data-bind="click: $root.Saverevenuestoplist, visible: $parent.issave">Save</button>
+                            <button type="submit" class="btn green" data-bind="click: $root.editrevenueStoplist, visible: $parent.isupdate">Update</button>
+                            <button type="submit" class="btn blue" data-bind="click: $root.resetrevenuestoplist, visible: $parent.isview">Reset</button>
+                            <button type="button" class="btn red" data-bind="click: $parent.cancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

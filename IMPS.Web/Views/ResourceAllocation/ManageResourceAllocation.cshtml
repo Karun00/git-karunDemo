@@ -1,0 +1,1120 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Resource Allocation";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ResourceAllocationModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ResourceAllocationViewModel.js"></script>
+
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ResourceAllocationViewmodel();
+    ko.applyBindingsWithValidation(viewModel, $("#ResourceAllocationMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="ResourceAllocationMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>    
+</div>
+
+<script type="text/html" id="List-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div>
+            <div class="portlet box advbg">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-reorder"></i>Advanced Search
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-wizard form-horizontal">
+                        <div class="form-body">
+
+                            <div class="form-group" data-bind="with: resourceallocationModel">
+                                <div class="row">
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">VCN :</label>
+                                            <div class="col-md-8">
+                                                <div>
+                                                    @*<input id="VCNSearch" name="VCN" class="form-control" data-bind="value: VCNSearch" />*@
+                                               
+                                                    
+                                                        <input id="VCNName" name="VCNName" onblur="VCNonblur();" onkeydown="SerchVCNBackSpace();" onkeypress="return SerchVCNBackSpaceNumValid(event)" data-bind="kendoAutoComplete: {
+    dataTextField: 'vcn', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: 'api/ServiceRecordingVcnDetailsforAutocomplete', dataType: 'json' }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VCNSearch, select: $root.VCNSelectSearch
+}" />
+                                            <span id="spanVCNSearchValid" class="validationError" data-bind="visible: $root.isspanVCNSearchValid"></span>
+                                      
+                                                     </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Vessel Name/IMO No. :</label>
+                                            <div class="col-md-6">
+                                                <div>
+                                                     <input id="VesselName1" name="VesselName1" onblur="Vesselonblur();" onkeydown="SerchVesselBackSpace();"  @*onkeypress="SerchVesselKeyPress()"*@ data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/ServiceRecordingVesselDetailsforAutocomplete/', data: { columnName: '' } }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VesselNameSearch, select: $root.VesselSelectSearch
+}" />
+                                                    <span id="spanVesselSearchValid" class="validationError" data-bind="visible: $root.isspanVesselSearchValid"></span>
+                                               
+                                                    @*<input id="VesselNameSearch" name="Vessel Name" class="form-control" data-bind="value: VesselNameSearch" />
+                                                    , event: { keypress: SerchVesselKeyPress, keydown: SerchVesselBackSpace }*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Resource Name :</label>
+                                            <div class="col-md-5">
+                                                <div>
+                                                    @*<input id="VesselAgentName" name="Agent Name" class="form-control" data-bind="value: ResourceName" />*@
+                                                          <input id="ResourceName1" name="ResourceName1" onblur="Resourceonblur();" onkeydown="SerchResourceBackSpace();"  @*onkeypress="SerchVesselKeyPress()"*@ data-bind="kendoAutoComplete: {
+    dataTextField: 'FirstName', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/ServiceRecordingResourceDetailsforAutocomplete/', data: { columnName: '' } }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: ResourceName, select: $root.ResourceNameSearch
+}" />
+                                                    <span id="spanResourceSearchValid" class="validationError" data-bind="visible: $root.isspanResourceSearchValid"></span>
+                                               
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6"></label>
+                                            <div class="col-md-6">
+                                                <div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4"></label>
+                                            <div class="col-md-8">
+                                                <div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4"></label>
+                                            <div class="col-md-8">
+                                                <div>
+                                                   <button type="submit" class="btn btn-sm green" data-bind="click: $root.SrearchDet">Get Data</button>
+                                                    <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ResetSearchDet">Reset</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="divServiceRecList" data-bind="kendoGrid: {
+    data: resourceallocationList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' }, number: { eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', width: 150, filterable: true },
+                                    { field: 'VesselNameSort', title: 'Vessel Name', width: 150, filterable: true },
+                                    { field: 'OperationTypeSort', title: 'Service Type', width: 150, filterable: true },
+                                    { field: 'MovementTypeNameSort', title: 'Movement Type', width: 150, filterable: true },
+                                    { field: 'StartTimeSort', title: 'Start Time', width: 140, filterable: true },
+                                    { field: 'EndTimeSort', title: 'End Time', width: 140, filterable: true },
+                                    { field: 'ResourceTypeSort', title: 'Resource Name', width: 150, filterable: true },
+                                    { field: 'TaskStatusNameSort', title: 'Status', width: 100, filterable: true },
+                                    { title: 'Actions', filterable: true, width: 100 }],
+
+}">
+        </div>
+
+        <script id="rowTmpl" type="text/html">
+            <tr>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: VCN"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: VesselName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: OperationTypeName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: MovementTypeName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: StartTime"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: EndTime"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: FirstName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: TaskStatusName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap">
+                        &nbsp;
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.viewResourceAllacation" title="View"><i class="fa fa-eye"></i></a>}&nbsp;
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.EditResourceAllacation, visible: (TaskStatus() != 'VERF')" title="Edit"><i class="fa fa-edit"></i></a>
+                            }
+                        @if (Model.HasEditPrivilege)
+                        {
+                            <a href="#" data-bind="click: $parent.verifyResourceAllocation, visible: (TaskStatus() == 'COMP')" title="Verify"><i class="fa fa-WFVE"></i></a>
+                        }
+
+                    </div>
+                </td>
+            </tr>
+        </script>
+
+          
+    </div>
+
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind="validationMessage: field"></span>
+</script>
+
+
+<script type="text/html" id="Form-template">
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" id="form_sample_1" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: resourceallocationModel">
+                    @*<div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>
+                    *@
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="form-group">
+                        <div id="section33">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">VCN:</label>
+                                            <div class="col-md-6 form-group">
+                                                <label class="displaytxt" style="padding-top: 7px;" data-bind="text: VCN"></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5"  data-bind=" visible: MovementType() == 'SHMV' || MovementType() == 'SGMV' || MovementType() == 'WRMV' || MovementType() == 'ARMV'">
+                                            <label class="control-label col-md-6">Resource Name:</label>
+                                            <div class="col-md-6">
+                                                <label class="displaytxt" style="padding-top: 7px;" data-bind="text: FirstName"></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" data-bind="visible: OperationType() == 'WTST'">
+                                            <label class="control-label col-md-6">Resource Name:</label>
+                                            <div class="col-md-6">                             
+                                     @*   <select class="form-control" data-bind="options: $root.referenceData().WaterResources, optionsText: 'UserName', optionsValue: 'UserID', value: ResourceID, optionsCaption: 'Select....', enable: $root.IsCodeEnable">
+                                               </select> *@
+                                  <input id="ResourceName" data-bind="kendoDropDownList: { data: $root.referenceData().WaterResources, value: ResourceID, dataTextField: 'UserName', dataValueField: 'UserID', optionLabel: 'Select...', enable: $root.IsWaterResourceEnable }" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" data-bind="visible: OperationType() == 'FCST'">
+                                            <label class="control-label col-md-6">Resource Name:</label>
+                                            <div class="col-md-6">                                            
+                                         <input data-bind="kendoDropDownList: { data: $root.referenceData().FloatingResources, value: ResourceID, dataTextField: 'UserName', dataValueField: 'UserID', optionLabel: 'Select...', enable: $root.IsCodeEnable }" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Vessel Name:</label>
+                                            <div class="col-md-6 form-group">
+                                                <label class="displaytxt" style="padding-top: 7px;" data-bind="text: VesselName"></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" data-bind="visible: OperationType() == 'WTST'">
+                                            <label class="control-label col-md-6">Berth Name:</label>
+                                            <div class="col-md-6" data-bind="with: OtherServiceRecording">
+                                                @*<select class="form-control" data-bind="options: $root.BerthsDetails, optionsText: 'BerthName', optionsValue: 'BerthKey', value: BerthKey, enable: $root.IsCodeEnable"></select>*@
+                                             @* <input id="idBerth" data-bind="kendoDropDownList: { data: $root.BerthsDetails, value: BerthKey, dataTextField: 'BerthName', dataValueField: 'BerthKey', optionLabel: 'Select...', enable: $root.IsCodeEnable }" />*@
+                                              <input id="idBerth" data-bind="kendoDropDownList: { data: $root.BerthsDetails, value: BerthKey, dataTextField: 'BerthName', dataValueField: 'BerthKey', optionLabel: 'Select...', enable: $root.IsBerthEnable }" />
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+
+                        <div id="section2" style="display: none;" data-bind=" visible: (OperationType() == 'BRTH') ">
+                            <fieldset>
+                                <legend data-bind="visible: MovementType() == 'SHMV'">Shifting Berthing Task Execution</legend>
+                                <legend data-bind="visible: MovementType() == 'SGMV'">Sailing Berthing Task Execution</legend>
+                                <legend data-bind="visible: MovementType() == 'WRMV'">Warping Berthing Task Execution</legend>
+                                <legend data-bind="visible: MovementType() == 'ARMV'">Arrival Berthing Task Execution</legend>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Start Time:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="starttime" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="starttime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: StartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting Start Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="BerthWaitingStartTime" class="datetime-picker"  onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: WaitingStartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CompareBerthWtEt, interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="WaitingStartTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingStartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting End Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="BerthWaitingEndTime" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: WaitingEndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CompareBerthWtSt, interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="WaitingEndTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingEndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">End Time:<span class="required">*</span></label>
+                                            <div class="col-md-6" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="endtime" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: EndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="endtime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: EndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Delay Reason:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                               @* <input type="text" class="form-control" data-bind="value: DelayReason, enable: $root.IsCodeEnable" name="DelayReason" maxlength="500" />
+                                          *@  
+                                             <select name="DelayReason" id="DelayReasons" class="form-control" data-bind="options: $root.referenceData().DelayReasons, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: DelayReason, optionsCaption: 'Select....', enable: $root.IsCodeEnable, event: { change: $root.SelectedDelayReasons }">
+                                                </select> 
+                                                <input type="text" id="DelayOtherReason" class="form-control" data-bind="value: DelayOtherReason, visible: (DelayReason() == 'OTER'), enable: $root.IsCodeEnable" name="DelayOtherReason" maxlength="500" />
+                                          
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" data-bind=" visible: MovementType() != 'SGMV' ">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">From Berth:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <select name="FromBerth" id="FromBerth" class="form-control" data-bind=" enable: $root.IsCodeEnable, options: $root.referenceData().Berths, optionsText: 'BerthName', optionsValue: 'BerthKey', value: FromBerthKey, optionsCaption: 'Select....', event: { change: $root.GetFromBollarddetails }">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">To Berth:<span class="required">*</span></label>
+                                            <div class="col-md-6" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <select name="ToBerth" id="ToBerth" class="form-control" data-bind="options: $root.referenceData().Berths, optionsText: 'BerthName', optionsValue: 'BerthKey', optionsCaption: 'Select....', value: ToBerthKey, event: { change: $root.GetToBollarddetails }, enable: $root.IsCodeEnable">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" data-bind=" visible: MovementType() != 'SGMV' ">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">From Bollard (BOW):<span class="required">*</span></label>
+                                            <div class="col-md-6" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control form-grouup">
+                                                    <select name="FromBollardbow" id="FromBollardbow" class="form-control" data-bind="options: $root.fromblordreferenceData().FromBollards, optionsText: 'BollardName', optionsValue: 'ToBollardKey', value: FromBolardKey, optionsCaption: 'Select....', enable: $root.IsCodeEnable">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Mooring Bollard (BOW):<span class="required">*</span></label>
+                                            <div class="col-md-6" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control form-group">
+                                                    <select name="MooringBollardbow" id="MooringBollardbow" class="form-control" data-bind="options: $root.fromblordreferenceData().FromBollards, optionsText: 'BollardName', optionsValue: 'ToBollardKey', value: MooringBolardBowKey, optionsCaption: 'Select....', enable: $root.IsCodeEnable">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" data-bind=" visible: MovementType() != 'SGMV' ">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">To Bollard (Stern):<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <select name="ToBollardbow" id="ToBollardbow" class="form-control" data-bind="options: $root.toblordreferenceData().ToBollards, optionsText: 'BollardName', optionsValue: 'ToBollardKey', value: ToBolardKey, optionsCaption: 'Select.... ', enable: $root.IsCodeEnable, event: { change: $root.GetBollardlength }">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Mooring Bollard (stern):<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <select name="MooringBollardstern" id="MooringBollardstern" class="form-control" data-bind="options: $root.toblordreferenceData().ToBollards, optionsText: 'BollardName', optionsValue: 'ToBollardKey', value: MooringBolardStemKey, optionsCaption: 'Select....', enable: $root.IsCodeEnable">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" data-bind=" visible: MovementType() == 'SHMV' ">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">First Line In/On:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="firstlinein" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: FirstLineIn, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="firstlinein" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: FirstLineIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Last Line In/On:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="LastLineIn" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: LastLineIn, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="LastLineIn" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: LastLineIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" data-bind=" visible: MovementType() == 'ARMV' || MovementType() == 'WRMV' ">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">First Line In:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="firstlinein" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: FirstLineIn, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="firstlinein" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: FirstLineIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Last Line In:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="LastLineIn" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: LastLineIn, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="LastLineIn" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: LastLineIn"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" data-bind=" visible: (MovementType() != 'ARMV')   ">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">First Line Off:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group " data-bind="with: ShiftingBerthingTaskExecution">
+                                                <div class="form-control">
+                                                    <input type="text" id="firstlineout" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: FirstLineOut, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="firstlineout" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: FirstLineOut"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Last Line Off:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group ">
+                                                <div class="form-control" data-bind="with: ShiftingBerthingTaskExecution">
+                                                    <input type="text" id="LastLineOut" class="datetime-picker" onkeydown="" onblur=" checkDateTime(this) " onfocus=" OnfocusDateTime(this) " data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: LastLineOut, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="LastLineOut" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: LastLineOut"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Forward Draft (Meters):<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <input type="text" class="form-control" id="ForwardDraft" data-bind="    value: ForwardDraft, event: { keypress: $root.validationHelper.ValidateNumeric }, enable: $root.IsCodeEnable" name="ForwardDraft" maxlength="5" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Aft Draft (Meters):<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: ShiftingBerthingTaskExecution">
+                                                <input type="text" id="AftDraft" class="form-control" data-bind=" value: AftDraft, event: { keypress: $root.validationHelper.ValidateNumeric }, enable: $root.IsCodeEnable" name="AftDraft" maxlength="5" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div id="section3" style="display: none;" data-bind=" visible: (OperationType() == 'PILT') ">
+                            <fieldset>
+                                <legend>Pilotage service recording</legend>
+
+                                <div class="form-group">
+
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Start Time:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="Pilotagestarttime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="starttime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: StartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Pilot on Board Pilot:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="PilotonBoard" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: PilotOnBoard, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric ,change:$root.getval() }"  @*onchange="getval"*@ name="PilotonBoard" maxlength="16"/>   
+                                                    <span  class="validationError" data-bind="validationMessage: PilotOnBoard"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Pilot Off:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="PilotOff" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: PilotOff, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="PilotOff" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: PilotOff"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting Start Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="WaitingStartTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: WaitingStartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: ComparePiltWtEt, interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="WaitingStartTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingStartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting End Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="WaitingEndTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: WaitingEndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: ComparePiltWtSt, interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="WaitingEndTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingEndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">End Time:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="piltEndTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: EndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm',  change: ComparePiltWtStanu,interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="EndTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: EndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Delay Reason:<span class="required" id="spanDelayId" data-bind="visible: $root.isSpanDelay">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                               @* <input type="text" class="form-control" data-bind="value: DelayReason, enable: $root.IsCodeEnable" name="DelayReason" maxlength="500" />
+                                                 <span class="validationError" data-bind="validationMessage: DelayReason"></span>
+                                               *@    
+                                                <select name="DelayReason" id="DelayReasons" class="form-control" data-bind="options: $root.referenceData().DelayReasons, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: DelayReason, optionsCaption: 'Select....', enable: $root.IsCodeEnable, event: { change: $root.SelectedDelayReasons }">
+                                                </select> 
+                                                <input type="text" id="DelayOtherReason" class="form-control" data-bind="value: DelayOtherReason,visible: (DelayReason() == 'OTER'), enable: $root.IsCodeEnable" name="DelayOtherReason" maxlength="500" />
+                                          
+                                              
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Additional Tugs:<span class="required">*</span></label>
+
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="AdditionalTugs" class="form-control" data-bind="value: AdditionalTugs" name="AdditionalTugs" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">MOPS Delay Reason:<span class="required" data-bind="visible: $root.isSpanMopsDelay">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="form-control form-group">
+                                                    
+                                                       <select name="MOPSDelay" id="MOPSDelay" class="form-control" data-bind="options: $root.referenceData().MopsDelays, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: MOPSDelay, optionsCaption: 'Select....', enable: $root.IsCodeEnable">
+                                                    </select>
+<span class="validationError" data-bind="validationMessage: MOPSDelay" id="delay"></span> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                          <label class="control-label col-md-6">Actual Scheduled Time:<span class="required">*</span></label>
+                                           <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="actualtime" class="datetime-picker"onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: ActualScheduledTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric ,change:$root.getval() }"  name="actualtime" maxlength="16"/>   
+                                                        <span class="validationError" data-bind="validationMessage: ActualScheduledTime" id="actualtime"></span>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div><div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Marine Revenue Cleared:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="radio-list">
+                                                    <label>
+                                                        <input type="checkbox" id="MarineRevenueCleared" data-bind="checked: MarineRevenueCleared, enable: $root.IsCodeEnable" /></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Off Steam:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: PilotageServiceRecording">
+                                                <div class="radio-list">
+                                                    <label>
+                                                        <input type="checkbox" id="OffSteam" data-bind="checked: OffSteam, enable: $root.IsCodeEnable" /></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div id="section4" style="display: none;" data-bind=" visible: (OperationType() == 'FCST') ">
+                            <fieldset>
+                                <legend>Floating Crane Service Recording</legend>
+                                <div class="form-group">                                 
+                                        <div class="row">                                           
+                                           <div class="col-md-5"> 
+                                                <label class="control-label col-md-6">Start Time:<span class="required">*</span></label>
+                                                <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="floatingcranestarttime" class="datetime-picker"onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="starttime" maxlength="16"/>   
+                                                        <span class="validationError" data-bind="validationMessage: StartTime"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <div class="col-md-5">
+                                             <label class="control-label col-md-6">Time Alongside:<span class="required">*</span></label>
+                                                <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="TimeAlongside" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: TimeAlongSide, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="TimeAlongside" maxlength="16"/>   
+                                                        <span class="validationError" data-bind="validationMessage: TimeAlongSide"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                 
+                                                                      
+                                        <div class="row">
+                                             <div class="col-md-5"> 
+                                                <label class="control-label col-md-6">First Swing:<span class="required">*</span></label>
+                                                <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="FirstSwing" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: FirstSwing, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="FirstSwing" maxlength="16"/>   
+                                                        <span class="validationError" data-bind="validationMessage: FirstSwing"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             <div class="col-md-5"> 
+                                                <label class="control-label col-md-6">Last Swing:<span class="required">*</span></label>
+                                                <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="LastSwing" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: LastSwing, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="LastSwing" maxlength="16"/>   
+                                                        <span class="validationError" data-bind="validationMessage: LastSwing"></span>
+                                                    </div>
+                                                </div>
+                                              </div> 
+                                        </div>                                    
+                                    <div class="form-group"><!-- data-bind="enable: (TaskStatus() != 'COMP')">-->
+                                        <div class="row">
+                                            <div class="col-md-5"> 
+                                                <label class="control-label col-md-6">Extend:</label>
+                                                <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                    <div class="radio-list">
+                                                        <label>
+                                                            <input type="checkbox" id="Extend" data-bind="disable: $root.IsComp,checked: Extend, event: { change: chkExtend }" /></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 
+                                        <div class="row">
+                                          <div class="form-group" ><!-- data-bind="visible: (TaskStatus() != 'COMP')">-->
+                                             <div class="col-md-5">
+                                                <label class="control-label col-md-6">Back To Quay:<span class="required" id="isBackToQA" data-bind="visible: $root.isBackToQA">*</span></label>
+                                                <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="BackToQuay" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="disable: $root.IsComp, kendoDateTimePicker: { value: BackToQuay, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="BackToQuay" maxlength="16"/>   
+                                                        <span class="validationError" data-bind="validationMessage: BackToQuay"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             </div>  
+                                            <div class="col-md-5">
+                                              <div class="form-group">
+                                                <label class="control-label col-md-6">End Time:<span class="required" id="isEndTime" data-bind="visible: $root.isEndTime">*</span></label>
+                                                <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="floatingcraneEndTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: EndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="EndTime" maxlength="16"/>   
+                                                        <span class="validationError" data-bind="validationMessage: EndTime"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             </div>
+                                                                                
+                                       </div>
+                                    @*<div class="form-group" data-bind="visible: (TaskStatus() == 'COMP')">
+                                        <div class="row" data-bind="with: OtherServiceRecording">
+                                            <div data-bind="visible: (BackToQuay() != 'Invalid date')">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Back To Quay:<span class="required" id="isBackToQA" data-bind="visible: $root.isBackToQA">*</span></label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input type="text" id="BackToQuay" class="datetime-picker" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: BackToQuay, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="BackToQuay" />
+                                                            <span class="validationError" data-bind="validationMessage: BackToQuay"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@                                    
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div id="section5" style="display: none;" data-bind=" visible: (OperationType() == 'PIHE') ">
+                            <fieldset>
+                                <legend>Pilot Boat/Helicopter Service Recording</legend>
+                                <div class="form-group">
+
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Start Time:<span class="required">*</span></label>
+                                                <div class="col-md-6" data-bind="with: PilotageServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="pilothelicopterstarttime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="starttime" />                                                         
+                                                        <span class="validationError" data-bind="validationMessage: StartTime"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Pilot on Board:<span class="required">*</span></label>
+                                                <div class="col-md-6" data-bind="with: PilotageServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="pilothelicopterPilotonBoard" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)"  data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: PilotOnBoard, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="PilotonBoard" />
+                                                        <span class="validationError" data-bind="validationMessage: PilotOnBoard"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Pilot Off:<span class="required">*</span></label>
+                                                <div class="col-md-6" data-bind="with: PilotageServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="pilothelicopterPilotOff" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: PilotOff, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="PilotOff" />
+                                                        <span class="validationError" data-bind="validationMessage: PilotOff"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">End Time:<span class="required">*</span></label>
+                                                <div class="col-md-6" data-bind="with: PilotageServiceRecording">
+                                                    <div class="form-control">
+                                                        <input type="text" id="pilothelicopterendtime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: EndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="pilothelicopterendtime" />
+                                                        <span class="validationError" data-bind="validationMessage: EndTime"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div id="section6" style="display: none;" data-bind=" visible: (OperationType() == 'TGWR') ">
+                            <fieldset>
+                                <legend>Tug/work boat Service Recording</legend>
+                                <div class="form-group">
+
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Start Time:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="tugwaterstarttime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="tugwaterstarttime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: StartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Line Up:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="LineUp" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: LineUp, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="LineUp" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: LineUp"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Line Down:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="LineDown" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: LineDown, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }" name="LineDown" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: LineDown"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting Start Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="TugWaitingStartTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: WaitingStartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CompareTugWtEt, interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="WaitingStartTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingStartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting End Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="TugWaitingEndTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: WaitingEndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CompareTugWtSt, interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="WaitingEndTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingEndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">End Time:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="tugwaterendtime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="enable: $root.IsCodeEnable, kendoDateTimePicker: { value: EndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { keypress: ValidateNumeric }"  name="tugwaterendtime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: EndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Delay Reason:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                @*<input type="text" class="form-control" data-bind="value: DelayReason, enable: $root.IsCodeEnable" name="DelayReason" maxlength="500" />*@
+                                                  <select name="DelayReason" id="DelayReasons" class="form-control" data-bind="options: $root.referenceData().DelayReasons, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: DelayReason, optionsCaption: 'Select....', enable: $root.IsCodeEnable, event: { change: $root.SelectedDelayReasons }">
+                                                </select> 
+                                                <input type="text" id="DelayOtherReason" class="form-control" data-bind="value: DelayOtherReason, visible: (DelayReason() == 'OTER'), enable: $root.IsCodeEnable" name="DelayOtherReason" maxlength="500" />
+                                          
+                                           </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div id="section7" style="display: none;" data-bind=" visible: (OperationType() == 'WTST') ">
+                     
+
+                            <fieldset>
+                                <legend>Water Services service recording</legend>
+                             <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Is Completed:</label>
+                                            <div class="col-md-6 form-group"  data-bind="with: OtherServiceRecording">
+                                             <div class="col-md-6">
+                                                    <div class="radio-list">
+                                                        <label>
+                                                          <input type="checkbox" id="idIsCompleted" data-bind="checked: IsCompleted, event: { change: chkIsCompleted }, enable: $root.IsCodeEnable" /></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                         <label class="control-label col-md-6">Meter No:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group"  data-bind="with: OtherServiceRecording">                                            
+                                                    <div class="form-control">                                                       
+                                                          <input type="text" id="idMeterNo" class="form-control" data-bind=" value: MeterNo, event: { change: $root.ValidateMeterNO, keyup: HandleKeyUp }, enable: $root.IsCodeEnable"  maxlength="15"/>
+                                                          <span class="validationError" data-bind="validationMessage: MeterNo"></span>
+                                                          <span id="spanmeterno" class="validationError" style="display: none"></span>
+                                                    </div>
+                                                
+                                            </div>
+                                           
+                                            </div>
+                                      
+                                    </div>
+                                    <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Start Time:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="idwaterservicestarttime" class="datetime-picker"  onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind=" kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calminStartDate, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsCodeEnable }, event: { keypress: ValidateNumeric } "  name="waterservicestarttime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: StartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">End Time:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="idwaterserviceendtime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind="kendoDateTimePicker: { value: EndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calminEndDate, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsCodeEnable }, event: { keypress: ValidateNumeric }"  name="waterserviceendtime" maxlength="16"/>                                                       
+                                                    <span class="validationError" data-bind="validationMessage: EndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting Start Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="WaterWaitingStartTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind=" kendoDateTimePicker: { value: WaitingStartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CompareWaterWtEt, interval: 01, open: calminStartDate, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsCodeEnable }, event: { keypress: ValidateNumeric }"  name="WaitingStartTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingStartTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Waiting End Time:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="WaterWaitingEndTime" class="datetime-picker" onkeydown="" onblur= "checkDateTime(this)" onfocus= "OnfocusDateTime(this)" data-bind=" kendoDateTimePicker: { value: WaitingEndTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CompareWaterWtSt, interval: 01, open: calminEndDate, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $root.IsCodeEnable }, event: { keypress: ValidateNumeric }"  name="WaitingEndTime" maxlength="16"/>   
+                                                    <span class="validationError" data-bind="validationMessage: WaitingEndTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Opening Meter Reading:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording ">
+                                                <div class="form-control">
+                                                    <input type="text" id="openingmeterreading" class="form-control" data-bind="value: OpeningMeterReading, event: { keypress: $root.validationHelper.ValidateNumeric, change: changeOpeningMeterReading }, enable: $root.IsCodeEnable" name="openingmeterreading" maxlength="15" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Closing Meter Reading:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    <input type="text" id="closingmeterreading" class="form-control" data-bind="value: ClosingMeterReading, event: { keypress: $root.validationHelper.ValidateNumeric, change: CalTotalDispensed }, enable: $root.IsCodeEnable" name="closingmeterreading" maxlength="15" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Total Dispensed:<span class="required">*</span></label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                                <div class="form-control">
+                                                    @*<input type="text" id="totaldispensed" class="form-control" data-bind="value: TotalDispensed, event: { keypress: $root.validationHelper.ValidateNumeric }, enable: $root.IsCodeEnable" name="totaldispensed" />*@
+                                                    <input type="text" id="totaldispensed" class="form-control" data-bind="value: TotalDispensed, enable: false" name="totaldispensed" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Delay Reason:</label>
+                                            <div class="col-md-6 form-group" data-bind="with: OtherServiceRecording">
+                                               @* <input type="text" class="form-control" id="DelayReason" data-bind="value: DelayReason, enable: $root.IsCodeEnable" name="DelayReason" maxlength="500" />*@
+                                               <select name="DelayReason" id="DelayReasons" class="form-control" data-bind="options: $root.referenceData().DelayReasons, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: DelayReason, optionsCaption: 'Select....', enable: $root.IsCodeEnable, event: { change: $root.SelectedDelayReasons }">
+                                                </select> 
+                                                <input type="text" id="DelayOtherReason" class="form-control" data-bind="value: DelayOtherReason, visible: (DelayReason() == 'OTER'), enable: $root.IsCodeEnable" name="DelayOtherReason" maxlength="500" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                    
+                            </fieldset>                
+            
+
+
+
+                        </div>
+                        <div id="section8">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Remarks:</label>
+                                            <div class="col-md-6 form-group">
+                                                <input type="text" id="Remarks" class="form-control" data-bind="value: Remarks, enable: $root.IsCodeEnable" name="Remarks" maxlength="500" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="control-label col-md-6">Deficiencies:</label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="Deficiencies" class="form-control" data-bind="value: Deficiencies, enable: $root.IsCodeEnable" name="Deficiencies" maxlength="500" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+
+
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" class="btn green"  data-bind="click: $parent.SaveWaterResourceAllacation, visible: $parent.IsWaterSave" title="Save">Save</button>
+                        <button type="submit" class="btn green" data-bind="click: $parent.VerifyServiceRecording, visible: $parent.VisibleServiceRecording" title="Verify">Verify</button>
+                        <button type="submit" class="btn green" data-bind="click: $parent.SaveResourceAllacation, visible: $parent.IsSave" title="Update">Update</button>
+                        <button type="submit" class="btn red" data-bind="click: $parent.cancel" title="Cancel">Cancel</button>
+                        @*<button type="submit" class="btn red" data-bind="click: $parent.Reset, visible: (OperationType() == 'WTST'), enable: $parent.IsResetEnable" title="Cancel">Reset</button>*@
+                    </div>
+                </div>      
+       
+<div  id="divWaterServiceList1" data-bind="kendoGrid: {
+    data: WaterResourceList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    rowTemplate: 'rowTmpl1',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [
+                                    { field: 'MeterNo', title: 'Meter No', width: 120 },
+                                    { field: 'StartTime', title: 'Start Time', width: 120 },
+                                    { field: 'EndTime', title: 'End Time', width: 120 },
+                                    { field: 'WaitingStartTime', title: 'Waiting Start Time', width: 125 },
+                                    { field: 'WaitingEndTime', title: 'Waiting End Time', width: 125 },
+                                    { field: 'OpeningMeterReading', title: 'Open Mtr Reading', width: 120 },
+                                    { field: 'ClosingMeterReading', title: 'Close Mtr Reading', width: 120 },
+                                    { field: 'TotalDispensed', title: 'Total Dispensed', width: 100 },
+                                    { field: 'DelayReason', title: 'Delay Reason', width: 100 },
+                                    { field: 'IsCompleted', title: 'Is Completed', width: 70 },
+                                    { title: 'Actions', filterable: true, width: 50, editable: true }],
+}">
+
+        </div>
+ <script id="rowTmpl1" type="text/html">
+            <tr>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: MeterNo" ></span></div>
+                </td>
+                 
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: StartTime" ></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: EndTime"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: WaitingStartTime"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: WaitingEndTime"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: OpeningMeterReading"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: ClosingMeterReading"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: TotalDispensed"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: DelayReason"></span></div>
+                </td> 
+                  <td>
+                    <div class="nowrap"><span style="text-transform: capitalize;" data-bind="text: IsCompleted"></span></div>
+                </td> 
+                
+               
+                <td>
+ 
+                    <div class="nowrap">
+                        &nbsp;     
+                         <a href="#" data-bind="click: $parent.viewWaterAllacation, visible: isViewVisible" title="View"><i class="fa fa-eye"></i></a>&nbsp;                 
+                         <a href="#" data-bind="click: $parent.EditWaterAllocation, visible: isEditVisible" title="Edit"><i class="fa fa-edit"></i></a>
+
+                         
+                    </div>
+                </td>
+                             
+            </tr>
+        </script>    
+
+            </div>
+        </form>
+    </div>
+</script>

@@ -1,0 +1,754 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+<head>
+    @section scripts
+   {
+          <script src="~/Scripts/Application/ViewModel/NotificationsViewModel.js"></script>
+    <script src="~/Scripts/Application/Model/DashBoardModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/DashBoardViewModel.js"></script>
+    <style type="text/css">
+        g[class$='creditgroup'] {
+            display: none !important;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+
+    <script type="text/javascript">
+
+        //TODO: Need to write common function call to decrypt the portcode
+        var decryptresult = "";
+        var portcode = $.cookie('Port');//Second tym works Fine
+
+        try {
+            debugger;
+            if (portcode == undefined || portcode == '') {
+
+                var uname = $("#loginusername").text();
+                $.ajax({
+                    url: 'api/Account/GetUserPorts/' + uname,
+                    type: 'GET',
+                    success: function (data) {
+                       
+                        GetAnchorageCount(data[0].PortCode);
+                    }
+                });
+            }
+            else {
+                for (var i = 0; i < portcode.length; i++) {
+                    decryptresult += String.fromCharCode(portcode.charCodeAt(i) ^ 6);
+                }
+                
+                portcode = decryptresult;
+                GetAnchorageCount(portcode);
+            }
+        }
+        catch (ex) {
+            
+        }
+
+        function GetAnchorageCount(portcode)
+        {
+            $.ajax({
+                url: '/api/GetAnchorageCount/' + portcode,
+                type: 'GET',
+
+                success: function (data) {
+
+                    jsonObj = [];
+                    FusionCharts.ready(function () {
+
+                        $.each(data.LstofAnchorage, function (k, v) {
+
+                            if (k != '$id' && k != "") {
+                                item = {}
+                                item["label"] = k;
+                                item["value"] = v;
+
+                                jsonObj.push(item);
+                            }
+
+
+                        });
+                        console.log(jsonObj);
+                        var chartObj = new FusionCharts({
+                            type: 'bar2d',
+                            renderAt: 'chart-container',
+                            width: '100%',
+                            height: '180',
+                            dataFormat: 'json',
+                            dataSource: {
+                                "chart": {
+                                    "theme": "fusion",
+                                    "caption": "Vessel Anchorage Reasons",
+                                    "yAxisName": "Number of Vessels",
+                                    "yAxisMaxValue": "2"
+                                },
+                                "data": jsonObj
+                            }
+                        });
+                        chartObj.render();
+                    });
+                }
+
+            });
+        }
+
+
+    </script>
+
+    <style>
+        input {
+            border: 1px solid #CCCCCC;
+            padding: 2px;
+            font-family: Arial;
+            size: 12px;
+        }
+
+        #sortable {
+            list-style-type: none;
+            margin: 0 auto;
+            padding: 15px 0;
+            display: inline-block;
+        }
+
+            #sortable li {
+                margin: 0 10px 10px 0;
+                padding: 1px;
+                float: left;
+                width: 300px;
+                height: 290px;
+                text-align: center;
+                cursor: move;
+                border: 1px solid #037ab5;
+                -moz-border-radius: 21px;
+                -webkit-border-radius: 21px;
+                border-radius: 21px;
+            }
+
+            #sortable span {
+                font-family: Verdana;
+                font-size: 10px;
+                font-weight: bold;
+                float: right;
+                cursor: pointer;
+                color: #FFF;
+                width: 15px;
+                height: 15px;
+                background: #515151;
+                -moz-border-radius: 15px;
+                -webkit-border-radius: 15px;
+                border-radius: 15px;
+                margin: -2px;
+                -webkit-margin: -10px;
+                position: relative;
+            }
+
+                #sortable span:hover {
+                    background: red;
+                }
+
+        header, hgroup, nav, section, article, aside, footer {
+            display: block;
+        }
+
+        section {
+            margin-left: 10px;
+        }
+
+        hgroup {
+            font-family: Arial;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 5px 15px;
+            border: 1px solid #bad1e5;
+            background-color: #f0f8fc;
+            background: -moz-linear-gradient(top, #fff 3%, #edf7fe 5%, #cbe3f5 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#fff), color-stop(5%,#edf7fe), color-stop(100%,#cbe3f5));
+            width: 575px;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        #gobutton {
+            background: #3D8DCE; /* Old browsers */
+            background: -moz-linear-gradient(top, rgb(177,202,225) 3%, rgb(115,166,209) 5%, rgb(6,111,204) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,rgb(177,202,225)), color-stop(5%,rgb(115,166,209)), color-stop(100%,rgb(6,111,204)));
+            font-family: Arial;
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+            height: 25px;
+            border: 1px solid #0561b5;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        input#gobutton:hover, input#gobutton:focus {
+            background-color: #066fcc;
+            -webkit-box-shadow: 0 0 1px rgba(0,0,0, .75);
+            -moz-box-shadow: 0 0 1px rgba(0,0,0, .75);
+            box-shadow: 0 0 1px rgba(0,0,0, .75);
+        }
+
+        article {
+            font-family: Arial;
+            font-size: 12px;
+            margin: 10px;
+            height: 250px;
+        }
+
+            article h1 {
+                font-size: 22px;
+                font-weight: 900;
+                line-height: 22px;
+                margin: 0px;
+                padding-top: 10px;
+                display: block;
+            }
+
+            article hr {
+                background: #000;
+                height: 1px;
+                border: none;
+                clear: both;
+                text-align: right;
+            }
+            /*article p{ padding-top:5px;}*/
+            article div a {
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 10px;
+                color: #00b0ff;
+                text-decoration: none;
+                float: right;
+                margin-right: 15px;
+                display: block;
+            }
+
+                article div a:hover {
+                    border-bottom: 1px solid #00b0ff;
+                }
+
+                article div a div {
+                    font-size: 11px;
+                    color: #fff;
+                    background-color: #00b0ff;
+                    padding: 0;
+                    width: 10px;
+                    text-indent: 1px;
+                    cursor: pointer;
+                    display: inline-block;
+                    zoom: 1;
+                }
+
+        .left {
+            float: left;
+        }
+
+        #drDisp {
+            font-size: 50px;
+            font-weight: bold;
+            color: #ed3325;
+            letter-spacing: -3px;
+            height: 180px;
+            padding-top: 15px;
+        }
+
+            #drDisp div {
+                font-size: 12px;
+                font-weight: normal;
+                color: #fff;
+                letter-spacing: 0;
+                text-align: right;
+                background-color: #000;
+                padding: 3px;
+                margin: 0 25px 0 150px;
+                padding-right: 5px;
+            }
+
+        #drBoxDisp {
+            font-size: 38px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: -3px;
+            padding: 7px;
+            margin: 3px;
+            margin-top: 15px;
+            display: inline-block;
+            zoom: 1;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+            #drBoxDisp div {
+                font-size: 12px;
+                font-weight: normal;
+                letter-spacing: 0;
+                line-height: 9px;
+                height: 21px;
+            }
+
+                #drBoxDisp div.txt {
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    color: #000;
+                }
+
+        .dispdata {
+            height: 180px;
+        }
+
+        .red {
+            background-color: #f13325;
+        }
+
+        .orange {
+            background-color: #ff6600;
+        }
+
+        .green {
+            background-color: #669900;
+        }
+
+        .blue {
+            background-color: #00b0ff;
+        }
+
+        .txt {
+            display: block;
+        }
+
+        #gauge {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 0;
+        }
+
+
+        .page-content {
+            display: -webkit-flex;
+            margin-bottom: 20px;
+            display: flex;
+            display: -ms-flexbox;
+        }
+
+        .pm, .bs {
+            padding-top: 20px;
+        }
+
+            .pm p {
+                background-color: #0075ff;
+                width: 100px;
+                height: 100px;
+                border-radius: 50px;
+                border: 3px solid #fff;
+                box-shadow: 0px 0px 10px #888888;
+                color: #fff;
+                font-weight: 600;
+            }
+
+            .bs p {
+                background-color: #cd3333;
+                width: 100px;
+                height: 100px;
+                border-radius: 15px;
+            }
+
+            .bs span {
+                text-transform: uppercase;
+                font-size: 14px;
+            }
+
+            .pm span {
+                text-transform: uppercase;
+                font-size: 14px;
+            }
+
+        .pm-sub {
+            text-transform: uppercase;
+        }
+
+            .pm-sub p {
+                width: 51px;
+                height: 51px;
+                border-radius: 35px;
+                margin-bottom: 0;
+                box-shadow: 0 0 5px #888888;
+            }
+
+        .bs-sub p {
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            margin-bottom: 0;
+            border: 3px solid #ccc;
+        }
+
+        .pm-sub .pm-green {
+            border: 3px solid #34cd01;
+            color: #34cd01;
+        }
+
+        .pm-sub .pm-blue {
+            border: 3px solid #03c9f6;
+            color: #03c9f6;
+        }
+
+        .pm-sub .pm-yellow {
+            border: 3px solid #ff9900;
+            color: #ff9900;
+        }
+
+        .pm-sub .pm-red {
+            border: 3px solid #f83404;
+            color: #f83404;
+        }
+
+        .pm-sub p span {
+            font-size: 220%;
+            position: relative;
+            font-weight: 600;
+            top: 0px;
+        }
+
+        .bs-sub p span {
+            font-size: 300%;
+            color: #cd3333;
+            position: relative;
+            font-weight: 600;
+            top: 3px;
+        }
+
+        .bs-sub i {
+            color: #fff;
+            -webkit-text-stroke: 1px #888484;
+            font-size: 40px;
+            position: absolute;
+            top: 27px;
+        }
+
+        .pm p span, .bs p span {
+            font-size: 350%;
+            color: #fff;
+            position: relative;
+            top: 15px;
+            font-weight: 600;
+        }
+
+        .mor a {
+            text-transform: capitalize;
+            color: #ffffff;
+            float: right;
+            font-weight: 500;
+            font-size: 12px;
+            background: #828282;
+            padding: 5px 10px;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+
+            .mor a:hover {
+                text-decoration: none;
+                background: #5f5f5f;
+            }
+
+        .bs-label {
+            position: absolute;
+            top: 24px;
+            text-transform: uppercase;
+        }
+
+        .vvpd {
+            height: 85px;
+            width: 140px;
+            border: 2px solid #ccc;
+            border-radius: 15px;
+        }
+
+            .vvpd p {
+                height: 60px;
+                width: 60px;
+                border-radius: 30px;
+                position: relative;
+                left: 64px;
+                top: -54px;
+            }
+
+            .vvpd .foren {
+                background: #01b2b8;
+            }
+
+            .vvpd .coast {
+                background: #e99a01;
+            }
+
+            .vvpd p span {
+                font-size: 35px;
+                text-align: center;
+                top: 4px;
+                color: #fff;
+                position: relative;
+                font-weight: 600;
+            }
+
+            .vvpd img {
+                top: 14px;
+                position: relative;
+                right: 15px;
+            }
+
+            .vvpd .text {
+                position: relative;
+                top: 12px;
+                right: 17px;
+                text-transform: uppercase;
+            }
+
+        .vvpd-sub {
+            text-transform: uppercase;
+        }
+
+            .vvpd-sub p {
+                width: 51px;
+                height: 51px;
+                border-radius: 35px;
+                margin-bottom: 0;
+            }
+
+                .vvpd-sub p span {
+                    font-size: 300%;
+                    color: #3a3a3a;
+                    position: relative;
+                    font-weight: 600;
+                    top: 0px;
+                }
+
+            .vvpd-sub .row:first-child p span {
+                color: #01b2b8 !important;
+            }
+
+            .vvpd-sub .row:last-child p span {
+                color: #e99a01 !important;
+            }
+
+        canvas {
+        }
+
+        .rgt {
+            right: -4px;
+        }
+
+        .lft {
+            left: -5px;
+        }
+
+        .body-height {
+            min-height: 255px;
+        }
+
+        .body-height1 {
+            min-height: 315px !important;
+        }
+
+        .portlet-body.body-height1 {
+            padding-top: 20px;
+        }
+
+        .modal-dialog {
+            margin: 5% 15%;
+            width: 1000px;
+            min-height: 200px;
+            max-height: 400px;
+        }
+
+        .k-grid-header .k-header {
+            height: 20px;
+        }
+
+        .portlet.light-grey, .portlet.box > .portlet-body {
+            background-color: #fff !important;
+        }
+
+        .portlet.box.light-grey > .portlet-title {
+            padding-top: 4px;
+            background-color: #828282;
+        }
+    </style>
+    }
+    @section ko_apply
+{
+    var viewModel = new IPMSROOT.DashBoardViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#DashBoard")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+
+    }
+
+</head>
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+<div id="DashBoard" style="width: 100%">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title" style="color: #00b0ff; font-weight: 500 !important;">Welcome to IPMS</h3>
+            <ul class="page-breadcrumb breadcrumb"></ul>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-toolbar">
+
+            <!-- Main body content starts here for developers-->
+            <form action="#" id="form_sample_1" class="form-horizontal">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <div style="margin-right: 5px; margin-bottom: 10px">
+                                <!-- BEGIN ALERTS PORTLET-->
+                                <div class="portlet light-grey box">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            Planned Movements
+                                        </div>
+                                        <div class="tools">
+                                            <a href="javascript:;" class="collapse"></a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body body-height" data-bind="with: dashboardModel">
+                                        <div class="row ">
+                                            <div class="form-group" style="margin-top: 25px;">
+                                                <div class="col-md-6 pm" align="center">
+                                                    <p><span data-bind="text: PlannedMovementsCount"></span></p>
+                                                    <span>TOTAL VESSELS</span>
+                                                </div>
+                                                <div class="col-md-6 pm-sub">
+                                                    <div class="row ">
+                                                        <div class="col-md-6 " align="center">
+                                                            <div class="form-group">
+                                                                <p class="pm-green"><span data-bind="text: PlannedMovtsArrivalCount"></span></p>
+                                                                <span>ARRIVAL</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 " align="center">
+                                                            <p class="pm-blue"><span data-bind="text: PlannedMovtsShiftingCount"></span></p>
+                                                            <span>SHIFTING</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">&nbsp;</div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 " align="center">
+                                                            <p class="pm-yellow"><span data-bind="text: PlannedMovtsWarpingCount"></span></p>
+                                                            <span>WARPING</span>
+                                                        </div>
+                                                        <div class="col-md-6 " align="center">
+                                                            <p class="pm-red"><span data-bind="text: PlannedMovtsSailingCount"></span></p>
+                                                            <span>SAILING</span>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="row mor"><a href="PlannedMovements">More info <i class="fa fa-angle-double-right" aria-hidden="true"></i></a></div>
+                                <!-- END ALERTS PORTLET-->
+                            </div>
+                            <div style="margin-right: 5px;">
+                                <!-- BEGIN ALERTS PORTLET-->
+
+                                <!-- END ALERTS PORTLET-->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="margin-left: 5px; margin-bottom: 10px">
+                                <!-- BEGIN ALERTS PORTLET-->
+                                <div class="portlet light-grey box">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            Anchorage
+                                        </div>
+
+                                        <div class="tools">
+                                            <a href="javascript:;" class="collapse"></a>
+                                        </div>
+                                    </div>
+                                    <div align="center">
+                                        @*<h4><u>Vessel Anchorage reasons*@</u></h4>
+                                    </div>
+                                    <div class="portlet-body body-height" data-bind="with: dashboardModel">
+                                        <div class="row ">
+                                            <div id="chart-container"></div>
+                                            <div class="form-group" style="margin-top: 25px;">
+
+                                                <div class="col-md-6 ">
+
+                                                    <div class="row">&nbsp;</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+                                <div class="row mor"><a href="Report/AnchorageCurrent">More info >></a></div>
+                                <!-- END ALERTS PORTLET-->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div>
+
+                    <div style="text-align: center;">
+                        </h1>
+                        <div style="padding-left: 280px; text-align: left;">
+                            <img style="margin: 0px; padding: 0px; border: none; width: 70%; top: 80px;" src="~/Content/Images/ipms.jpg">
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    jQuery(document).ready(function () {
+    });
+</script>
+<script>
+    $(function () {
+        $("#sortable").sortable();
+        $("#sortable").disableSelection();
+    });
+    $(document).on('click', '#sortable span', function () {
+        $(this).parent().fadeTo(300, 0, function () {
+            $(this).remove();
+        });
+    });
+    $(document).on('move', '.move_box', function () {
+        $(this).parent().move();
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function () {
+        $("#fromdateid, #todateid").kendoDatePicker();
+    });
+</script>
+
+
+

@@ -1,0 +1,68 @@
+GO
+insert into SuperCategory(SupCatCode,SupCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('ORSR','Slot Over Riding Reason','A',2,getdate(),2,getdate())
+
+  Go
+  insert into SubCategory(SubCatCode,SupCatCode,SubCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('OREA','ORSR','Early Arrival','A',1,getdate(),1,getdate())
+
+  GO
+  insert into SubCategory(SubCatCode,SupCatCode,SubCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('ORLA','ORSR','Late Arrival','A',1,getdate(),1,getdate())
+
+   GO
+  insert into SubCategory(SubCatCode,SupCatCode,SubCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('ORAC','ORSR','Agent Change','A',1,getdate(),1,getdate())
+   GO
+  insert into SubCategory(SubCatCode,SupCatCode,SubCatName,RecordStatus,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate)
+  values('ORTO','ORSR','Tugs Occuiped','A',1,getdate(),1,getdate())
+
+
+------------
+CREATE TABLE [dbo].[SlotOverRidingReasons](
+	[OverRideSlotID] [int] IDENTITY(1,1) NOT NULL,
+	[VesselCallMovementID] [int] NOT NULL,
+	[ReasonCode] [varchar](50) NOT NULL,
+	[EnteredDateAndTime] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedDate] [datetime] NULL,
+	[ModifiedBy] [int] NOT NULL,
+	[ModifiedDate] [datetime] NULL,
+	[PreviousSlot] [nvarchar](20) NULL,
+	[OverriddenSlot] [nvarchar](20) NULL,
+ CONSTRAINT [PK_SlotOverRidingReasons] PRIMARY KEY CLUSTERED 
+(
+	[OverRideSlotID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[SlotOverRidingReasons]  WITH CHECK ADD  CONSTRAINT [FK_SlotOverRidingReasons_Users] FOREIGN KEY([CreatedBy])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+
+ALTER TABLE [dbo].[SlotOverRidingReasons] CHECK CONSTRAINT [FK_SlotOverRidingReasons_Users]
+GO
+
+ALTER TABLE [dbo].[SlotOverRidingReasons]  WITH CHECK ADD  CONSTRAINT [FK_SlotOverRidingReasons_Users1] FOREIGN KEY([ModifiedBy])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+
+ALTER TABLE [dbo].[SlotOverRidingReasons] CHECK CONSTRAINT [FK_SlotOverRidingReasons_Users1]
+GO
+
+ALTER TABLE [dbo].[SlotOverRidingReasons]  WITH CHECK ADD  CONSTRAINT [FK_SlotOverRidingReasons_VesselCallMovement] FOREIGN KEY([VesselCallMovementID])
+REFERENCES [dbo].[VesselCallMovement] ([VesselCallMovementID])
+GO
+
+ALTER TABLE [dbo].[SlotOverRidingReasons] CHECK CONSTRAINT [FK_SlotOverRidingReasons_VesselCallMovement]
+GO
+
+GO
+ alter table [SlotOverRidingReasons] add PreviousSlotDate datetime
+
+

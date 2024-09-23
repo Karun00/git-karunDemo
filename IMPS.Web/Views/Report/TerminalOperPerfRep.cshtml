@@ -1,0 +1,28 @@
+﻿@using MvcReportViewer;
+@{
+    Layout="~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        @*Port=ViewBag.PortName*@ 
+    @Html.MvcReportViewer(
+   "/IPMS.Reports/TerminalOperPerfRep",
+   new { FromDate = DateTime.Today.ToString("dd-MM-yyyy"), ToDate = DateTime.Today.ToString("dd-MM-yyyy") },
+    //new { FromDate = DateTime.Today, ToDate = DateTime.Today, Name = ViewBag.PortName },
+    new { Height = "550px", Width = "100%",scrolling="no", style = "border: none"})
+    </div>
+</body>
+</html>
+
+
+
+
+

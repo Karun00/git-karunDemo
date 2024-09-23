@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://IPMSConnect_SAP.MarineOrder" xmlns:b="http://schemas.microsoft.com/BizTalk/2003" targetNamespace="http://IPMSConnect_SAP.MarineOrder" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="MARINEORDER">
+    <xs:annotation>
+      <xs:appinfo />
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="DISTRIBUTIONCHANNEL" type="xs:string" />
+        <xs:element name="ORDER" type="xs:string" />
+        <xs:element name="DIVISION" type="xs:string" />
+        <xs:element name="ORDERHEADERINX">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="UPDATEFLAG" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ORDERITEMIN">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="MATERIAL" type="xs:string" />
+                    <xs:element name="ITMNUMBER" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ORDERITEMSINX">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ITMNUMBER" type="xs:string" />
+                    <xs:element name="UPDATEFLAG" type="xs:string" />
+                    <xs:element name="MATERIAL" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ITEMNO" type="xs:string" />
+        <xs:element name="ORDERTYPE" type="xs:string" />
+        <xs:element name="PONO" type="xs:int" />
+        <xs:element name="RETURN">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="TYPE" type="xs:string" />
+                    <xs:element name="ID" type="xs:string" />
+                    <xs:element name="NUMBER" type="xs:string" />
+                    <xs:element name="MESSAGE" type="xs:string" />
+                    <xs:element name="LOGNO" type="xs:string" />
+                    <xs:element name="LOGMSGNO" type="xs:string" />
+                    <xs:element name="MESSAGEV1" type="xs:string" />
+                    <xs:element name="MESSAGEV2" type="xs:string" />
+                    <xs:element name="MESSAGEV3" type="xs:string" />
+                    <xs:element name="MESSAGEV4" type="xs:string" />
+                    <xs:element name="PARAMETER" type="xs:string" />
+                    <xs:element name="ROW" type="xs:string" />
+                    <xs:element name="FIELD" type="xs:string" />
+                    <xs:element name="SYSTEM" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SALESORGANIZATION" type="xs:string" />
+        <xs:element name="SCHEDULELINES">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ITMNUMBER" type="xs:string" />
+                    <xs:element name="SCHEDLINE" type="xs:string" />
+                    <xs:element name="REQQTY" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SCHEDULELINESX">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ITMNUMBER" type="xs:string" />
+                    <xs:element name="SCHEDLINE" type="xs:string" />
+                    <xs:element name="UPDATEFLAG" type="xs:string" />
+                    <xs:element name="REQDATE" type="xs:string" />
+                    <xs:element name="DATETYPE" type="xs:string" />
+                    <xs:element name="REQTIME" type="xs:string" />
+                    <xs:element name="REQQTY" type="xs:string" />
+                    <xs:element name="REQDLVBL" type="xs:string" />
+                    <xs:element name="SCHEDTYPE" type="xs:string" />
+                    <xs:element name="TPDATE" type="xs:string" />
+                    <xs:element name="MSDATE" type="xs:string" />
+                    <xs:element name="LOADDATE" type="xs:string" />
+                    <xs:element name="GIDATE" type="xs:string" />
+                    <xs:element name="MSTIME" type="xs:string" />
+                    <xs:element name="LOADTIME" type="xs:string" />
+                    <xs:element name="GITIME" type="xs:string" />
+                    <xs:element name="REFOBJTYPE" type="xs:string" />
+                    <xs:element name="REFOBJKEY" type="xs:string" />
+                    <xs:element name="DLVDATE" type="xs:string" />
+                    <xs:element name="DLVTIME" type="xs:string" />
+                    <xs:element name="RELTYPE" type="xs:string" />
+                    <xs:element name="PLANSCHEDTYPE" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="CREATEDDATE" type="xs:date" />
+        <xs:element name="REVENUEPOSTINGID" type="xs:int" />
+        <xs:element name="MESSAGETYPE" type="xs:string" />
+        <xs:element name="SAPPOSTINGID" type="xs:int" />
+        <xs:element name="SALESDOCUMENT" type="xs:string" />
+        <xs:element name="SHIPTOPARTY" type="xs:string" />
+        <xs:element name="SOLDTOPARTY" type="xs:string" />
+        <xs:element name="ZZDATEFROM" type="xs:string" />
+        <xs:element name="ZZTIMEFROM" type="xs:string" />
+        <xs:element name="ZZTIMETO" type="xs:string" />
+        <xs:element name="ZZDATETO" type="xs:string" />
+        <xs:element name="ZZDOCKTIME" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

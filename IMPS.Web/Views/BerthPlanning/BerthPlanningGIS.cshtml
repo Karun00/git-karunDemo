@@ -1,0 +1,82 @@
+﻿@{
+	ViewBag.Title = "Berth Planning GIS View";
+    Layout = "~/Views/Shared/_IPMSBerthPlanning.cshtml";
+}
+
+
+@section scripts
+{
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7kxIP3DwxxzA22aeApiGKugh9cctlEHA">
+    </script>
+<script src="~/Scripts/Application/Model/BerthPlanningGISModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/BerthPlanningGISViewModel.js"></script>
+<link href="~/Content/Styles/opentip.css" rel="stylesheet" />
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.BerthPlanningGISViewModel();
+    ko.applyBindings(viewModel, $("#AutoBerthPlanning")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">Berth Planning GIS</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row" id="AutoBerthPlanning">
+         <div class="col-md-9" style="margin-top: -10px;">
+        
+
+        <div id="map_canvas" style="height: 600px;">
+            <div id="GridContainer" style="overflow-y: scroll; height: 500px; cursor: move;" data-bind="with: berthplanninggisModel, loadingWhen: $root.viewModelHelper.isLoading">
+                <table border="0" id="table" class="tinytable table-scrollable">
+                    <thead>
+                        <tr>
+                            <th class="nowrap">Action</th>
+                            <th>VCN</th>
+                            <th>Vessel</th>
+
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: $parent.VesselsList()" style="height: 100px;">
+                        <tr data-bind="click: $root.VesselClick">
+                            <td title="Click to View">
+                                <a href="#" data-bind=" click: $root.VesselClick" title="Click to View"><i class="fa fa-eye"></i></a>
+                            </td>
+                            <td data-bind="text: VCN, style: { backgroundColor: VesselStatusColor, color: 'white' }"></td>
+                            <td data-bind="text: VesselName, style: { backgroundColor: VesselStatusColor, color: 'white' }"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div id="GridContainer" style="overflow-y: scroll; height: 500px; cursor: move;" data-bind="with: berthplanninggisModel, loadingWhen: $root.viewModelHelper.isLoading">
+            <table border="0" id="table" class="tinytable table-scrollable">
+                <thead>
+                    <tr>
+                        <th class="nowrap">Action</th>
+                        <th>VCN</th>
+                        <th>Vessel</th>
+
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: $parent.VesselsList()" style="height: 100px;">
+                    <tr data-bind="click: $root.VesselClick">
+                        <td title="Click to View">
+                            <a href="#" data-bind=" click: $root.VesselClick" title="Click to View"><i class="fa fa-eye"></i></a>
+                        </td>
+                        <td data-bind="text: VCN, style: { backgroundColor: VesselStatusColor, color: 'white' }"></td>
+                        <td data-bind="text: VesselName, style: { backgroundColor: VesselStatusColor, color: 'white' }"></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,334 @@
+﻿@{
+    ViewBag.Title = "FuelConsumptionDailyLog";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/FuelConsumptionDailyLogModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/FuelConsumptionDailyLogViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.FuelConsumptionDailyLogViewModel();
+   ko.applyBindingsWithValidation(viewModel, $("#FuelConsumptionDailyLog")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div id="FuelConsumptionDailyLog">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+
+</div>
+
+<script type="text/html" id="List-template">
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <div id="tablewrapper15">
+                <div id="tableheader">
+                    <a class="button gbtngreen" data-bind="click: $root.addFuelConsumptionDailyLog">Add New <i class="fa fa-plus"></i></a>
+                </div>
+                <div data-bind="kendoGrid: {
+    data: fuelConsumptionDailyLoglist,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'CraftCodeSort', title: 'Craft Code', filterable: true, width: '40px' },
+                                    { field: 'CraftNameSort', title: 'Craft Name', width: '30px', filterable: true },
+                                    { field: 'CraftTypeSort', title: 'Craft Type', width: '30px', filterable: true },
+                                    { field: 'IMONoSort', title: 'IMO No.', width: '50px', filterable: true },
+                                     { field: 'FuelTypeSort', title: 'Oil Type', width: '50px', filterable: true },
+                                   @* { title: 'Status', filterable: false, width: '30px' },*@
+                                    { title: 'Actions', filterable: false, width: '30px' }]
+
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap" data-bind="text: CraftCode"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: CraftName"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: CraftTypeName"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: IMONo"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: FuelTypeName"></div>
+                        </td>
+                        @*<td>
+                            <div class="nowrap" data-bind="text: Statust"></div>
+                        </td>*@
+                        <td>
+                            <div class="nowrap">
+                                <a href="javascript:;" title="View" data-bind="click: $root.viewFuelConsumptionDailyLog"><i class="fa fa-eye"></i></a>&nbsp; &nbsp;
+                                    <a href="javascript:;" title="Edit" data-bind="click: $root.editFuelConsumptionDailyLog"><i class="fa fa-edit"></i></a>&nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+
+
+</script>
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="Form-template">
+
+    <div class="portlet portlet-body form">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: FuelConsumptionDailyLogModel">
+                    <div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="form-group">
+                        <fieldset>
+                            <legend>Fuel Consumption Daily Log Details</legend>
+
+                          
+                            <fieldset>
+                                <legend>Craft Details</legend>
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Craft Name:<span class="required">*</span></label>
+                                            <div class="col-md-7">
+                                                <div class="form-control">
+                                                    <input  name="CraftName"  id="CraftName" onblur="CraftNameBlur();"  onkeypress="CraftNameKeypress();" data-bind="kendoAutoComplete: { dataTextField: 'CraftName', minLength: 1, pageSize: 1, dataSource: { serverFiltering: true, transport: { read: { url: '/api/GetCraftDetails', dataType: 'json' } }, schema: { data: function (data) { return data; }, total: function (data) { return data.length; } }, }, select: $root.CraftSelect }, value: CraftName, enable: false"/>     
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Craft Code:</label>
+                                            <div class="col-md-5 control-label" data-bind="with: Crafts">
+                                                <label class="col-md-12 displaytxt" id="CraftNCode"  data-bind="text: CraftCode"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Craft Type:</label>
+                                            <div class="col-md-5 control-label" data-bind="with: Crafts">
+                                                <label class="col-md-12 displaytxt" id="CraftNTyp" data-bind="text: CraftTypeName"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                   <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">IMO No.:</label>
+                                            <div class="col-md-5 control-label" data-bind="with: Crafts">
+                                                <label class="col-md-12 displaytxt" id="CraftNIMO" data-bind="text: IMONo"></label>
+                                                @*data-bind="text: IMONo"*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Oil Type:</label>
+                                        <div class="col-md-6 control-label" data-bind="with: Crafts">
+                                            <label class="col-md-6 displaytxt"  id="CraftNoil"  data-bind="text: FuelTypeName"></label>
+                                            @*data-bind="text: FuelType"*@
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </fieldset>&nbsp;
+                            <div class="form-group row">                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Previous ROB:<span class="required">*</span></label>
+                                        <div class="col-md-6">
+                                            <input name="Previous ROB" type="text" id="PreviousROB" class="form-control" autocomplete="off" maxlength="8" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: PreviousROB, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateNumeric }">
+                                            <span class="validationError" data-bind="validationMessage: PreviousROB"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Present ROB:<span class="required">*</span></label>
+                                        <div class="col-md-6">
+                                            <input name="Present ROB" type="text" id="PresentROB" class="form-control" autocomplete="off" maxlength="8" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: PresentROB, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateNumeric }">
+                                            <span class="validationError" data-bind="validationMessage: PresentROB"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Fuel Received:</label>
+                                        <div class="col-md-6">                                            
+                                                <input name="Fuel Received" type="text" id="FuelReceived" class="form-control" autocomplete="off" maxlength="8" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: FuelReceived, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateNumeric }">
+                                               @* <span class="validationError" data-bind="validationMessage: FuelReceived"></span> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Start Date & Time:<span class="required">*</span></label>
+                                        <div class="col-md-6">
+                                            <div class="form-control">
+                                                <input id="StartDateTime" type="text" title="StartDateTime" class="datetime-picker" autocomplete="off" onchange="StartRunningHrs();" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: StartDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', enable: $parent.IsCodeEnable , month : { empty: '<span class=k-state-disabled>#= data.value #</span>'} }" name="StartDate" maxlength="16" />
+                                                <span id="spanStartDateTime" class="validationError"></span>
+                                                <span class="validationError" data-bind="validationMessage: StartDateTime"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">End Date & Time:<span class="required">*</span></label>
+                                        <div class="col-md-6">
+                                            <div class="form-control">
+                                                <input id="EndDateTime" type="text" title="EndDateTime" class="datetime-picker" autocomplete="off" onchange="EndRunningHrs();" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: EndDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', enable: $parent.IsCodeEnable , month : { empty: '<span class=k-state-disabled>#= data.value #</span>'}}" name="EndDate" maxlength="16" />
+                                                <span id="spanEndDateTime" class="validationError"></span>
+                                                <span class="validationError" data-bind="validationMessage: EndDateTime"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Start Running Hrs:<span class="required">*</span></label>
+                                        <div class="col-md-6">                                           
+                                             <input name="StartRunning" type="text" id="StartRunning" class="form-control" autocomplete="off" maxlength="8" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: StartRunningHrs, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateNumeric, change: $parent.RunningHrsChange }">
+                                             <span class="validationError" data-bind="validationMessage: StartRunningHrs"></span>                                           
+                                        </div>
+                                    </div>
+                                </div>                               
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">End Running Hrs:<span class="required">*</span></label>
+                                        <div class="col-md-6">                                           
+                                           <input name="EndRunning" type="text" id="EndRunning" class="form-control" autocomplete="off" maxlength="8" onkeypress="return allowOnlyTwoPositiveDigts(this,event);" data-bind="value: EndRunningHrs, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateNumeric, change: $parent.RunningHrsChange }">
+                                           <span class="validationError" data-bind="validationMessage: EndRunningHrs"></span>                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Running Hrs:</label>
+                                        <div class="col-md-6">                                           
+                                                <input name="Running Hrs" type="text" id="RunningHrs" class="form-control" autocomplete="off" maxlength="15" readonly="true" data-bind="value: RunningHours, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateNumeric } ">
+                                                <span class="validationError" data-bind="validationMessage: RunningHours"></span>                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">                                                               
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Fuel Consumed:</label>
+                                        <div class="col-md-6">                                           
+                                                <input name="Fuel Consumed" type="text" id="FuelConsumed" class="form-control" readonly="true" maxlength="15" data-bind="value: FuelConsumed, enable: $parent.IsCodeEnable">
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Avg. Fuel Consumed:</label>
+                                        <div class="col-md-6">                                            
+                                                <input name="Avg. Fuel Consumed" type="text" id="AvgFuelConsumed" class="form-control" readonly="true" autocomplete="off" maxlength="15" data-bind="value: AvgFuelConsumed, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateNumeric }">
+                                                <span class="validationError" data-bind="validationMessage: AvgFuelConsumed"></span>                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-2">Remarks:</label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" data-bind="value: Remarks , event: { keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }, enable: $parent.IsCodeEnable" maxlength="200"></textarea>
+                                </div>
+                            </div>                      
+
+                                            <div class="gridhead">Previous Log Entries</div>
+                                            <div class="table-scrollable">
+                                                <table cellpadding="0" cellspacing="0" border="0" id="tblCommodity" class="tinytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>&nbsp; Start Date & Time</th>
+                                                            <th>&nbsp; End Date & Time</th>
+                                                            <th>&nbsp; Running Hrs</th>
+                                                            <th>&nbsp; Avg. Fuel Consumed</th>
+                                                            <th>&nbsp; Fuel Consumed</th>
+                                                      
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody data-bind="foreach: PreviousFuelLogDetails">
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" class="form-control" data-bind="value: StartDateTime" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" class="form-control" data-bind="value: EndDateTime" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" readonly="readonly" data-bind="value: RunningHours" class="form-control" />
+                                                            </td>
+                                                            <td>
+                                                                 <input type="text" readonly="readonly" data-bind="value: AvgFuelConsumed" class="form-control" />
+                                                            </td>
+                                                            <td>
+                                                                   <input type="text" readonly="readonly" data-bind="value: FuelConsumed" class="form-control" />
+                                                               
+                                                            </td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                        </fieldset>
+                              <div class="btns-group form-actions fluid">
+                        <button type="submit" class="btn green" data-bind=" click: $parent.SaveFuelConsumptionDailyLog, visible: $parent.IsSave, enable: $parent.IsSave ">Save</button>
+                        <button type="submit" class="btn green" data-bind=" click: $parent.UpdateFuelConsumptionDailyLog, visible: $parent.IsUpdate ">Update</button>
+                        <button type="button" class="btn red" data-bind=" click: $parent.cancelFuelConsumptionDailyLog">Cancel</button>
+                    </div>
+                     
+                    </div>
+            <div class="clearfix"><br></div>&nbsp;                       
+                        
+                    </div>            
+            </div>
+        </form>
+    </div>
+
+</script>
+
+
+
+
+

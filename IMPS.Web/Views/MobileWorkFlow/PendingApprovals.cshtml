@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "PendingApprovals";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/NotificationsModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/NotificationsViewModel.js"></script>
+}
+@section ko_apply
+{
+var vm = new IPMSROOT.NotificationViewModel();
+    ko.applyBindingsWithValidation(vm, $("#ulPendingtask")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });   
+}
+<section class="ipmidpart">
+    <div class="topbar">
+        <div class="user">Welcome Steve</div>
+        <div class="topicons">
+            <a href="@Url.Action("DashBoard", "Mobile")"><i class="back"></i></a>
+            <a href="@Url.Action("DashBoard", "Mobile")"><i class="home"></i></a>
+            <a href="@Url.Action("Logout", "Mobile")"><i class="logout"></i></a>
+        </div>
+    </div>
+    <div id="ulPendingtask" data-bind="with: notificationModel">
+        <table width="100%" cellpadding="0" cellspacing="0" id="table" class="grid">
+            <thead>
+                <tr>
+                    <th width="29%">Entity Name</th>
+                    <th width="20%">Reference ID</th>
+                    <th width="20%">Status</th>
+                    <th width="20%">Remarks</th>
+                    <th width="11%">Actions</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: $root.GetNotificationList">
+                <tr>
+                    <td data-bind="text: EntityName"></td>
+                    <td data-bind="text: ReferenceID" />
+                    <td data-bind="text: SubCatName"></td>
+                    <td>
+                        <input type="text" name="name" class="form-control" data-bind="value: Remarks, attr: { id: WorkflowInstanceId }" />
+                    </td>
+                    <td>
+                        @* <div data-bind="foreach: GetTask">
+                            <a href="#" data-bind="click: $root.Actiontask, attr: { title: TaskName, id: TaskID }"><i class="dispicon"></i>
+
+                            </a>
+                        </div>*@
+
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td>
+                                    <div data-bind="foreach: GetTask">
+                                        <a href="#" data-bind="click: $root.Actiontask, attr: { title: TaskName, id: TaskID }"><i class="dispicon"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" title="Resubmit" onclick="document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">
+                                        <span data-bind="click: $root.MobileView" title="View"><i class="dispicon"></i></span>
+                                    </a>
+                                    <div id="light" class="white_content">
+                                        <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'"><span role="presentation" class="k-icon k-i-close wclose">Close</span></a>
+                                        <div class="content_display">
+                                            <table id="bookContainer"></table>
+                                        </div>
+                                    </div>
+                                    <div id="fade" class="black_overlay"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+

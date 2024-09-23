@@ -1,0 +1,112 @@
+2022-11-14 13:07:57,733 [31] ERROR IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IResourceAttendanceService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - Exception = 
+System.ServiceModel.CommunicationException: The sequence has been terminated by the remote endpoint. Due to a user abort the reliable session cannot continue. The reliable session was faulted.
+
+Server stack trace: 
+   at System.Runtime.InputQueue`1.WaitQueueReader.Wait(TimeSpan timeout, T& value)
+   at System.Runtime.InputQueue`1.Dequeue(TimeSpan timeout, T& value)
+   at System.ServiceModel.Channels.InputQueueChannel`1.Dequeue(TimeSpan timeout, TDisposable& item)
+   at System.ServiceModel.Channels.DuplexChannel.TryReceive(TimeSpan timeout, Message& message)
+   at System.ServiceModel.Channels.TransactionReceiveChannelGeneric`1.TryReceive(TimeSpan timeout, Message& message)
+   at System.ServiceModel.Dispatcher.DuplexChannelBinder.Request(Message message, TimeSpan timeout)
+   at System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)
+   at System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage methodCall, ProxyOperationRuntime operation)
+   at System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData& msgData, Int32 type)
+   at IPMS.ServiceProxies.Contracts.IResourceAttendanceService.GetResourceAttendanceDetails(ResourceAttendanceVO data)
+   at IPMS.ServiceProxies.Clients.ResourceAttendanceClient.<>c__DisplayClass5.<GetResourceAttendanceDetails>b__4() in d:\WORK\CodeBase\PROD\IPMS-Dev\IMPS.Web\ServiceProxies\Clients\ResourceAttendanceClient.cs:line 32
+   at IPMS.Web.ServiceProxies.UserClientBase`1.WrapOperationWithException[T](Func`1 codetoExecute) in d:\WORK\CodeBase\PROD\IPMS-Dev\IMPS.Web\ServiceProxies\UserClientBase.cs:line 72
+2022-11-14 13:07:58,640 [31] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / ResourceAttendanceDetails is  870600 (Milli seconds) 
+2022-11-14 13:08:12,372 [31] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:13,534 [45] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/NewsScroll by User : admin
+2022-11-14 13:08:13,537 [31] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/DivingRequestsForScroll by User : admin
+2022-11-14 13:08:13,537 [31] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IDivingRequestService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:13,587 [49] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Roster/GetReferenceData by User : admin
+2022-11-14 13:08:13,588 [49] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IRosterService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:13,631 [45] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / NewsScroll is  96 (Milli seconds) 
+2022-11-14 13:08:19,082 [49] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Roster / GetReferenceData is  5494 (Milli seconds) 
+2022-11-14 13:08:19,168 [45] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/GetRolePrivileges/AutomatedSlotting by User : admin
+2022-11-14 13:08:19,170 [45] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:19,577 [31] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / DivingRequestsForScroll is  6040 (Milli seconds) 
+2022-11-14 13:08:19,927 [45] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : GetRolePrivileges / AutomatedSlotting is  758 (Milli seconds) 
+2022-11-14 13:08:19,941 [40] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/GetRolePrivileges/AutomatedResourceScheduling by User : admin
+2022-11-14 13:08:19,942 [40] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:20,328 [40] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : GetRolePrivileges / AutomatedResourceScheduling is  386 (Milli seconds) 
+2022-11-14 13:08:20,338 [56] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Module/GetUserRoles by User : admin
+2022-11-14 13:08:20,338 [56] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.Web.ServiceProxies.Contracts.IModuleService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:20,953 [56] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Module / GetUserRoles is  615 (Milli seconds) 
+2022-11-14 13:08:20,973 [45] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/MobileConversation/GetNewMessages by User : admin
+2022-11-14 13:08:20,975 [45] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IMobileConversationService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:20,996 [49] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Account/GetPendingTaskCount by User : admin
+2022-11-14 13:08:20,997 [49] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:21,003 [31] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Account/GetPendingTasks by User : admin
+2022-11-14 13:08:21,006 [31] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:21,088 [56] ERROR IPMS.Web.MvcApplication - 404 - The controller for path '/Content/Images/highlight.png' was not found or does not implement IController.
+2022-11-14 13:08:21,180 [59] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Mobile/GetNotifications by User : admin
+2022-11-14 13:08:21,182 [59] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IMobileService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:21,672 [45] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : MobileConversation / GetNewMessages is  697 (Milli seconds) 
+2022-11-14 13:08:21,927 [49] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Account / GetPendingTaskCount is  930 (Milli seconds) 
+2022-11-14 13:08:21,989 [31] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Account / GetPendingTasks is  986 (Milli seconds) 
+2022-11-14 13:08:21,997 [59] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Mobile / GetNotifications is  816 (Milli seconds) 
+2022-11-14 13:08:22,012 [56] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Account/GetPendingTaskCount by User : admin
+2022-11-14 13:08:22,012 [56] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:22,454 [56] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Account / GetPendingTaskCount is  441 (Milli seconds) 
+2022-11-14 13:08:42,680 [31] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/RosterDetails by User : admin
+2022-11-14 13:08:42,680 [31] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IRosterService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:08:44,167 [31] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / RosterDetails is  1487 (Milli seconds) 
+2022-11-14 13:10:50,428 [40] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/SaveRosterData by User : admin
+2022-11-14 13:10:50,428 [40] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IRosterService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:11:00,214 [40] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / SaveRosterData is  9786 (Milli seconds) 
+2022-11-14 13:11:29,501 [59] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/RosterDetails by User : admin
+2022-11-14 13:11:29,501 [59] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IRosterService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:11:31,382 [59] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / RosterDetails is  1879 (Milli seconds) 
+2022-11-14 13:11:36,266 [40] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Roster/GetReferenceData by User : admin
+2022-11-14 13:11:36,266 [40] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IRosterService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:11:36,952 [40] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Roster / GetReferenceData is  685 (Milli seconds) 
+2022-11-14 13:11:53,119 [59] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/RosterDetails by User : admin
+2022-11-14 13:11:53,119 [59] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IRosterService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:11:54,699 [59] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / RosterDetails is  1580 (Milli seconds) 
+2022-11-14 13:14:19,644 [63] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/SaveRosterData by User : admin
+2022-11-14 13:14:19,644 [63] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IRosterService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:14:29,586 [63] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / SaveRosterData is  9941 (Milli seconds) 
+2022-11-14 13:14:54,143 [71] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:14:54,880 [82] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/DivingRequestsForScroll by User : admin
+2022-11-14 13:14:54,882 [71] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/NewsScroll by User : admin
+2022-11-14 13:14:54,882 [71] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.INewsService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:14:54,912 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/ResourceDesignationDetails by User : admin
+2022-11-14 13:14:54,912 [64] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IResourceAttendanceService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:14:55,061 [71] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / NewsScroll is  179 (Milli seconds) 
+2022-11-14 13:15:00,215 [82] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / DivingRequestsForScroll is  5335 (Milli seconds) 
+2022-11-14 13:15:00,331 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / ResourceDesignationDetails is  5418 (Milli seconds) 
+2022-11-14 13:15:01,061 [81] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/ResourceShiftDetails by User : admin
+2022-11-14 13:15:01,064 [81] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IResourceAttendanceService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:01,166 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/GetRolePrivileges/AutomatedSlotting by User : admin
+2022-11-14 13:15:01,169 [64] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:02,286 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : GetRolePrivileges / AutomatedSlotting is  1121 (Milli seconds) 
+2022-11-14 13:15:02,291 [81] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / ResourceShiftDetails is  1230 (Milli seconds) 
+2022-11-14 13:15:02,301 [67] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/GetRolePrivileges/AutomatedResourceScheduling by User : admin
+2022-11-14 13:15:02,303 [67] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:02,942 [67] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : GetRolePrivileges / AutomatedResourceScheduling is  639 (Milli seconds) 
+2022-11-14 13:15:02,953 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Module/GetUserRoles by User : admin
+2022-11-14 13:15:02,953 [64] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.Web.ServiceProxies.Contracts.IModuleService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:03,596 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Module / GetUserRoles is  644 (Milli seconds) 
+2022-11-14 13:15:03,613 [67] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/MobileConversation/GetNewMessages by User : admin
+2022-11-14 13:15:03,615 [67] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IMobileConversationService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:03,635 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Account/GetPendingTaskCount by User : admin
+2022-11-14 13:15:03,636 [64] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:03,639 [71] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Account/GetPendingTasks by User : admin
+2022-11-14 13:15:03,643 [71] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:03,755 [82] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Mobile/GetNotifications by User : admin
+2022-11-14 13:15:03,756 [82] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IMobileService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:04,316 [67] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : MobileConversation / GetNewMessages is  702 (Milli seconds) 
+2022-11-14 13:15:04,428 [64] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Account / GetPendingTaskCount is  793 (Milli seconds) 
+2022-11-14 13:15:04,470 [82] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Mobile / GetNotifications is  715 (Milli seconds) 
+2022-11-14 13:15:04,486 [67] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/Account/GetPendingTaskCount by User : admin
+2022-11-14 13:15:04,486 [67] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IAccountService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:05,023 [71] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Account / GetPendingTasks is  1383 (Milli seconds) 
+2022-11-14 13:15:05,450 [67] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : Account / GetPendingTaskCount is  964 (Milli seconds) 
+2022-11-14 13:15:12,701 [71] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Method started http://localhost:50195/api/ResourceAttendanceDetails by User : admin
+2022-11-14 13:15:12,703 [71] DEBUG IPMS.Web.ServiceProxies.UserClientBase`1[[IPMS.ServiceProxies.Contracts.IResourceAttendanceService, IPMS.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]] - client base admin
+2022-11-14 13:15:17,969 [71] INFO  IPMS.Web.Filters.LogUserActivityAttribute - Time taken to execute class / method : api / ResourceAttendanceDetails is  5267 (Milli seconds) 

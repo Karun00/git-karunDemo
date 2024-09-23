@@ -1,0 +1,158 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "Location";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/LocationModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/LocationViewModel.js"></script>
+}
+
+@section ko_apply
+{
+
+var viewModel = new IPMSROOT.LocationViewModel();
+   
+ko.applyBindingsWithValidation(viewModel, $("#Location")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="Location">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+
+
+</div>
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addlocation ">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: LocationList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'LocationNameSort', title: 'Location Name', width: '80', filterable: true },
+               { field: 'PortNameSort', title: 'Port Name', width: '80', filterable: true },
+               { field: 'RecordStatusSort', title: 'Status', width: '80', filterable: false },
+               { title: 'Actions', filterable: false }]
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+
+                        <td>
+                            <div class="nowrap"><span data-bind="text: LocationName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: PortName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: Statust"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewlocation" title="View"><i class="fa fa-eye"></i></a>  
+                                }
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editlocation" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: locationModel">
+                            @*<div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>*@
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Location Details</legend>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div style="display: none;">
+                                                        <input data-bind="kendoDropDownList: { data: $parent.PortList, value: PortCode, dataTextField: 'PortName', dataValueField: 'PortCode', enabled: $parent.IsCodeEnable }" style="display: none;" />
+                                                    </div>
+                                                    <label class="control-label col-md-6">
+                                                        Location Name:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="LocationName" name="name" maxlength="50" data-required="1" class="form-control" data-bind="value: LocationName, enable: $parent.editableView, event: { keyup: HandleLocationNameKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }">
+                                                        <span id="spanLocationName" class="validationError" data-bind="visible: $parent.UniqueNameVisible">This Location Name is already exists</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Status:<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView } " />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.SaveLocation, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                                <button type="submit" class="btn green" data-bind="click: $parent.ModifyLocation, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                <button type="submit" class="btn blue" data-bind="click: $parent.ResetLocation, visible: $parent.IsReset ">Reset</button>
+                                <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+    </div>
+</div>

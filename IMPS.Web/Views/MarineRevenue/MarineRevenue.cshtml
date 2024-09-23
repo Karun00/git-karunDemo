@@ -1,0 +1,1126 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Marine Revenue";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/MarineRevenueModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/MarineRevenueViewModel.js"></script>
+
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.MarineRevenueViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#MarineRevenueMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<style>
+    .tinytable td {
+        padding: 3px 6px 3px;
+        border-bottom: 1px solid #B0ADAD;
+        border-right: 1px solid #B0ADAD;
+    }
+
+        .tinytable td:first-child {
+            border-left: 1px solid #B0ADAD;
+        }
+
+
+    #page:last-child {
+        page-break-after: auto;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="MarineRevenueMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+
+<script type="text/html" id="List-template">
+    <div class="portlet-body">
+        <div class="table-toolbar">
+
+            <div class="portlet box advbg">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-reorder"></i>Advance Search
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                    </div>
+                </div>
+                <div class="portlet-body" data-bind="with: revenuePostingModelGrid">
+                    <div class="form-wizard">
+                        <div class="form-body form-horizontal">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Posting From :</label>
+                                            <div class="col-md-6">
+                                                <input id="RevenueFromDate" style="margin-top: 0px;" type="text" title="Revenue From" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: RevenueFrom, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SearchValidDate }" name="RevenueFrom" maxlength="10" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Posting To :</label>
+                                            <div class="col-md-6">
+                                                <input id="RevenueToDate" style="margin-top: 0px;" type="text" title="Revenue To" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: RevenueTo, format: 'yyyy-MM-dd', readonly: true, open: SearchRevenueCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="RevenueTo" maxlength="10" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group1">
+                                            <label class="control-label col-md-5">VCN :</label>
+                                            <div class="col-md-6">
+                                                @*<input type="text" id="VCNName" name="name" autocomplete="off" maxlength="15" data-required="1" class="form-control" data-bind="value: VCN">*@
+
+
+                                                <input id="VCNName" name="VCNName" onblur="VCNonblur();" onkeydown="SerchVCNBackSpace();" onkeypress="return SerchVCNBackSpaceNumValid(event)" data-bind="kendoAutoComplete: {
+    dataTextField: 'vcn', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/RevenuePostingVcnDetailsforAutocomplete', dataType: 'json' }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VCN, select: $root.VCNSelectSearch
+}" />
+                                                <span id="spanVCNSearchValid" class="validationError" data-bind="visible: $root.isspanVCNSearchValid"></span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Vessel Name/IMO No. :</label>
+                                            <div class="col-md-6">
+                                                @*<input type="text" id="VesselName" name="name" autocomplete="off" maxlength="30" data-required="1" class="form-control" data-bind="value: VesselName">*@
+
+                                                <input id="VesselName1" name="VesselName1" onblur ="Vesselonblur();" onkeydown="SerchVesselBackSpace();"  @*onkeypress="SerchVesselKeyPress()"*@ data-bind="kendoAutoComplete: {
+    dataTextField: 'VesselName', minLength: 3, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/RevenuePostingVesselDetailsforAutocomplete/', data: { columnName: '' } }
+                                                            }, schema: {
+                                                                data: function (data) { return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, value: VesselName, select: $root.VesselSelectSearch
+}" />
+                                                <span id="spanVesselSearchValid" class="validationError" data-bind="visible: $root.isspanVesselSearchValid"></span>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group1 fluid">
+                                            <div class="col-md-12">
+                                                &nbsp; &nbsp; 
+                                                <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetDataClick">Get Data</button>
+                                                &nbsp;
+                                                        <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ClearFilter">Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div>
+                @if (Model.HasAddPrivilege)
+                {
+                    <a class="button gbtngreen" data-bind="click: $root.addMarineRevenue">Add New <i class="fa fa-plus"></i></a>
+                }
+            </div>
+
+            <div data-bind="kendoGrid: {
+    data: MarineRevenueList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', width: '120px', filterable: true },
+    { field: 'VesselNameSort', title: 'Vessel Name', width: '160px', filterable: true },
+    { field: 'ATASort', title: 'Arrival Date', width: '120px', filterable: true },
+    { field: 'ATDSort', title: 'Departure Date', width: '130px', filterable: true },
+    { field: 'RegisteredNameSort', title: 'Agent', width: '110px', filterable: true },
+    { field: 'VesselTypeSort', title: 'Vessel Type', width: '150px', filterable: true },
+    { field: 'ReasonForVisitSort', title: 'Reason For Visit', width: '180px', filterable: false },
+    { title: 'Actions', width: 80, filterable: false }]
+
+}">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td data-bind="style: { backgroundColor: (AnyDangerousGoodsonBoard() == 'A') ? '#FA370E' : '' }">
+                        <div class="nowrap"><span data-bind="text: vcn "></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: ATA() ? moment(ATA()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: ATD() ? moment(ATD()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: RegisteredName "></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselType "></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: ReasonForVisit "></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                            <a href="#" data-bind="click: $root.viewMarineRevenueDetails" title="View"><i class="fa fa-eye"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </script>
+        </div>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="Form-template">
+
+    <div class="clearfix"></div>
+    <div class="portlet portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" id="form_sample_1" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: marineRevenueModel">
+                    <div class="form-group">
+                        <div id="page">
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group form-horizontal">
+                                            <label class="control-label col-md-4">Search Type: <span style="color: #D5D5D5">*</span></label>
+                                            <div class="col-md-7">
+                                                <input id="VslSrchOn" name="VslSrchOn" title="VsrchOn" data-bind="kendoDropDownList: { data: [{ name: 'VCN', val: 'VCN' }, { name: 'Vessel Name', val: 'VN' }], value: VslSrchOn, dataTextField: 'name', dataValueField: 'val' }" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Vessel Name/VCN: <span class="required">*</span></label>
+                                            <div class="col-md-7">
+                                                <input id="Vessel232" name="VCN" data-bind="kendoAutoComplete: {
+    dataTextField: 'VeselAutoName', minLength: 3, pageSize: 1
+, dataSource: {
+    serverFiltering: true,
+    transport: {
+        read: { url: '/api/MarineRevenue/GetVcnDetails', data: { columnName: 'VC', columnName1: VslSrchOn } }
+    }, schema: {
+        data: function (data) { return data; }, total: function (data) {
+            return data.length;
+        }
+    },
+}, select: $root.VesselSelect
+}, value: vcn, enable: $root.IsCodeEnable" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">Agent Name:<span class="required">*</span></label>
+                                            <div class="col-md-7">
+                                                <div class="form-control" data-bind="visible: $root.IsCodeEnable">
+                                                    <select id="marineAgentID" class="form-control" title="Agents" data-bind="options: $root.agents, optionsText: 'RegisteredName', optionsValue: 'AgentID', value: AgentID, optionsCaption: 'Choose Agent..', enable: $root.IsCodeEnable, event: { change: $root.LoadAgentAccount }, loadingWhen: $root.viewModelHelper.isLoading"></select>
+                                                </div>
+                                                <div class="col-md-6 control-label displaytxt" data-bind="with: RevenueDetails, visible: ($root.IsCodeEnable() == false)">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: RegisteredName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">SAP Accounts:<span class="required">*</span></label>
+                                            <div class="col-md-7">
+                                                <div class="form-control" data-bind="visible: $root.IsCodeEnable">
+                                                    <select id="marineAccountID" class="form-control" data-bind="options: $root.AgentAccountList, optionsText: 'AccountNo', optionsValue: 'AgentAccountID', value: AgentAccountID, enable: $root.IsCodeEnable, optionsCaption: 'Choose Agent Account..'"></select>
+                                                </div>
+                                                <div class="col-md-6 control-label displaytxt" data-bind="with: RevenueDetails, visible: ($root.IsCodeEnable() == false)">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: AccountNo"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Vessel Details</legend>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">VCN:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: vcn"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">IMO Number:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Call Sign:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: CallSign"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">GRT:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: GRT"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Vessel Type:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: VesselType"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Reason For Visit:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: ReasonForVisit"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Voyage In:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: VoyageIn"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Last Port of Call:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: LastPortOfCall"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Break Water In:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: ATA != null ? moment(ATA).format('YYYY-MM-DD HH:mm') : ''"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Voyage Out:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: VoyageOut"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Next Port of Call:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: NextPortOfCall"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Break Water Out:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: ATD != null ? moment(ATD).format('YYYY-MM-DD HH:mm') : ''"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Vessel Name:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: VesselName"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">SAP Arrival No.:</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: Arrno"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">SAP Vessel No. :</label>
+                                            <div class="col-md-6 control-label" data-bind="with: VesselData">
+                                                <label class="col-md-12 displaytxt" data-bind="text: SAPVesselNo"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="clearfix">
+                                    <br>
+                                </div>
+
+                                <fieldset>
+                                    <legend>Port Dues/ Berth Dues/Refuse Remove Posting View</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="20%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="15%" class="nosort">
+                                                    <h5>Submitted Date</h5>
+                                                </th>
+                                                <th width="15%" class="nosort">
+                                                    <h5>Posted From Date</h5>
+                                                </th>
+                                                <th width="15%" class="nosort">
+                                                    <h5>Posted To Date</h5>
+                                                </th>
+                                                <th width="15%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="10%" class="nosort">
+                                                    <h5>Units</h5>
+                                                </th>
+                                                <th width="6%" class="nosort">
+                                                    <h5>UOM</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: PortDuesDetailsView">
+                                            <tr>
+                                                <td data-bind="text: ServiceName "></td>
+                                                <td data-bind="text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: RecentlyPostedDate() != null ? moment(RecentlyPostedDate()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: PostingDateTime() != null ? moment(PostingDateTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: AccountNo"></td>
+                                                <td data-bind="text: DueHours"></td>
+                                                <td data-bind="text: UOM"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+
+
+                                <fieldset data-bind="visible: $parent.PortDueVisible">
+                                    <legend>Port Dues</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;<input type="checkbox" name="portduesAll" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'portduesitem', 'A') ">
+                                                </th>
+                                                <th width="20%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Break Water In</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Break Water Out</h5>
+                                                </th>
+                                                <th width="15%" class="nosort">
+                                                    <h5>Posting From Date</h5>
+                                                </th>
+                                                <th width="18%" class="nosort">
+                                                    <h5>Posting To Date</h5>
+                                                </th>
+
+                                                <th width="10%" class="nosort">
+                                                    <h5>Units</h5>
+                                                </th>
+                                                <th width="6%" class="nosort">
+                                                    <h5>UOM</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: PortDuesDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="portduesitem" onclick="    portduescheckitm(this, 'portduesitem', 'portduesAll') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="text: ServiceName "></td>
+                                                <td data-bind="text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: RecentlyPostedDate() != null ? moment(RecentlyPostedDate()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td>
+                                                    <input type="text" id="ETA" title="ETA" onchange=" ChangeETADate(); " onkeydown=" PreventBackSpace(); " class="datetime-picker topb" onkeypress=" return false; "
+                                                        data-bind="kendoDateTimePicker: { value: PostingDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calminmaxtoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="ETA" maxlength="0" />
+                                                </td>
+                                                <td data-bind="text: DueHours"></td>
+                                                <td data-bind="text: UOM"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                                <fieldset data-bind="visible: $parent.BerthDueVisible">
+                                    <legend>Berth Dues</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;<input type="checkbox" name="berthduesAll" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'berthduesitem', 'J') ">
+                                                </th>
+                                                <th width="20%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Break Water In</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Break Water Out</h5>
+                                                </th>
+                                                <th width="15%" class="nosort">
+                                                    <h5>Posting From Date</h5>
+                                                </th>
+                                                <th width="18%" class="nosort">
+                                                    <h5>Posting To Date</h5>
+                                                </th>
+
+                                                <th width="10%" class="nosort">
+                                                    <h5>Units</h5>
+                                                </th>
+                                                <th width="6%" class="nosort">
+                                                    <h5>UOM</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: BerthDuesDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="berthduesitem" onclick="    portduescheckitm(this, 'berthduesitem', 'berthduesAll') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="text: ServiceName "></td>
+                                                <td data-bind="text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: RecentlyPostedDate() != null ? moment(RecentlyPostedDate()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td>
+                                                    <input type="text" id="ETA1" title="ETA1" onchange=" ChangeETADatebertdue(); " onkeydown=" PreventBackSpace(); " class="datetime-picker topb" onkeypress=" return false; "
+                                                        data-bind="kendoDateTimePicker: { value: PostingDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calminmaxtodayberthdue, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="ETA1" maxlength="0" />
+                                                </td>
+                                                <td data-bind="text: DueHours"></td>
+                                                <td data-bind="text: UOM"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+
+                                <fieldset data-bind="visible: $parent.RefuseVisible">
+                                    <legend>Refuse Removal</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;<input type="checkbox" name="refuseremovalAll" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'RefuseRemoval', 'K') ">
+                                                </th>
+                                                <th width="20%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Break Water In</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Break Water Out</h5>
+                                                </th>
+                                                <th width="15%" class="nosort">
+                                                    <h5>Posting From Date</h5>
+                                                </th>
+                                                <th width="18%" class="nosort">
+                                                    <h5>Posting To Date</h5>
+                                                </th>
+
+                                                <th width="10%" class="nosort">
+                                                    <h5>Units</h5>
+                                                </th>
+                                                <th width="6%" class="nosort">
+                                                    <h5>UOM</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: RefuseRemovalDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="refuseremovalitem" onclick="    portduescheckitm(this, 'refuseremovalitem', 'refuseremovalAll') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="text: ServiceName "></td>
+                                                <td data-bind="text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: RecentlyPostedDate() != null ? moment(RecentlyPostedDate()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td>
+                                                    <input type="text" id="ETARefuse" title="ETARefuse" onchange=" ChangeETARefuseDate(); " onkeydown=" PreventBackSpace(); " class="datetime-picker topb" onkeypress=" return false; "
+                                                        data-bind="kendoDateTimePicker: { value: PostingDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 01, open: calminmaxtodayForRefuse, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="ETARefuse" maxlength="0" />
+                                                </td>
+                                                <td data-bind="text: DueHours"></td>
+                                                <td data-bind="text: UOM"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend>Arrival Movement</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table5" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;<input type="checkbox" name="ArrivalduesAll" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'Arrivalduesitem', 'B') ">
+                                                </th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Berth Name</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Unit</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: ArrivalDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="Arrivalduesitem" onclick="    portduescheckitm(this, 'Arrivalduesitem', 'ArrivalduesAll') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="  text: ServiceName "></td>
+                                                <td data-bind="  text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: BerthName"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="text: Chargedas"></td>
+                                                <td data-bind="text: UOM"></td>
+
+
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Shifting Movement</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table6" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;<input type="checkbox" name="shiftingAllchk" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'shiftingitemchk', 'C') ">
+                                                </th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Berth Name</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Unit</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: ShiftingDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="shiftingitemchk" onclick="    portduescheckitm(this, 'shiftingitemchk', 'shiftingAllchk') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="  text: ServiceName "></td>
+                                                <td data-bind="  text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: BerthName"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="  text: Chargedas"></td>
+                                                <td data-bind="text: UOM"></td>
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <fieldset>
+                                    <legend>Warping Movement</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table7" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;<input type="checkbox" name="warpingAllchk" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'warpingitemchk', 'D') "></th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Unit</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: WarpingDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="warpingitemchk" onclick="    portduescheckitm(this, 'warpingitemchk', 'warpingAllchk') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="text: ServiceName"></td>
+                                                <td data-bind="text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="  text: Chargedas"></td>
+                                                <td data-bind="text: UOM"></td>
+
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend>Sailing Movement</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table2" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;
+				<input type="checkbox" name="sailingAllchk" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'sailingitemchk', 'E') "></th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Unit</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: SailingDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="sailingitemchk" onclick="    portduescheckitm(this, 'sailingitemchk', 'sailingAllchk') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="  text: ServiceName "></td>
+                                                <td data-bind="  text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="  text: Chargedas"></td>
+                                                <td data-bind="  text: UOM"></td>
+
+
+
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Supplementary Service</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table2" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;
+				<input type="checkbox" name="supplAllchk" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'supplitemchk', 'F') "></th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time/Reading</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time/Reading</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Meter No.</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Berth Name</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Unit</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: SupplimantoryDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="supplitemchk" onclick="    portduescheckitm(this, 'supplitemchk', 'supplAllchk') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="  text: MaterialDescription "></td>
+                                                <td data-bind="  text: OperationType() == 'WTST' ? startmtrreding() : StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: OperationType() == 'WTST' ? CloseMterReding() : Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: MeterSerialNo"></td>
+                                                <td data-bind="  text: BerthName"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="  text: DueHours"></td>
+                                                <td data-bind="  text: UOM"></td>
+
+
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend>Dry Dock Details</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table3" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;
+
+				<input type="checkbox" name="drydockmainAllchk" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'drydockmainitemchk', 'G') "></th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>SAP Account No..</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Unit</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: DryDockDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="drydockmainitemchk" onclick="    portduescheckitm(this, 'drydockmainitemchk', 'drydockmainAllchk') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="  text: ServiceName "></td>
+                                                <td data-bind="  text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="  text: Chargedas"></td>
+                                                <td data-bind="  text: UOM"></td>
+
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table4" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;
+
+				<input type="checkbox" name="drydockDailyAllchk" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'drydockDailyitemchk', 'H') "></th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>Last Posted Date</h5>
+                                                </th>
+                                                <th width="12%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Total Units</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Due Units</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: DryDock12HrsDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="drydockDailyitemchk" onclick="    portduescheckitm(this, 'drydockDailyitemchk', 'drydockDailyAllchk') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="  text: ServiceName "></td>
+                                                <td data-bind="  text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: RecentlyPostedDate() != null ? moment(RecentlyPostedDate()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="  text: TotalHours"></td>
+                                                <td data-bind="  text: DueHours"></td>
+                                                <td data-bind="  text: UOM"></td>
+
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend>DryDock Miscellaneous Service</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table2" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="6%">&nbsp;
+				<input type="checkbox" name="DrydocMisAllchk" data-bind="enable: $root.IsCodeEnable" onclick="    portduescheckAll(this, 'DrydocMisitemchk', 'I') "></th>
+                                                <th width="25%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Start Time</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>End Time</h5>
+                                                </th>
+                                                <th width="13%" class="nosort">
+                                                    <h5>SAP Account No.</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>Unit</h5>
+                                                </th>
+                                                <th width="6%">
+                                                    <h5>UOM</h5>
+                                                </th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: DrydockMislaniousDetails">
+                                            <tr>
+                                                <td>
+                                                    <span data-bind="visible: ISPOSTED() == 0">
+                                                        <input type="checkbox" data-bind="checked: ischecked, visible: ISPOSTED() == 0" name="DrydocMisitemchk" onclick="    portduescheckitm(this, 'DrydocMisitemchk', 'DrydocMisAllchk') " /></span>
+                                                    <span data-bind="if: ISPOSTED() != 0">Posted</span>
+                                                </td>
+                                                <td data-bind="  text: ServiceName "></td>
+                                                <td data-bind="  text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: Endtime() != null ? moment(Endtime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: AccountNo"></td>
+                                                <td data-bind="  text: DueHours"></td>
+                                                <td data-bind="  text: UOM"></td>
+
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+
+
+
+
+
+                                <fieldset>
+                                    <legend>General Information</legend>
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table2" class="tinytable" data-bind="with: RevenueDetails">
+                                        <thead>
+                                            <tr>
+                                                <th width="15%">
+                                                    <h5>Service Name</h5>
+                                                </th>
+                                                <th width="13%">
+                                                    <h5>Service Date</h5>
+                                                </th>
+                                                <th width="25%" class="nosort">
+                                                    <h5>Remarks</h5>
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: DisplayInfo">
+                                            <tr>
+                                                <td data-bind="  text: MaterialDescription "></td>
+                                                <td data-bind="  text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></td>
+                                                <td data-bind="  text: ServiceName"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+
+
+
+
+
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" class="btn green" data-bind="click: $root.PostMarineRevenue, loadingWhen: $root.viewModelHelper.isLoading, visible: $root.IsCodeEnable">Post To SAP</button>&nbsp;
+	<button type="submit" class="btn red" data-bind="click: $root.Cancel">Cancel</button>
+                        <a class="btn purple button-submit" onclick=" javascript:printForm(); " data-bind="visible: true"><i class="fa fa-print"></i>Print</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</script>
+
+<script>
+    function printForm() {
+
+        window.print();
+    }
+</script>

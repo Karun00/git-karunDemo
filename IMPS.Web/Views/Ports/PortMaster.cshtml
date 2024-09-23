@@ -1,0 +1,51 @@
+﻿@{
+    Layout = null;
+}
+
+<h2>PortMaster</h2>
+<script src="~/Scripts/jquery-1.11.0.js"></script>
+<script src="~/Scripts/knockout-3.0.0.js"></script>
+<div>
+    <input type="button" id="btnAddNewPort" value="Add New Port" onclick="@("window.location.href='" + @Url.Action("ManagePorts", "Ports") + "'")    ;" />
+    <table border="1">
+        <thead>
+            <tr>
+                <th>PortCode</th>
+                <th>PortName</th>
+                <th>InternationalCharacter</th>
+                <th>ContactNo</th>
+                <th>Email</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: PortData">
+            <tr>
+                <td><span data-bind="text: PortCode"></span></td>
+                <td><span data-bind="text: PortName"></span></td>
+                <td><span data-bind="text: InternationalCharacter"></span></td>
+                <td><span data-bind="text: ContactNo"></span></td>
+                <td><span data-bind="text: Email"></span></td>
+                <td id="chkGrid">
+                    <input type="checkbox" data-bind="value: Status, attr: { id: 'chkPort_' + PortID }" /></td>
+                <td>
+                    <span>
+                        <a data-bind="click: $root.ViewPort" title="View">
+                            <img src="~/Images/view.png" /></a>&nbsp;&nbsp;
+                    </span>
+                </td>
+                <td>
+                    <span><a data-bind="click: $root.EditPort" title="Edit">
+                        <img src="~/Images/icon_edit.png" /></a>&nbsp;&nbsp;
+                    </span>
+                </td>
+                <td>
+                    <span><a data-bind="click: $root.DeletePort" title="Delete">
+                        <img src="~/Images/remove-icon.png" /></a>&nbsp;&nbsp;
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/Application/Ports.js"></script>
+

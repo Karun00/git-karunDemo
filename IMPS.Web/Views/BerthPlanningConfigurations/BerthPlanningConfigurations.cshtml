@@ -1,0 +1,185 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "BerthPlanningConfigurations";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/BerthPlanningConfigurationsModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/BerthPlanningConfigurationsViewModel.js"></script>
+}
+@section ko_apply
+{
+
+var viewModel = new IPMSROOT.BerthPlanningConfigurationsViewModel();  
+   ko.applyBindingsWithValidation(viewModel, $("#BerthPlanningConfigurations")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="BerthPlanningConfigurations">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addberthplanconfig ">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+
+                <div data-bind="kendoGrid: {
+    data: BerthPlanningConfigsList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' }, int: { eq: 'Is equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'BerthPlanConfigidSort', title: 'BerthPlanConfigid', width: '160px', hidden: true },
+                 { field: 'DaysSort', title: 'Days', width: '100px', filterable: true },
+                 { field: 'SlotSort', title: 'Slot', width: '160px', filterable: true },
+                 { field: 'PortCodeSort', title: 'Port Code', width: '160px', filterable: true },
+                 { title: 'Status', width: '70px', filterable: false },
+                 { title: 'Actions', width: '70px', filterable: false }]
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td hidden="hidden">
+                            <div class="nowrap"><span data-bind="text: BerthPlanConfigid"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Days"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Slot"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: PortCode"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: Statust"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editberthplanconfig" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewberthplanconfig" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                &nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet portlet-body form">
+                    <form action="#" id="form_sample_1" class="form-horizontal">
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                            <div class="form-body" data-bind="with: berthplanningconfigurationsModel">
+                                @*<div id="divValidationError" class="alert alert-danger display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    You have some form errors. Please check below.
+                                </div>
+                                <div id="divValidationSuccess" class="alert alert-success display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    Your form validation is successful!
+                                </div>*@
+                                <div class="tab-pane active" id="tab1">
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend>Berth Planning Configurations Details</legend>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Days:
+                                                        <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" id="Days" name="days" maxlength="1" data-required="1" class="form-control" data-bind="value: Days, enable: $parent.editableView, event: { keypress: Validatenumeric } ">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Slot:
+                                                    	<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" id="Slot" name="slot" maxlength="1" data-required="1" class="form-control" data-bind="value: Slot, enable: $parent.editableView, event: { keypress: Validatenumeric }">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Port Name:
+                                                    	<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input data-bind="kendoDropDownList: { data: $parent.PortList, value: PortCode, dataTextField: 'PortName', dataValueField: 'PortCode', enabled: $parent.IsCodeEnable, optionLabel: 'Select...', enabled: $parent.editableView }, event: { change: $parent.ValidEvent }" />
+                                                            <span id="spanportid" class="validationError" data-bind="validationMessage: PortCode">Please select the Port Name</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Status:<span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView } " />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                    <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.Saveberthplanconfig, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                                    <button type="submit" class="btn green" data-bind="click: $parent.Modifyberthplanconfig, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                    <button type="submit" class="btn blue" data-bind="click: $parent.Resetberthplanconfig, visible: $parent.IsReset ">Reset</button>
+                                    <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </script>
+    </div>
+</div>
+

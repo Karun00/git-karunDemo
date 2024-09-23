@@ -1,0 +1,126 @@
+IF EXISTS
+      (SELECT *
+         FROM sys.objects
+        WHERE     object_id =
+                     OBJECT_ID (N'[dbo].[usp_ArrivalNotification_DuplicateValidation]')
+              AND type IN (N'P'))
+   DROP PROCEDURE [dbo].[usp_ArrivalNotification_DuplicateValidation]
+GO
+Create PROCEDURE [dbo].[usp_ArrivalNotification_DuplicateValidation] (
+   @ArVCN        NVARCHAR (12),
+   @StartDate    DATETIME,
+   @EndDate      DATETIME,
+   @VesselID     INT,
+   @PortCode     NVARCHAR (2),
+   @VoyageIn     NVARCHAR (50),
+   @VoyageOut    NVARCHAR (50))
+AS
+   BEGIN
+      DECLARE @Cnt1   INT
+      DECLARE @Cnt2   INT
+      DECLARE @Cnt3   INT
+      DECLARE @Cnt4   INT
+
+      --AN/Vessel is on berth
+      SET @Cnt1 =
+             (SELECT count (1)
+                FROM ArrivalNotification an
+                     INNER JOIN VesselCall vc ON vc.VCN = an.VCN
+               WHERE     an.VesselID = @VesselID
+                     AND an.PortCode = @PortCode
+                     AND vc.ATUB IS NULL
+                     AND vc.ATA IS NOT NULL
+                     AND an.VCN != @ArVCN
+                     AND an.RecordStatus = 'A')
+      --AN  Raised
+      SET @Cnt2 =
+             (SELECT count (1)
+                FROM ArrivalNotification an
+               WHERE     an.PortCode = @PortCode
+                     AND an.VesselID = @VesselID
+                     AND an.Isdraft = 'N'
+                     AND an.IsANFinal != 'Y'
+                     AND an.RecordStatus = 'A'
+                     AND an.VCN != @ArVCN
+                     AND an.ETD >= CONVERT (DATETIME, @StartDate, 120))
+      --AN Raised and Approved
+      SET @Cnt3 =
+             (SELECT count (1)
+                FROM ArrivalNotification an
+                     INNER JOIN VesselCall vc ON vc.VCN = an.VCN
+               WHERE     an.VesselID = @VesselID
+                     AND an.PortCode = @PortCode
+                     AND vc.ATA IS NULL
+                     AND an.IsANFinal = 'Y'
+                     AND an.VCN != @ArVCN
+                     AND an.RecordStatus = 'A')
+      --AN Rejected
+      SET @Cnt4 =
+             (SELECT count (1)
+                FROM ArrivalNotification an
+                     JOIN WorkflowInstance wf
+                        ON wf.WorkflowInstanceId = an.WorkflowInstanceId
+               WHERE     an.PortCode = @PortCode
+                     AND an.VesselID = @VesselID
+                     AND an.Isdraft = 'N'
+                     AND an.IsANFinal = 'Y'
+                     AND an.RecordStatus = 'I'
+                     AND wf.WorkflowTaskCode = 'WFRE'
+                     AND (   an.VoyageIn = @VoyageIn
+                          OR an.VoyageOut = @VoyageOut))
+
+
+      IF @Cnt1 > 0
+         SELECT TOP (1) concat ('1@', an.VCN)
+           FROM ArrivalNotification an
+                INNER JOIN VesselCall vc ON vc.VCN = an.VCN
+          WHERE     an.VesselID = @VesselID
+                AND an.PortCode = @PortCode
+                AND vc.ATUB IS NULL
+                AND vc.ATA IS NOT NULL
+                AND an.RecordStatus = 'A'
+                AND an.VCN != @ArVCN
+         ORDER BY an.VCN DESC
+      ELSE
+         IF @Cnt2 > 0
+            SELECT TOP (1) concat ('2@', an.VCN)
+              FROM ArrivalNotification an
+             WHERE     an.VCN != @ArVCN
+                   AND an.VesselID = @VesselID
+                   AND an.PortCode = @PortCode
+                   AND an.Isdraft = 'N'
+                   AND an.IsANFinal != 'Y'
+                   AND an.RecordStatus = 'A'
+                   AND an.ETD >= CONVERT (DATETIME, @StartDate, 120)
+            ORDER BY an.VCN DESC
+         ELSE
+            IF @Cnt3 > 0
+               SELECT TOP (1) concat ('2@', an.VCN)
+                 FROM ArrivalNotification an
+                      INNER JOIN VesselCall vc ON vc.VCN = an.VCN
+                WHERE     an.VesselID = @VesselID
+                      AND an.VCN != @ArVCN
+                      AND an.PortCode = @PortCode
+                      AND vc.ATA IS NULL
+                      AND an.IsANFinal = 'Y'
+                      AND an.RecordStatus = 'A'
+               ORDER BY an.VCN DESC
+            ELSE
+               IF @Cnt4 > 0
+                  SELECT TOP (1) concat ('3@', an.VCN)
+                    FROM ArrivalNotification an
+                         JOIN WorkflowInstance wf
+                            ON wf.WorkflowInstanceId = an.WorkflowInstanceId
+                   WHERE     an.PortCode = @PortCode
+                         AND an.VesselID = @VesselID
+                         AND an.Isdraft = 'N'
+                         AND an.IsANFinal = 'Y'
+                         AND an.RecordStatus = 'I'
+                         AND wf.WorkflowTaskCode = 'WFRE'
+                         AND (   an.VoyageIn = @VoyageIn
+                              OR an.VoyageOut = @VoyageOut)
+                  ORDER BY an.VCN DESC
+               ELSE
+                  SELECT '0@0'
+   END
+GO

@@ -1,0 +1,493 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Integrated Port Management System - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+
+    <link href="@Url.Content("~/Content/Styles/font-awesome.min.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/bootstrap.min.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/uniform.default.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/select2_metro.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Styles/style-metronic.css")" rel="stylesheet")" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/style.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/style-responsive.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/plugins.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/default.css")" rel="stylesheet" type="text/css" id="style_color"/>
+    <link href="@Url.Content("~/Content/Styles/login-soft.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/custom.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/default.css")" rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Content/Styles/toastr.css")" rel="stylesheet" type="text/css"/>
+    <script src="@Url.Content("~/Scripts/Lib/jquery-2.0.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery-migrate-1.2.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/twitter-bootstrap-hover-dropdown.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.slimscroll.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.blockui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.cokie.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.uniform.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.backstretch.min.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/Lib/jquery.bootstrap.wizard.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/spinner.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap-datepicker.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/jquery.dataTables.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/DT_bootstrap.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap-maxlength.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap.touchspin.js")" type="text/javascript"></script>
+
+    <script  src="@Url.Content("~/Scripts/Lib/select2.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/app.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/Lib/form-validation.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/form-wizard.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/form-components.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/Lib/login-soft.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/newsTicker.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Lib/toastr.js")" type="text/javascript"></script>
+
+    @Scripts.Render("~/bundles/KnockoutScripts")
+
+    <script src="~/Scripts/Application/IpmsRoot.js"></script>
+    <script src="~/Scripts/Application/Model/AccountLoginModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AccountLoginViewModel.js"></script>
+
+    <link rel="shortcut icon" href="@Url.Content("~/Content/Images/favicon.ico") "/>
+    <style>
+        .validationMessage {
+            background: none repeat scroll 0% 0% #D45252;
+            border-radius: 3px;
+            color: #FFF;
+            margin: -5px 0px 0px;
+            font-size: 10px;
+            padding: 0px 6px;
+            z-index: 999;
+            position: absolute;
+        }
+
+        .validationError {
+            background: #d45252;
+            border-radius: 3px 3px 3px 3px;
+            color: white;
+            margin: -5px 0 0 0px;
+            font-size: 10px;
+            padding: 0px 6px;
+            z-index: 999;
+            position: absolute;
+            white-space: nowrap;
+            left: auto;
+        }
+
+        .inputError {
+            border: 1px solid #B94A48 !important;
+            border-color: #B94A48;
+        }
+
+        .newsCss {
+            height: auto;
+            border: 0px solid #c3501d;
+        }
+
+        .rem {
+            display: inline;
+        }
+
+        .shead {
+            background-color: #35aa47;
+            color: #000; /*text-align:center; */
+            min-width: 150px;
+            text-indent: 5px;
+            padding: 3px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        #newsData {
+            width: 100%;
+            display: inline-block;
+            opacity: 1;
+            filter: alpha(opacity=100);
+        }
+
+        .l {
+            border: 0;
+            float: right;
+        }
+
+        .r { /*margin-right:-21px;*/
+            border: 0;
+            float: right;
+        }
+
+        .navbar-fixed-top, .navbar-fixed-bottom {
+            position: relative;
+            right: 0;
+            left: 0;
+            z-index: 1030;
+        }
+
+        .portlet > .portlet-title > .tools > a.expand {
+            margin-bottom: 2px;
+            background-image: url(/Content/Images/portlet-collapse-icon-white.png) !important;
+            width: 14px;
+            text-decoration: none !important;
+        }
+
+        .portlet > .portlet-title > .tools > a.collapse {
+            margin-bottom: 2px;
+            background-image: url(/Content/Images/portlet-expand-icon-white.png) !important;
+            width: 14px;
+            text-decoration: none !important;
+        }
+
+        .uselinkbg {
+            background-color: #ace33c;
+            border: 0px solid #f00;
+        }
+
+        .caption {
+            margin-left: -200px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .portlet.box.green {
+            border: 1px solid #35A446;
+            border-top: 0;
+            border-radius: 3px!important;
+        }
+
+            .portlet.box.green > .portlet-title {
+                background-color: rgba(53, 170, 71, 0);
+                padding: 7px;
+            }
+
+        .portlet > .portlet-title {
+            margin-bottom: 15px;
+            border-bottom: 0px solid #eee;
+        }
+
+        .portlet-body {
+            background-color: #fff !important;
+        }
+
+        .usereq div > a {
+            padding: 6px 0 6px 13px;
+            color: #333;
+            text-decoration: none;
+            display: block;
+            clear: both;
+            font-weight: normal;
+            line-height: 18px;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+            .usereq div > a:hover,
+            .usereq .active > a,
+            .usereq div .active > a:hover {
+                text-decoration: none;
+                background-image: none;
+                background-color: #eee;
+                color: #333;
+                filter: none;
+            }
+
+        .bfont {
+            font-size: 13px !important;
+        }
+
+        .dropdown-menu {
+            width: 238px !important;
+        }
+
+        .header .navbar-nav > li.dropdown .dropdown-toggle {
+            margin: 3px;
+        }
+    </style>
+
+</head>
+<body>
+    <div style="top: 0; right: 0; z-index: 9999; position: absolute">
+        <img src="~/Content/Images/login-logo.jpg">
+    </div>
+    <div style="background: #FFF; height: 75px; display: block"></div>
+
+    <header class="header navbar navbar-inverse navbar-fixed-top">
+        <div style="padding: 0 175px 0 0px">
+            <div class="header-inner">
+                <span class="name">Integrated Port Management System</span>
+                <ul class="nav navbar-nav pull-right">
+
+                    <li class="dropdown" id="header_notification_bar">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <i class="fa fa-home"></i>Home
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <i class="fa fa-compass"></i>About Us &nbsp; &nbsp;</a>
+                        <ul class="dropdown-menu extended inbox">
+                            <li>
+                                <p>About Us</p>
+                            </li>
+                            <li>
+                                <ul class="dropdown-menu-list scroller" style="height: 250px; padding: 10px;">
+                                    <li><b>Transnet National Ports Authority [TNPA]</b></li>
+                                    <li>
+                                    The South African ports are operated by Transnet National Ports Authority [TNPA] which is an operating division of Transnet SOC Ltd., a State Owned Company [SOC].
+                                    <li>&nbsp;</li>
+                                    <li>TNPA is a port authority that manages eight ports in South Africa. It has several business units providing various services to a diverse spectrum of port users. These include Marine Operations, Vessel Traffic Services (VTS), Infrastructure and licensing of port services which is provided in a safe and secure environment.</li>
+                                    <li>&nbsp;</li>
+                                    <li>Marine Operations, Vessel Traffic Services and monitoring of terminal performance together with oversight functions form the core of TNPA’s service offering </li>
+                                    <li>&nbsp;</li>
+                                    <li><b>Integrated Port Management System (IPMS) </b></li>
+                                    <li>&nbsp;</li>
+                                    <li>Integrated Port Management System (IPMS) will provide real-time access to the full range of operational information in order to deliver effective and efficient services to our customers and improve port performance.</li>
+                                    <li>&nbsp;</li>
+                                    <li>IPMS solution  provides an integrated  system with  a structured framework  and workflow  to capture,  process, notify and share information  amongst  all users at the appropriate  level in order to manage  business processes in an efficient and timely  manner. </li>
+                                    <li>&nbsp;</li>
+                                    <li>Through this solution TNPA is deriving better value by:</li>
+                                    <li></li>
+                                    <ol>
+                                        <li>Effectively enhancing the distribution of information across the ports & port users</li>
+                                        <li>Improved and efficient service delivery to Customers;</li>
+                                        <li>Enhanced benefits to all Stakeholders;</li>
+                                        <li>Standardized marine services processes across multiple Ports;</li>
+                                        <li>Optimizing resources and improving efficiency; and</li>
+                                        <li>Centralized, accurate, credible and transparent information readily available to management and Port users.</li>
+                                        <li>Improved oversight function of terminal activities</li>
+                                        <li>Improved management of dangerous goods</li>
+                                        <li>Serve as information for TNPA of all departments in all ports</li>
+                                        <li>Effective monitoring of all port services</li>
+                                        <li>Improved information flow between all port users</li>
+                                        <li>Improved coordination between TNPA, Terminals & transporters  & customers</li>
+                                        <li>Overview of all activities</li>
+                                        <li>Improved  management of dangerous goods</li>
+
+                                    </ol>
+
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <script id="customMessageTemplate" type="text/html">
+        <span class="validationError" data-bind='validationMessage: field'></span>
+    </script>
+    <section class="login" id="accountlogin">
+        <article class="content">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="login-form">
+                    <form data-bind="with: accountModel">
+                        <h3 class="form-title">Welcome to IPMS.</h3>
+                        <p>Please enter your username and password to login.</p>
+                        <div class="alert alert-danger display-hide">
+                            <button class="close" data-close="alert"></button>
+                            <span>Enter any username and password.
+                            </span>
+                        </div>
+                        <div class="form-group" id="MyForm">
+                            <label class="control-label visible-ie8 visible-ie9">Username</label><span id="cusername" hidden="hidden">@ViewBag.UserName</span>
+                            <div class="input-icon">
+                                <i class="fa fa-user"></i>
+                                <input id="txtusername" class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username" data-bind="value: username" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label visible-ie8 visible-ie9">Password</label><span id="cpwd" hidden="hidden">@ViewBag.Password</span>
+                            <div class="input-icon">
+                                <i class="fa fa-lock"></i>
+                                <input id="txtpwd" class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Password" name="password" data-bind="value: password, enterkey: checkLogindet" />
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <br>
+                        </div>
+                        <div class="form-actions rem">
+                            <label class="checkbox">
+                                <input type="checkbox" id="chkTermsConditions"   />
+
+@*<a target="_blank" onclick="window.open(@Url.Action("TermsConditions", "Account"), "popupWindow", "width=600,height=800,scrollbars=yes");">I accept the terms and conditions</a>*@
+                                   <a target="_blank" onclick="TermsCondition();" style="font-weight:normal; cursor: pointer;">I accept the terms and conditions</a>
+
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" id="chkRemember" data-bind="checked: RememberMe" />
+                                Remember me
+                            </label>
+                            
+                            <button type="submit" class="btn green pull-right" id="btnLogin" data-bind="click: checkLogindet">
+                                Login <i class="m-icon-swapright m-icon-white"></i>
+                            </button>
+                            <span id="spanReturnUrl" hidden="hidden">@ViewBag.ReturnUrl</span>
+                             
+                                               
+                    
+
+                            
+                        </div>
+                    </form>
+                   
+                    <div class="forget-password">
+                        <a href="javascript:;" id="forget-password"><span class="fa fa-arrow-circle-right">&nbsp; </span>Forgot password?</a>
+                    </div>
+                    <div class="create-account">
+                    </div>
+
+                    <div class="btn-group" style="width: 279px;">
+                        <button type="button" style="width: 85%;" class="btn green dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                            User Requests <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                          <!-- Commented Below Code for Disabling respected links on based client requirement,once if they are required just uncomment below and comment the below BLOCK CODE -->
+                          <li>
+                                <a href="@Url.Content("~/Agent/NewAgentRegistration")" class="bfont"><span class="fa fa-arrow-circle-right bfont" disabled>&nbsp; </span>New Agent Registration</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Content("~/LicensingRequest")"  class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>New Licensing Request</a>
+                            </li>                           
+                            <li>
+                                <a href="@Url.Content("~/Hour24AndSection625")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>24 Hours Incident Report </a>
+                            </li>
+                             <li>
+                                <a href="@Url.Content("~/UserRegistration")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>User Registration</a>
+                            </li>
+
+                           <!-- BLOCK CODE For Above   -->
+
+@*                            <li>
+                               <a href="#" class="bfont" style="color:#bbb"><span class="fa fa-arrow-circle-right bfont" style="color:#bbb">&nbsp; </span>New Agent Registration</a>
+                            </li>
+                            <li>
+                                <a href="#" class="bfont" style="color:#bbb"><span class="fa fa-arrow-circle-right bfont" style="color:#bbb">&nbsp; </span>New Licensing Request</a>                               
+                            </li>  *@                         
+                            <li>
+                                <a href="@Url.Content("~/Hour24AndSection625")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>24 Hours Incident Report </a>                              
+                            </li>
+                             <li>
+                                <a href="#" class="bfont" style="color:#bbb"><span class="fa fa-arrow-circle-right bfont" style="color:#bbb">&nbsp; </span>User Registration</a>                               
+                            </li>
+                             <li>
+                                <a href="@Url.Content("~/PilotExemptionRequest")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>Pilot Exemption Request</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Content("~/PortEntryPassApplication")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>Port Entry Pass </a>
+                            </li>                          
+                            <li>
+                                <a href="@Url.Content("~/PortInformationMaster")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>Port Information</a>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    <div id="newsData" class="row newsCss"></div>
+                 @*   <ul id="newsList">
+            <li class="news-item">
+                <p>
+                    <span class="shead">Don't have an account yet ?</span>
+                   <a href="@Url.Content("~/Agent/NewAgentRegistration")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>New Agent Registration</a>
+                </p>
+            </li>
+            <li class="news-item">
+                <p>
+                    <span class="shead">Don't have an account yet ?</span>
+                    <a href="@Url.Content("~/LicensingRequest")"  class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>New Licensing Request</a>
+                </p>
+            </li>
+            <li class="news-item">
+                <p>
+                    <span class="shead">Don't have an account yet ?</span>
+                    <a href="@Url.Content("~/PilotExemptionRequest")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>Pilot Exemption Request</a>
+                </p>
+            </li>
+
+               <li class="news-item">
+                <p>
+                    <span class="shead">Don't have a Permit yet ?</span>
+                    <a href="@Url.Content("~/PortEntryPassApplication")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>Port Entry Pass </a>
+                </p>
+            </li>
+                <li class="news-item">
+                <p>
+                    <span class="shead">Don't know 24 hours report yet ?</span>
+                    <a href="@Url.Content("~/Hour24AndSection625")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>24 Hours Incident Report 62(5)</a>
+                </p>
+            </li>
+            <li class="news-item">
+                <p>
+                    <span class="shead">Don't have an account yet ?</span>
+                    <a href="NewUserRegistration-VSMT-101.106.html" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>User Registration</a>
+                    <a href="@Url.Content("~/UserRegistration")" class="bfont"><span class="fa fa-arrow-circle-right bfont">&nbsp; </span>User Registration</a>
+                </p>
+            </li>
+        </ul>*@
+        <input type="button" id="nextDiv" value=">" class="btna r btn-primary">
+        <input type="button" id="prevDiv" value="<" class="btna l btn-primary">
+
+                    <div class="clearfix">
+                        <br>
+                    </div>
+                </div>
+
+                <form class="forget-form" action="~/Account/Login" method="post" data-bind="with: forgotPasswordModel">
+                    <h3>Forgot password ?</h3>
+                    <p>
+                        Enter your User Name below to reset your password.
+                    </p>
+                    <div class="form-group">
+                        <div>
+                            <input id="txtusername1" class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="User Name" name="username" data-bind="value: username" />
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="back-btn" class="btn">
+                            <i class="m-icon-swapleft"></i>Back
+                        </button>
+                        <button type="submit" id="btnFgtPwd" class="btn green pull-right" data-bind="click: ResetUserPwd">
+                            Submit <i class="m-icon-swapright m-icon-white"></i>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </article>
+    </section>
+    <script>
+        IPMSROOT.rootPath = '@Url.Content("~")';
+        $(function () {
+            App.init();
+            Login.init();
+            $('#newsList').newsTicker();
+        });
+
+        $(function () {
+            var vm = new IPMSROOT.AccountLoginViewModel();
+            ko.applyBindingsWithValidation(vm, $("#accountlogin")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });
+        });
+
+        function TermsCondition() {
+            var url = '@Url.Action("TermsConditions", "Account")';
+            window.open(url, "popup", "width=1000, height=600, top=50, left=400");
+        
+        }
+
+    </script>
+
+
+</body>
+</html>
+

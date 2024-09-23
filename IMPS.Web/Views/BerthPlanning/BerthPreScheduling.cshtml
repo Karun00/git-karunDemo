@@ -1,0 +1,533 @@
+﻿@{
+    ViewBag.Title = "Berth Pre Scheduling";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+
+    <script src="~/Scripts/Application/Model/BerthPreSchedulingModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/BerthPreSchedulingViewModel.js"></script>
+    <script src="~/Scripts/Lib/bootbox.min.js"></script>
+
+}
+
+<style type="text/css">
+    .legend-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid #666;
+    }
+
+        .legend-icon span {
+            margin-left: 15px;
+            margin-top: -4px !important;
+            display: block;
+        }
+
+    .td-width {
+        width: 100px;
+    }
+</style>
+
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.BerthPreSchedulingViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#BerthPreScheduling")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle">Berth Pre-Scheduling</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div id="BerthPreScheduling">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div class="row">
+                <div class="col-md-6" style="float: right">
+                    <fieldset>
+                        <table border='0' width="100%" cellpadding='3' cellspacing='3'>
+                            <tr>
+                                <td class='td-width'>
+                                    <div class='legend-icon' style="background-color: #FFFFFF;"><span class='left-span'>Pending</span></div>
+                                </td>
+                                <td class='td-width'>
+                                    <div class='legend-icon' style="background-color: #FFBF00;"><span class='left-span'>Scheduled</span></div>
+                                </td>
+                                <td class='td-width'>
+                                    <div class='legend-icon' style="background-color: #006400;"><span class='left-span'>Confirmed</span></div>
+                                </td>
+                                <td class='td-width'>
+                                    <div class='legend-icon' style="background-color: #CD6090;"><span class='left-span'>Berthed</span></div>
+                                </td>
+                                <td class='td-width'>
+                                    <div class='legend-icon' style="background-color: #0000A0;"><span class='left-span'>Sailed</span></div>
+                                </td>
+                                <td class='td-width'>
+                                    <div class='legend-icon' style="background-color: #bc1503;"><span class='left-span'>Arrested</span></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+
+                </div>
+                <div class="col-md-12">
+                    <div class="portlet box advbg">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-reorder"></i>Advance Search
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse"></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body" data-bind="with: berthprescheduleReferenceData">
+                            <div class="form-wizard">
+                                <div class="form-body form-horizontal">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Agent:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="_Agent" name="Agent" data-bind="kendoDropDownList: { data: Agents, value: selectedAgentID, dataTextField: 'RegisteredName', dataValueField: 'AgentID', optionLabel: 'Select...' }" />
+                                                            @*<input id="_Agent"  data-bind="kendoAutoComplete: { data: Agents, dataTextField: 'RegisteredName',  value: selectedAgentID , select: $root.AgentSelect, filter:'contains'} " />*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">ETA From:</label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group">
+                                                            <div class="col-md-5">
+                                                                <input id="SearchETAFrom" type="text" class="date-picker form-control " onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: ETA, format: 'yyyy-MM-dd', readonly: true }, event: { change: SearchValidDate }" name="ETA" maxlength="10" />
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <span class="input-group-addon" style="height: 20px;">to</span>
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <input id="SearchETATo" type="text" class="date-picker form-control " onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: ETD, format: 'yyyy-MM-dd', readonly: true }, event: { change: SearchValidDate }" name="ETD" maxlength="10" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-5">Vessel Type:</label>
+                                                    <div class="col-md-7">
+                                                        <div class="form-control">
+                                                            <input id="_VesselType" name="VesselType" data-bind="kendoDropDownList: { data: VesselTypes, value: selectedVesselType, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...' }" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Reason for Visit:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="form-control">
+                                                            <input id="_ReasonforVisit" name="ReasonforVisit" data-bind="kendoDropDownList: { data: ReasonsforVisit, value: selectedReasonforVisit, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...' }" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-3">Cargo Type:</label>
+                                                    <div class="col-md-9">
+                                                        <div class="form-control">
+                                                            <input id="_CargoType" name="CargoType" data-bind="kendoDropDownList: { data: CargoTypes, value: selectedCargoType, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...', enabled: $parent.editableView }" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group1">
+                                                    <label class="control-label col-md-5">Status:</label>
+                                                    <div class="col-md-7">
+                                                        <div class="form-control">
+                                                            <input id="_Status" name="Status" data-bind="kendoDropDownList: { data: $root.berthprescheduleReferenceData().MovementsStatus, value: selectedMovementStatus, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...', enabled: $parent.editableView }" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-5"></div>
+                                            <div class="col-md-3">
+                                                <div class="row">
+                                                    <div class="col-md-5"></div>
+                                                    <div class="col-md-7 fluid">
+                                                        <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetDataClick">Get Data</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grid" data-bind="kendoGrid: {
+    data: berthprescheduleList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ title: 'Actions', filterable: true, width: 140 },
+           { field: 'VCN', title: 'VCN', width: 105, filterable: false },
+           { field: 'VesselName', title: 'Vessel Name', width: 120, filterable: false },
+            { field: 'Berth', title: 'Allocated Berth', filterable: false, width: 120, headerAttributes: { style: 'overflow: visible;white-space: normal;' } },
+           { field: 'VesselType', title: 'Vessel Type', width: 120, filterable: false },
+           { field: 'Agent', title: 'Agent', width: 120, filterable: false },
+           { field: 'ETA', title: 'ETA Changes', width: 70, filterable: false, headerAttributes: { style: 'overflow: visible;white-space: normal;' } },
+           { field: 'LengthOverallInM', title: 'LOA', filterable: false, width: 60 },
+           { field: 'MaxDraft', title: 'Max. Draft', filterable: false, width: 60, headerAttributes: { style: 'overflow: visible;white-space: normal;' } },
+           { field: 'MovementTypeName Type', title: 'Movement Type', filterable: false, width: 80, headerAttributes: { style: 'overflow: visible;white-space: normal;' } },
+           { field: 'IMDG', title: 'IMDG', filterable: false, width: 60 },
+           { field: 'NominationDate', title: 'Nomination Date', width: 115, filterable: false },
+           { field: 'ETA', title: 'ETA', width: 115, filterable: false },
+           { field: 'ETD', title: 'ETD', filterable: false, width: 115 },
+           { field: 'PreferredBerth', title: 'Preferred Berth', filterable: false, width: 120 },
+           { field: 'AlternateBerth', title: 'Alternate Berth', filterable: false, width: 120 },
+           { field: 'ReasonforVisit', title: 'Reason for Visit', width: 120, filterable: false },
+           { field: 'CargoTypeName', title: 'Cargo Type', width: 120, filterable: false },
+           { field: 'ETB', title: 'ETB', filterable: false, width: 115 },
+           { field: 'ETUB', title: 'ETUB', filterable: false, width: 115 },
+           { field: 'CurrentDate', title: 'Current Date', filterable: false, width: 60, hidden: true }]
+}, loadingWhen: $root.viewModelHelper.isLoading">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td>
+                        <div class="nowrap">
+                            <button type="submit" class="btn btn-xs blue" data-bind="click: $root.ScheduleClick, enable: MovementStatus == 'BERT' ? false : MovementStatus == 'SALD' ? false : MovementStatus == 'CONF' ? false : MovementStatus == 'SCH' ? false : moment(ETD).format('YYYY-MM-DD HH:mm') < moment(CurrentDate).format('YYYY-MM-DD HH:mm') ? false : true ">Schedule</button>
+                            <button type="submit" class="btn btn-xs blue" data-bind="click: $root.ConfirmClick, enable: MovementStatus == 'BERT' ? false : MovementStatus == 'SALD' ? false : MovementStatus == 'CONF' ? false : MovementStatus == 'MPEN' ? false : moment(ETD).format('YYYY-MM-DD HH:mm') < moment(CurrentDate).format('YYYY-MM-DD HH:mm') ? false : true ">Confirm</button>
+                        </div>
+                    </td>
+                    @*    <td  data-bind="style: { color: isVesselArrested == true ? 'white' : MovementStatus == 'SCH' ? 'white' : MovementStatus == 'CONF' ? 'white' : MovementStatus == 'BERT' ? 'white' : ' ', backgroundColor: isVesselArrested == true ? 'red' : MovementStatus == 'SCH' ? '#FFBF00' : MovementStatus == 'CONF' ? '#006400' : MovementStatus == 'BERT' ? '#CD6090' : 'white' }">
+                        <div class="nowrap">
+                            <span data-bind="text: VCN, attr: { title: VCN }"></span>
+                        </div>
+                    </td> *@
+                    <td data-bind="style: { color: isVesselArrested == true ? 'white' : MovementStatus == 'SCH' ? 'white' : MovementStatus == 'CONF' ? 'white' : MovementStatus == 'BERT' ? 'white' : MovementStatus == 'SALD' ? 'white' : ' ', backgroundColor: VesselColor }">
+                        <div class="nowrap">
+                            <span data-bind="text: VCN, attr: { title: VCN }"></span>
+                        </div>
+                    </td>
+
+
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Berth"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: VesselType"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: Agent"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: NoofTimesETAChanged"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: LengthOverallInM"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: MaxDraft"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: MovementTypeName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: IMDG"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(NominationDate).format('YYYY-MM-DD HH:mm')"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(ETA).format('YYYY-MM-DD HH:mm')"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(ETD).format('YYYY-MM-DD HH:mm')"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: PreferredBerth"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: AlternateBerth"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: ReasonForVisitName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: CargoTypeName"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(BerthTime).format('YYYY-MM-DD HH:mm')"></span></div>
+                        @* <div class="nowrap"><span data-bind="text: moment(ETB).format('YYYY-MM-DD HH:mm')"></span></div>*@
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(UnBerthTime).format('YYYY-MM-DD HH:mm')"></span></div>
+                    </td>
+
+                    <td>
+                        <div class="nowrap"><span data-bind="text: moment(CurrentDate).format('YYYY-MM-DD HH:mm')"></span></div>
+                    </td>
+                </tr>
+            </script>
+
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <form action="#" class="form-horizontal" id="submit_form">
+                            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                                <div class="form-body" data-bind='with: berthpreschedulingModel'>
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend>Schedule Details</legend>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">VCN:</label>
+                                                        <div class="col-md-6 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: VCN"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Vessel Name:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: VesselName"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Vessel Type:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: VesselType"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Agent Name:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: Agent"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Nomination Date:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: moment(NominationDate).format('YYYY-MM-DD HH:mm')"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Reason for Visit:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: ReasonForVisitName"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">IMDG:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: IMDG"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Cargo Type:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: CargoTypeName"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">LOA:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: LengthOverallInM"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Max. Draft:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: MaxDraft"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Tidal:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: IsTidal"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Preferred Berth:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: PreferredBerth"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">Alternate Berth:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: AlternateBerth"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Reason for Alt Berth:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: ReasonforAlternateBerth"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">ETA:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: moment(ETA).format('YYYY-MM-DD HH:mm')"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">ETD:</label>
+                                                        <div class="col-md-5 control-label" data-bind="with: $root.berthPreSchedulingBinding">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: moment(ETD).format('YYYY-MM-DD HH:mm')"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">ETB:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="ETB" type="text" class="datetime-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDateTimePicker: { value: ETB, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, timeFormat: 'HH:mm', readonly: true }, event: { change: ValidDate }" name="ETD" maxlength="16" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5">ETUB:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="ETUB" type="text" class="datetime-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDateTimePicker: { value: ETUB, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, readonly: true }, event: { change: ValidDate }" name="ETD" maxlength="16" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @*<label class="control-label col-md-5">Scheduled Berth:</label>*@
+                                                        <div class="col-md-5">
+                                                            <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetSuitableBerthClick, enable: $parent.EnableGetSuitable">Get Suitable Berths</button>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="form-control">
+                                                                <input id="_Berths" name="SuitableBerths" data-bind="kendoDropDownList: { data: Berths, value: SheduledBerth, enabled: $parent.EnableGetSuitableBerths, dataTextField: 'BerthName', dataValueField: 'BerthCode', optionLabel: 'Select...', select: $root.ScheduledBerthChange } " />
+                                                                <span id="spanberth" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" data-bind="visible: $parent.SelectBollards">
+                                                <div class="col-md-4">
+                                                </div>
+                                                <div class="col-md-4">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+
+
+                                                        <label class="control-label col-md-5">Bollard:</label>
+
+                                                        <div class="col-md-5">
+                                                            <div class="form-control">
+                                                                <input id="Bollards" name="Bollards" data-bind="kendoDropDownList: { data: Bollards, value: FromBollardCode, dataTextField: 'BollardName', dataValueField: 'BollardCode', optionLabel: 'Select...', select: $root.BollardChange }" />
+                                                                <span id="spanbollard" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </fieldset>
+                                        <div class="btns-group ">
+                                            <button type="submit" class="btn green" data-bind="click: $root.UpdateClick, enable: $parent.EnableUpdate ">Update</button>
+                                            <button type="button" data-dismiss="modal" class="btn red" data-bind="click: $root.CancelClick">Cancel</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </script>
+    </div>
+
+</div>

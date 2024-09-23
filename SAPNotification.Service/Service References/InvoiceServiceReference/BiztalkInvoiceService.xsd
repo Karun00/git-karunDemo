@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://IPMSConnect_SAP.InvoiceCreate" xmlns:b="http://schemas.microsoft.com/BizTalk/2003" targetNamespace="http://IPMSConnect_SAP.InvoiceCreate" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Invoice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="EINVOICE">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ORDERNUMBER" type="xs:string" />
+                    <xs:element name="ITEMNUMBER" type="xs:string" />
+                    <xs:element name="MATNR" type="xs:string" />
+                    <xs:element name="SERVICE" type="xs:string" />
+                    <xs:element name="UOM" type="xs:string" />
+                    <xs:element name="QUANTITY" type="xs:string" />
+                    <xs:element name="TARIFF" type="xs:string" />
+                    <xs:element name="TARIFF2" type="xs:string" />
+                    <xs:element name="AMOUNT" type="xs:string" />
+                    <xs:element name="VAT" type="xs:string" />
+                    <xs:element name="NETAMNT" type="xs:string" />
+                    <xs:element name="KUNNR" type="xs:string" />
+                    <xs:element name="AGENTNAME" type="xs:string" />
+                    <xs:element name="ADDRESS" type="xs:string" />
+                    <xs:element name="CONTACTT" type="xs:string" />
+                    <xs:element name="CONTACTF" type="xs:string" />
+                    <xs:element name="ACCOUNT" type="xs:string" />
+                    <xs:element name="VESSELID" type="xs:string" />
+                    <xs:element name="VESSELNAME" type="xs:string" />
+                    <xs:element name="VESSELTON" type="xs:string" />
+                    <xs:element name="VESSELCAP" type="xs:string" />
+                    <xs:element name="VESSELLEN" type="xs:string" />
+                    <xs:element name="ARRIVALID" type="xs:string" />
+                    <xs:element name="ARRIVALDATE" type="xs:string" />
+                    <xs:element name="ARRIVALTIME" type="xs:string" />
+                    <xs:element name="DEPARTUREDATE" type="xs:string" />
+                    <xs:element name="DEPARTURETIME" type="xs:string" />
+                    <xs:element name="VOYAGERI" type="xs:string" />
+                    <xs:element name="VOYAGERO" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="VBELN" type="xs:string" />
+        <xs:element name="BILLINGDOC" type="xs:string" />
+        <xs:element name="ESUBRC" type="xs:int" />
+        <xs:element name="NETVALUE" type="xs:string" />
+        <xs:element name="MESSAGETYPE" type="xs:string" />
+        <xs:element name="SAPPOSTINGID" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

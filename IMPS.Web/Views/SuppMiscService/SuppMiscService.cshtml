@@ -1,0 +1,342 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "Supp Misc Service";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/SuppMiscServiceModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/SuppMiscServiceViewModel.js"></script>
+}
+
+@section ko_apply
+{
+
+var viewModel = new IPMSROOT.SuppMiscServiceViewModel();
+   
+ko.applyBindingsWithValidation(viewModel, $("#SuppMiscService")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="SuppMiscService">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @*     <a class="button gbtngreen" data-bind="click: $root.addsuppmisc ">Add New <i class="fa fa-plus"></i></a>*@
+
+                </div>
+                <div data-bind="kendoGrid: {
+    data: SuppMiscDockingList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', width: '80', filterable: true }
+               , { field: 'VesselNameSort', title: 'Vessel Name', width: '80', filterable: true }
+               , { field: 'RequestFromSort', title: 'Request From', width: '80', filterable: true }
+               , { field: 'RequestToSort', title: 'Request To', width: '80', filterable: true },
+               { title: 'Actions', filterable: false }]
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td><span data-bind="text: VCN"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: FromDate"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ToDate"></span></div>
+                        </td>
+
+                        <td>
+                            <div class="nowrap">
+
+                                <a href="#" data-bind="click: $parent.editSuppMisc, visible: ((LeftDockDateTime() != 'NA') ? false : true)" title="Edit"><i class="fa fa-edit"></i></a>
+
+                                <a href="#" data-bind="click: $parent.viewSuppMisc" title="View"><i class="fa fa-eye"></i></a>
+
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: suppMiscServiceModel">
+                            @*<div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            *@
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Miscellaneous Service Recording Details</legend>
+                                        <br>
+                                        <div class="portlet-body">
+                                            <div class="row">
+                                                <div class="row hline">
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">VCN:</label><label class="col-md-6 displaytxt" data-bind="text: VCN "></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Vessel Name:</label><label class="col-md-6 displaytxt" data-bind="text: VesselName "></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Agent:</label><label class="col-md-6 displaytxt" data-bind="text: VesselAgent"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="row hline">
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Vessel Owner:</label><label class="col-md-6 displaytxt" data-bind="text: VesselAgent"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Current Berth:</label><label class="col-md-6 displaytxt" data-bind="text: BerthName"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Request From:</label><label class="col-md-6 displaytxt" data-bind="text: FromDate "></label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="row hline">
+
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Request To:</label><label class="col-md-6 displaytxt" data-bind="text: ToDate "></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Schedule From:</label><label class="col-md-6 displaytxt" data-bind="text: ScheduleFromDate"></label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Schedule To:</label><label class="col-md-6 displaytxt" data-bind="text: ScheduleToDate "></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="row hline">
+                                                    <div class="col-md-4">
+                                                        <label class="col-md-6 txtalgnR">Extended To:</label><label class="col-md-6 displaytxt" data-bind="text: ExtensionDateTime "></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+
+
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="form-body" data-bind="with: suppMiscRecordingModel">
+                            <div class="form-group">
+                                <div id="stack1" class="modal fade" tabindex="-1" data-width="400">
+                                    <div class="modal-dialog" style="width: 500px;">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                <div class="scroller" style="height: 235px" data-always-visible="1" data-rail-visible1="1"><!--changed the height from 220px to 235px to accomodate remarks field if water is selected by divya on 3Nov2017-->
+                                                    <fieldset>
+                                                        <legend id="spnTitile1">Miscellaneous Service Details </legend>
+
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                Service Type:
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="ServiceTypeID" name="ServiceTypeID" data-bind="kendoDropDownList: { data: $root.suppMiscReferenceData().MiscServiceTypes, value: ServiceTypeID, dataTextField: 'ServiceTypeName', dataValueField: 'ServiceTypeID', optionLabel: 'Select Service Type', enable: $parent.ddleditableView, select: $root.OnSelectService }" />
+                                                                <span id="spnserviceiddate" class="validationError" data-bind="validationMessage: ServiceTypeID"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="PhaseId" class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                Phase:
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="Phase" name="FinancialYear" data-bind="kendoDropDownList: { data: $root.suppMiscReferenceData().PhaseTypes, value: Phase, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select Phase', enable: $parent.IsPhaseEnable, select: $root.OnSelectPhase }" /><!--OnSelectPhase added by divya on 31Oct2017-->
+                                                                <span id="spnphase" class="validationError"></span>
+                                                                <!--removed data-bind="validationMessage: by divya on 31Oct2017-->
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                From Date:
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="FromDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: FromDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: FromDatecalOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsPhaseEnable" maxlength="16" />
+                                                                <span id="spnfromdate" class="validationError" data-bind="validationMessage: FromDateTime"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                To Date:
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="ToDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: ToDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: ToDatecalOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsPhaseEnable" maxlength="16" />
+                                                                <span id="spntodate" class="validationError" data-bind="validationMessage: ToDateTime"></span>
+                                                            </div>
+                                                        </div>
+                                                        <!--Added by divya on 30Oct2017-->
+                                                        <div class="form-group row" id="StartMeterReading">
+                                                            <label class="control-label col-md-6">
+                                                                Start Meter Reading:
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="txtStartMeterReading" type="text" maxlength="7" data-bind="value: StartMeterReading, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric_keypressEvent, focusout: $root.OnNoFocus  }" class="form-control">
+                                                                <span id="spnStartReadingEmpty" class="validationError"></span><!--Empty validatiom msg display-->
+                                                                 <span id="spnStartReadingValid" class="validationError"></span><!--validatiom msg display-->
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row" id="EndMeterReading">
+                                                            <label class="control-label col-md-6">
+                                                                End Meter Reading:
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="txtEndtMeterReading" type="text" maxlength="7" data-bind="value: EndMeterReading, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric_keypressEvent, focusout: $root.OnNoFocusEnd }" class="form-control">
+                                                                <span id="spnEndReadingEmpty" class="validationError"></span><!--Empty validatiom msg display-->
+                                                                <span id="spnEndReadingValid" class="validationError"></span><!--validatiom msg display-->
+                                                            </div>
+                                                        </div>
+                                                        <!--End-->
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                Quantity:
+                                                                <span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <input id="txtQty" type="text" maxlength="7" data-bind="value: Quantity, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric_keypressEvent, focusout: $root.OnQtyFocusEnd }" class="form-control">
+                                                                <span id="spnQuantityEmpty" class="validationError"></span><!--validatiom msg display added by divya on 17Nov2017-->
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="control-label col-md-6">
+                                                                Remarks:                                                            
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                <div class="input-icon">
+                                                                    <textarea class="form-control" rows="2" id="description" style="text-transform: capitalize;" maxlength="100" data-bind="value: Remarks, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces } "></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <div class="btns-group ">
+                                                <button type="submit" data-bind="click: $parent.SaveSuppmiscRec, visible: $parent.IsSave" class="btn green">Save</button>
+                                                <button type="submit" class="btn green" data-bind="click: $parent.SaveSuppmiscRec, visible: $parent.IsUpdate">Update</button>
+                                                <button type="button" data-dismiss="modal" class="btn red" data-bind="click: $parent.CancelSuppmiscRec">Cancel</button>
+                                            </div>
+                                            <br>
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tableheader1">
+                        <a id="abc" class="button gbtngreen" data-bind="click: $root.addSuppmiscRec, visible: $root.IseditMode">Add New <i class="fa fa-plus"></i></a>
+                    </div>
+                    <div data-bind="kendoGrid: {
+    data: SuppMiscServiceList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl1',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'MiscServiceSort', title: 'Misc. Service Type', width: '80', filterable: true },
+        { field: 'FromDateSort', title: 'From Dt./Time', width: '80', filterable: true },
+        { field: 'ToDateSort', title: 'To Dt./Time', width: '80', filterable: true },
+        { field: 'QuantitySort', title: 'Quantity', width: '80', filterable: true },
+        
+        { field: 'UOMSort', title: 'UOM', width: '80', filterable: true },
+        { title: 'Actions', filterable: false }]
+
+}">
+                    </div>
+                    <script id="rowTmpl1" type="text/html">
+                        <tr>
+                            <td><span data-bind="text: ServiceTypeName"></span></td>
+                            <td>
+                                <div class="nowrap"><span data-bind="text: FromDateTime"></span></div>
+                            </td>
+                            <td>
+                                <div class="nowrap"><span data-bind="text: ToDateTime"></span></div>
+                            </td>
+                        
+
+                            <td>
+                                <div class="nowrap"><span data-bind="text: Quantity"></span></div>
+                            </td>
+                            <td>
+                                <div class="nowrap"><span data-bind="text: UOMCode"></span></div>
+                            </td>
+                            <td>
+                                <div class="nowrap">
+
+                                    <a href="#" data-bind="click: $parent.editSuppmiscRec, enable: $parent.editableView, visible: $parent.IseditMode" title="Edit"><i class="fa fa-edit"></i></a>
+
+                                    <a href="#" data-bind="click: $parent.viewSuppmiscRec" title="View"><i class="fa fa-eye"></i></a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    </script>
+
+
+                    <div class="btns-group form-actions fluid">
+                        <button class="btn red" onclick="Cancel();" id="btnCancel">Cancel</button>
+                    </div>
+
+                </form>
+            </div>
+        </script>
+    </div>
+</div>

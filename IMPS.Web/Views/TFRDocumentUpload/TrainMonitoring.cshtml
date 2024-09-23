@@ -1,0 +1,413 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "Train Monitoring";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+<script src="~/Scripts/Application/Model/TfrDocumentUploadModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/TrainMonitoringViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.TrainMonitoringViewModel();   
+ko.applyBindingsWithValidation(viewModel, $("#TfrDocument")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+ <script>
+     ko.bindingHandlers.toolTip = {
+         init: function (element, valueAccessor) {
+             $(element).tooltip(valueAccessor());
+         }
+     };
+
+ </script>
+<script type="text/html" id="popoverTemplate">
+    <button class="close pull-right" type="button" data-dismiss="popover">×</button>
+    Hey I am some content in A popover
+</script>
+<style>
+    .table-style {
+        background: #fff;
+    }
+
+        .table-style th {
+            padding-left: 5px;
+        }
+
+        .table-style thead tr {
+            height: 30px;
+        }
+
+    .highlighted {
+        background-color: red;
+    }
+
+    .legend-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid #666;
+    }
+
+        .legend-icon span {
+            margin-left: 15px;
+            margin-top: -4px !important;
+            display: block;
+        }
+
+    .modal-dialog {
+        width: 700px;
+    }
+</style>
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span>Train Monitoring</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="CraftMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+
+</div>
+<div class="portlet-body" id="TfrDocument">
+    <div class="table-toolbar">
+        <div class="portlet portlet-body form">
+
+            <div class="form-wizard form-horizontal">
+
+
+
+
+
+                <div class="form-body" data-bind="with: tfrDocumentUploadModel, loadingWhen: $root.viewModelHelper.isLoading">
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class=" col-md-6 control-label">From Date:</label>
+                                <div class="col-md-6">
+
+                                    <input id="lblFromDate" style="margin-top: 1px;" onkeypress="return false;" maxlength="10" type="text" class="form-control datetime-picker" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: $root.FromDate, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" />
+
+                                </div>
+                            </div>
+                            @*<div class="form-group">
+                                <label class="control-label col-md-4">Corridor:</label>
+                                <div class="col-md-6">
+                                    <select name="ddlCorridor" id="ddlCorridor" class="form-control">
+                                        <option>Corridor1 </option>
+                                        <option>Corridor2 </option>
+                                        <option>Corridor3 </option>
+                                        <option>Corridor4 </option>
+                                        <option>Corridor5 </option>
+                                    </select>
+                                </div>
+                            </div>
+                            *@
+                        </div>
+
+                        <div class="col-md-3">
+                            @*
+                            <div class="form-group">
+                                <label class="control-label col-md-3">From Date:</label>
+                                <div class="col-md-9">
+                                    <div>
+                                        <input id="lblFromDate" onkeypress="return false;" maxlength="10" type="text" class="form-control datetime-picker" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" />
+                                    </div>
+                                </div>
+                            </div>
+                            *@
+                <div class="form-group">
+                    <label class="control-label col-md-6">To Date:</label>
+                    <div class="col-md-6">
+
+                        <input id="lblToDate" style="margin-top: 1px;" onkeypress="return false;" maxlength="10" type="text" class="form-control datetime-picker" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: $root.ToDate, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" />
+
+                    </div>
+                </div>
+                        </div>
+                        <div class="col-md-3">
+                            @*<div class="form-group">
+                                <label class="control-label col-md-7" style="padding-left: 10px;">Movement Status:</label>
+                                <div class="col-md-4">
+                                    <select name="ddlMovementStatus" id="ddlMovementStatus" class="form-control">
+                                        <option value="2">All </option>
+                                        <option value="1">Arrived </option>
+                                        <option value="0">Departed </option>
+                                    </select>
+                                </div>
+                            </div>*@
+                        </div>
+                        <div class="col-md-3" style="margin: 0px 0px;">
+                            <div class="form-group">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4 fluid">
+                                    <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetTrainData">Get Data</button>
+                                </div>
+                                <div class="col-md-4 fluid">
+                                    <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ClearFilter">Reset</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3" style="margin: 5px 0px;">
+                        </div>
+                    </div>
+
+
+
+
+                    <fieldset>
+                        <div>
+                            <div class="table-toolbar">
+                                <div style="overflow: auto;" class="td-w">
+                                    <table cellpadding="0" cellspacing="0" border="0" id="table" class=" tinytable ">
+                                        <tr>
+                                            <td style="text-align: right; width: 100px;"></td>
+                                            <td></td>
+
+                                            <td>
+
+                                                <fieldset>
+                                                    <table border='0' width="100%;" cellpadding='3' cellspacing='3'>
+                                                        <tr>
+
+                                                            <td class='td-width' nowrap="nowrap">
+                                                                <div class='legend-icon' style="background-color: pink;"><span class='left-span'>Not Departed</span></div>
+                                                            </td>
+                                                            <td class='td-width'>
+                                                                <div class='legend-icon' style="background-color: red"><span class='left-span'>Cancelled</span></div>
+                                                            </td>
+                                                            <td class='td-width'>
+                                                                <div class='legend-icon' style="background-color: orange"><span class='left-span'>Early</span></div>
+                                                            </td>
+                                                            <td class='td-width' nowrap="nowrap">
+                                                                <div class='legend-icon' style="background-color: green"><span class='left-span'>On time</span></div>
+                                                            </td>
+                                                            <td class='td-width'>
+                                                                <div class='legend-icon' style="background-color: orangered"><span class='left-span'>Late</span></div>
+                                                            </td>
+                                                            <td class='td-width'>
+                                                                <div class='legend-icon' style="background-color: blue"><span class='left-span'>Arrived</span></div>
+                                                            </td>
+                                                            <td class='td-width'>
+                                                                <div class='legend-icon' style="background-color: yellow"><span class='left-span'>Staged</span></div>
+                                                            </td>
+
+                                                        </tr>
+                                                    </table>
+                                                </fieldset>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;"><b></b></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                    <table id="table" class="tinytable table-style">
+                                        <div data-bind="kendoGrid: {
+    data: RailPlan,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 10, pageSizes: 10 },
+    useKOTemplates: true,
+    columns: [{ title: 'Sl.No', width: 40, filterable: true },
+              { field: 'CORRIDORNAMESort', title: 'Corridor Name', width: 150},
+              { title: 'Train Route', width: 120 },
+              { field: 'TrainNoSort', title: 'Train No.', width: 90, type: 'number' },
+              { field: 'OriginSort', title: 'Origin', width: 70 },
+              { field: 'DestinationSort', title: 'Destination', width: 100 },
+              { title: 'Planned ETD', width: 90 },
+              { title: 'Planned ETA', width: 90 },
+              { title: 'Total Wagons', width: 100 },
+              { title: 'Loco Qty.', width: 70 },
+              { title: 'Departure Time', width: 100 },
+              { title: 'Arrival Time', width: 100 },
+              { field: 'TrainStatusSort', title: 'Train Status', width: 100 },
+              { title: '', width: 20 }]
+}">
+                                        </div>
+                                        <script id="rowTmpl" type="text/html">
+                                            <tr>
+                                                <td><span data-bind="    text: SlNo"></span></td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: CORRIDOR_NAME"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span><a id="btnTrainNo" class="" data-bind="text: TRAIN_ROUTE, click: $root.GetWagonData" href="#" data-target="#stack1" data-toggle="modal">Get Data</a></span></div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: TrainNo"></span></div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: Origin"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: Destination"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: PlannedETD"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: PlannedETA"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: TOTAL_WAGONS"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: LocoQty"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: ATD"></span></div>
+                                                </td>
+                                                <td>
+                                                    <div class="nowrap"><span data-bind="text: ATA"></span></div>
+                                                </td>
+                                                <td data-bind="style: { backgroundColor: (TrainStatus() == 'LATE') ? '#FA370E' : '' }">
+                                                    <div class="nowrap"><span data-bind="text: TrainStatus"></span></div>
+                                                </td>
+
+
+
+                                                <td>
+                                                    <div class="nowrap">
+                                                        <span>
+                                                            <a href="#"><i class="fa fa-info-circle" data-bind="kendoTooltip: { content: ToolTip }"></i></a>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <div data-bind="visible: RailPlan().length === 0">
+                                                No records found...
+                                            </div>
+                                        </script>
+                                    </table>
+
+                                    <div id="stack1" class="modal fade" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                    <div class="scroller" style="height: 160px">
+                                                        <fieldset>
+                                                            <legend>Wagon Details</legend>
+                                                            <form action="#" id="form_sample_1" class="form-horizontal">
+                                                                <table cellpadding="0" cellspacing="0" border="0" class="tinytable table-style">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Train No.</th>
+                                                                            <th>Wagon Number</th>
+                                                                            <th>Wagon Type</th>
+                                                                            <th>Commodity</th>
+                                                                            <th>Tonnage</th>
+                                                                            <th>Origin Date</th>
+                                                                            <th>Train Origin</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody data-bind="foreach: $root.tfrDocumentUploadModel().WagonDetails()">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <label id="TrainOrigin" class="col-md-12 displaytxt" data-bind="text: TrainNumber()"></label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label id="TrainOrigin" class="col-md-12 displaytxt" data-bind="text: WagonNumber()"></label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label id="TrainOrigin" class="col-md-12 displaytxt" data-bind="text: WagonType()"></label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label id="TrainOrigin" class="col-md-12 displaytxt" data-bind="text: Commodity()"></label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label id="TrainOrigin" class="col-md-12 displaytxt" data-bind="text: Tonnage()"></label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label id="TrainOrigin" class="col-md-12 displaytxt" data-bind="text: OriginDate()"></label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label id="TrainOrigin" class="col-md-12 displaytxt" data-bind="text: TrainOrigin()"></label>
+                                                                            </td>
+                                                                        </tr>
+                                                                        @*<tr>
+                                                                            <td>1</td>
+                                                                            <td>2</td>
+                                                                            <td>3</td>
+                                                                            <td>4</td>
+                                                                            <td>5</td>
+                                                                            <td>6</td>
+                                                                            <td>7</td>
+                                                                        </tr>
+                                                                        *@
+                                                                    </tbody>
+                                                                </table>
+                                                            </form>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                                <div class="btns-group ">
+                                                    <button type="button" data-dismiss="modal" class="btn red">Close</button>
+                                                </div>
+                                                <br>
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="btns-group form-actions fluid">
+                        <button type="button" data-bind="click: $parent.Cancel" class="btn red">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+        $("#FromDate").kendoDatePicker();
+        $("#ToDate").kendoDatePicker();
+
+        var originalLeave = $.fn.popover.Constructor.prototype.leave;
+        $.fn.popover.Constructor.prototype.leave = function (obj) {
+            var self = obj instanceof this.constructor ?
+                obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type);
+            var container, timeout;
+
+            originalLeave.call(this, obj);
+
+            if (obj.currentTarget) {
+                container = $(obj.currentTarget).siblings('.popover');
+                timeout = self.timeout;
+                container.one('mouseenter', function() {
+                    //We entered the actual popover – call off the dogs
+                    clearTimeout(timeout);
+                    //Let's monitor popover content instead
+                    container.one('mouseleave', function() {
+                        $.fn.popover.Constructor.prototype.leave.call(self, self);
+                    });
+                });
+            }
+        };
+
+
+        $('a').popover({ selector: '[data-popover]', trigger: 'click hover', placement: 'auto', delay: { show: 50, hide: 400 } });
+    });
+</script>

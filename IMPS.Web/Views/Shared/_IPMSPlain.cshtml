@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8" />
+    <title>Integrated Port Management System</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <meta name="MobileOptimized" content="320">
+    @Styles.Render("~/CSS/GlobalMandatory")
+    @Scripts.Render("~/bundles/IpmsLayoutCorePlugins")
+    @Scripts.Render("~/bundles/KnockoutScripts")
+    <script src="~/Scripts/Application/IpmsRoot.js"></script>
+    
+    <script src="~/Scripts/Application/Model/ModuleModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ModuleViewModel.js"></script>
+    <link rel="shortcut icon" href="@Url.Content("~/Content/Images/favicon.ico")" />
+    <link href="Content/Styles/jquery.fileupload-ui.css" rel="stylesheet"/>
+
+    <script>
+        $(function () {
+
+
+
+            $(function () {
+                var vm1 = new IPMSROOT.ModuleViewModel();
+                ko.applyBindingsWithValidation(vm1, $("#Menu")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });
+
+
+
+            });
+        });
+    </script>
+    <style type="text/css">
+        #emaildisplay, #smsdisplay, #sndisplay {
+            display: none;
+        }
+    </style>
+</head>
+<body id="classadd" class="page-header-fixed page-footer-fixed">
+
+   <header class="header navbar navbar-inverse navbar-fixed-top">
+	<div class="header-inner">
+		<a class="navbar-brand" href="/Account/Login">
+		<img src="/Content/Images/logo.png" alt="logo" class="img-responsive">
+		</a><span class="name">Integrated Port Management System</span>
+        <ul class="nav navbar-nav pull-right">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+				<i class="fa fa-compass"></i>About Us &nbsp; &nbsp;</a>
+            </li>
+			<li class="dropdown" id="header_notification_bar">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+				<i class="fa fa-book"></i>Help
+				</a>
+				<ul class="dropdown-menu extended notification">
+					<li><p>Help</p></li>
+					<li>
+						<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 250px;">						  							<ul class="dropdown-menu-list scroller" style="height: 250px; overflow: hidden; width: auto;">
+                                <li>
+                                    <a href="#">
+                                    <span class="label label-sm label-icon label-success">
+                                        <i class="fa fa-plus"></i>
+                                    </span>
+                                     New user registered.
+                                    <span class="time">Just now</span>
+                                    </a>
+                                </li>
+							</ul>
+                        </div>
+					</li>
+					<li class="external">
+						<a href="#">See all<i class="m-icon-swapright"></i></a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</header>
+    <section class="page-container">
+	<div class="page-content-wrapper">
+	<div class="page-content" style="margin-left:0px;">
+	 @RenderBody()
+		</div>
+	</div>
+</section>
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="clearfix">
+                <br>
+            </div>
+        </div>
+        <div class="footer-tools">
+            <span class="go-top">
+                <i class="fa fa-angle-up"></i>
+            </span>
+        </div>
+    </footer>
+
+
+    @RenderSection("JavaScript", required: false)
+    @RenderSection("scripts", required: false)
+    <script>
+        IPMSROOT.rootPath = '@Url.Content("~")';
+        var isAuthenticated = "@(WebSecurity.IsAuthenticated)";
+        jQuery(document).ready(function () {
+            App.init();
+            @RenderSection("ko_apply", required: false);
+            @RenderSection("ElectronicNotifications", required: false);
+            @RenderSection("User", required: false);
+            @RenderSection("FileUploadRestrict", required: false);
+        });
+
+    </script>
+
+
+</body>
+</html>

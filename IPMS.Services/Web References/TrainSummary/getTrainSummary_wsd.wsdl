@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://TFRDWINWMISA8.inter.transnet.net/tnpa_train_info/webservice/getTrainSummary_wsd" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" name="getTrainSummary_wsd" targetNamespace="http://TFRDWINWMISA8.inter.transnet.net/tnpa_train_info/webservice/getTrainSummary_wsd" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://TFRDWINWMISA8.inter.transnet.net/tnpa_train_info/webservice/getTrainSummary_wsd">
+      <xsd:element name="getTrainSummary" type="tns:getTrainSummary" />
+      <xsd:element name="getTrainSummaryResponse" type="tns:getTrainSummaryResponse" />
+      <xsd:complexType name="getTrainSummary">
+        <xsd:sequence>
+          <xsd:element name="FRM_DATE" nillable="true" type="xsd:string" />
+          <xsd:element name="TO_DATE" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="getTrainSummaryResponse">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" name="TRAIN_SUMMARY" nillable="true" type="tns:TRAIN_SUMMARY" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TRAIN_SUMMARY">
+        <xsd:sequence>
+          <xsd:element name="BUSINESS_UNIT" nillable="true" type="xsd:string" />
+          <xsd:element name="CORRIDOR_NAME" nillable="true" type="xsd:string" />
+          <xsd:element name="SECTION_DESC" nillable="true" type="xsd:string" />
+          <xsd:element name="PLAN_TYPE" nillable="true" type="xsd:string" />
+          <xsd:element name="TRAIN_ROUTE" nillable="true" type="xsd:string" />
+          <xsd:element name="TRAIN_NUMBER" nillable="true" type="xsd:string" />
+          <xsd:element name="CATEGORY_DESC" nillable="true" type="xsd:string" />
+          <xsd:element name="ORIGIN_DEPART_FROM_PLACE" nillable="true" type="xsd:string" />
+          <xsd:element name="DEPART_TO_PLACE" nillable="true" type="xsd:string" />
+          <xsd:element name="SCHEDULED_DEPART_DATE_TIME" nillable="true" type="xsd:string" />
+          <xsd:element name="SCHEDULED_ARRIVAL_DATE_TIME" nillable="true" type="xsd:string" />
+          <xsd:element name="REMARKS" nillable="true" type="xsd:string" />
+          <xsd:element name="LOAD" nillable="true" type="xsd:string" />
+          <xsd:element name="LOCO_QUANTITY" nillable="true" type="xsd:string" />
+          <xsd:element name="LOCO_TYPE" nillable="true" type="xsd:string" />
+          <xsd:element name="PLANNED_TONNAGE" nillable="true" type="xsd:string" />
+          <xsd:element name="NWB_REF_NUMBER" nillable="true" type="xsd:string" />
+          <xsd:element name="TRAIN_TYPE" nillable="true" type="xsd:string" />
+          <xsd:element name="SCHEDULE_TYPE" nillable="true" type="xsd:string" />
+          <xsd:element name="OUTBOUND_INBOUND_INDICATOR" nillable="true" type="xsd:string" />
+          <xsd:element name="ACTUAL_DEPART_DATE_TIME" nillable="true" type="xsd:string" />
+          <xsd:element name="ACTUAL_ARRIVE_DATE_TIME" nillable="true" type="xsd:string" />
+          <xsd:element name="TOTAL_WAGONS" nillable="true" type="xsd:string" />
+          <xsd:element name="ACTUAL_TRAIN_MASS" nillable="true" type="xsd:string" />
+          <xsd:element name="STATUS" nillable="true" type="xsd:string" />
+          <xsd:element name="DELAY_REASON" nillable="true" type="xsd:string" />
+          <xsd:element name="ETA" nillable="true" type="xsd:string" />
+          <xsd:element name="CANCELLATION_REF_NUMBER" nillable="true" type="xsd:string" />
+          <xsd:element name="CANCELLATION_REASON" nillable="true" type="xsd:string" />
+          <xsd:element name="STAGED_REF_NUMBER" nillable="true" type="xsd:string" />
+          <xsd:element name="STAGED_REASON" nillable="true" type="xsd:string" />
+          <xsd:element name="UPDATE_DATETIME" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getTrainSummary_wsd_PortType_getTrainSummaryResponse">
+    <wsdl:part name="parameters" element="tns:getTrainSummaryResponse" />
+  </wsdl:message>
+  <wsdl:message name="getTrainSummary_wsd_PortType_getTrainSummary">
+    <wsdl:part name="parameters" element="tns:getTrainSummary" />
+  </wsdl:message>
+  <wsdl:portType name="getTrainSummary_wsd_PortType">
+    <wsdl:operation name="getTrainSummary">
+      <wsdl:input message="tns:getTrainSummary_wsd_PortType_getTrainSummary" />
+      <wsdl:output message="tns:getTrainSummary_wsd_PortType_getTrainSummaryResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="tnpa_train_info_webservice_getTrainSummary_wsd_Binder" type="tns:getTrainSummary_wsd_PortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getTrainSummary">
+      <soap:operation soapAction="tnpa_train_info_webservice_getTrainSummary_wsd_Binder_getTrainSummary" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" parts="parameters" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="parameters" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="getTrainSummary_wsd">
+    <wsdl:port name="tnpa_train_info_webservice_getTrainSummary_wsd_Port" binding="tns:tnpa_train_info_webservice_getTrainSummary_wsd_Binder">
+      <soap:address location="http://TFRDWINWMISA8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getTrainSummary_wsd/tnpa_train_info_webservice_getTrainSummary_wsd_Port" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

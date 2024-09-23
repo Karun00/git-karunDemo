@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "IncidentReporting";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/MobileIncidentReportModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/MobileIncidentReportViewModel.js"></script>
+}
+@section ko_apply
+{
+var vm = new IPMSROOT.MobileIncidentReportViewModel();
+    ko.applyBindingsWithValidation(vm, $("#incidentReport")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });   
+}
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+<div data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+    <div id="divValidationError" class="errdip display-none">
+        <button class="close" data-dismiss="alert"></button>
+        You have some form errors. Please check below.
+    </div>
+    <div class="topbar">
+        <div class="user">Welcome to Steve</div>
+        <div class="topicons">
+            <a href="@Url.Action("DashBoard", "Mobile")"><i class="back"></i></a>
+            <a href="@Url.Action("DashBoard", "Mobile")"><i class="home"></i></a>
+            <a href="@Url.Action("Logout", "Mobile")"><i class="logout"></i></a>
+        </div>
+    </div>
+    <div id="incidentReport" data-bind="with: mobileIncidentReportModel">
+        <div class="row bold">
+            <label class="col6 aliner">Location of Incident:<span class="required">*</span></label>
+            <label class="col6">
+                <input type="text" data-bind="value: incidentLocation"></label>
+            <span class="validationError" data-bind="validationMessage: incidentLocation" />
+        </div>
+        <div class="row bold">
+            <label class="col6 aliner">Nature of Incident:</label>
+            <div class="col6">
+                <div class="chkbox" data-bind="foreach: $root.incidentReportReferenceData().IncidentTypes">
+                    <div class="row">
+                        <input type="checkbox" name="IncidentTypes" data-bind=" checkedValue: SubCatCode, checked: $root.mobileIncidentReportModel().IncedentTypeArray"><label data-bind="    text: SubCatName"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row bold">
+            <label class="col6 aliner">Incident Discription:</label>
+            <label class="col6">
+                <textarea data-bind="value: incidentDescription"></textarea></label>
+            <span class="validationError" data-bind="validationMessage: incidentDescription" />
+        </div>
+        <div class="row bold">
+            <div class="col12">
+                <span class="fileinput-button">
+                    <input type="file" name="files[]" id="fileToUpload" multiple>
+                </span>
+                <button type="button" data-bind="click: $parent.uploadFile" class="btn blue start">
+                    <i class="fa fa-upload"></i>
+                    <span>Upload
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="row bold">
+            <div class="col12">
+                <div class="table-responsive">
+                    <table width="100%" cellpadding="0" cellspacing="0" class="grid">
+                        <thead>
+                            <tr>
+                                <th>Document Name</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: IncidentDocuments">
+                            <tr>
+                                <td><a data-bind="  text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }"></a></td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div style="clear: both">&nbsp;</div>
+        <div>
+            <label class="col6">&nbsp;</label>
+            <label class="col6">
+                <input name="" type="button" value="SUBMIT" class="btn" data-bind="click: $root.SaveIncident"></label>
+        </div>
+    </div>
+</div>

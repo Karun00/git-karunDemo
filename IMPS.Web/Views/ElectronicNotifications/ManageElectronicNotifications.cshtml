@@ -1,0 +1,297 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Electronic Notifications";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ElectronicNotificationsModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ElectronicNotificationsViewModel.js"></script>
+}
+@section ko_apply{
+var viewModel = new IPMSROOT.ElectronicNotificationsViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#ElectronicNotificationMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="ElectronicNotificationMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<script type="text/html" id="List-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addElectronicNotification">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: electronicNotificationsList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'NotificationTemplateCodeSort', title: 'Notification Template Code', width: 100, filterable: true },
+        { field: 'NotificationTemplateNameSort', title: 'Notification Template Name', width: 100, filterable: true },
+        { field: 'EntityNameSort', title: 'Entity Name', width: 100, filterable: true },
+        { title: 'Status', filterable: false, width: 60 },
+        { title: 'Actions', filterable: true, width: 80 }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td><span data-bind="text: NotificationTemplateCode"></span></td>
+                        <td><span data-bind="text: NotificationTemplateName"></span></td>
+                        <td><span data-bind="text: EntityName"></span></td>
+                        <td><span data-bind="text: Statust"></span></td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $root.viewElectronicNotification" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                @if (Model.HasEditPrivilege)
+                                {                                                                                                               
+                                    <a href="#" data-bind="click: $root.editElectronicNotification" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                                @if (Model.HasDeletePrivilege)
+                                {
+                                    <a href="#" data-bind="click: $root.DeleteNotification" title="Delete"><i class="fa fa-ban"></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="Form-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="portlet portlet-body">
+            <form action="#" class="form-horizontal">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body" data-bind="with: electronicNotificationsModel">
+                        <div>
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Electronic Notifications Details</legend>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Notification Code: <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" data-bind="value: NotificationTemplateCode, enable: $parent.IsCodeEnable, event: { change: ValidEvent }" class="form-control" name="intcharacter">
+                                                    <span id="spanvnotificationcode" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Notification Name:  <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input type="text" data-bind="value: NotificationTemplateName, enable: $parent.IsCodeEnable" class="form-control" name="intcharacter">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Entity:  <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <select id="entity" name="entityname" class="form-control input-small select2me" data-bind="options: $root.entityValues, optionsText: 'EntityName', optionsCaption: 'Select...', optionsValue: 'EntityID', value: EntityID, enable: $parent.IsCodeEnable, event: { change: $parent.LoadTokens.bind(EntityID) }, event: { change: $parent.LoadTokens }"></select>
+                                                    <span id="spanventity" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Workflow Event:  <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <select class="form-control" name="wfevent" id="wfevent" data-bind="options: $root.WFStatus, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: WorkflowTaskCode, optionLabel: 'Select...', enable: $parent.IsCodeEnable"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Port:  <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input id="MultiSelect1" data-bind="kendoMultiSelect: { dataTextField: 'PortName', dataValueField: 'PortCode', data: $parent.Ports, value: SelectedPortNames, enable: $parent.IsCodeEnable, optionLabel: 'Select...' }" />
+                                                    <span id="spanvportid" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-4"></div>
+                                            <div class="radio-list col-md-6">
+                                                <input type="radio" name="Users" value="R" checked="checked" data-bind="checked: NotificationTemplateBase, enable: $parent.editableView" />
+                                                <label class="radio-inline">Role based</label>
+                                                <input type="radio" name="Users" value="U" data-bind="checked: NotificationTemplateBase, enable: $parent.editableView" />
+                                                <label class="radio-inline">User based</label>
+                                                <input type="radio" name="Users" value="M" data-bind="checked: NotificationTemplateBase, enable: $parent.editableView" />
+                                                <label class="radio-inline">Manual based</label>
+                                                <span id="spangender" class="validationError"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" id="roledisplay">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Role:  <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <input id="MultiSelect" data-bind="kendoMultiSelect: { dataTextField: 'RoleName', dataValueField: 'RoleID', data: $parent.Roles, value: SelectedRolenames, enable: $parent.editableView, event: { change: $parent.dataLoad } }" />
+                                                    <span id="spanvroleid" class="validationError"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Status:  <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <select class="form-control" name="status" id="Status" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.editableView"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Notify Type:</label>
+                                                <div class="col-md-9">
+                                                    <div class="col-md-3">
+                                                        <label>
+                                                            <input type="checkbox" id="emailcheck" data-bind="checked: IsEmail, enable: $parent.editableView" />Email</label>
+                                                        <label class="text-info" style="font-weight: normal">
+                                                            <input type="checkbox" value="1" data-bind="checked: IsHighPriority, enable: $parent.editableView" />High Priority</label>
+                                                    </div>
+
+                                                </div>
+                                                <div id="emaildisplay">
+                                                    <div class="row">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-2"></label>
+                                                            <div class="col-md-9">
+                                                                <div class="col-md-8">
+                                                                    <div class="col-md-2">
+                                                                        <label>Select Token</label>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <span class="col-md-10">
+                                                                            <select class="form-control" name="SelectTokenEmail" id="SelectTokenEmail" data-bind="options: $parent.tokenValues, value: SelectedTokensEmail, enable: $parent.editableView, optionsCaption: 'Select...', enabled: $parent.isEntityChanged"></select>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <a class="button gbtngreen" data-bind="click: $root.AddTokenToBodyEmail">Add <i class="fa fa-plus"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-2">Subject:</label>
+                                                            <div class="col-md-9">
+                                                                <input type="text" data-bind="value: EmailSubject, enable: $parent.editableView" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-2"></label>
+                                                            <div class="col-md-9">
+                                                                <textarea class="ckeditor form-control" name="editor1" rows="5" data-bind="kendoEditor: { value: EmailTemplate }, enable: $parent.editableView"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <label class="col-md-2"></label>
+                                                <div class="col-md-9">
+                                                    <label>
+                                                        <input type="checkbox" id="smscheck" data-bind="checked: IsSMS, enable: $parent.editableView" />SMS</label>
+
+                                                    <div id="smsdisplay">
+                                                        <div class="col-md-8">
+                                                            <div class="col-md-2">
+                                                                <label>Select Token</label>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <span class="col-md-10">
+                                                                    <select class="form-control" name="SelectTokenSMS" id="SelectTokenSMS" data-bind="options: $parent.tokenValues, value: SelectedTokensSMS, enable: $parent.editableView, optionsCaption: 'Select...'"></select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <a class="button gbtngreen" data-bind="click: $root.AddTokenToBodySMS">Add <i class="fa fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        <textarea class="ckeditor form-control" name="editor1" rows="5" data-bind="kendoEditor: { value: SMSTemplate, enable: $parent.editableView }"></textarea>
+                                                    </div>
+
+                                                </div>
+                                                <label class="col-md-2"></label>
+                                                <div class="col-md-9">
+                                                    <label>
+                                                        <input type="checkbox" id="sncheck" data-bind="checked: IsSysMessage, enable: $parent.editableView" />System Notification</label>
+
+                                                    <div id="sndisplay">
+                                                        <div class="col-md-8">
+                                                            <div class="col-md-2">
+                                                                <label>Select Token</label>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <span class="col-md-10">
+                                                                    <select class="form-control" name="SelectTokenSN" id="SelectTokenSN" data-bind="options: $parent.tokenValues, value: SelectedTokensSysMessage, enable: $parent.editableView, optionsCaption: 'Select...'"></select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <a class="button gbtngreen" data-bind="click: $root.AddTokenToBodySystemNotification">Add <i class="fa fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        <textarea class="ckeditor form-control" name="editor1" rows="5" data-bind="kendoEditor: { value: SysMessageTemplate, enable: $parent.editableView }"></textarea>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="btns-group form-actions fluid">
+                            <button type="submit" class="btn green" data-bind="click: $root.SaveNotification, visible: $parent.IsSave">Save</button>
+                            <button type="submit" class="btn green" data-bind="click: $root.ModifyNotification, visible: $parent.IsUpdate, enable: $parent.IsClicks">Update</button>
+                            <button type="submit" class="btn blue" data-bind="click: $root.ResetNotification, visible: $root.IsReset">Reset</button>
+                            <button type="button" class="btn red" data-bind="click: $root.cancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>

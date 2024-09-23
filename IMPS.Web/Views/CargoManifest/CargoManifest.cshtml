@@ -1,0 +1,244 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/CargoManifestModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/CargoManifestViewModel.js"></script>
+    <script src="~/Scripts/Lib/moment.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.CargoManifestViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#CargoManifest")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="CargoManifest">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<!-- Main body content starts here for developers-->
+
+<div class="clearfix"></div>
+
+<script type="text/html" id="List-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div id="cargomanifestGrid" data-bind="kendoGrid: {
+    data: CargoManifestList,
+    rowTemplate: 'rowtmpl',
+    useKOTemplates: true,
+    pageable: { pageSize: 5, pageSizes: 5 },
+    filterable: {
+        extra: false, operators: {
+            string: {
+                startswith: 'Starts with',
+                eq: 'Is equal to',
+                neq: 'Is not equal to'
+            },
+            number: {
+                eq: 'Is equal to',
+                neq: 'Is not equal to',
+                lt: 'Less than',
+                lte: 'Lesser than or equal to',
+                gt: 'Greater than',
+                gte: 'Greater than or equal to',
+            },
+            date: {
+                gte: 'Is after or equal to',
+                gt: 'Is after',
+                lte: 'Is before or equal to',
+                lt: 'Is before'
+            }
+        }
+    },
+    columns: [{ field: 'VCN', title: 'VCN', width: '120px', filterable: true },
+           { field: 'VesselNameSort', title: 'Vessel Name', width: '130px', filterable: true },
+           { field: 'VesselTypeSort', title: 'Vessel Type', width: '130px', filterable: true },
+           { field: 'AgentSort', title: 'Agent Name', width: '130px', filterable: true },
+           { field: 'LOASort', title: 'LOA', width: '80px', filterable: true, type: 'number' },
+           { field: 'MaxDraftSort', title: 'Max. Draft', width: '130px', filterable: true, type: 'number' },
+           { field: 'IMDGSort', title: 'IMDG', width: '90px', filterable: true },
+           { field: 'IDReceivSort', title: 'Nomination Date', width: '140px', filterable: true, type: 'date' },
+           { field: 'ETASort', title: 'ETA', width: '130px', filterable: true, type: 'date' },
+           { field: 'ETDSort', title: 'ETD', width: '130px', filterable: true, type: 'date' },
+           { field: 'PrefferedBerthSort', title: 'Preferred Berth', width: '200px', filterable: true },
+           { field: 'AltBerthSort', title: 'Alternate Berth', width: '200px', filterable: true },
+           { field: 'ReasonvisitSort', title: 'Reason for Visit', width: '200px', filterable: true },
+           { field: 'ETBSort', title: 'ETB', width: '130px', filterable: true, type: 'date' },
+           { field: 'ETUBSort', title: 'ETUB', width: '130px', filterable: true, type: 'date' },
+           { field: 'BerthSort', title: 'Berth', width: '140px', filterable: true },
+           { title: 'Actions', width: '80px', filterable: false }],
+    sortable: true,
+    scrollable: true,
+    groupable: false
+}">
+        </div>
+        <script type="text/html" id="rowtmpl">
+            <tr data-bind="style: { backgroundColor: Status() == 'Pending' ? 'white' : '#DEFCE3' }">
+                <td>
+                    <div class="nowrap"><span data-bind="text: VCN"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VesselType"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: Agent"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: LengthOverallInM"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: MaxDraft"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: IMDGt"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: moment(NominationDate()).format('YYYY-MM-DD HH:mm')"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: moment(ETA()).format('YYYY-MM-DD HH:mm')"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: moment(ETD()).format('YYYY-MM-DD HH:mm')"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: PreferredBerth"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: AlternateBerth"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ReasonforVisit"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ETB"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ETUB"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: Berth"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap">
+                        @if (Model.HasViewPrivilege)
+                        {
+                        <a href="#" data-bind="click: $parent.viewCargoManifest" title="View"><i class="fa fa-eye"></i></a>
+                        }
+                        @if (Model.HasEditPrivilege)
+                        {
+                            <a href="#" data-bind="click: $parent.editcargomanifest" title="Edit"><i class="fa fa-edit"></i></a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </script>
+    </div>
+</script>
+
+<script type="text/html" id="Form-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="portlet portlet-body form">
+            <form action="#" id="form_sample_1" class="form-horizontal">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body" data-bind="with: cargomanifestModel">
+                        <div class="form-group">
+                            <fieldset>
+                                <legend>Cargo Manifest Details</legend>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">First Move: <span class="required">*</span></label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="FirstMoveDateTime" onchange="ChangeLastMoveDateTime()" onkeydown="PreventBackSpace();" class="datetime-picker" onkeypress="return false;" data-bind="enable: $parent.editableView, kendoDateTimePicker: { value: FirstMoveDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true }" name="FirstMoveDateTime"/>
+                                                <span id="isFirstMoveDateTime" class="validationError" data-bind="visible: $parent.isFirstMoveDateTime"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Last Move: <span class="required">*</span></label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="LastMoveDateTime" class="datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.editableView, kendoDateTimePicker: { value: LastMoveDateTime, format: 'yyyy-MM-dd HH:mm:ss', timeFormat: 'HH:mm', interval: 05, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="LastMoveDateTime" />
+                                                <span id="isLastMoveDateTime" class="validationError" data-bind="visible: $parent.isLastMoveDateTime"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div id="grid" data-bind="kendoGrid: {
+    data: CargoManifests,
+    rowTemplate: 'rowtmpl1',
+    useKOTemplates: true,
+    pageable: { pageSize: 5, pageSizes: 5 },
+    columns: [
+        { field: 'VCNSort', title: 'VCN', width: '50px' },
+        { field: 'CargoTypeNameSort', title: 'Cargo Type', width: '100px' },
+        { field: 'UOMCodeSort', title: 'UOM Code', width: '80px' },
+        { field: 'QuantitySort', title: 'Quantity', width: '60px' },
+        { field: 'OutTurn', title: 'Out Turn', width: '60px', editable: true, min: 1000, max: 9999999, step: 0.001 }
+    ],
+    sortable: false,
+    scrollable: false,
+    groupable: false,
+    filterable: false
+}">
+                                </div>
+
+                                <div class="btns-group form-actions fluid">
+                                    <button type="submit" id="IsSave" class="btn blue" data-bind="click: $parent.SaveCargoManifest, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                                    <button type="submit" id="IsUpdate" class="btn green" data-bind="click: $parent.ModifyCargoManifest, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                    <button type="button" id="Cancel" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                </div>
+                                <script type="text/html" id="rowtmpl1">
+                                    <tr>
+                                        <td>
+                                            <div class="nowrap"><span data-bind="text: VCN, enable: $root.editableView"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="nowrap"><span data-bind="text: CargoTypeName, enable: $root.editableView"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="nowrap"><span data-bind="text: UOMCode, enable: $root.editableView"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="nowrap"><span data-bind="text: Quantity, enable: $root.editableView"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="nowrap">
+                                                <input type="text" id="Out" onkeypress="return Validatenumeric(this,event);" data-bind="value: OutTurn, enable: $root.editableView" maxlength="10" />
+                                                <span id="spanOutTurn" class="validationError" data-bind="visible: $parent.isOutTurnValid"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </script>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+<!-- Main body content ends here for developers-->
+<!-- END CONTENT -->
+
+
+

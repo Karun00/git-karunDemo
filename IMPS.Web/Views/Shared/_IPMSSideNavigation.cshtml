@@ -1,0 +1,74 @@
+﻿
+<link href="~/Content/Styles/font-awesome1.min.css" rel="stylesheet" />
+<style>
+    .page-sidebar-menu.sb-height{height: calc(100vh - 200px) !important;}
+
+    .menu-height {margin-top: 104px;}
+   .menu-height1 {margin-top: 75px;}
+</style>
+<div id="MenuMaster" >
+	<nav class="page-sidebar-wrapper">
+		<div class="page-sidebar navbar-collapse collapse " id="Menu">
+          
+			
+<div style="position:absolute !important; width:100%">
+			<ul class="page-sidebar-menu">
+				<li class="sidebar-toggler-wrapper">
+					<div class="sidebar-toggler hidden-phone">
+					</div>
+				</li>
+				<li class="start active " id="dashboard">
+					<a href="~/DashBoard" style="border-bottom:0px !important;">
+						<i class="fa fa-dashboard"></i>
+						<span class="title">Dashboard</span>
+						<span class="selected"></span>
+					</a>
+				</li>
+
+@*Ships in Ports ALLow the User is AdminRole identity the Role And Display the ShipsinPorts Module Based on the RoleId Below li Commented Code *@
+               @*<li class="start" id="ships in ports" data-bind ="visible:$root.showshipsinport" style="display:none">*@
+<li class="start" id="ships in ports">
+					<a href="~/ShipsinPorts" style="border-bottom:0px !important; border-top: 1px solid #5c5c5c !important;">
+                    <i class="fa fa-ship"></i>
+						<span class="title">Ships in Ports</span>
+						<span class="selected"></span>
+					</a>
+				</li>
+
+			</ul>
+            </div>
+
+@*ShipinPorts Height is Adjustement Based on the Role Below div commented  Code*@
+            @*<div data-bind=" css: { 'menu-height': showshipsinport, 'menu-height1': !showshipsinport() }">*@
+<div class="menu-height">
+
+			    <ul class="page-sidebar-menu sb-height" style="height: auto !important;" data-bind="foreach: $root.Moduledata" id="ulModule">
+				    <li data-bind=" attr: { id: 'ModuleName' + $index() }">
+					    <a href="javascript:;">
+						    <i class=""></i>
+						    <span class="title" data-bind="text: ModuleName"></span>
+						    <span class="arrow "></span>
+					    </a>
+					    <ul class="sub-menu" data-bind="foreach: Module1">
+						    <li>
+							    <a href="javascript:;">
+								    <i class="fa fa-chevron-circle-right"></i>
+								    <span data-bind="text: ModuleName"></span>
+								    <span class="arrow"></span>
+							    </a>
+							    <ul class="sub-menu" data-bind="foreach: Entities">
+								    <li>
+									    <a data-bind="attr: { href: PageUrl }">
+										    <i class="fa fa-angle-right"></i>
+										    <span data-bind="    text: EntityName, attr: { id: EntityID }"></span>
+					                    </a>
+						            </li>
+							    </ul>
+						    </li>
+					    </ul>
+				    </li>
+                </ul>
+		</div>
+    </nav>
+</div>
+

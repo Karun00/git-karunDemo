@@ -1,0 +1,744 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "SuppDryDockApplication";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var suppdrydockid = 0;
+    var showViewOnLoad = false;
+    if (!string.IsNullOrEmpty(ViewBag.ID))
+    {
+        suppdrydockid = Convert.ToInt32(ViewBag.ID);
+        showViewOnLoad = true;
+    }
+
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/SuppDryDockApplicationModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/SuppDryDockApplicationViewModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/WorkflowTaskExecution.js"></script>
+}
+
+@section ko_apply
+{
+    var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+  
+    var viewModel = new IPMSROOT.SuppDryDockViewModel("@suppdrydockid", showOnLoad);
+    ko.applyBindingsWithValidation(viewModel, $("#SuppDryDock")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- Main body content starts here for developers-->
+<style>
+    .modal-dialog {
+        width: 400px;
+        margin: 5% 25%;
+        
+    }
+
+    /*.scroller {
+        overflow: auto !important;
+    }*/
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="SuppDryDock">
+
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'SuppDryDockList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'SuppDryDockForm-template' }"></div>
+    <div data-bind="visible: viewMode() == 'PopUp', template: { name: 'PopUp-template' }"></div>
+    <div data-bind="visible: viewMode() == 'PopUp1', template: { name: 'PopUp1-template' }"></div>
+</div>
+
+<script type="text/html" id="SuppDryDockList-template">
+
+    <div class="clearfix"></div>
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div id="tableheader">
+                    <a class="button gbtngreen" data-bind="click: $root.addSuppDryDock">Add New <i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
+
+
+        <div data-bind="kendoGrid: {
+    data: SuppDryDockList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'VCNSort', title: 'VCN', filterable: true },
+              { field: 'VesselNameSort', title: 'Vessel Name', filterable: true },
+             { field: 'ApplicationDtAndTimeSort', title: 'Application Dt. & Time', filterable: true },
+             { field: 'StatusSort', title: 'Status', filterable: true },
+             { title: 'Actions', filterable: true }]
+}">
+        </div>
+
+        <script id="rowTmpl" type="text/html">
+            <tr @*data-bind="style: { color: Status() == 'Completed' ? 'green' : 'black' }"*@>
+                <td data-bind="style: { backgroundColor: (AnyDangerousGoods() == 'A') ? '#FA370E' : '' }">
+                    <div class="nowrap"><span data-bind="text: VCN" style="text-transform: capitalize;"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VesselName" style="text-transform: capitalize;"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: ApplicationDtAndTimeSort"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: WFStatusSupp"></span></div>
+                </td>
+
+                <td>
+                    <div class="nowrap">
+                        <a href="#" data-bind="click: $parent.ViewSuppDryDock" title="View"><i class="fa fa-eye"></i></a>
+                        <a href="#" data-bind="click: $parent.EditSuppDryDock, visible: EditPending" title="Edit"><i class="fa fa-edit"></i></a>                      
+ @if (Model.HasDeletePrivilege)
+                            {    
+                        <a href="#" data-target="#stack12" data-toggle="modal"  title="Cancel" data-bind="click: $parent.cancelReqst, visible: isCancelVisible"><i class="fa fa-ban"></i></a>
+}
+
+<a href="#"  data-target="#stack13" data-toggle="modal" data-bind="click: $parent.cancelConfirmReqst, visible: isConfirmCancelVisible" title="Cancel Confirm Request"><i class="fa fa-ban"></i></a>
+  <a href="#" data-bind="click: $parent.viewWorkFlow" title="View Workflow"><i class="fa fa-stack-exchange"></i></a>
+                            
+                    </div>
+                </td>
+            </tr>
+        </script>
+    </div>
+       <div class="form-body" data-bind="with: suppDryDockModel">
+               <div class="form-group">
+                    <div id="stack1" class="modal fade" tabindex="-1" data-width="400">
+                        <div class="modal-dialog" style="width: 500px;">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                    <div class="scroller" style="height: 225px" data-always-visible="1" data-rail-visible1="1">
+                                        <fieldset>
+                                            <legend id="spnTitile1">WorkFlow Remarks</legend>
+                                           <div align="center"><textarea rows="3" cols="50" class="form-control"  id="WorkFlowRemarks"  style="width: 350px; height: 180px; text-align: center; margin:  0px 9.5px 0px 0px;resize: none;" data-bind="value: WorkFlowRemarks" disabled=""></textarea></div>
+                                       </fieldset>
+                                    </div>
+                                </div>
+                                <br>
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+</script>
+
+@*Cancel Button PoupUP Screen start here*@
+ <script type="text/html" id="PopUp-template">
+	    <div class="portlet-body" id="popup1" data-bind="with: suppDryDockModel">
+		    <div class="table-toolbar">
+			    <div id="stack12" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">
+				    <a href="#tab_0" data-toggle="tab"></a>
+				    <div class="modal-dialog" id="stk">
+					    <div id="mc1" class="modal-content" style="width: 80%">
+						    <div class="modal-body">
+							    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="event: { click: $root.closePopup }"></button>
+							    <div class="scroller" style="height: 150px" data-always-visible="1" data-rail-visible1="1">
+								    <fieldset>
+									    <form action="#" id="form_sample_1" class="form-horizontal">
+										    <label>Reason For Cancel :</label><span class="required" style="color: red">*</span>
+										    <div class="form-group row">
+
+											    <div class="col-md-5">
+												    <textarea rows="5" style="resize: none; width: 180px;" placeholder="Enter Reason" data-bind="value: WorkFlowRemarks, event: { change: $parent.dataLoad }"></textarea>
+												    &nbsp; &nbsp; <span id="spanremarks" class="validationError" style="margin: -5px -100px 0 0px;"></span>
+											    </div>
+										    </div>
+									    </form>
+								    </fieldset>
+							    </div>
+						    </div>
+						    <div class="btns-group ">
+							    <input type="button" data-bind="click: $root.cancelWFRequest" value="Submit" class="btn green"/>
+           <input type="button" data-bind="click: $root.CancelButton" value="Cancel" class="btn red"/>
+						    </div>
+						    <br>
+						    &nbsp;
+					    </div>
+				    </div>
+			    </div>
+
+		    </div>
+	    </div>
+    </script>
+@*Cancel Button Popup Screen end here*@
+
+@*Cancel Confirm Popup Screen Start here*@
+
+ <script type="text/html" id="PopUp1-template">
+	    <div class="portlet-body" id="popup1" data-bind="with: suppDryDockModel">
+		    <div class="table-toolbar">
+			    <div id="stack13" class="modal fade" tabindex="-1" data-width="400" data-backdrop="static" data-keyboard="false">
+				    <a href="#tab_0" data-toggle="tab"></a>
+				    <div class="modal-dialog" id="stk">
+					    <div id="mc1" class="modal-content" style="width: 80%">
+						    <div class="modal-body">
+							    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="event: { click: $root.closePopup }"></button>
+							    <div class="scroller" style="height: 150px" data-always-visible="1" data-rail-visible1="1">
+								    <fieldset>
+									    <form action="#" id="form_sample_1" class="form-horizontal">
+										    <label>Reason For Cancel:</label><span class="required" style="color: red">*</span>
+										    <div class="form-group row">
+
+											    <div class="col-md-5">
+												    <textarea rows="5" style="resize: none; width: 180px;" placeholder="Enter Reason" data-bind="value: WorkFlowRemarks, event: { change: $parent.dataLoad }"></textarea>
+												    &nbsp; &nbsp; <span id="spanremarks1" class="validationError" style="margin: -5px -100px 0 0px;"></span>
+											    </div>
+										    </div>
+									    </form>
+								    </fieldset>
+							    </div>
+						    </div>
+						    <div class="btns-group ">
+							    <input type="button" data-bind="click: $root.cancelConfirmWFRequest" value="Submit" class="btn green"/>
+           <input type="button" data-bind="click: $root.CancelButton" value="Cancel" class="btn red"/>
+						    </div>
+						    <br>
+						    &nbsp;
+					    </div>
+				    </div>
+			    </div>
+
+		    </div>
+	    </div>
+    </script>
+
+@*Cancel Cofirm Popup Screen end here*@
+
+
+
+<!-- Error Message -->
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field' id="ErrorMsg"></span>
+</script>
+
+<script type="text/html" id="SuppDryDockForm-template">
+
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-wizard">
+                    <div class="form-body form-horizontal" data-bind="with: suppDryDockModel">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Validation header message starts here -->
+                                <div id="divValidationError" class="alert alert-danger display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    You have some form errors. Please check below.
+                                </div>
+                                <div id="divValidationSuccess" class="alert alert-success display-none">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    Your form validation is successful!
+                                </div>
+                                <!-- Validation header message ends here -->
+
+                                <!--  Agent Details starts here -->
+                                <div class="portlet box advbg">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <!--<i class="fa fa-reorder"></i>-->
+                                            Agency Details
+                                        </div>
+                                        <div class="tools">
+                                            <a href="javascript:;" class="collapse"></a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body" data-bind="with: AgentData">
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Agency Name:</label><label class="col-md-7 displaytxt" data-bind="text: RegisteredName "></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Agency Rep. Name:</label><label class="col-md-7 displaytxt" data-bind="text: TradingName "></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Telephone No.:</label><label class="col-md-7 displaytxt" data-bind="text: TelephoneNo1"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Fax No.:</label><label class="col-md-7 displaytxt" data-bind="text: FaxNo"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Cell No.:</label><label class="col-md-7 displaytxt" data-bind="text: TelephoneNo2"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div style="text-align: right">
+                                            <a href="#" rel="toggle[equipments]" data-openimage="Content/Images/collapse.png" data-closedimage="Content/Images/expand.png">
+                                                <img src="Content/Images/collapse.png" border="0" />
+
+                                            </a>
+                                        </div>*@
+                                    </div>
+                                </div>
+                                <!--  Agent Details ends here -->
+
+                                <!--  Vessel Details starts here -->
+                                <div class="portlet box advbg">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <!--<i class="fa fa-reorder"></i>-->
+                                            Vessel Details
+                                        </div>
+                                        <div class="tools">
+                                            <a href="javascript:;" class="collapse"></a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body" data-bind="with: VesselData">
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">VCN:</label><label class="col-md-7 displaytxt" data-bind="text: VCN"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Vessel Name:</label><label class="col-md-7 displaytxt" data-bind="text: VesselName "></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">IMO No:</label><label class="col-md-7 displaytxt" data-bind="text: IMONo"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">GRT:</label><label class="col-md-7 displaytxt" data-bind="text: GrossRegisteredTonnageInMT"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">LOA:</label><label class="col-md-7 displaytxt" data-bind="text: LengthOverallInM"></label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Beam:</label><label class="col-md-7 displaytxt" data-bind="text: BeamInM"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="row hline">
+                                                <div class="col-md-4">
+                                                    <label class="col-md-5 txtalgnR">Arr Drft:</label><label class="col-md-7 displaytxt" data-bind="text: ArrDraft"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div style="text-align: right">
+                                            <a href="#" rel="toggle[equipments]" data-openimage="Content/Images/collapse.png" data-closedimage="Content/Images/expand.png">
+                                                <img src="Content/Images/collapse.png" border="0" />
+
+                                            </a>
+                                        </div>*@
+                                    </div>
+                                </div>
+                                <!--  Vessel Details ends here -->
+
+                                <!-- Dry Dock Service Type View starts here-->
+
+                                <fieldset>
+                                    <legend>Service Details</legend>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">VCN:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        @*<input id="Vessel" name="VCN" data-bind="kendoAutoComplete: { data: $root.getVCNDtls().Vessels, dataTextField: 'VCN', select: $root.VesselSelect, filter: 'contains' }, value: VCN, enable: $parent.isVCNEnabled" oncopy="return false" onpaste="return false" oncut="return false" />*@
+                                                         <input id="Vessel" name="VCN" data-bind="kendoAutoComplete: {
+    dataTextField: 'VCN', minLength: 1, pageSize: 1
+                                                        , dataSource: {
+                                                            serverFiltering: true,
+                                                            transport: {
+                                                                read: { url: '/api/SuppVCNList', dataType: 'json' }
+                                                            }, schema: {
+                                                                data: function (data) {
+                                                            debugger;
+                                                            $root.SuppVCNList(data);
+                                                             return data; }, total: function (data) {
+                                                                    return data.length;
+                                                                }
+                                                            },
+                                                        }, select: $root.VesselSelect
+}, value: VCN, enable: $parent.isVCNEnabled" />
+                                                        @* <span id="spanvcnd" class="validationError" data-bind="validationMessage: VCN"></span>*@
+                                                        <span id="spanvcnd" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" data-bind="with: VesselData">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Current Berth:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CurrentBerth"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Service Type:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <select id="serviceType" class="form-control" data-bind="options: $root.serviceTypeData().serviceTypeList, optionsText: 'SubCatName', optionsCaption: 'Choose..', optionsValue: 'SubCatCode', value: ServiceType, event: { change: ChangeserviceType }"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Request From:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="RequestFromDate" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: FromDate, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calOpen, change: ChangeRequestFromDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="RequestFromDate" maxlength="10" oncopy="return false" onpaste="return false" oncut="return false" />
+                                                        <span id="spanRequestFromDate" class="validationError" data-bind="validationMessage: FromDate"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Request To:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="RequestToDate" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: ToDate, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: ChangeRequestToDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="RequestToDate" maxlength="10" oncopy="return false" onpaste="return false" oncut="return false" />
+                                                        <span id="spanRequestToDate" class="validationError" data-bind="validationMessage: ToDate"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Bar Keel:<span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="radio-list">
+                                                        <input type="radio" name="BarkeelCode" value="Y" checked data-bind="checked: BarkeelCode, enable: $parent.IsEditable">
+                                                        <label class="radio-inline">Yes</label>
+                                                        <input name="BarkeelCode" type="radio" value="N" data-bind="checked: BarkeelCode, enable: $parent.IsEditable">
+                                                        <label class="radio-inline">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Cargo:</label>
+                                                <div class="col-md-6">
+                                                    <div class="col-md-10">
+                                                        <input id="CargoTons" data-bind="value: CargoTons, enable: $parent.IsEditable, event: { keypress: ValidateNumeric }" type="text" class="form-control" oncopy="return false" onpaste="return false" oncut="return false" maxlength="8">
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <label class="control-label fc-col0">&nbsp;Tons</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Ballast:</label>
+                                                <div class="col-md-6">
+                                                    <div class="col-md-10">
+                                                        <input id="Ballast" data-bind="value: Ballast, enable: $parent.IsEditable, event: { keypress: ValidateNumeric }" type="text" class="form-control" oncopy="return false" onpaste="return false" oncut="return false" maxlength="8">
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <label class="control-label fc-col0">&nbsp;Tons</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Bunkers:</label>
+                                                <div class="col-md-6">
+                                                    <div class="col-md-10">
+                                                        <input id="Bunkers" data-bind="value: Bunkers, enable: $parent.IsEditable, event: { keypress: ValidateNumeric }" type="text" class="form-control" oncopy="return false" onpaste="return false" oncut="return false" maxlength="8">
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <label class="control-label fc-col0">&nbsp;Tons</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">&nbsp;</div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2">Remarks:</label>
+                                            <div class="col-md-8">
+                                                <textarea id="Remarks" data-bind="value: Remarks, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsEditable" class="form-control" rows="5" name="remarks" maxlength="200" oncopy="return false" onpaste="return false" oncut="return false"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" data-bind= "visible: $root.IsEditable">
+                                        <div class="fileupload-buttonbar">
+                                            <div class="form-group">
+                                                <fieldset>
+                                                    <legend>Upload Documents</legend>
+                                                    <div class="col-md-8">
+
+                                                        <div class="col-md-4">
+                                                                <select name="documents" id="selUploadDocs" class="form-control" data-bind="options: $root.DocumentTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: DocumentTypeCode, optionsCaption: 'Choose....'">
+                                                                </select>
+                                                            </div>
+                                                        &nbsp;&nbsp;
+                                	<span class="btn btn-xs green fileinput-button">
+                                        <i class="fa fa-plus"></i>
+                                        <span>Browse
+                                        </span>
+                                        <input type="file" name="files[]" id="fileToUpload" data-bind=" enable: $parent.IsEditable" multiple>
+                                    </span>
+                                                        <button type="submit" data-bind="click: $parent.uploadFile, enable: $parent.IsEditable" class="btn  btn-xs blue start">
+                                                            <i class="fa fa-upload" data-bind=" enable: $parent.IsEditable"></i>
+                                                            <span>Upload
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" data-bind="visible: $parent.isfileToUpload">
+                                        <div class="form-group">
+                                            <div class="col-md-2">
+                                                &nbsp;&nbsp; <span id="spanfileToUpload" class="validationError" data-bind="visible: $parent.isfileToUpload"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered table-advance">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="bg-dark">Document Category</th>
+                                                        <th class="bg-dark">Document Name</th>
+                                                        <th class="bg-dark" data-bind="visible: $root.IsEditable"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody data-bind="foreach: SuppDryDockDocuments">
+                                                    <tr>
+                                                        <td data-bind="text: DocumentTypeName"></td>
+                                                        <td><a data-bind="text: FileName, attr: { href: '/FileDownload/DryDockApplicationdocuments/' + DocumentID() }, enable: $parent.IsEditable"></a></td>
+                                                        <td data-bind="visible: $root.IsEditable"><a href="#" class="btn default btn-xs red" data-bind="    click: $root.DeleteDocument"><i class="fa fa-trash-o"></i>Delete</a></td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+
+                                    @* <div class="row">
+                                        <div class="fileupload-buttonbar">
+                                            <div class="form-group">
+                                                <fieldset>
+                                                    <legend>Upload Documents</legend>
+                                                    <div class="col-md-8">
+                                                        &nbsp;&nbsp;
+                                	<span class="btn btn-xs green fileinput-button">
+                                     <i class="fa fa-plus"></i>
+                                                <span>
+                                                    Browse
+                                                </span>
+                                        <input type="file" name="files[]" id="fileToUpload3" data-bind=" enable: $parent.IsEditable" multiple>
+                                    </span>
+                                                       
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                </fieldset>
+                                <div align="center" class="form-group">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" id="chkTermsandConditions" data-bind="checked: TermsandConditions, enable: $parent.IsEditable">
+                                        I accept that have read the <a href="#" data-target="#stack111" data-toggle="modal">Terms and Conditions</a>
+                                    </label>
+                                    <div align="center" class="form-group">
+                                        <label class="col-xs-7">
+                                            <span id="spanchkTermsandConditions" class="validationError"></span>
+                                        </label>
+
+                                    </div>
+
+<div id="stack111" class="modal fade" tabindex="-1" data-width="400" align="left">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                   
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                    <h4>Dry Dock Terms And Conditions</h4> 
+                                                    <div class="scroller" style="height:400px;" data-always-visible="1" data-rail-visible1="1">
+                                                    
+<fieldset>
+                                        				<legend>Terms and Conditions</legend>
+<ol>
+    <li style="font-weight:bold;">DECLARATION
+        <ul style="font-weight:normal;">
+            <li>I hereby declare that I understand and concur with Regulation 60(1) of the Regulations for the Harbours of the Republic of South Africa.</li>
+            <li>That all shore-side connections required by the vessel, especially fire-fighting water connections, is my responsibility and are operating to my satisfaction and that the ongoing integrity of these connections shall be my responsibility for the duration of the period which my vessel occupies the Dry Dock and Syncrolift. It is the duty of the vessel to ensure that the vessel's fire-main is connected to the prescribed shore waterline.</li>
+            <li>I take note that the salt water is free of charge and fresh water is payable as per Harbour Tariff book and agree to monitor the consuming thereof in order to accept the Applicable charges.</li>
+            <li>That the sides of my vessel will be kept clear by removing all over board smoking buoys, E.P.I.R.B. buoys, lights etc., which might be in the way of the crane wires.</li>
+            <li>Only accredited ship-repair firms to be used.</li>
+            <li>The gangway on board to be kept in a sole and serviceable condition and not misused.</li>
+        </ul>
+    </li><p>&nbsp;</p>
+    <li style="font-weight:bold;">SPRAY/ PAINTING AND BLASTING OPERATIONS
+        <p>*UNDER NO CIRCUMSTANCES WILL BLASTING OR PAINTING OPERATIONS BE ALLOWED WITHOUT THE NECESSARY PERMITS AS ISSUED BY THE PORTS AUTHORITY.</p>        
+        <p>NOTE:</p>
+        <ul style="font-weight:normal;">
+            <li><strong>SYNCHROLIFT & ROBINSON DOCK </strong>- No spray painting above the vessels' waterline (paint to be applied with rollers).</li>
+            <li>No spray painting in windy conditions.</li>
+            <li><strong>ROBINSON DRY DOCK</strong>- No spray painting above road level.</li>
+        </ul>
+        <p><strong>Any contractor contravening the above will be liable for claims cost and will be refused entry to the ship repair facility.</strong></p>
+    </li>
+    <li style="font-weight:bold;">WASTE MANAGEMENT AT DRY DOCK FACILITIES
+        <ul style="font-weight:normal;">
+            <li>Please be advised that no work will be permitted, without waste bins on site. Sandblasting is prohibited. </li>
+            <li>All debris, i.e. used grit, scale, barnacles and industrial waste must be deposited in the waste bins and not left on the quayside, or placed in used oil drums or "bomb bags".</li>
+            <li>Under no circumstances must industrial waste be placed in the waste bins which are provided by TNPA for the use of ship crew galley waste only.</li>
+            <li>Shipping agents will be held personally accountable for the implementation and execution of the above, and the provision of the bins.</li>
+            <li>Should the above not be strictly adhered to, dry dock charges will continue until such time as the immediate area concerned is clean.</li>
+        </ul>
+    </li>
+<p>&nbsp;</p>
+    <li style="font-weight:bold;">OCCUPATIONAL HEALTH AND SAFETY
+        <ul style="font-weight:normal;">
+            <li>It is a condition of this agreement that your workmen, and any sub – contractors, be covered in terms of the Compensation for Occupational Injuries and Diseases Act (130 of 1993) as amended. A copy of your registration certificate must be kept and can be requested by the Ports Authority.</li>
+            <li>A competent site supervisor should be on site at all times to monitor the execution of site activities.</li>
+            <li>After completion of the work the contractor must clean the site area where work was performed and restore it to orderliness. Work – sites must be kept tidy during work operations.</li>
+            <li>It must be noted that any reportable SHE incident or machine failure caused by the contractor will be reported by the company as required under the Occupational Health and Safety Act (85 of 1993) and inform the Ports Authority of such occurrences.</li>
+            <li>Appropriate Personal Protective Equipment (PPE) must be worn and especially in areas so demarcated. Under no circumstances will ANYBODY be allowed to walk or stand under suspended loads.</li>
+            <li>Only competent and inducted workmen, operators, sub- contractors will be allowed to enter the Dry Docks.</li>
+            <li>Only safe and sound erected scaffolding will be used. Working at heights exceeding 2 metres will be subjected to the requirements as laid down in the OHS Act and relevant regulations. Aerial Platforms or “Cherrie Pickers” shall have valid and up-to-date load test certificates and only be operated by competent operators.</li>
+            <li>On no account are contractors or unauthorized employees permitted to operate TNPA cranes, hoists, lifts, or any other equipment including vehicles and forklift trucks. If the use of any of the above equipment is required, application must be made to the Dock Master or his/ her representative.</li>
+            <li>All hot work, entry into a confined spaces and related work can only be done upon the written permission from the Ports Authority.</li>
+            <li>The Contractor shall ensure that a copy of both his and subcontractor’s Health and Safety File is available on request to the TNPA SHE Dept, inspector, or delegated authority.</li>
+        </ul>
+    </li>
+<p>&nbsp;</p>
+     <li style="font-weight:bold;">TARRIFS AND CHARGES
+        <ul style="font-weight:normal;">
+            <li>I/We, the undersigned, agree that all tariffs and charges shall be regulated by and subject to the NPA Official Harbour Tariff Book (“the tariff book) and have taken cognizance of the general terms and conditions and the clauses in the tariff book dealing with booking deposits and the penalties pertaining thereto.</li>
+            <li>I/We undertake to pay the full charges as incurred through the use of the facility requested herein.</li>
+            <li>Should the tonnage of the ship and cargo for tariff purposes prove to exceed the figure provided for in this application, the higher charge as stated in the tariff book shall apply.</li>
+            <li>I agree that charges for fresh water, electricity and compressed air is obtainable on application as per the tariff book. I/We furthermore agree to monitor the consuming thereof in order to accept the applicable charges.</li>
+            <li>I/We take note that the salt water is free of charge.</li>
+        </ul>
+    </li>
+<p>&nbsp;</p>
+     <li style="font-weight:bold;">LIMITATION OF LIABILITY AND INDEMNITY
+        <ul style="font-weight:normal;">
+            <li>The TNPA shall not be liable for any claim, loss, damage, harm, death or expense of any nature whatsoever (including legal costs on a scale as between attorney and own client) and including any consequential, indirect and/or special losses which the Applicant or any other party may suffer as a result of or which may be attributable, directly or indirectly, to the use of the facility (Dry Dock and/or Synchrolift) requested in this application form.</li>
+            <li>The Applicant and its employees, representatives, directors, servants, consultants, agents, and/or any other person under the control and/or supervision of and/or connected with the Applicant, whether directly or indirectly, furthermore irrevocably indemnifies and hold the NPA harmless against any claim, loss, liability, damage, harm, death or expense of any nature whatsoever (including legal costs on a scale as between attorney and own client) and including any consequential, indirect and /or special losses which the Applicant or any other party may suffer as a result of or which may be attributable, directly or indirectly, to the use of the facility (Dry Dock and /or Synchrolift) requested in this application form.</li>
+            <li>Such indemnity shall apply whether or not the claims are occasioned by any act and/or omission of TNPA and/or anyone else for whose actions NPA would be liable in law, or by reason of vis maior, casus fortuitus, riots, strikes, theft or burglary or any circumstances outside the control of NPA or by reason of any condition of the facility requested in this application form.</li>
+        </ul>
+    </li>
+<p>&nbsp;</p>
+     <li style="font-weight:bold;">ACCEPTANCE
+        <ul style="font-weight:normal;">
+            <li>No acceptance of this booking for use of the drydock at any particular time or for any particular dates by or on behalf of the National Ports Authority shall bind the National Ports Authority and no vessel shall have the right to use any drydock at any particular time whether in turn or at any time referred to in this drydock booking or any other time whatsoever.</li>
+        </ul>
+    </li>
+</ol>
+<p>Note:</p>
+<ol>
+    <li>Where a vessel is in ballast or carrying cargo at the time of docking, ballast and/or cargo distribution plans will be required.  The applicant shall advise the Dock Master of distribution of ballast, which may affect the safe docking or undocking of the vessel.</li>
+    <li>Exact location of underwater protrusions which are not clearly shown on the attached current docking plan, and any damage to hull which may influence procedures</li>
+    <li>Should any relevant information not to be furnished, TNPA will not accept liability of any damage or loss occasioned by the failure to furnish such information.</li>
+</ol>
+<p>We hereby acknowledge and agree to the Terms and Conditions herein, that we have taken cognizance of the clause in the TNPA tariff book in terms of the booking fees and the penalties pertaining thereto. </p>
+<p>&nbsp;</p>
+                                        			</fieldset>
+                                                    </div>
+                                                    </div>
+                                                     
+                                              </div>
+                                            </div>
+              </div>
+
+
+                @*   <div id="stack111" class="modal fade" tabindex="-1" data-width="400">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                    <div class="scroller" style="height: 200px" data-always-visible="1" data-rail-visible1="1">
+                                                        <div class="col-md-12">
+                                                            <h3 class="page-title">Terms &amp; Conditions</h3>
+                                                            <ul class="page-breadcrumb breadcrumb"></ul>
+                                                        </div>
+                                                        <div class="row">
+                                                            Terms and Condition are under Constructions
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="btns-group fluid">
+                                        <button type="submit" class="btn green" data-bind="click: $parent.SaveSuppDryDock, visible: $parent.IsSave">Save</button>
+                                        <button type="submit" class="btn green" data-bind="click: $parent.ModifySuppDryDock, visible: $parent.IsUpdate">Update</button>
+                                        <button type="submit" class="btn blue" data-bind="click: $parent.Reset, visible: $parent.IsReset">Reset</button>
+                                        <button type="button" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-actions fluid">
+
+                                        @{Html.RenderPartial(Url.Content("~/Views/Shared/PendingTaskView.cshtml"));}
+
+                                    </div>
+                                </div>
+                                <!-- Dry Dock Service Type View ends here-->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</script>
+
+<!-- Main body content ends here for developers-->
+
+

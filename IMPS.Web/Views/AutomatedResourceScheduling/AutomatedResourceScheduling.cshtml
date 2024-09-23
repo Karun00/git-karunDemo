@@ -1,0 +1,880 @@
+﻿@{
+    ViewBag.Title = "Automated Resource Allocation";
+    Layout = "~/Views/Shared/_IPMSAutomatedSlotting.cshtml";
+    @Styles.Render("~/CSS/ResourceAllocation")
+
+    
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/AutomatedResourceSchedulingModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AutomatedResourceSchedulingViewModel.js"></script>
+ 
+
+}
+<link href="~/Content/Styles/AutoSlotting.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        var moveLeft = -1150;
+        var moveDown = -35;
+        var moveRight = 20;
+
+        $('a#trigger').hover(function (e) {
+            $('div#pop-up').show();
+            //.css('top', e.pageY + moveDown)
+            //.css('left', e.pageX + moveLeft)
+            //.appendTo('body');
+        }, function () {
+            $('div#pop-up').hide();
+        });
+
+        $('a#trigger').mousemove(function (e) {
+            // Commented and added by Srinivas
+            $("div#pop-up").css('top', e.pageY + moveDown).css('right', moveRight);
+            //$("div#pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
+            //-- end
+        });
+
+    });  
+
+</script>
+<style type="text/css">
+    /*.cursor-btn {*/
+    /*background-color:red;*/
+    /*color: red;
+    }*/
+
+    /*.cursor-btn {*/
+    /*background-color: brown;*/
+    /*color : brown;
+    }*/
+
+    /*.k-widget.k-tooltip {
+        background: transparent;
+        border: 0px;
+    }*/
+.k-tooltip-content {
+        /*width: 850px !important;*/
+        background: #fff !important;
+    }
+
+    .k-grid table tbody tr:hover {
+        background: #fff !important;
+    }
+    /*.col-height {
+        height: 70px;
+    }*/
+    .modal-dialog {
+        width: 400px;
+    }
+
+    .BLCK {
+        /*BLOCKED*/
+        border: 1px solid #CCC;
+        /*background-color: #40FF00;*/
+        background-color: #e02222;
+        color: white;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 1px;
+        text-align: center;
+        /*width: 75px;*/
+        height: 50px;
+        cursor: move;
+        /*font-family: Arial;*/
+        font-size: 11px;
+        white-space: initial;
+        letter-spacing: 1px;
+    }
+    
+
+    .PNDG {
+        /*Pending*/
+        background-color: #add8e6;
+        width: 150px;
+        height: 40px;
+    }
+
+    .legend-Pending {
+        background: #add8e6;
+    }
+
+     .legend-Blocked {
+        background: #e02222;
+    }
+
+    .legend-UnPlanned {
+        background: #add8e6;
+    }
+</style>
+
+@section ko_apply
+{
+    var viewModel = new IPMSROOT.AutomatedResourceScheduleViewModel();
+    ko.bindingHandlers.sortable.beforeMove = viewModel.verifyAssignments;
+    ko.bindingHandlers.sortable.afterMove = viewModel.updateSlot;
+
+    
+   @*ko.applyBindings(viewModel);*@
+ko.applyBindings(viewModel, $("#AutomatedResourceSchedule")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });           
+}
+
+<!-- Main body content starts here for developers-->
+<div id="AutomatedResourceSchedule">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="col-md-6">
+                <h3 class="page-title">Automated Resource Allocation</h3>
+                <ul class="page-breadcrumb breadcrumb"></ul>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label col-md-3">Date: </label>
+                    <div class="col-md-8">
+                        <div class="form-control">
+                            @*<input id="FromDate" type="text" title="FromDate" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDatePicker: { value: $root.ResourceDate, format: 'yyyy-MM-dd', open: calMaxToday }, event: { change: getResourceByDate } " name="FromDate" maxlength="10" />*@
+                            <input id="FromDate" type="text" title="FromDate" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDatePicker: { value: $root.ResourceDate, format: 'yyyy-MM-dd', open: calMaxToday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="FromDate" maxlength="10" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button type="button" class="btn green btn-sm" id="btnSelectDate" data-bind="click: $root.getResourceByDate">Select</button>
+                    <button type="button" class="btn green btn-sm" id="btnRefresh" data-bind="click: $root.clickRefresh">Refresh</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4" align="right">
+            <label class="btn btn-sm  green" disabled><i class="fa fa-anchor"></i>&nbsp;<span data-bind="  text: $root.PortName"></span> </label>
+
+
+            <label class="displaytxtResourceAllocation"></label>
+            <button class="btn btn-sm green" data-bind="click: LoadPreviousDay"><i class="fa fa-chevron-left"></i>&nbsp;Prev Day</button>
+            <button class="btn btn-sm green" data-bind="click: LoadNextDay, enable: IsValidDate">Next Day<i class="fa fa-chevron-right"></i></button>
+
+            <a href="#" class="btn btn-sm red" id="trigger">Legend</a>
+            <div id="pop-up">
+                <p>
+                    <table border='0' width="100%" cellpadding='3' cellspacing='3'>
+                        <tr>
+                            <td class='td-width'>
+                                <div class='legend-icon legend-Scheduled'><span class='left-span'>Scheduled</span></div>
+                            </td>
+                            <td class='td-width'>
+                                <div class='legend-icon legend-Confirmed'><span class='left-span'>Confirmed</span></div>
+                            </td>
+                            <td class='td-width'>
+                                <div class='legend-icon legend-UnPlanned'><span class='left-span'>Unscheduled</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class='legend-icon legend-Started'><span class='left-span'>Started</span></div>
+                            </td>
+                            <td>
+                                <div class='legend-icon legend-Completed'><span class='left-span'>Completed</span></div>
+                            </td>
+                            <td>
+                                <div class='legend-icon legend-Overridden'><span class='left-span'>Overridden</span></div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class='legend-icon legend-Accepted'><span class='left-span'>Accepted</span></div>
+                            </td>
+                            <td>
+                                <div class='legend-icon legend-Rejected'><span class='left-span'>Rejected</span></div>
+                            </td>
+                            <td>
+                                  <div class='legend-icon legend-Blocked'><span class='left-span'>Blocked</span></div>
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </p>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+    <div class="clearfix"></div>
+
+    <div class="clearfix"></div>
+
+    <div class="portlet-body" id="AutomatedResource">
+        <div id="grid" data-bind="kendoGrid: {
+    data: $root.ConfirmedServiceRequest(),
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+
+    useKOTemplates: true, columns: [{ field: 'VCNSort', title: 'VCN', width: 70, filterable: true }
+                       , { field: 'VesselNameSort', title: 'Vessel Name', width: 80, filterable: true },
+                        { field: 'MovementTypeSort', title: 'Service Request', width: 80, filterable: false },
+                       { field: 'Slot', title: 'Planned Slot', width: 100, filterable: false },
+                        { field: 'LengthOverAllSort', title: 'LOA', width: 70, filterable: true },
+                        { field: 'GrossRegisteredTonnageSort', title: 'GRT', width: 110, filterable: false },
+                         { title: 'Actions', width: 80 }
+    ]
+
+}">
+        </div>
+    </div>
+    <div class="table-toolbar" data-bind="with: AutomatedResourceSchedule, loadingWhen: $root.viewModelHelper.isLoading">
+
+
+
+        @*//headerTemplate:kendo.template($('#h_Entity_property').html())*@
+        @*//columns.Bound(p => p.partialNotes).Title("Description").HeaderHtmlAttributes(new { style = "text-align:center" }).HtmlAttributes(new { style = "text-align:left" }).Width("8%").HtmlAttributes(new { title =  "#= completeNotes #" });*@
+
+        <script id="rowTmpl" type="text/html">
+            <tr id="data" data-bind="kendoTooltip: { content: ToolTip }">
+                <td data-bind="style: { backgroundColor: (AnyDangerousGoodsonBoard() == 'A') ? '#FA370E' : '' }">
+                    <div class="nowrap"><span data-bind="text: VCN, attr: { title: VCN }"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                </td>
+                @* <td>
+                    <div class="nowrap"><span data-bind="text: ServiceRequestID"></span></div>
+                </td>*@
+
+                <td>
+                    <div class="nowrap"><span data-bind="text: MovementType"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: Slot"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: LengthOverAll"></span></div>
+                </td>
+                <td>
+                    <div class="nowrap"><span data-bind="text: GrossRegisteredTonnage"></span></div>
+                </td>
+
+                <td>
+                    <div class="nowrap">
+                        @*  <a href="#" data-bind="click: $root.schedulerescource">Schedule</a>*@
+                        <button class="btn btn-xs blue" data-bind="click: $root.schedulerescource">Schedule</button>
+                    </div>
+                </td>
+
+            </tr>
+            <div data-bind="visible: $parent.ConfirmedServiceRequest().length == 0">
+                No Records Found...
+            </div>
+        </script>
+        @*<script id="h_Entity_property"  type="text/x-kendo-template">
+            <div>
+                <span>HI</span>
+            </div>
+        </script>*@
+    </div>
+    @*</div>*@
+
+
+
+    <div class="clearfix">&nbsp;</div>
+    <form action="#" class="form-horizontal" id="submit_form">
+        <div class="form-wizard">
+            <div class="form-body">
+                <div class="alert alert-danger display-none">
+                    <button class="close" data-dismiss="alert"></button>
+                    You have some form errors. Please check below.
+                </div>
+                <div class="alert alert-success display-none">
+                    <button class="close" data-dismiss="alert"></button>
+                    Your form validation is successful!
+                </div>
+
+
+                @* <div class="btns-group form-actions fluid">
+                <button type="submit" class="btn green" data-bind="click: schedulerescource">Schedule</button>
+                <button type="submit" class="btn blue">Reset</button>
+            </div>*@
+            </div>
+        </div>
+    </form>
+    @*<div class="row">
+    <div class="col-md-11" align="right">
+        <div class="form-group">
+            <label class="control-label col-md-9">Date: </label>
+            <div class="col-md-3">
+                <div class="form-control">
+                    <input id="FromDate" type="text" onkeypress="return false;" onkeydown="PreventBackSpace();" class="form-control datetime-picker" data-bind="kendoDatePicker: { value: $root.ResourceDate, format: 'yyyy-MM-dd', open: calMaxToday }, event: { change: getResourceByDate } " name="FromDate" maxlength="10" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>*@
+
+<div class="tabbable tabbable-custom">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#tab_0" data-toggle="tab">Resource Schedule</a>
+            </li>
+            <li>
+                <a href="#tab_1" data-toggle="tab">Resource Calendar</a>
+            </li>
+            <li>
+                <a href="#tab_2" data-toggle="tab">Craft Availability</a>
+            </li>
+        </ul>
+        <form action="#" class="tab-content form-horizontal" id="submit_form1" style="overflow: auto; padding: 10px 10px 10px 0;"  data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <div class="tab-pane active" id="tab_0">
+                <div class="row" >
+
+                    <div class="maintable" data-bind="style: { 'width': $root.maintableWidth }">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td style="width: 250px;   position: absolute; background: #3d3d3d;">Movement
+                                    </td>
+                                    <td>
+                                       <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:250px;"></td>
+                                                    <td class="empty-col" style="width: 30px; position: absolute;background: #3d3d3d;" data-bind="visible: $root.status">&nbsp;</td>
+                                                    <td class="empty-col" style="width: 30px; background: #3d3d3d;" data-bind="visible: $root.status">&nbsp;</td>
+                                                    <td class="resource-col resh-col" style="width: 155px; position: absolute;background: #3d3d3d;   border-right: 1px solid #fff;">Resource Types</td>
+                                                    <td style="width: 150px;"></td>
+                                                    <td>
+                                                        <div data-bind="foreach: SlotsCount, style: { 'width': $root.colwidth }">
+                                                            <div class="col-width" style="width: 150px;" data-bind="text: SlotHeader"></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach: $root.movementResourceAllocations">
+                                
+                                <tr class="table-row">
+                                    <td style="width: 250px; position: absolute;background: #FFFFFF;">
+                                        <div style="height:100%" >
+                                            <table style="width: 100%; line-height:13px;" >
+                                                @*<div data-bind="kendoTooltip: { content: movementResourceAllocationsDetails }">*@
+                                                <tr >
+                                                    <td style='text-align: center' data-bind="style: { backgroundColor: (AnyDangerousGoodsonBoard() == 'A') ? '#FA370E' : '' }">
+                                                        <span data-bind="text: VCN"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr >
+                                                    <td style='text-align: center'>
+                                                        <span data-bind="text: VesselName"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr >
+                                                    <td style='text-align: center'>
+                                                        <span data-bind="text: MovementType"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="height: 0px;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                <div style="padding-top: 5px;">
+                                                <i class="fa fa-save cursor-btn" data-bind=" click: $root.saveResourceAllocation, visible: $root.status " title="Save"></i>&nbsp;&nbsp;
+                                                @*<i class="fa fa-plus-square cursor-btn" title="Add Resource Type" data-target='#MovementModel' data-toggle='modal' data-bind="click: $root.MovmentPopUpClick, visible: $root.status"></i>&nbsp;&nbsp;*@
+                                                <i class="fa fa-plus-square cursor-btn" title="Add Resource Type" data-bind="click: $root.MovmentPopUpClick, visible: $root.status"></i>&nbsp;&nbsp;
+                                                <i class="fa fa-WFCO cursor-btn" title="Confirm" data-bind=" click: $root.confirmResourceAllocation, visible: $root.status, style: { color: $root.confirmResourceAllocationColor }"></i>&nbsp;&nbsp;
+                                                <i class="fa fa-ban cursor-btn" data-bind="click: $root.deallocateResourceAllocation, visible: $root.status" title="Deallocate"></i>&nbsp;&nbsp;
+                                                    <i class="fa fa-info-circle cursor-btn" data-bind="kendoTooltip: { content: movementResourceAllocationsDetails }" title="Details"></i>
+                                                </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <table class="col-height"><tr><td></td></tr></table>
+                                         </div>   
+                                            
+                                    </td>
+                                    <td>
+                                        <div class="int-table"  @*  style="overflow-x:auto; height:150px; border:0px solid #f00;"*@ >
+                                           <table id="tbl">
+                                                <tbody data-bind="foreach: ResourceAllocationSlots" style="border: 1px;">
+                                                    <tr class="table-row" id="rowId" data-bind="visible: IsServiceTypeDeleted() == false">
+                                                        <td style="width:250px; background:#fff;   border: 1px solid #fff !important;"></td>                                                        
+                                                        <td class="trash-col" style=" position:absolute; background:#fff; padding: 26px 0px;" data-bind="visible: $root.status"><i class="fa fa-trash-o cursor-btn" data-bind="    click: $root.removeResourceAllocation" title="Remove"></i></td>
+                                                        <td class="trash-col" style="background:#fff; padding: 26px 0px;" data-bind="visible: $root.status"></td>
+                                                        <td class="resource-col" style="width: 153px; position:absolute; background:#fff; padding:27px 0;   border-right: 1px solid #ccc;">
+                                                            <span data-bind="text: ServiceTypeName"></span>
+                                                        </td>
+                                                        <td style="width: 150px;"></td>    
+                                                            <td>                                                    
+                                                            <div id='divResourceCount' class="table-row" data-bind="sortable: { data: ResourceSlots, allowDrop: $root.isTableFull, options: { cancel: '.BLCK' } }">                                                                                                                         
+                                                             <div class="inner-col-width col-height" data-bind="css: TaskStatus, text: IsCraft() ? TugResourceName : ResourceName, click: function (data, event) { $root.ResourceOnClick(data, event); }"></div>                                                                                                                                                                                        
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            
+
+                        </tbody>
+                            <tbody data-bind="visible: $root.movementResourceAllocations().length === 0">
+                                <tr class="table-row">
+                                    <td colspan="24">No Records</td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <td style="width: 250px;   position: absolute; background: #3d3d3d;">Movement
+                                    </td>
+                                    <td>
+                                       <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:250px;"></td>
+                                                    <td class="empty-col" style="width: 30px; position: absolute;background: #3d3d3d;" data-bind="visible: $root.status">&nbsp;</td>
+                                                    <td class="empty-col" style="width: 30px; background: #3d3d3d;" data-bind="visible: $root.status">&nbsp;</td>
+                                                    <td class="resource-col resh-col" style="width: 155px; position: absolute;background: #3d3d3d; border-right: 1px solid #fff;">Resource Types</td>
+                                                    <td style="width: 150px;"></td>
+                                                    <td>
+                                                        <div data-bind="foreach: SlotsCount, style: { 'width': $root.colwidth }">
+                                                            <div class="col-width" style="width: 150px;" data-bind="text: SlotHeader"></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane" id="tab_1">
+                <div class="row form-group">
+                    <label class="col-md-1 control-label">Resource Type: </label>
+                    <div class="col-md-2">
+                        <select style="width: 100%; height: 22px;" id="ResourceServiceTypeForRC" data-bind="options: $root.getServiceTypeList(), optionsText: 'ServiceTypeName', optionsCaption: 'Choose..', optionsValue: 'ServiceTypeCode', value: ''"></select>
+                    </div>
+                    <label class="col-md-1 control-label">Shift: </label>
+                    <div class="col-md-2">
+                        <select style="width: 100%; height: 22px;" id="ResourceShiftTypeForRC" data-bind="options: $root.getShiftsTypeList(), optionsText: 'ShiftName', optionsCaption: 'Choose..', optionsValue: 'ShiftID', value: ''"></select>
+                    </div>
+                    <div class="col-md-2" style="text-align: center;">
+                        <button type="button" class="btn green btn-sm" id="btnSelect" data-bind="click: $root.SelectResourceCalendar">Select</button>
+                    </div>
+                </div>
+                <div class="maintable" data-bind="style: { 'width': $root.maintableWidthRC }">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td style="width: 250px;">Resource Name
+                                </td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div data-bind="foreach: ResourceCalendarSlotsCount, style: { 'width': $root.colwidthRC }">
+                                                        <div class="col-width" style="width: 150px;" data-bind="text: SlotHeader"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: $root.movementResourceCalendarModel">
+                            <tr class="table-row">
+                                <td style="width: 250px;">
+                                    <span data-bind="text: UserFullName"></span>
+
+                                </td>
+                                <td>
+                                    <div class="int-table">
+                                        <table id="tbl1">
+                                            <tbody style="border: 1px;">
+                                                <tr class="table-row" id="rowId1">
+                                                    <td>
+
+                                                        <div id='divResourceCount1' class="table-row" data-bind="sortable: { data: ResourceCalendarSlotDetails, allowDrop: false }">
+
+                                                            @*<div id="ResourceDetails1" class="inner-col-width" style="white-space: normal" data-bind=" text: SlotText, style: { color: SlotText() == 'UnPlanned' ? 'white' : '' }">*@
+                                                            <div id="ResourceDetails1" class="inner-col-width" style="white-space: normal" data-bind=" text: SlotText, style: { color: (SlotText() == 'UnPlanned') ? 'white' : ((SlotText() == 'Absent') ? 'Red' : '') }">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody data-bind="visible: $root.movementResourceCalendarModel().length === 0">
+                            <tr class="table-row">
+                                <td colspan="24">No Records</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="tab-pane" id="tab_2">
+                <div class="row form-group">
+                    <label class="col-md-1 control-label">Resource Type: </label>
+                    <div class="col-md-2">
+                        <select style="width: 100%; height: 22px;" id="ResourceServiceTypeForCA" data-bind="options: $root.getCraftAvailabilityServiceTypes(), optionsText: 'ServiceTypeName', optionsCaption: 'Choose..', optionsValue: 'ServiceTypeCode', value: ''"></select>
+                    </div>
+                    <label class="col-md-1 control-label">Shift: </label>
+                    <div class="col-md-2">
+                        <select style="width: 100%; height: 22px;" id="ResourceShiftTypeForCA" data-bind="options: $root.getShiftsTypeList(), optionsText: 'ShiftName', optionsCaption: 'Choose..', optionsValue: 'ShiftID', value: ''"></select>
+                    </div>
+                    <div class="col-md-2" style="text-align: center;">
+                        <button type="button" class="btn green btn-sm" id="btnSelectCA" data-bind="click: $root.SelectCraftCalendar">Select</button>
+                    </div>
+                </div>
+                <div class="maintable" data-bind="style: { 'width': $root.maintableWidthRC }">
+                    <table>
+                        <thead>
+                            <tr>
+
+                                <td style="width: 200px;">Craft Name
+                                </td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div data-bind="foreach: ResourceCalendarSlotsCount2, style: { 'width': $root.colwidthRC }">
+                                                        <div class="col-width" style="width: 150px;" data-bind="text: SlotHeader"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: $root.movementResourceCalendarModel2">
+                            <tr class="table-row">
+                                <td style="width: 250px;">
+                                    <span data-bind="text: UserFullName"></span>
+
+                                </td>
+                                <td>
+                                    <div class="int-table">
+                                        <table id="tbl2">
+                                            <tbody style="border: 1px;">
+                                                <tr class="table-row" id="rowId2">
+                                                    <td>
+
+                                                        <div id='divCraftCount1' class="table-row" data-bind="foreach: ResourceCalendarSlotDetails ">
+
+                                                            @*<div id="CraftDetails1" class="inner-col-width" style="white-space: normal" data-bind=" text: SlotText, style: { color: SlotText() == 'UnPlanned' ? 'white' : (SlotText() == 'Absent' ? 'Red' : '')  }"></div>*@
+                                                            <div id="CraftDetails1" class="inner-col-width" style="white-space: normal" data-bind=" text: SlotText, style: { color: (SlotText() == 'UnPlanned') ? 'white' : ((SlotText() == 'Out of Commission') ? 'Red' : '') }">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody data-bind="visible: $root.movementResourceCalendarModel2().length === 0">
+                            <tr class="table-row">
+                                <td colspan="24">No Records</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+
+
+    @*<div id="OtherThanTugModel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content" data-bind="with: selectedOtherThanTugSlotColumn">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Other Than Tug Service Type <span id="OtherThanTugHeader"></span></h4>
+            </div>
+            <div class="modal-body">
+                <select id="OtherThanTugResourceID" data-bind="options: $root.getResourceList(), optionsText: 'Name', optionsCaption: 'Choose..', optionsValue: 'ID', value: ''"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bind="click: $root.SelectOtherThanTugResource">Select</button>
+                 <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $root.DeleteOtherThanTugResource">Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- /.modal -->
+<div id="TugModel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content" data-bind="with: selectedTugSlotColumn">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Tug Service Type<span id="TugHeader"></span></h4>
+            </div>
+            <div class="modal-body">
+                <select id="TugCraftID" data-bind="options: $root.getCraftsList(), optionsText: 'Name', optionsCaption: 'Choose..', optionsValue: 'ID', value: ''"></select>
+                <select id="TugResourceID" data-bind="options: $root.getResourceList(), optionsText: 'Name', optionsCaption: 'Choose..', optionsValue: 'ID', value: ''"></select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bind="click: $root.SelectTugResource">Save changes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: $root.DeleteTugResource">Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div id="MovementModel" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Resource Type<span id="MovementHeader"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-control">
+                    <select id="ResourceServiceType" data-bind="options: $root.getServiceTypeList(), optionsText: 'ServiceTypeName', optionsCaption: 'Choose..', optionsValue: 'ServiceTypeCode', value: ''"></select>
+                    <span id="spanHCWPSlocation" class="validationError"></span>
+                </div>
+
+            </div>
+
+            <div class="modal-footer" data-bind="with: $root.MovementPopUp">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bind="click: $root.addResourceForGivenVCN">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="clearfix"></div>
+
+
+
+
+<div class="clearfix">&nbsp;</div>*@
+
+    <!-- /.modal -->
+    <div id="TugModel" class="modal fade">
+        <div class="modal-dialog" style="width: 588px; height: 333px;">
+            <div class="modal-content" data-bind="with: selectedTugSlotColumn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Movement Details<span id="TugHeader"></span></h4>
+                </div>
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="modal-body">
+                        <fieldset>
+                            <legend>Vessel Information</legend>
+                            <div class="form-group row">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-6">VCN:</label>
+                                        <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedTugSlotColumnVCN"></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6">Vessel Name:</label>
+                                            <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedTugSlotColumnVesselName"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-6">Movement Type:</label>
+                                        <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedTugSlotColumnMovementType"></label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-6">Resource Type:</label>
+                                        <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedTugSlotColumnResourceType"></label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label class="control-label col-md-5">Craft:</label>
+                                    <div class="col-md-7" style="padding: 2px 3px 0 0px;">
+                                        <select id="TugCraftID" style="width: 100%;" data-bind="options: $root.getCraftsList(), optionsText: 'Name', optionsCaption: 'Choose..', optionsValue: 'ID', value: '', enable: $root.status"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label col-md-5">Resource Name:</label>
+                                    <div class="col-md-7" style="padding: 2px 3px 0 0px;">
+                                        <select id="TugResourceID" style="width: 100%;" data-bind="options: $root.getResourceList(), optionsText: 'Name', optionsCaption: 'Choose..', optionsValue: 'ID', value: '', enable: $root.status"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="btns-group form-actions fluid">
+                            <button type="button" class="btn btn-sm green" title="Save" data-bind="click: $root.SelectTugResource, visible: $root.status">Save</button>
+                            <button type="button" class="btn btn-sm red" title="Delete" data-dismiss="modal" data-bind="click: $root.DeleteTugResource, visible: $root.status">Delete</button>
+                            <button type="button" class="btn btn-sm grey" title="Close" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+
+            <!-- /.modal-content -->
+        </div>
+
+        <!-- /.modal-dialog -->
+    </div>
+
+
+    <div id="OtherThanTugModel" class="modal fade">
+        <div class="modal-dialog" style="width: 588px; height: 333px;">
+            <div class="modal-content" data-bind="with: selectedOtherThanTugSlotColumn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Movement Details<span id="OtherThanTugHeader"></span></h4>
+                </div>
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="modal-body">
+                        <fieldset>
+                            <legend>Vessel Information</legend>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-md-6">VCN:</label>
+                                    <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedOtherThanTugSlotColumnVCN"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-md-6">Vessel Name:</label>
+                                    <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedOtherThanTugSlotColumnVesselName">asdf</label>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-md-6">Movement Type:</label>
+                                    <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedOtherThanTugSlotColumnMovementType"></label>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-md-6">Resource Type:</label>
+                                    <label class="displaytxt col-md-6" style="padding: 7px 3px 0 0px;" id="selectedOtherThanTugSlotColumnResourceType"></label>
+
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-md-6">
+
+                                    <label class="control-label col-md-6">Resource Name:</label>
+                                    <div class="col-md-6 " style="padding: 2px 3px 0 0px;">
+                                        <select id="OtherThanTugResourceID" style="width: 180px;" data-bind="options: $root.getResourceList(), optionsText: 'Name', optionsCaption: 'Choose..', optionsValue: 'ID', value: '', enable: $root.status"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </fieldset>
+                        <div class="btns-group form-actions fluid">
+                            <button type="button" class="btn btn-sm green" title="Save" data-bind="click: $root.SelectOtherThanTugResource, visible: $root.status">Save</button>
+                            <button type="button" class="btn btn-sm red" title="Delete" data-dismiss="modal" data-bind="click: $root.DeleteOtherThanTugResource, visible: $root.status">Delete</button>
+                            <button type="button" class="btn btn-sm grey" title="Close" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div id="MovementModel" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Add New Resource Type<span id="MovementHeader"></span></h4>
+                </div>
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="modal-body">
+                        <fieldset>
+                            <div class="row form-group">
+                                <label class="control-label col-md-5">Resource Type:</label>
+                                <div class="col-md-5 control-label" style="padding: 2px 3px 0 0px;">
+                                    <select id="ResourceServiceType" data-bind="options: $root.getServiceTypeList(), optionsText: 'ServiceTypeName', optionsCaption: 'Choose..', optionsValue: 'ServiceTypeCode', value: ''"></select>
+                                </div>
+                                <span id="spanHCWPSlocation" class="validationError"></span>
+                            </div>
+                        </fieldset>
+                        <div class="btns-group form-actions fluid" data-bind="with: $root.MovementPopUp">
+                            <button type="button" class="btn btn-sm green" title="Save" data-bind="click: $root.addResourceForGivenVCN">Save</button>
+                            <button type="button" class="btn btn-sm grey" title="Close" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+
+<div class="clearfix">&nbsp;</div>
+
+
+<!-- Main body content ends here for developers-->

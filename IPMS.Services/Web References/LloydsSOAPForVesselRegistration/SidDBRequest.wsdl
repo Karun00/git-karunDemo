@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:intf="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:impl="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" targetNamespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest">
+      <xsd:import namespace="http://xml.apache.org/xml-soap" />
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <xsd:complexType name="SoapException">
+        <xsd:sequence>
+          <xsd:element name="message" nillable="true" type="soapenc:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ArrayOf_xsd_anyType">
+        <xsd:complexContent mixed="false">
+          <xsd:restriction base="soapenc:Array">
+            <xsd:attribute wsdl:arrayType="xsd:anyType[]" ref="soapenc:arrayType" />
+          </xsd:restriction>
+        </xsd:complexContent>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xml.apache.org/xml-soap">
+      <xsd:import namespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" />
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <xsd:complexType name="Vector">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="xsd:anyType" />
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="request_dataRequest">
+    <wsdl:part name="user" type="soapenc:string" />
+    <wsdl:part name="password" type="soapenc:string" />
+    <wsdl:part name="function" type="soapenc:string" />
+    <wsdl:part name="var1" type="soapenc:string" />
+    <wsdl:part name="var2" type="soapenc:string" />
+    <wsdl:part name="var3" type="soapenc:string" />
+    <wsdl:part name="var4" type="soapenc:string" />
+    <wsdl:part name="var5" type="soapenc:string" />
+    <wsdl:part name="var6" type="soapenc:string" />
+    <wsdl:part name="var7" type="soapenc:string" />
+    <wsdl:part name="var8" type="soapenc:string" />
+    <wsdl:part name="var9" type="soapenc:string" />
+    <wsdl:part name="var10" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="soap_callRequest">
+    <wsdl:part name="user" type="soapenc:string" />
+    <wsdl:part name="password" type="soapenc:string" />
+    <wsdl:part name="function" type="soapenc:string" />
+    <wsdl:part name="var1" type="soapenc:string" />
+    <wsdl:part name="var2" type="soapenc:string" />
+    <wsdl:part name="var3" type="soapenc:string" />
+    <wsdl:part name="var4" type="soapenc:string" />
+    <wsdl:part name="var5" type="soapenc:string" />
+    <wsdl:part name="var6" type="soapenc:string" />
+    <wsdl:part name="var7" type="soapenc:string" />
+    <wsdl:part name="var8" type="soapenc:string" />
+    <wsdl:part name="var9" type="soapenc:string" />
+    <wsdl:part name="var10" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="request_dataRequest1">
+    <wsdl:part name="user" type="soapenc:string" />
+    <wsdl:part name="password" type="soapenc:string" />
+    <wsdl:part name="function" type="soapenc:string" />
+    <wsdl:part name="var1" type="soapenc:string" />
+    <wsdl:part name="var2" type="soapenc:string" />
+    <wsdl:part name="var3" type="soapenc:string" />
+    <wsdl:part name="var4" type="soapenc:string" />
+    <wsdl:part name="var5" type="soapenc:string" />
+    <wsdl:part name="var6" type="soapenc:string" />
+    <wsdl:part name="var7" type="soapenc:string" />
+    <wsdl:part name="var8" type="soapenc:string" />
+    <wsdl:part name="var9" type="soapenc:string" />
+    <wsdl:part name="var10" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="request_dataResponse">
+    <wsdl:part name="request_dataReturn" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="SoapException">
+    <wsdl:part name="fault" type="impl:SoapException" />
+  </wsdl:message>
+  <wsdl:message name="request_dataResponse1">
+    <wsdl:part name="request_dataReturn" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="soap_callResponse">
+    <wsdl:part name="soap_callReturn" type="impl:ArrayOf_xsd_anyType" />
+  </wsdl:message>
+  <wsdl:portType name="SidDBRequest">
+    <wsdl:operation name="request_data" parameterOrder="user password function var1 var2 var3 var4 var5 var6 var7 var8 var9 var10">
+      <wsdl:input name="request_dataRequest" message="impl:request_dataRequest" />
+      <wsdl:output name="request_dataResponse" message="impl:request_dataResponse" />
+      <wsdl:fault name="SoapException" message="impl:SoapException" />
+    </wsdl:operation>
+    <wsdl:operation name="request_data" parameterOrder="user password function var1 var2 var3 var4 var5 var6 var7 var8 var9 var10">
+      <wsdl:input name="request_dataRequest1" message="impl:request_dataRequest1" />
+      <wsdl:output name="request_dataResponse1" message="impl:request_dataResponse1" />
+      <wsdl:fault name="SoapException" message="impl:SoapException" />
+    </wsdl:operation>
+    <wsdl:operation name="soap_call" parameterOrder="user password function var1 var2 var3 var4 var5 var6 var7 var8 var9 var10">
+      <wsdl:input name="soap_callRequest" message="impl:soap_callRequest" />
+      <wsdl:output name="soap_callResponse" message="impl:soap_callResponse" />
+      <wsdl:fault name="SoapException" message="impl:SoapException" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SidDBRequestSoapBinding" type="impl:SidDBRequest">
+    <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <wsdl:operation name="request_data">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="request_dataRequest">
+        <wsdlsoap:body use="encoded" namespace="http://soap.lmiu.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="request_dataResponse">
+        <wsdlsoap:body use="encoded" namespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="SoapException">
+        <wsdlsoap:fault use="encoded" name="SoapException" namespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="request_data">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="request_dataRequest1">
+        <wsdlsoap:body use="encoded" namespace="http://soap.lmiu.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="request_dataResponse1">
+        <wsdlsoap:body use="encoded" namespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="SoapException">
+        <wsdlsoap:fault use="encoded" name="SoapException" namespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="soap_call">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="soap_callRequest">
+        <wsdlsoap:body use="encoded" namespace="http://soap.lmiu.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="soap_callResponse">
+        <wsdlsoap:body use="encoded" namespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="SoapException">
+        <wsdlsoap:fault use="encoded" name="SoapException" namespace="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SidDBRequestService">
+    <wsdl:port name="SidDBRequest" binding="impl:SidDBRequestSoapBinding">
+      <wsdlsoap:address location="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

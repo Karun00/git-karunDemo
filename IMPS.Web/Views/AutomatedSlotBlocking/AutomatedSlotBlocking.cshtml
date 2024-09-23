@@ -1,0 +1,199 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{   
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/AutomatedSlotBlockingModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AutomatedSlotBlockingViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.AutomatedSlotBlockingViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#AutomatedSlotBlocking")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="AutomatedSlotBlocking">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div>
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.AddSlot">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+	data: AutoBlockingList,
+	groupable: false,
+	sortable: true,
+	scrollable: true,
+	filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' }, int: { eq: 'Is equal to' } } },
+	rowTemplate: 'rowTmpl',
+	pageable: { pageSize: 5, pageSizes: 5 },
+	useKOTemplates: true,
+	columns: [{ field: 'DateSort', title: 'Date', width: '80px', filterable: true },
+           { field: 'SlotFromSort', title: 'Slot From', width: '80px', filterable: true },
+											{ field: 'SlotToSort', title: 'Slot To', width: '80px', filterable: true },											
+											{ title: 'Status', filterable: false, width: 60 },
+											{ title: 'Actions', width: '70px', filterable: false }]
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>     
+                         <td><span data-bind="text: FromDate"></span></td>                                          
+                        <td>
+                            <div class="nowrap"><span data-bind="text: SlotDateFrom"></span></div>
+                        </td>  
+                        <td>
+                            <div class="nowrap"><span data-bind="text: SlotDateTo"></span></div>
+                        </td>      
+                         
+                        <td><span data-bind="text: Statust"></span></td>                   
+                        <td>
+                            <div class="nowrap">
+                             @if (Model.HasEditPrivilege)
+                                 {  
+                                    <a href="#" data-bind="click: $parent.editSlot, visible: isEditVisible" title="Edit"><i class="fa fa-edit"></i></a>
+                                 }
+                                 @if (Model.HasViewPrivilege)
+                                    {    
+                                    <a href="#" data-bind="click: $parent.viewSlot" title="View"><i class="fa fa-eye"></i></a>
+                                     }
+                            
+                                &nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet portlet-body form">
+                    <form action="#" id="form_sample_1" class="form-horizontal">
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                            <div class="form-body" data-bind="with: autoslotBlockingModel">                              
+                                <div class="tab-pane active" id="tab1">
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend>Automated Slot Blocking Details</legend>
+                                           <div class="row">
+                                           <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                                Date:
+                                                        <span class="required">*</span>                                                  
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                             <input type="text" id="FromDate" class="datetime-picker topb"  onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: FromDate, enabled: $root.IsCodeEnable, format: 'yyyy-MM-dd', open: calmintoday, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: SlotBlockingDate }" name="FromDate" maxlength="0" />                                                             
+                                                         <span class="validationError" data-bind="validationMessage: FromDate"></span>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                           <div class="col-md-4">
+                                                    <div class="form-group">
+                                                <label class="control-label col-md-4">
+                                                  Slot From:
+                                                 <span class="required">*</span></label>
+                                                <div class="col-md-8">
+                                                   <input id="SlotFrom" title="SlotFrom" class="form-control print-drop" data-bind="kendoDropDownList: { data: $root.slottingReferenceData().AllSlots, dataTextField: 'SlotTime', dataValueField: 'SlotPeriod', value: SlotFrom, enabled: $parent.IsCodeEnable, optionLabel: 'Choose....', select: $root.SlotFromChange }" />  
+                                                           <span class="validationError" data-bind="validationMessage: SlotFrom"></span>
+                                                </div>
+                                            </div>
+                                                </div>
+                                              <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                                Slot To:  <span class="required">*</span></label>                                      
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                          <input id="SlotTo" title="SlotTo" class="form-control print-drop" data-bind="kendoDropDownList: { data: $root.slottingReferenceData().AllSlots, dataTextField: 'SlotTime', dataValueField: 'SlotPeriod', value: SlotTo, enabled: $parent.IsCodeEnable, optionLabel: 'Choose....' , select: $root.SlotToChange}" />  
+                                                           <span class="validationError" data-bind="validationMessage: SlotTo"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                           <div class="row">
+                                           <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                           Reason:   
+                                                        <span class="required">*</span>                                                  
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                          <select id="ReasonId" title="Reason" class="form-control" data-bind="options: $root.slottingReferenceData().Reasons, optionsText: 'SubCatName', optionsValue: 'SubCatCode', optionsCaption: 'Choose...', value: Reason, enable: $parent.IsCodeEnable, event: { change: $root.ReasonChange }"></select> 
+                                                           <span class="validationError" data-bind="validationMessage: Reason"></span>                                                             
+                                                    </div>
+                                                </div>
+                                                </div>
+                                           <div class="col-md-4">
+                                                    <div class="form-group">
+                                                <label class="control-label col-md-4">Status:  <span class="required">*</span></label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="status" id="Status" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.IsStatusEnable"></select>
+                                                </div>
+                                            </div>
+                                                </div>
+                                              <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                           Remarks:                                                     
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                           <textarea class="form-control zeroborder" style="resize: none;" rows="2" maxlength="200" name="Remarks" data-bind="enable: $parent.IsCodeEnable, value: Remarks"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           </div>
+                                           <div class="row" id="OtherID">
+                                           <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-4">
+                                                         Other: 
+                                                        <span class="required">*</span>                                                  
+                                                        </label>
+                                                        <div class="col-md-8">
+                                                          <input type="text" id="Other" name="Other" maxlength="30" data-required="1" class="form-control" autocomplete="off" data-bind="value: Other, enable: $parent.IsCodeEnable, event: { keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }">
+                                                           <span id="spanOther" class="validationError"></span>                                                             
+                                                    </div>
+                                                </div>
+                                                </div>                                         
+                                           </div>
+                                            <br>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                    <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.SaveAutoSlot, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                                    <button type="submit" class="btn green" data-bind="click: $parent.ModifyAutoSlot, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                    <button type="submit" class="btn blue" data-bind="click: $parent.ResetAutoSlot, visible: $parent.IsReset ">Reset</button>
+                                    <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </script>
+    </div>
+</div>
+

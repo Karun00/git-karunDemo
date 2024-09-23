@@ -1,0 +1,288 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Port Information";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/ViewModel/PortInformationViewModel.js"></script>
+    <script src="~/Scripts/Application/Model/PortInformationModel.js"></script>
+}
+<style>
+    .sub-links {
+        float: right;
+        margin-right: 40px;
+    }
+
+    .link-seperator {
+        border-bottom: 1px solid #ccc;
+        line-height: 30px;
+    }
+
+        .link-seperator:hover {
+            background: #ddd;
+        }
+
+    .sub-links {
+        float: right;
+        margin-right: 40px;
+    }
+
+    .link-seperator {
+        border-bottom: 1px solid #ccc;
+        line-height: 30px;
+    }
+
+        .link-seperator:hover {
+            background: #ddd;
+        }
+</style>
+@section ko_apply
+{
+var viewModel = new IPMSROOT.PortInformationViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#PortInformation")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="PortInfMaster"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="PortInformation">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'PortInformationList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'PortInformationForm-template' }"></div>
+</div>
+<div class="clearfix"></div>
+<script type="text/html" id="PortInformationList-template">
+    <div id="tableheader">
+        @if (Model.HasAddPrivilege)
+        {
+            <a class="button gbtngreen" data-toggle="modal" href="#" data-bind="click: $root.addPortInformation">Add New <i class="fa fa-plus"></i></a>
+        }
+        <p>&nbsp;</p>
+        <fieldset>
+            <legend>Port Information</legend>
+            <div style="margin-right: 30px;" data-bind=" foreach: $root.ContentdataTreeView">
+                <div class="col-md-4">
+                    <div class="link-seperator">
+                        <strong>
+                            <span data-bind="text: ContentName"></span>
+                        </strong>
+                        <span class="sub-links">
+                            @if (Model.HasEditPrivilege)
+                            {   
+                                <a href="#" data-bind="click: $parent.EditPortInformation" title="Edit Category" class="links"><i class="fa fa-edit"></i></a>
+                            }
+                            @if (Model.HasAddPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.AddLinkInformation" title="Add Link" class="links"><i class="fa fa-plus"></i></a>
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                        <div data-bind="foreach: PortContent1">
+                            <div class="link-seperator" data-bind="visible: ContentName() == 'No Data' ? false : true">
+                                <a href="#" data-bind="click: $root.Contentview">
+                                    <span data-bind="text: ContentName" class="links"></span>
+                                </a>
+                                <span class="sub-links ">
+                                    @if (Model.HasEditPrivilege)
+                                    {   
+                                        <a href="#" data-bind="click: $root.moduleSelected" class="links"><i class="fa fa-edit"></i></a> 
+                                    }
+                                </span>
+                            </div>
+                            <span class="row"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div id="stack1" class="modal fade" tabindex="-1" data-bind="with: portInformationModel" data-width="500">
+            <div id="field1" class="modal-dialog" style="width: 40%; margin: 100px 300px;">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <div class="form-horizontal" data-always-visible="1" data-rail-visible1="1">
+                            <fieldset>
+                                <legend id="spnTitile1">Add Category</legend>
+                                <div id="categoryId" class="form-group row">
+                                    <label class="control-label col-md-6">
+                                        Category Name:<span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-5">
+                                        <input id="CategoryId" type="text" style="text-transform: capitalize;" class="form-control" data-bind="value: ContentName, enable: $parent.editableView" name="Category Name" maxlength="50" />
+                                        <span id="spanvsap" class="validationError" style="margin-top: 21px; margin-right: 50px;" data-bind="validationMessage: ContentName"></span>
+                                    </div>
+                                </div>
+                                <div id="contentid" class="form-group row" style="display: none">
+                                    <label class="control-label col-md-6">
+                                    </label>
+                                    <div class="input-icon">
+                                        <textarea id="linkId" class="ckeditor form-control" name="editor1" data-bind="kendoEditor: { value: LinkContent },"></textarea>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="btns-group ">
+                        <button type="submit" class="btn green" title="Save" data-bind="click: $root.SavePortInformation, visible: $root.IsSave">Save</button>
+                        <button type="submit" class="btn green" title="Update" data-bind="click: $root.ModifyPortInformation, visible: $root.IsUpdate">Update</button>
+                        <button type="submit" class="btn blue" title="Reset" data-bind="click: $root.ResetPortInformation, visible: $root.IsReset">Reset</button>
+                        <button type="submit" class="btn red" title="Cancel" data-bind="click: $root.Cancel">Cancel</button>
+                    </div>
+                    <br>
+                    &nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="PortInformationForm-template">
+    <div class="portlet portlet-body form">
+        <form action="#" id="PortInformationForm1" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body">
+                    <div class="tab-pane active" id="tab1">
+                        <div class="form-group">
+                            <div id="stack2" data-bind="with: portInformationModel">
+                                <fieldset>
+                                    <legend id="EditLink">Add Link</legend>
+                                    <div class="form-group row">
+                                        <label class="control-label col-md-2">
+                                            Link Name:<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="CategoryId1" type="text" style="text-transform: capitalize;" class="form-control" data-bind="value: ContentName" name="Link Name" maxlength="50" />
+                                            <span id="spanvsap1" class="validationError"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="control-label col-md-2">
+                                            Link Visibility:	
+                                        </label>
+                                        <div class="">
+                                            <span>
+                                                <input id="GenId" type="radio" name="LinkVisibility" value="G" data-bind="checked: LinkVisibility">
+                                                General
+                                            </span>
+                                            <span>
+                                                <input id="usrId" name="LinkVisibility" type="radio" value="U" checked="checked" data-bind="checked: LinkVisibility">
+                                                For Users
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2">
+                                            Link Type:	
+                                        </label>
+                                        <div class="">
+                                            <span>
+                                                <input id="lnkConId" name="LinkType" checked="checked" type="radio" value="C" data-bind="checked: LinkType">
+                                                Content
+                                            </span>
+                                            <span>
+                                                <input id="lnkDocId" type="radio" name="LinkType" value="D" data-bind="checked: LinkType">
+                                                Document
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div id="editorId" class="input-icon">
+                                        <textarea class="ckeditor form-control" name="editor1" rows="5" data-bind="kendoEditor: { value: LinkContent }"></textarea>
+                                    </div>
+                                    <div class="row">
+                                        <div id="uploaddocId" style="display: none">
+                                            <div class="form-group col-md-8">
+                                                <div class="form-group">
+                                                    <fieldset>
+                                                        <legend>Document</legend>
+                                                        <div class="col-md-3">
+                                                            <span class="btn btn-xs green fileinput-button">
+                                                                <i class="fa fa-plus"></i>
+                                                                <span>Browse</span>
+                                                                <input type="file" name="files[]" id="HWPSfileToUpload" data-bind=" enable: $parent.IsEditable" multiple>
+                                                            </span>
+                                                            <button type="submit" data-bind="click: $parent.HWPSuploadFile, enable: $parent.IsEditable" class="btn btn-xs blue start">
+                                                                <i class="fa fa-upload" data-bind="enable: $parent.IsEditable"></i>
+                                                                <span>Upload</span>
+                                                            </button>
+                                                            <br />
+                                                        </div>
+                                                        <div>
+                                                            <a id="HDocId" data-bind="text: DocumentName, attr: { href: '/FileDownload/Download/' + DocumentID() }"></a>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <div class="row" data-bind="visible: $parent.isHWPSfileToUpload">
+                                                <div class="form-group">
+                                                    <div class="col-md-2">
+                                                        &nbsp;&nbsp; <span id="spanHWPSfileToUpload" style="margin-top: 55px; margin-right: 181px;" class="validationError" data-bind="visible: $parent.isHWPSfileToUpload"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="LnkViewId" class="form-group">
+                                            <label class="control-label col-md-2">
+                                                Link Viewed By:<span class="required">*</span>
+                                            </label>
+                                            <div class="checkbox-list">
+                                                <div class="">
+                                                    <input id="EmpChkLIstId" type="checkbox" value="1" name="UserRole" data-bind="value: UserType">Employee
+                                                <input id="AgenchkListId" type="checkbox" name="AgentRole" value="2" data-bind="value: UserType">Agent
+                                                <input id="TerchkListId" type="checkbox" name="TORole" value="4" data-bind="value: UserType">Terminal Operator
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="ChkRolelistId" style="display: none;" class="form-group">
+                                        <label class="control-label col-md-2">Roles:</label>
+                                        <div class="checkbox-list">
+                                            <div class="col-md-5" id="cntRoleId" style="height: 80px; overflow: auto;">
+                                                <table id="divRoleList" width="100%" class="table1 table-striped table-bordered table-hover" data-bind="foreach: $parent.ContentRoleTypes">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" name="Rolelist" data-bind="checkedValue: $data.RoleID, checked: $root.portInformationModel().PortContentRole"><label data-bind="    text: RoleName" style="vertical-align: text-top; padding-top: 1px;"> </label>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 ">Status:</label>
+                                            <div class="col-md-2">
+                                                <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView } " />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="btns-group ">
+                                    <button type="submit" class="btn green" title="Save" data-bind="click: $root.SavePortInformation, visible: $root.IsSave">Save</button>
+                                    <button type="submit" class="btn green" title="Update" data-bind="click: $root.ModifyPortInformation, visible: $root.IsUpdate">Update</button>
+                                    <button type="submit" class="btn blue" title="Reset" data-bind="click: $root.ResetPortInformation, visible: $root.IsReset">Reset</button>
+                                    <button type="submit" class="btn red" title="Cancel" data-bind="click: $root.Cancel">Cancel</button>
+                                </div>
+                                <br>
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+

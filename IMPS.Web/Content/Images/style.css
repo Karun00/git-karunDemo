@@ -1,0 +1,233 @@
+.crv_TL {
+	background-image: url(crv_tl.gif);
+	background-repeat: no-repeat;
+	height: 24px;
+}
+.crv_TR {
+	background-image: url(crv_tr.gif);
+	background-repeat: no-repeat;
+}
+.crv_BL {
+	background-image: url(crv_bl.gif);
+	background-repeat: no-repeat;
+}
+.crv_BR {
+	background-image: url(crv_br.gif);
+	background-repeat: no-repeat;
+}
+.crv_lineR {
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #CDCDCD;
+}
+.crv_lineL {
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #CDCDCD;
+}
+.crv_lineB {
+	background-image: url(crv_lineB.gif);
+	background-repeat: repeat-x;
+}
+.crv_M {
+	background-image: url(crv_M.gif);
+}
+.crv_B {
+	background-image: url(crv_B.gif);
+}
+.crv_L {
+	background-image: url(crv_L.gif);
+	background-repeat: no-repeat;
+}
+.crv_lineTop {
+	background-image: url(crv_lineTop.gif);
+	background-repeat: repeat-x;
+}
+.crv_R {
+	background-image: url(crv_R.gif);
+	background-repeat: no-repeat;
+}
+
+
+/**********for add button**********/
+.btn {
+	background-image: url(btn_add.gif);
+	background-repeat: no-repeat;
+	float:left;
+	height:24px;
+	width:66px;
+	margin-left:4px;
+}
+/**********for search**********/
+.Search {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	vertical-align:middle;
+	color:#585858;
+}
+/**********Grid Css Starts Here**********/
+
+.GridBorder {
+	border: 1px solid #CBCBCB;
+}
+.GridBorder1 {
+	border-left:1px;
+	border-left-color:#CBCBCB;
+	border-left-style: solid;
+}
+.GridHBg {
+	background-image: url(GridHBg.gif);
+	background-repeat: repeat-x;
+	background-color: #F2F2F2;
+	height:30px;
+}
+.GridFooterBg {
+	background-color:#85BDEC;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.GridLTHCells {
+	border-left: 1px solid #CBCBCB;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	font-weight:bold;
+	text-indent:5px;
+	color:#585858;
+	/*text-align: center;*/
+}
+.GridLTHCells1 {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	font-weight:bold;
+/*	text-align: center;*/
+	text-indent:5px;
+	color:#585858;
+}
+.GridLTCells {
+	border-left: 1px solid #CBCBCB;
+	border-top: 1px solid #CBCBCB;
+	text-indent:5px;
+	/*text-align: center;*/
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color:#003366;
+}
+.GridLCells {
+	border-top: 1px solid #CBCBCB;
+	font: Arial, Helvetica, sans-serif 11px #003366;
+}
+.GridRowBg1 {
+	background-color:#F9F9F9;
+	height:37px;
+}
+.GridRowBg1:hover {
+	background-color:#FFF;
+	height:37px;
+}
+.GridRowBg2 {
+	background-color:#F6F6F6;
+	height:37px;
+}
+.GridRowBg2:hover {
+	background-color:#FFF;
+	height:37px;
+}
+.GridPaging {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#003366;
+	text-decoration:none;
+	font-weight: normal;
+	vertical-align: middle;
+}
+.GridPaging:hover {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#FFFFFF;
+	text-decoration:none;
+	font-weight: normal;
+}
+.GridExport {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color:#003366;
+	font-weight:normal;
+	padding-left: 10px;
+}
+/**********Grid Css Ends Here**********/
+
+.PageNumbers {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	vertical-align:middle;
+	color:#585858;
+}
+.TextField {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#585858;
+	/*height:22px;*/
+	text-align:center;
+}
+.Vertical_line {
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #CDCDCD;
+}
+
+
+
+.crv-topline {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #CECECE;
+	background-repeat: repeat-x;
+}
+.crv-bline {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #CECECE;
+	background-repeat: repeat-x;
+}
+.crv-leftline {
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #CECECE;
+	background-repeat: repeat-y;
+}
+.crv-rightline {
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #CECECE;
+	background-repeat: repeat-y;
+}
+.crv-l {
+	background-image: url(crv-l.gif);
+	background-repeat: no-repeat;
+}
+.crv-r {
+	background-image: url(crv-r.gif);
+	background-repeat: no-repeat;
+}
+.crv-bl {
+	background-image: url(crv-bl.gif);
+	background-repeat: no-repeat;
+}
+.crv-br {
+	background-image: url(crv-br.gif);
+	background-repeat: no-repeat;
+}
+
+.RightTableText {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#333333;
+}
+.TextField1 {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#585858;
+	width:150px;

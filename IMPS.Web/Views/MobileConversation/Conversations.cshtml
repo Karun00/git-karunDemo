@@ -1,0 +1,97 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+
+@section scripts {
+    <script src="~/Scripts/Application/Model/MobileConversationModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/MobileConversationViewModel.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+}
+
+@section ko_apply
+{
+var vm = new IPMSROOT.MobileConversationViewModel();
+    ko.applyBindingsWithValidation(vm, $("#ConversationsMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });   
+}
+
+<div id="ConversationsMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Chat', template: { name: 'Chat-template' }"></div>
+</div>
+
+<script type="text/html" id="List-template">
+    <div class="topbar">
+        <div class="topicons">
+            <a href="@Url.Action("DashBoard", "Mobile")"><i class="home"></i></a>
+            <a href="@Url.Action("Logout", "Mobile")"><i class="logout"></i></a>
+        </div>
+    </div>
+    <button type="button" class="btn blue" data-bind="click: $root.chatBox">Users</button>
+    <span id="Info">
+        <div data-bind="foreach: $root.getMessages">
+
+            <div class="notify-disp" data-bind="style: { color: IsRead() == 'N' ? 'red' : 'black', fontWeight: IsRead() == 'N' ? 'bold' : '' }, click: $root.clickMe">
+                <li><strong><span data-bind="text: UserName"></span></strong>: <span data-bind="    text: Reply"></span></li>
+                <li><span data-bind="text: CreatedDate"></span>
+                </li>
+            </div>
+        </div>
+    </span>
+</script>
+
+<script type="text/html" id="Form-template">
+
+    <div class="form-group" id="incidentReport" data-bind="with: mobileConversationModel">
+        <div style="width: 50%;" class="grid">
+            <span id="loginname">@ViewBag.LoginUserName</span>
+            <table cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Conversation Users</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: $root.getConversationUserDetails">
+                    <tr>
+                        <td>
+                            <span id="username" data-bind="text: UserName, click: $root.clickMe"></span>
+                            <span data-bind="attr: { id: UserName }"></span>
+                            <input type="hidden" id="convid" data-bind="text: ConversationID" />
+                            <input type="hidden" id="displayUserID" data-bind="text: UserID" />
+                        </td>
+                </tbody>
+            </table>
+        </div>
+        <div class="grid" style="width: 130px; float: left">
+            <input id="users" data-bind="kendoAutoComplete: { data: $root.getUserDetails, dataTextField: 'UserName', value: UserName, select: $root.UserSelect }" />
+        </div>
+        <div style="float: left; padding-left: 10px; width: 50px">
+            <button type="button" class="btn blue start" data-bind="click: $parent.addUser">Add </button>
+        </div>
+    </div>
+    <div>
+        <button type="button" data-bind="click: $root.userCancel">Cancel</button>
+    </div>
+</script>
+
+<script type="text/html" id="Chat-template">
+
+    <span id="Info">
+        <div data-bind="foreach: $root.getConversations">
+
+            <div class="notify-disp">
+                <li><span data-bind="text: UserName"></span>: <span data-bind="    text: Reply"></span></li>
+                </li>
+            </div>
+        </div>
+    </span>
+    <div id="discussion" class="notify-disp"></div>
+    <input type="text" id="message" />
+    <span id="convID" hidden="hidden"></span>
+    <span id="usID" hidden="hidden"></span>
+    <button type="button" id="sendmessage" data-bind="click: $root.sendtext">Send</button>
+    <button type="button" id="cancel" data-bind="click: $root.cancel">Cancel</button>
+</script>
+
+

@@ -1,0 +1,62 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using IPMS.Domain.Models;
+
+namespace IPMS.Data.Mapping
+{
+    public class RevenueStopListMap : EntityTypeConfiguration<RevenueStopList>
+    {
+        public RevenueStopListMap()
+        {
+            // Primary Key
+            this.HasKey(t => t.RevenueStopListID);
+
+            // Properties
+            this.Property(t => t.PortCode)
+                .IsRequired()
+                .HasMaxLength(2);
+
+            this.Property(t => t.RecordStatus)
+                .IsRequired()
+                .IsFixedLength()
+                .HasMaxLength(1);
+
+            // Table & Column Mappings
+            this.ToTable("RevenueStopList");
+            this.Property(t => t.RevenueStopListID).HasColumnName("RevenueStopListID");
+            this.Property(t => t.PortCode).HasColumnName("PortCode");
+            this.Property(t => t.AgentID).HasColumnName("AgentID");
+            this.Property(t => t.AgentAccountID).HasColumnName("AgentAccountID");
+            this.Property(t => t.StopDate).HasColumnName("StopDate");
+            this.Property(t => t.RecordStatus).HasColumnName("RecordStatus");
+            this.Property(t => t.CreatedBy).HasColumnName("CreatedBy");
+            this.Property(t => t.CreatedDate).HasColumnName("CreatedDate");
+            this.Property(t => t.ModifiedBy).HasColumnName("ModifiedBy");
+            this.Property(t => t.ModifiedDate).HasColumnName("ModifiedDate");
+
+            // Relationships
+            this.HasRequired(t => t.Agent)
+                .WithMany(t => t.RevenueStopLists)
+                .HasForeignKey(d => d.AgentID);
+            this.HasRequired(t => t.AgentAccount)
+                .WithMany(t => t.RevenueStopLists)
+                .HasForeignKey(d => d.AgentAccountID);
+            this.HasRequired(t => t.Port)
+                .WithMany(t => t.RevenueStopLists)
+                .HasForeignKey(d => d.PortCode);
+            this.HasRequired(t => t.User)
+                .WithMany(t => t.RevenueStopLists)
+                .HasForeignKey(d => d.CreatedBy);
+            this.HasRequired(t => t.User1)
+                .WithMany(t => t.RevenueStopLists1)
+                .HasForeignKey(d => d.ModifiedBy);
+
+        }
+    }
+}
+

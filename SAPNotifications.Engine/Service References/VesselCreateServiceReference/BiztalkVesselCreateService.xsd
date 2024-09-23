@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://IPMSConnect_SAP.VesselCreate" xmlns:b="http://schemas.microsoft.com/BizTalk/2003" targetNamespace="http://IPMSConnect_SAP.VesselCreate" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="VesselCreate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ICALLSIGN" type="xs:string" />
+        <xs:element name="ICITY" type="xs:string" />
+        <xs:element name="ICOUNTRY" type="xs:string" />
+        <xs:element name="IDATE" type="xs:date" />
+        <xs:element name="IIMO" type="xs:string" />
+        <xs:element name="ILENGTH" type="xs:string" />
+        <xs:element name="IPOSTAL" type="xs:string" />
+        <xs:element name="ITONNAGE" type="xs:string" />
+        <xs:element name="IVESIND" type="xs:string" />
+        <xs:element name="IVESNAME" type="xs:string" />
+        <xs:element name="IVESTYPE" type="xs:string" />
+        <xs:element name="MESSTAB">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="TCODE" type="xs:string" />
+                    <xs:element name="DYNAME" type="xs:string" />
+                    <xs:element name="DYNUMB" type="xs:string" />
+                    <xs:element name="MSGTYP" type="xs:string" />
+                    <xs:element name="MSGSPRA" type="xs:string" />
+                    <xs:element name="MSGID" type="xs:string" />
+                    <xs:element name="MSGNR" type="xs:string" />
+                    <xs:element name="MSGV1" type="xs:string" />
+                    <xs:element name="MSGV2" type="xs:string" />
+                    <xs:element name="MSGV3" type="xs:string" />
+                    <xs:element name="MSGV4" type="xs:string" />
+                    <xs:element name="ENV" type="xs:string" />
+                    <xs:element name="FLDNAME" type="xs:string" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ENUMBER" type="xs:string" />
+        <xs:element name="SUBRC" type="xs:int" />
+        <xs:element name="SAPPOSTINGID" type="xs:int" />
+        <xs:element name="MESSAGETYPE" type="xs:string" />
+        <xs:element name="VESSELID" type="xs:int" />
+        <xs:element name="VKORG" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

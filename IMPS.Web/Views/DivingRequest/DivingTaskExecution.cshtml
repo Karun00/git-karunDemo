@@ -1,0 +1,1117 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{    
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/DivingTaskExecutionModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/DivingTaskExecutionViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel=new IPMSROOT.DivingTaskExecutionViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#DivingTaskExecution")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="DivingTaskExecutionTitle">Diving Task Execution List</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="DivingTaskExecution">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'DivingTaskExecutionList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'DivingTaskExecutionForm-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+
+<!-- DivingTaskExecution List starts here-->
+
+<script type="text/html" id="DivingTaskExecutionList-template">
+
+    <div class="clearfix"></div>
+
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+            <div id="tablewrapper15">
+                @*<div id="tableheader">
+                <a class="button gbtngreen" data-bind="click: $root.addDivingTaskExecution ">Add New <i class="fa fa-plus"></i></a>
+                <div class="search" style="border: none; padding: 0; margin-top: 5px;">
+                    <select id="columns" onchange="sorter.search('query')" style="display: none;"></select>
+                    <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                </div>
+            </div>*@
+                <div data-bind="kendoGrid: {
+    data: DivingTaskExecutionList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'DRNSort', title: 'Diving Reference No.', filterable: true, width: '170px' },
+             { field: 'LocationNameSort', title: 'Location', filterable: true, width: '150px' },
+             { field: 'FromBerthCodeSort', title: 'Berth No', filterable: true, width: '120px' },
+             { field: 'FromBollardNameSort', title: 'From Bollard', filterable: true, width: '130px' },
+             { field: 'ToBollardNameSort', title: 'To Bollard', filterable: true, width: '120px' },
+             { field: 'OcupationFromDateSort', title: 'Occupation From', filterable: true, width: '165px' },
+             { field: 'OcupationToDateSort', title: 'Occupation To', filterable: true, width: '165px' },
+             { field: 'ReasonSort', title: 'Reason', filterable: true, width: '100px' },
+             { field: 'StatusSort', title: 'Status', filterable: false, width: '100px' },
+             { title: 'Actions', filterable: true, width: '100px' }]
+}">
+                </div>
+
+                <script id="rowTmpl" type="text/html">
+                    <tr data-bind="style: { backgroundColor: Status() == 'Pending' ? '#FCE4E7' : '#DEFCE3' }">
+                        <td>
+                            <div class="nowrap"><span data-bind="text: DRN" style="text-transform: capitalize;"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: LocationName" style="text-transform: capitalize;"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: FromBerthCode"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: FromBollardName"></span></div>
+                        </td>
+
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ToBollardName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: OcupationFromDate() ? moment(OcupationFromDate()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: OcupationToDate() ? moment(OcupationToDate()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: OccupationReasonName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Status"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                &nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.ViewDivingTaskExecution" title="View"><i class="fa fa-eye"></i></a>
+                            }&nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $parent.EditDivingTaskExecution, enable: $parent.IsEditable, visible: Execute" title="Execute"><i class="fa fa-edit"></i></a>
+                            }&nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="spanvalidationError" data-bind="validationMessage: field"></span>
+</script>
+
+<!-- Add DivingTaskExecution form content starts here-->
+
+<script type="text/html" id="DivingTaskExecutionForm-template">
+    <div class="row" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="col-md-12">
+            <div class="portlet" id="divFormWizardTabNavigation">
+                <div class="portlet-body form">
+                    <form action="#" class="form-horizontal" id="submit_form" data-bind='with: divingTaskExecutionModel'>
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }' id="divDivingTaskExecution">
+                            <div class="form-body">
+                                <ul class="nav nav-pills nav-justified steps" id="ulTabs">
+                                    <li id="ulTabs1">
+                                        <a data-toggle="tab" class="step" data-bind="click: $root.GotoTab1" style="cursor: pointer">
+                                            <span class="number">1
+                                            </span>
+                                            <span class="desc">
+                                                <i class="fa fa-check"></i>Pre Diving Safety Checklist
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li id="ulTabs2">
+                                        <a data-toggle="tab" class="step" data-bind="click: function () { $root.GotoTab2($data, event); }" style="cursor: pointer">
+                                            <span class="number">2
+                                            </span>
+                                            <span class="desc">
+                                                <i class="fa fa-check"></i>Diving Task Execution
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div id="bar" class="progress progress-striped" role="progressbar">
+                                    <div class="progress-bar progress-bar-success">
+                                    </div>
+                                </div>
+                                <div class="tab-content">
+                                    @*<div id="divValidationError" class="alert alert-danger display-none">
+                                        <button class="close" data-dismiss="alert"></button>
+                                        You have some form errors. Please check below.
+                                    </div>*@
+                                    <div id="divValidationErrors" class="alert alert-danger display-none">
+                                        <button class="close" data-dismiss="alert"></button>
+                                        <span id="spanValidationErrors"></span>
+                                    </div>
+
+                                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                                        <button class="close" data-dismiss="alert"></button>
+                                        Your form validation is successful!
+                                    </div>
+                                    <!--Tab1 Starts-->
+                                    <div class="tab-pane active" id="tab1" data-bind="visible: $parent.viewModeForTabs() == 'taskexecution1', template: { name: 'taskexecution1-template' }">
+                                    </div>
+                                    <!--Tab1 ends here-->
+
+                                    <!--Tab2 Starts here-->
+                                    <div class="tab-pane active" id="tab2" data-bind="visible: $parent.viewModeForTabs() == 'taskexecution2', template: { name: 'taskexecution2-template' }">
+                                    </div>
+                                    <!--Tab2 ends here-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="taskexecution1-template">
+
+    <div class="clearfix">
+        <br>
+    </div>
+
+    <fieldset data-bind="with: DivingCheckList">
+        <div class="clearfix">
+            <br>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label col-md-7">
+                        Dive Reference No.:                        
+                    </label>
+                    <div class="col-md-5">
+                        <input id="DiveReferenceNo" type="text" data-bind="value: DiveReferenceNo, enable: $root.IsEditable, event: { keypress: ValidateAlphanumeric, change: changeDiveReferenceNo }, enable: false" maxlength="30" class="form-control" name="DiveReferenceNo" />
+                        <span id="spanDiveReferenceNo" class="validationError"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label class="control-label col-md-7">
+                        Diving Supervisor Name:                        
+                    </label>
+                    <div class="col-md-4">
+                        <input id="DivingSupervisorName" type="text" readonly="readonly" data-bind="value: DivingSupervisorName, enable: false" maxlength="30" class="form-control" name="DivingSupervisorName" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label col-md-5">
+                        Date:
+                         <span class="required">*</span>
+                    </label>
+                    <div class="col-md-7">
+                        <div class="form-control">
+                            <input id="Date" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: Date, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calmaxtoday, change: changeDate, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $root.IsEditable" name="Date" maxlength="10" />
+                            <span id="spanDate" class="validationError"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <fieldset>
+            <legend><span style="color: red;">* </span>Work Being Performed</legend>
+            <div class="row ">
+                <div class="checkbox-list">
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPSDDEDivingStatus" name="WBP" data-bind="checked: WBPSDDEDivingStatus, enable: $root.IsEditable" />SDDE Diving
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPSheetPileInspectionStatus" name="WBP" data-bind="checked: WBPSheetPileInspectionStatus, enable: $root.IsEditable" />Sheet Pile Inspection
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPLiftingOperationsStatus" name="WBP" data-bind="checked: WBPLiftingOperationsStatus, enable: $root.IsEditable" />Lifting Operations
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPBouyInspectionStatus" name="WBP" data-bind="checked: WBPBouyInspectionStatus, enable: $root.IsEditable" />Bouy Inspection
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPQuayWallInspectionStatus" name="WBP" data-bind="checked: WBPQuayWallInspectionStatus, enable: $root.IsEditable" />Quay Wall Inspection 
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPConcretePileInspectionStatus" name="WBP" data-bind="checked: WBPConcretePileInspectionStatus, enable: $root.IsEditable" />Concrete Pile Inspection
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPObjectRecoveryStatus" name="WBP" data-bind="checked: WBPObjectRecoveryStatus, enable: $root.IsEditable" />Object Recovery
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPDockyardInspectionStatus" name="WBP" data-bind="checked: WBPDockyardInspectionStatus, enable: $root.IsEditable" />Dockyard Inspection
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPCordlessComsScubaStatus" name="WBP" data-bind="checked: WBPCordlessComsScubaStatus, enable: $root.IsEditable" />Cordless Coms/Scuba
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPCraftInspectionStatus" name="WBP" data-bind="checked: WBPCraftInspectionStatus, enable: $root.IsEditable" />Craft Inspection
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPHotWorkStatus" name="WBP" data-bind="checked: WBPHotWorkStatus, enable: $root.IsEditable" />Hot Work
+                        </label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>
+                            <input type="checkbox" id="WBPOtherStatus" name="WBP" data-bind="checked: WBPOtherStatus, enable: $root.IsEditable, event: { change: $root.IschkWBPStatus }" />Other</label>
+                        <input id="WBPOtherDescription" type="text" data-bind="value: WBPOtherDescription, enable: $root.IsWBPStatusEnabled, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="200" class="form-control" name="WBPOtherDescription" />
+
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="clearfix"></div>
+        &nbsp;
+        <div class="row">
+            <div class="col-md-6">
+                <div style="margin-right: 10px;">
+                    <table cellpadding="0" style="margin-right: 5px;" cellspacing="0" border="0" id="tblPPE" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <h5>PPE</h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="16%">Hard Hot</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="PPEHardHot" name="PPE" data-bind="checked: PPEHardHotStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Reflective Vests</td>
+                                <td>
+                                    <input type="checkbox" id="PPEReflectiveVests" name="PPE" data-bind="checked: PPEReflectiveVestsStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Safety Glasses</td>
+                                <td>
+                                    <input type="checkbox" id="PPESafetyGlosses" name="PPE" data-bind="checked: PPESafetyGlossesStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Gloves</td>
+                                <td>
+                                    <input type="checkbox" id="PPEGloves" name="PPE" data-bind="checked: PPEGlovesStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Overall</td>
+                                <td>
+                                    <input type="checkbox" id="PPEOverall" name="PPE" data-bind="checked: PPEOverallStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Safety Shoes</td>
+                                <td>
+                                    <input type="checkbox" id="PPESafetyShoes" name="PPE" data-bind="checked: PPESafetyShoesStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Life Jacket</td>
+                                <td>
+                                    <input type="checkbox" id="PPELifeJacket" name="PPE" data-bind="checked: PPELifeJacketStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Other</td>
+                                <td>
+                                    <input type="checkbox" id="PPEOther" data-bind="checked: PPEOtherStatus, enable: $root.IsEditable, event: { change: $root.IschkPPEStatus }" />
+                                    <input id="PPEOtherDescription" type="text" data-bind="value: PPEOtherDescription, enable: $root.IsPPEStatusEnabled, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="200" class="form-control" name="PPEOtherDescription" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div style="margin-left: 10px;">
+                    <table cellpadding="0" cellspacing="0" border="0" id="tblEQUP" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <h5>Equipment</h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="16%">Used correctly</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="EQPUsedCorrectly" name="EQP" data-bind="checked: EQPUsedCorrectlyStatus, enable: $root.IsEditable" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Competent To Use Equipment</td>
+                                <td>
+                                    <input type="checkbox" id="EQPCompetentToUseEquipment" name="EQP" data-bind="checked: EQPCompetentToUseEquipmentStatus, enable: $root.IsEditable" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="16%">Good Condition</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="EQPGoodCondition" name="EQP" data-bind="checked: EQPGoodConditionStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>In Date</td>
+                                <td>
+                                    <input type="checkbox" id="EQPInDate" name="EQP" data-bind="checked: EQPInDateStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td width="16%">Secured</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="EQPSecured" name="EQP" data-bind="checked: EQPSecuredStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Safety Devices in Place</td>
+                                <td>
+                                    <input type="checkbox" id="EQPSafetyDevicesInPlace" name="EQP" data-bind="checked: EQPSafetyDevicesInPlaceStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td width="16%">Daily Checks Completed</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="EQPDailyChecksCompleted" name="EQP" data-bind="checked: EQPDailyChecksCompletedStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Other</td>
+                                <td>
+                                    <input type="checkbox" id="EQPOther" data-bind="checked: EQPOtherStatus, enable: $root.IsEditable, event: { change: $root.IschkEQPStatus }" />
+                                    <input id="EQPOtherDescription" type="text" data-bind="value: EQPOtherDescription, enable: $root.IsEPQStatusEnabled, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="200" class="form-control" name="EQPOtherDescription" />
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        &nbsp;
+        <div class="row">
+            <div class="col-md-6">
+                <div style="margin-right: 10px;">
+                    <table cellpadding="0" style="margin-right: 5px;" cellspacing="0" border="0" id="tblPRA" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <h5>Practices</h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="16%">Dive Permit</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="PRADivePermit" name="PRA" data-bind="checked: PRADivePermitStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Lockout Proc</td>
+                                <td>
+                                    <input type="checkbox" id="PRALockOutProc" name="PRA" data-bind="checked: PRALockOutProcStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Flag Alpha</td>
+                                <td>
+                                    <input type="checkbox" id="PRAFlogAlpha" name="PRA" data-bind="checked: PRAFlogAlphaStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Communication Network Completed</td>
+                                <td>
+                                    <input type="checkbox" id="PRACommunicationNetworkCompleted" name="PRA" data-bind="checked: PRACommunicationNetworkCompletedStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Work Place Tidy</td>
+                                <td>
+                                    <input type="checkbox" id="PRAWorkPlaceTidy" name="PRA" data-bind="checked: PRAWorkPlaceTidyStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div style="margin-left: 10px;">
+                    <table cellpadding="0" cellspacing="0" border="0" id="tblPRO" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <h5>Procedures</h5>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="16%">Required</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="PRORequired" name="PRO" data-bind="checked: PRORequiredStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Supplied</td>
+                                <td>
+                                    <input type="checkbox" id="PROSupplied" name="PRO" data-bind="checked: PROSuppliedStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td width="16%">Risk Assessment</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="PRORiskAssessment" name="PRO" data-bind="checked: PRORiskAssessmentStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td>Task Known &amp; Understood</td>
+                                <td>
+                                    <input type="checkbox" id="PROTaskKnownUnderstood" name="PRO" data-bind="checked: PROTaskKnownUnderstoodStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                            <tr>
+                                <td width="16%">Onsite Hazard ID</td>
+                                <td width="10%">
+                                    <input type="checkbox" id="PROOnsiteHazardID" name="PRO" data-bind="checked: PROOnsiteHazardIDStatus, enable: $root.IsEditable" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        &nbsp;
+        <div class="portlet-body">
+
+            <div class="table-toolbar">
+                <div id="tableheader">
+                    <a class="button gbtngreen" data-bind="click: $root.AddNewHazard, visible: $root.IsEditable">Add New <i class="fa fa-plus"></i></a>
+                    <br />
+                </div>
+                <div class="gridhead">Onsite Hazard Identification Risk Assessment</div>
+                <div class="table-scrollable">
+
+                    <table cellpadding="0" cellspacing="0" border="0" id="tblNewHazard" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th>&nbsp; Hazard</th>
+                                <th>&nbsp; Cause</th>
+                                <th>&nbsp; Action</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody data-bind="foreach: DivingCheckListHazard">
+                            <tr>
+                                <td>
+                                    <input id="Hazard" name="Hazard" type="text" class="form-control" maxlength="500" data-bind="value: Hazard, event: { keypress: ValidateAlphaNumericWithSpaces }, enable: $root.IsEditable" />
+                                </td>
+                                <td>
+                                    <input id="Cause" name="Cause" type="text" class="form-control" maxlength="500" data-bind="value: Cause, event: { keypress: ValidateAlphaNumericWithSpaces }, enable: $root.IsEditable" />
+                                </td>
+                                <td>
+                                    <input id="Action" name="Action" type="text" data-bind="value: Action, event: { keypress: ValidateAlphaNumericWithSpaces }, enable: $root.IsEditable" maxlength="500" class="form-control" />
+                                </td>
+                                <td>
+                                    <a href='#' id="RemoveHazard" data-bind='click: $root.RemoveHazard, visible: $root.IsEditable' title="Delete"><i class="fa fa-ban"></i></a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="form-actions fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="btns-group">
+                     <a href="javascript:;" class="btn default button-previous" data-bind="click: $root.GotoTab2, visible: $parent.IsView"">Next <i class="m-icon-swapright"></i></a>
+                    <a href="javascript:;" class="btn green button-next" data-bind="click: $root.ModifyPreDivingCheckList, visible: $parent.IsUpdate">Next <i class="m-icon-swapright"></i></a>
+                    <button id="btnResetDivingTaskExecution" type="submit" class="btn blue" data-bind="click: $parent.ResetDivingTaskExecution, visible: $parent.IsReset">Reset</button>
+                    <button id="btnCancelDivingtaskExecution" type="submit" class="btn red button-submit" data-bind="click: $parent.CancelDivingtaskExecution">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+<script type="text/html" id="taskexecution2-template">
+
+    <fieldset>
+        <div class="clearfix"></div>
+
+        <div class="row col-md-12">
+            <div class="col-md-4 form-group">
+                <label class="control-label col-md-6">Location:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: LocationName" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label col-md-6">Clearance No.:<span style="color: red;">* </span></label>
+                <div class="col-md-6">
+                    <input id="ClearanceNo" type="text" data-bind="value: ClearanceNo, enable: $parent.IsEditable" class="form-control" name="ClearanceNo" maxlength="20" />
+                    <span id="ClearanceNoMsg" class="validationError" data-bind="visible: $root.isClearanceNoMsg"></span>
+                </div>
+            </div>
+            <div class="col-md-4 form-group">
+                <label class="control-label col-md-6">Berth No.:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: FromBerthCode" />
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-4 form-group">
+                <label class="control-label col-md-6">From Bollard:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: FromBollardName" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label col-md-6">To Bollard:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: ToBollardName" />
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-4 form-group">
+                <label class="control-label col-md-6">Occupation From:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: OcupationFromDate" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label col-md-6">Occupation To:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: OcupationToDate" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label col-md-6">Hours of Occupation:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: HoursOfOccupation1" />
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="form-group">
+                <label class="control-label col-md-2">Remarks:</label>
+                <div class="col-md-6 control-label ">
+                    <label class="col-md-12 displaytxt" data-bind="text: Remarks" />
+                </div>
+            </div>
+        </div>
+
+        <fieldset>
+            <div class="row col-md-12">
+                <div class="col-md-4 form-group">
+                    <label class="control-label col-md-6">Start Time:</label>
+                    <div class="col-md-6">
+                        <div class="form-control">
+                            <input id="StartTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" onfocus="clickStartTime();" data-bind="kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calStartTime, change: ChangeStartTime, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="StartTime" maxlength="10" />
+                            <span id="spanStartTime" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-6">Stop Time:</label>
+                    <div class="col-md-6">
+                        <div class="form-control">
+                            <input id="StopTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: StopTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calEndDatetoday, change: ChangeStopTime, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="StopTime" maxlength="10" />
+                            <span id="spanStopTime" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-6">Hours of Occupation:</label>
+                    <div class="col-md-2">
+                        <input id="HoursOfOccupation2" type="text" readonly="readonly" data-bind="value: HoursOfOccupation2" class="form-control" name="HoursOfOccupation2" />
+
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <div class="row col-md-12">
+                <div class="col-md-6 form-group">
+                    <label class="control-label col-md-6">Diving Reference No.:</label>
+                    <div class="col-md-5" data-bind="with: DivingCheckList">
+                        <input id="DivingReferenceNo" type="text" data-bind="value: DiveReferenceNo, enable: $parent.IsEditable, event: { keypress: ValidateAlphanumeric }" maxlength="30" class="form-control" name="DivingReferenceNo" />
+                        <span class="validationError"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-6">Location of Dive:</label>
+                    <div class="col-md-5">
+                        <select id="ChangeLocation" data-bind="options: $parent.LocationList, optionsText: 'LocationName', optionsValue: 'LocationID', value: ChangeLocation, enable: $parent.IsEditable" />
+                    </div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-6 form-group">
+                    <label class="control-label col-md-6">Name of Supervisor:</label>
+                    <div class="col-md-5" data-bind="with: DivingCheckList">
+                        <input id="SupervisorName" type="text" readonly="readonly" data-bind="value: DivingSupervisorName, enable: $parent.IsEditable, event: { keypress: ValidateAlphabetsWithSpaces }" maxlength="30" class="form-control" name="SupervisorName" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-6">Dive Tenders:</label>
+                    <div class="col-md-5">
+                        <input id="DiveTenders" type="text" data-bind="value: DiveTenders, enable: $parent.IsEditable, event: { keypress: ValidateAlphaNumericWithSpaces }" maxlength="50" class="form-control" name="DiveTenders" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-6 form-group">
+                    <label class="control-label col-md-6">Name of Divers:</label>
+                    <div class="col-md-5">
+                        <div class="portlet-body">
+                            <div class="table-toolbar">
+                                <a class="button gbtngreen" data-bind="click: $parent.AddDiverName, visible: $parent.IsEditable">Add New <i class="fa fa-plus"></i></a>
+
+                                <div class="table-scrollable">
+
+                                    <table cellpadding="0" cellspacing="0" border="0" id="tblADDDiverName" class="tinytable">
+                                        <thead>
+                                            <tr>
+                                                <th>&nbsp; Diver Name</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody data-bind="foreach: DivingRequestDivers1">
+                                            <tr>
+                                                <td>
+                                                    <input id="DiverName" name="DiverName" type="text" class="form-control" maxlength="50" data-bind="value: DiverName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsEditable" />
+                                                </td>
+
+                                                <td>
+                                                    <a href='#' id="RemoveAddDiverName" data-bind='click: $root.RemoveAddDiverName, visible: $root.IsEditable' title="Delete"><i class="fa fa-ban"></i></a>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-6">Name of Standby Divers:</label>
+                    <div class="col-md-5">
+                        <div class="portlet-body">
+                            <div class="table-toolbar">
+                                <a class="button gbtngreen" data-bind="click: $parent.AddStandByDiver, visible: $parent.IsEditable">Add New <i class="fa fa-plus"></i></a>
+
+                                <div class="table-scrollable">
+
+                                    <table cellpadding="0" cellspacing="0" border="0" id="tblStandByDiver" class="tinytable">
+                                        <thead>
+                                            <tr>
+                                                <th>&nbsp; Diver Name</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody data-bind="foreach: DivingRequestDivers2">
+                                            <tr>
+                                                <td>
+                                                    <input id="StandByDiverName" name="StandByDiverName" type="text" class="form-control" data-bind="value: DiverName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsEditable" maxlength="50" />
+                                                </td>
+
+                                                <td>
+                                                    <a href='#' id="RemoveStandByDiver" data-bind='click: $root.RemoveStandByDiver, visible: $root.IsEditable' title="Delete"><i class="fa fa-ban"></i></a>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Time of Logged Dive Duration</legend>
+            <div class="row col-md-12">
+                <div class="col-md-6 form-group">
+                    <label class="control-label col-md-6">Time From:</label>
+                    <div class="col-md-5">
+                        <div class="form-control">
+                            <input id="LoggedDiveTimeFrom" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: LoggedDiveTimeFrom, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calLoggedDiveTimeFrom, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="LoggedDiveTimeFrom" maxlength="10" />
+                            <span id="spanLoggedDiveTimeFrom" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-6">Time To:</label>
+                    <div class="col-md-5">
+                        <div class="form-control">
+                            <input id="LoggedDiveTimeTo" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: LoggedDiveTimeTo, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calLoggedDiveTimeTo, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="LoggedDiveTimeTo" maxlength="10" />
+                            <span id="spanLoggedDiveTimeTo" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Time of Dive Operation Cancelled:</label>
+                <div class="col-md-5">
+                    <div class="form-control">
+                        <input id="TimeDiveOperationCancelled" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: TimeDiveOperationCancelled, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="TimeDiveOperationCancelled" maxlength="10" />
+                        <span id="spanTimeDiveOperationCancelled" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Nature of Dive:</label>
+                <div class="col-md-5">
+                    <input id="DiveNature" type="text" data-bind="value: DiveNature, enable: $parent.IsEditable" maxlength="100" class="form-control" name="DiveNature" />
+
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Depth of Dive:</label>
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        <input id="DiverDepth" type="text" onkeypress="return ValidateNumeric();" data-bind="value: DiverDepth, enable: $parent.IsEditable" maxlength="4" class="form-control" name="DiverDepth" />
+                    </div>
+                    <div class="col-md-5">
+                        <label class="control-label fc-col0">&nbsp;Meters</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <label>
+                        <input type="checkbox" id="BreathingMixture" data-bind="checked: BreathingMixture, enable: $parent.IsEditable" />Breathing Mixture</label>
+                </div>
+                <div class="col-md-6">
+                    <label>
+                        <input type="checkbox" id="CompressedAir" data-bind="checked: CompressedAir, enable: $parent.IsEditable" />Compressed Air</label>
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-9 form-group">
+                <label class="control-label col-md-4">Diving Equipment Used:</label>
+                <div class="col-md-3">
+                    <input id="DivingEquipmentUsed1" type="text" data-bind="value: DivingEquipmentUsed1, enable: $parent.IsEditable" maxlength="100" class="form-control" name="DivingEquipmentUsed1" />
+                </div>
+                &nbsp;&nbsp;
+                <div class="col-md-3">
+                    <input id="DivingEquipmentUsed2" type="text" data-bind="value: DivingEquipmentUsed2, enable: $parent.IsEditable" maxlength="100" class="form-control" name="DivingEquipmentUsed2" />
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Time Left Workshop:</label>
+                <div class="col-md-5">
+                    <div class="form-control">
+                        <input id="TimeLeftWorkshop" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: TimeLeftWorkshop, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calTimeLeftWorkshop, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="TimeLeftWorkshop" maxlength="10" />
+                        <span id="spanTimeLeftWorkshop" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label col-md-6">Time Arrived at Site:</label>
+                <div class="col-md-5">
+                    <div class="form-control">
+                        <input id="TimeArrivedSite" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: TimeArrivedSite, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calTimeArrivedSite, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="TimeArrivedSite" maxlength="10" />
+                        <span id="spanTimeArrivedSite" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Time Left Site:</label>
+                <div class="col-md-5">
+                    <div class="form-control">
+                        <input id="TimeLeftSite" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: TimeLeftSite, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calTimeLeftSite, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="TimeLeftSite" maxlength="10" />
+                        <span id="spanTimeLeftSite" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label col-md-6">Time Arrived at Workshop:</label>
+                <div class="col-md-5">
+                    <div class="form-control">
+                        <input id="TimeArrivedWorkshop" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: TimeArrivedWorkshop, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calTimeArrivedWorkshop, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="TimeArrivedWorkshop" maxlength="10" />
+                        <span id="spanTimeArrivedWorkshop" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        &nbsp;
+        <div class="portlet-body">
+            <div class="table-toolbar">
+
+                <div>
+                    <a class="button gbtngreen" data-bind="click: $parent.AddDiver, visible: $parent.IsEditable">Add Diver <i class="fa fa-plus"></i></a>
+                    <br />
+                </div>
+                <div class="table-scrollable">
+
+                    <table cellpadding="0" cellspacing="0" border="0" id="tblHazards" class="tinytable">
+                        <thead>
+                            <tr>
+                                <th>&nbsp; Diver Name</th>
+                                <th>&nbsp; Time Left Surface</th>
+                                <th>&nbsp; Time Arrived Surface</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody data-bind="foreach: DivingRequestDivers3">
+                            <tr>
+                                <td>
+                                    <input id="AddDiverName" name="AddDiverName" type="text" class="form-control" maxlength="50" data-bind="value: DiverName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsEditable" />
+                                </td>
+                                <td>
+                                    <input id="TimeLeftSurface" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: TimeLeftSurface, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $root.IsEditable" name="TimeLeftSurface" />
+                                </td>
+                                <td>
+                                    <input id="TimeArrivedSurface" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: TimeArrivedSurface, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $root.IsEditable" name="TimeArrivedSurface" />
+                                </td>
+                                <td>
+                                    <a href='#' id="RemoveAddDiver" data-bind='click: $root.RemoveAddDiver, visible: $root.IsEditable' title="Delete"><i class="fa fa-ban"></i></a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div>&nbsp;</div>
+
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Decompression Table:</label>
+                <div class="col-md-5">
+                    <input id="DecompressionTables" type="text" data-bind="value: DecompressionTables, enable: $parent.IsEditable" maxlength="300" class="form-control" name="DecompressionTables" />
+
+                </div>
+            </div>
+
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Schedule:</label>
+                <div class="col-md-5">
+                    <input id="Schedule" type="text" data-bind="value: Schedule, enable: $parent.IsEditable" maxlength="300" class="form-control" name="Schedule" />
+
+                </div>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <label>
+                    <input id="chkCommsCheck" type="checkbox" data-bind="checked: CommsCheck, enable: $parent.IsEditable" name="CommsCheck" />Comms Check:</label>
+            </div>
+            <div class="col-md-3">
+                <label>
+                    <input id="chkBoilOut" type="checkbox" data-bind="checked: BoilOut, enable: $parent.IsEditable" name="BoilOut" />Bail Out:</label>
+            </div>
+            <div class="col-md-3">
+                <label>
+                    <input id="chkMainGas" type="checkbox" data-bind="checked: MainGas, enable: $parent.IsEditable" name="MainGas" />Main Gas:</label>
+            </div>
+        </div>
+
+        <fieldset>
+            <legend>Environmental Conditions</legend>
+            <div class="row col-md-12">
+                <div class="col-md-6 form-group">
+                    <label class="control-label col-md-6">Visibility:</label>
+                    <div class="col-md-6">
+                        <div class="radio-list" style="padding-top: 8px;">
+                            <label class="radio-inline">
+                                <input type="radio" name="visibility" value="1" data-bind="checked: Visibility, enable: $parent.IsEditable">Good</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="visibility" value="2" data-bind="checked: Visibility, enable: $parent.IsEditable">Fair</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="visibility" value="3" data-bind="checked: Visibility, enable: $parent.IsEditable">Poor</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-6">Sea Conditions:</label>
+                    <div class="col-md-6">
+                        <div class="radio-list" style="padding-top: 8px;">
+                            <label class="radio-inline">
+                                <input type="radio" name="seacondition" value="1" data-bind="checked: SeaCondition, enable: $parent.IsEditable">Good</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="seacondition" value="2" data-bind="checked: SeaCondition, enable: $parent.IsEditable">Fair</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="seacondition" value="3" data-bind="checked: SeaCondition, enable: $parent.IsEditable">Poor</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-md-12">
+                <div class="col-md-6 form-group">
+                    <label class="control-label col-md-6">Under Water Currents:</label>
+                    <div class="col-md-6">
+                        <div class="radio-list" style="padding-top: 8px;">
+                            <label class="radio-inline">
+                                <input type="radio" name="underwater" value="1" data-bind="checked: UnderWaterCurrents, enable: $parent.IsEditable">Good</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="underwater" value="2" data-bind="checked: UnderWaterCurrents, enable: $parent.IsEditable">Medium</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="underwater" value="3" data-bind="checked: UnderWaterCurrents, enable: $parent.IsEditable">Mild</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label col-md-6">Contaminated Water:</label>
+                    <div class="col-md-6">
+                        <div class="radio-list" style="padding-top: 8px;">
+                            <label class="radio-inline">
+                                <input type="radio" name="water" value="1" data-bind="checked: ContaminatedWater, enable: $parent.IsEditable">Good</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="water" value="2" data-bind="checked: ContaminatedWater, enable: $parent.IsEditable">Fair</label>
+
+                            <label class="radio-inline">
+                                <input type="radio" name="water" value="3" data-bind="checked: ContaminatedWater, enable: $parent.IsEditable">Poor</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Temperature of Water:</label>
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        <input id="WaterTemperature" type="text" data-bind="value: WaterTemperature, enable: $parent.IsEditable, event: { keypress: ValidateNumeric } " maxlength="3" class="form-control" name="WaterTemperature" />
+                    </div>
+                    <div class="col-md-5">
+                        <label class="control-label fc-col0">&nbsp;°C</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6"></div>
+        </div>
+        <div class="row col-md-12">
+            <div class="col-md-6 form-group">
+                <label class="control-label col-md-6">Last Dive Time:</label>
+                <div class="col-md-5">
+                    <input id="LostDiveTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace(event);" data-bind="kendoDateTimePicker: { value: LostDiveTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calmaxtoday, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsEditable" name="LostDiveTime" maxlength="10" />
+                    <span id="spanLostDiveTime" class="validationError" data-bind="visible: $parent.IsEditable"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label col-md-6">Repetive Dive Designation:</label>
+                <div class="col-md-5">
+                    <input id="RepetiveDiveDesignation" type="text" data-bind="value: RepetiveDiveDesignation, enable: $parent.IsEditable, event: { keypress: ValidateAlphaNumericWithSpaces }" maxlength="50" class="form-control" name="RepetiveDiveDesignation" />
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row col-md-12">
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <label>
+                    <input type="checkbox" id="chkSkiBoat" data-bind="checked: SkiBoat, enable: $parent.IsEditable" />Ski Boat</label>
+            </div>
+            <div class="col-md-3">
+                <label>
+                    <input type="checkbox" id="chkLDV" data-bind="checked: LDV, enable: $parent.IsEditable" />LDV</label>
+            </div>
+            <div class="col-md-3">
+                <label>
+                    <input type="checkbox" id="chkTrailer" data-bind="checked: Trailer, enable: $parent.IsEditable" />Trailer</label>
+            </div>
+
+        </div>
+    </fieldset>
+
+    <div class="form-actions fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="btns-group">
+                    <a href="javascript:;" class="btn default button-previous" data-bind="click: $root.GotoTab1"><i class="m-icon-swapleft"></i> Back </a>
+                    <a href="javascript:;" class="btn green button-submit" data-bind="click: $parent.ModifyDivingTaskExecution, visible: $parent.IsUpdate">Save </a>
+                    <button type="submit" class="btn blue" data-bind="click: $parent.ResetDivingTaskExecution, visible: $parent.IsReset">Reset</button>
+                    <button type="submit" class="btn red button-submit" data-bind="click: $parent.CancelDivingtaskExecution">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+

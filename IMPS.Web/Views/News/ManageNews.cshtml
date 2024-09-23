@@ -1,0 +1,218 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "News";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/NewsModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/NewsViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.NewsViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#ManageNews")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div id="ManageNews">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+
+</div>
+<script type="text/html" id="List-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div id="tablewrapper15">
+                    <div id="tableheader">
+                        @if (Model.HasAddPrivilege)
+                        {
+                            <a class="button gbtngreen" data-bind="click: $root.addnews">Add New <i class="fa fa-plus"></i></a>
+                        }
+                    </div>
+                    <div data-bind="kendoGrid: {
+    data: newslist,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'TitleSort', title: 'Title', width: 50, filterable: true },
+              { field: 'StartDateSort', title: 'Start Date', width: 40, filterable: true },
+              { field: 'EndDateSort', title: 'End Date', width: 40, filterable: true },
+              { field: 'NewsContentSort', title: 'News Content', width: 100, filterable: true },
+              { title: 'Status', filterable: false, width: 60 },
+              { title: 'Actions', filterable: false, width: 80 }]
+}">
+                    </div>
+                    <script id="rowTmpl" type="text/html">
+                        <tr>
+                            <td>
+                                <div class="nowrap" data-bind="text: Title"></div>
+                            </td>
+                            <td>
+                                <div class="nowrap" data-bind="text: StartDate"></div>
+                            </td>
+                            <td>
+                                <div class="nowrap" data-bind="text: EndDate"></div>
+                            </td>
+                            <td>
+                                <div class="nowrap" data-bind="text: NewsContent"></div>
+                            </td>
+                            <td>
+                                <div class="nowrap" data-bind="text: Statust"></div>
+                            </td>
+                            <td>
+                                <div class="nowrap">
+                                    @if (Model.HasViewPrivilege)
+                                    {
+                                        <a href="javascript:;" title="View" data-bind="click: $root.viewnews"><i class="fa fa-eye"></i></a>
+                                    }&nbsp; &nbsp;
+                                 @if (Model.HasEditPrivilege)
+                                 {
+                                     <a href="javascript:;" title="Edit" data-bind="click: $root.editnews"><i class="fa fa-edit"></i></a>
+                                    }&nbsp; &nbsp;
+                                </div>
+                            </td>
+                        </tr>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="Form-template">
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="portlet portlet-body form">
+            <form action="#" class="form-horizontal" id="submit_form">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body" data-bind="with: newsModel">
+                        <div class="form-group">
+                       <fieldset>
+                                <legend>Ports<span style="color: red;"> *</span></legend>
+                                 <div class="row " id="divNewsPortsList">                                   
+                                    <input type="checkbox" id="chkAllNewsport" name="Allport" onclick="toggle(this)" />
+                                    <label>Select all ports</label>
+                                    <div class="clearfix">
+                                        <br>
+                                    </div>
+                               <div class="checkbox-list" id="divNewsPortList" data-bind="foreach: PortData">
+                                        <div class="col-md-3">
+                                          <input class=".MycheckboxCls" type="checkbox" onclick="toggleSingle(this)"  name="port" data-bind="    value: PortCode, attr: { id: 'chkPort_' + PortCode }"><label data-bind="    text: PortName"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+        
+                            </fieldset>
+
+                                <div class="clearfix">
+                                    <br>
+                                </div>
+
+                                <fieldset>
+                                    <legend>News Details</legend>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Title: <span class="required">*</span></label>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="code" class="form-control" data-bind="value: Title, enable: $parent.IsCodeEnable, event: { keypress: $root.validationHelper.ValidateAlphaNumericWithSpaces }" maxlength="120">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">News Content: <span class="required">*</span></label>
+                                                <div class="col-md-7">
+                                                    <div class="input-icon">
+                                                        <textarea class="form-control" rows="2" data-bind="value: NewsContent, enable: $parent.IsCodeEnable" maxlength="120"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">News URL:</label>
+                                                <div class="col-md-7">
+                                                    <div>
+                                                        <input type="text" name="NewsUrl" class="form-control" data-bind="value: NewsUrl, enable: $parent.IsCodeEnable, event: { keypress: ValidateURL }" maxlength="80">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Start Date: <span class="required">*</span></label>
+                                                <div class="col-md-4">
+                                                    <div class="form-control">
+                                                        <input id="datepickerS" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: StartDate, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, enabled: $parent.IsCodeEnable }, event: { keypress: ValidateDate, change: ChangeEndDateDefault }" name="StartDate" maxlength="10" />
+                                                        <span class="validationError" data-bind="validationMessage: StartDate"></span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">End Date: <span class="required">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="datepickerE" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: EndDate, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }, enabled: $parent.IsCodeEnable }, event: { keypress: ValidateDate }" name="EndDate" maxlength="10" />
+                                                        <span class="validationError" data-bind="validationMessage: EndDate"></span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Status:</label>
+                                                <div class="col-md-4">
+                                                    <select id="status" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.IsActivityEnable  "></select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </fieldset>
+                        </div>
+                        <div class="btns-group form-actions fluid">
+                            <button type="submit" class="btn green" data-bind="click: $parent.SaveNews, visible: $parent.IsSave">Save</button>
+                            <button type="submit" class="btn green" data-bind="click: $parent.UpdateNews, visible: $parent.IsUpdate">Update</button>
+                            <button type="submit" class="btn blue" data-bind="click: $parent.ResetNews, visible: $parent.IsReset">Reset</button>
+                            <button type="button" class="btn red" data-bind="click: $parent.CancelNews">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+

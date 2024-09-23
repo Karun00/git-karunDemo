@@ -1,0 +1,1683 @@
+﻿@using MvcReportViewer;
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = null;
+}
+<!DOCTYPE html>
+
+@*<html manifest="@Url.Content("~/Mobile/Manifest")">*@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    @*<meta content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" name="viewport" />*@
+    <title>Integrated Port Management System</title>
+    <link href="~/Content/Styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="~/Content/MobileDesignAndScripts/styles/kendo.rtl.min.css" rel="stylesheet" />
+    <link href="~/Content/MobileDesignAndScripts/styles/kendo.default.min.css" rel="stylesheet" />
+    <link href="~/Content/MobileDesignAndScripts/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="~/Content/Styles/toastr.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/Styles/jquery.confirm.css" rel="stylesheet" />
+    <script src="~/Scripts/Lib/moment.js"></script>
+    <script src="~/Scripts/Lib/jquery-2.0.3.min.js"></script>
+    <script src="~/Content/MobileDesignAndScripts/js/kendo.all.min.js"></script>
+    <script src="~/Content/MobileDesignAndScripts/Scripts/knockout-3.2.0.js"></script>
+    <script src="~/Scripts/Lib/knockout.validation.debug.js"></script>
+    <script src="~/Scripts/Lib/knockout.validation.js"></script>
+    <script src="~/Scripts/Lib/KnockOut.Validation.rules.js"></script>
+    <script src="~/Scripts/Lib/knockout.mapping-latest.debug.js"></script>
+    <script src="~/Scripts/Lib/kendo.mobile.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.1.min.js"></script>
+    <script src="~/Scripts/Lib/jquery.confirm.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/Application/Model/MobileModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/MobileViewModel.js"></script>
+    <script src="~/Scripts/Lib/jquery.cokie.min.js"></script>
+    <script src="~/Scripts/Lib/toastr.js"></script>
+    <script src="~/scripts/lib/modernizr-2.6.2.js"></script>
+   
+   @*<script src="~/Scripts/Application/Model/BerthPlanningGISModel.js"></script>*@
+   @* <script src="~/Scripts/Application/ViewModel/BerthPlanningGISViewModel.js"></script> *@
+ 
+   @*<script src="~/Scripts/Application/ViewModel/BerthPlanningGISViewModel.js"></script>*@
+   @*<script type="text/javascript"src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7kxIP3DwxxzA22aeApiGKugh9cctlEHA"></script>*@
+
+    @*<script src="~/Scripts/Application/ViewModel/BerthPlanningGISViewModel.js"></script>*@
+   @*<link href="~/Content/Styles/opentip.css" rel="stylesheet" />*@
+
+
+
+
+    <style>
+        #sidelinks .km-content {
+            background-color: #3d3d3d;
+        }
+
+        .txtar textarea {
+            width: 100%;
+        }
+
+
+        .km-button {
+            width: 150px;
+            text-align: left;
+        }
+
+        .sebtn {
+            padding-right: 10px;
+            float: right;
+        }
+
+        .km-drawer-button:before, .km-drawer-button:after {
+            content: "\E077";
+        }
+
+        .km-inbox:before, .km-inbox:after {
+            content: "\E0B0";
+        }
+
+        .km-sent:before, .km-sent:after {
+            content: "\E0C6";
+        }
+
+        .km-trash:before, .km-trash:after {
+            content: "\E0C3";
+        }
+
+        .km-spam:before, .km-spam:after {
+            content: "\E0C5";
+        }
+
+        .km-star:before, .km-star:after {
+            content: "\E0D7";
+        }
+
+        .km-settings:before, .km-settings:after {
+            content: "\E0DA";
+        }
+
+        .km-off:before, .km-off:after {
+            content: "\E0B9";
+        }
+
+        .km-envelop:before, .km-envelop:after {
+            content: "\E099";
+        }
+        /*.km-home:before, .km-home:after { content: "\E0AF"; }*/
+        .km-back:before, .km-back:after {
+            content: "\e003";
+        }
+
+        .km-image:before, .km-image:after {
+            content: "\e07c";
+        }
+
+        .km-upload:before, .km-upload:after {
+            content: "\e0c6";
+        }
+
+        .inboxList {
+            font-size: 1em;
+        }
+
+            .inboxList p,
+            .inboxList h2,
+            .inboxList h3 {
+                margin: 5px 2px;
+            }
+
+            .inboxList p,
+            .inboxList h3 {
+                color: #555;
+            }
+
+        .km-ios7 .km-list > li {
+            color: #000;
+        }
+
+        .slinks .km-list > li {
+            color: #999ea9;
+        }
+
+        .inboxList h3.time {
+            color: #0A83EF;
+            float: left;
+            margin-right: 10px;
+        }
+
+        .inboxList li {
+            padding: 15px !important;
+        }
+
+        .ports {
+            background-color: #212121;
+            height: 25px;
+            border: 1px solid #999;
+        }
+
+            .ports select {
+                font-size: 18px;
+                width: 90%;
+            }
+
+                .ports select:not([multiple]) {
+                    border-width: 0px;
+                    background-size: none;
+                }
+
+        .km-group-title {
+            display: none;
+        }
+
+        .value {
+            float: right;
+            padding-top: 0px;
+            color: #7dba00;
+            font-weight: bold;
+        }
+
+        .stasks table {
+            font-size: 16px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        /* Zebra striping */
+        .stasks tr:nth-of-type(odd) {
+            background: #333;
+        }
+
+        .stasks tr:nth-of-type(even) {
+            background: #555;
+        }
+
+        .stasks th {
+            background: #e02222;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stasks td, th {
+            padding: 6px;
+            border: 1px solid #a6a6a6;
+            text-align: left;
+        }
+
+        .stasks {
+            margin: 15px;
+            color: #FFF;
+        }
+
+        .docu-upload table {
+            font-size: 16px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .docu-upload tr:nth-of-type(odd) {
+            background: #333;
+        }
+
+        .docu-upload tr:nth-of-type(even) {
+            background: #555;
+        }
+
+        .docu-upload th {
+            background: #e02222;
+            color: white;
+            font-weight: bold;
+        }
+
+        .docu-upload td, th {
+            padding: 6px;
+            border: 1px solid #a6a6a6;
+            text-align: left;
+        }
+
+        .docu-upload {
+            margin: 5px 0px 0px -5px;
+            color: #FFF;
+        }
+
+        .stasks1 tr td:first-child {
+            /*background: #e02222;*/
+            color: white;
+            font-weight: bold;
+        }
+
+        .paddingright {
+            padding-right: 120%;
+        }
+
+        .listnone {
+            list-style: none;
+        }
+
+        .fileUpload {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .fileUpload input.upload {
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin: 0;
+                padding: 0;
+                font-size: 30px;
+                cursor: pointer;
+                opacity: 0;
+                width: 98%;
+                filter: alpha(opacity=0);
+            }
+
+        .validationMessage {
+            background: none repeat scroll 0% 0% #D45252;
+            border-radius: 3px;
+            color: #FFF;
+            margin: -5px 0px 0px;
+            font-size: 10px;
+            padding: 0px 6px;
+            z-index: 999;
+            position: absolute;
+        }
+
+        .validationError {
+            background: #d45252;
+            border-radius: 3px 3px 3px 3px;
+            color: white;
+            margin: -5px 0 0 0px;
+            font-size: 10px;
+            padding: 0px 6px;
+            z-index: 999;
+            position: absolute;
+            white-space: nowrap;
+            left: auto;
+        }
+
+        .validationE {
+            background: #d45252;
+            border-radius: 3px 3px 3px 3px;
+            color: white;
+            margin: -5px 0 0 0px;
+            font-size: 10px;
+            padding: 0px 6px;
+            z-index: 999;
+            position: fixed;
+            white-space: nowrap;
+            right: auto;
+        }
+
+
+        .validationError1 {
+            position: relative;
+        }
+
+
+
+        .modal-dialog {
+            margin: 15% 40%;
+            width: 350px;
+        }
+
+
+        .inputError {
+            border: 1px solid #B94A48 !important;
+            border-color: #B94A48;
+        }
+
+        .required {
+            color: #e02222;
+            font-size: 18px;
+            padding-left: 2px;
+        }
+
+        .errdip {
+            color: #A94442;
+            background-color: #F2DEDE;
+            border-color: #EBCCD1;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .display-none {
+            display: none;
+        }
+
+
+        .fa-VRES:before {
+            content: "\f022";
+        }
+
+        .fa-WFSA:before {
+            content: "\f164";
+        }
+
+        .fa-WFVI:before {
+            content: "\f0f6";
+        }
+
+        .fa-WFCO:before {
+            content: "\f046";
+        }
+
+        .fa-WFVE:before {
+            content: "\f022";
+        }
+
+        .fa-WFRE:before {
+            content: "\f165";
+        }
+
+        .fa-VUPD:before {
+            content: "\f022";
+        }
+
+        .fa-REJ:before {
+            content: "\f165";
+        }
+
+        .fa-WFAK:before {
+            content: "\f145";
+        }
+
+        .page-title {
+            padding: 0px;
+            font-size: 21px;
+            /*letter-spacing: -1px;*/
+            display: block;
+            color: #666;
+            margin: 0px 0px 5px 0px;
+            font-weight: 300;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .breadcrumb {
+            padding: 1px 1px;
+            margin-bottom: 20px;
+            list-style: none;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        .value select {
+            color: #7dba00 !important;
+            direction: rtl;
+            font-weight: bold;
+        }
+
+        .scheduletask-btn {
+            border: 1px solid #007AFF;
+            color: #007AFF!important;
+            width: 40%;
+            text-align: center;
+            border-radius: 4px !important;
+            font-weight: bold;
+        }
+
+        .sch-textbox {
+            outline-width: 0px !important;
+            outline-style: solid;
+            outline-offset: -5px;
+            border-width: 0px !important;
+            border-style: solid;
+            border: 1px solid #ccc !important;
+            width: 40%;
+            color: #000 !important;
+        }
+
+        .btn-disable {
+            font-size: .9em !important;
+            padding: .5em .8em !important;
+            border-radius: 3px !important;
+            border: 1px solid #ccc !important;
+            color: #ccc !important;
+            text-align: center !important;
+        }
+
+        .mobile-btn {
+            font-size: .9em !important;
+            padding: .5em .8em !important;
+            border-radius: 3px !important;
+            border: 1px solid #007AFF !important;
+            color: #007AFF !important;
+            background: rgba(0,0,0,0) !important;
+        }
+
+        .save-exit-btn {
+            font-size: .9em !important;
+            padding: .5em .8em !important;
+            border: 1px solid currentcolor !important;
+            border-radius: 3px !important;
+            width: 85% !important;
+            background: #7dba00 !important;
+            color: #fff !important;
+        }
+
+        .save-exit-disable {
+            font-size: .9em !important;
+            padding: .5em .8em !important;
+            border: 1px solid currentcolor !important;
+            border-radius: 3px !important;
+            width: 85% !important;
+            background: #D2D2D2 !important;
+            color: #fff !important;
+        }
+
+        .k-i-cancel:before, .k-i-cancel:after {
+            content: "\E036";
+        }
+
+        .k-i-next:before, .k-i-next:after {
+            content: "\E0E2";
+        }
+
+        .k-i-info:before, .k-i-info:after {
+            content: "\E0F9";
+        }
+
+        .km-megaphone:after {
+            content: "\E0B5";
+        }
+
+        .dropdown ul {
+            height: 200px;
+        }
+
+        .pending-approvals ul {
+            list-style: none;
+            font-size: 16px;
+            margin-left: -36px;
+            margin-right: 3px;
+        }
+
+        .pending-approvals li {
+            height: 45px;
+            border-bottom: 1px solid #a6a6a6;
+        }
+
+        .pending-approvals li {
+            background: #333;
+        }
+
+            .pending-approvals li:nth-child(even) {
+                background: #555;
+            }
+
+        .pending-approvals div {
+            float: left;
+            padding: 7px;
+            color: #fff;
+            width: 50%;
+        }
+
+        .pen-app-headings {
+            background: #e02222;
+            color: #fff;
+            height: 44px;
+            font-weight: bold;
+        }
+
+        .pending-approvals ul {
+            list-style: none;
+            font-size: 16px;
+            margin-left: -36px;
+            margin-right: 3px;
+        }
+
+        .pending-approvals li {
+            height: 45px;
+            border-bottom: 1px solid #a6a6a6;
+        }
+
+        .pending-approvals li {
+            background: #333;
+        }
+
+            .pending-approvals li:nth-child(even) {
+                background: #555;
+            }
+
+        .pending-approvals div {
+            float: left;
+            padding: 13px;
+            color: #fff;
+            width: 50%;
+        }
+
+        .pen-app-headings {
+            background: #e02222;
+            color: #fff;
+            height: 44px;
+            font-weight: bold;
+        }
+
+        .pending-approvals1 {
+            margin-left: -37px;
+            margin-right: 3px;
+            list-style: none;
+        }
+
+            .pending-approvals1 li {
+                padding: 7px;
+                background: #999;
+                border-bottom: 1px solid #666;
+                color: #fff;
+            }
+
+                .pending-approvals1 li:nth-child(even) {
+                    background: #555;
+                }
+
+        .cancelbtnw {
+            width: 75px !important;
+            background: #7dba00 !important;
+        }
+
+        .addbtnw {
+            width: 52px !important;
+        }
+
+            .addbtnw i {
+                padding-left: 2px;
+            }
+
+        .cancelbtnw i {
+            padding-left: 7px;
+        }
+
+        .sendbtnw {
+            width: 65px;
+        }
+
+        .usersbtn {
+            width: 92%;
+            text-align: center;
+            background: #7dba00 !important;
+            line-height: 28px;
+            font-size: 16px;
+        }
+
+        .ack-btn {
+            width: 80px;
+            background: #7dba00 !important;
+            text-align: center;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: #fff !important;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        .k-list-container {
+            width: 175px;
+            overflow-y: scroll;
+            background: #efefef;
+        }
+
+            .k-list-container ul {
+                list-style: none;
+                margin-left: -35px;
+            }
+
+            .k-list-container li {
+                line-height: 30px;
+                color: #666;
+            }
+
+        .k-state-hover:hover {
+            background: #ddd;
+            border-radius: 0px;
+        }
+
+        .confirm-yes-btn {
+            background: #7dba00;
+        }
+
+        .close {
+            display: inline-block;
+            margin-top: 0px;
+            margin-right: 0px;
+            width: 9px;
+            height: 9px;
+            background-repeat: no-repeat !important;
+            text-indent: -10000px;
+            outline: none;
+            background-image: url('/Content/Images/remove-icon-small.png')!important;
+            float: right;
+            font-size: 21px;
+            font-weight: bold;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .2;
+        }
+
+        button.close {
+            padding: 0;
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            -webkit-appearance: none;
+        }
+
+        #confirmBox {
+            width: 70% !important;
+            left: 50% !important;
+        }
+
+
+        .km-listview-label1 input[type=checkbox] {
+            border-width: 1px !important;
+            border-color: #ccc;
+            border-style: solid;
+            margin-right: 130px;
+            padding-right: 10px;
+            width: 1em;
+            height: 1em;
+            font-size: 1.2em;
+        }
+
+        .space1 {
+            padding: 0px 10px;
+        }
+
+        .left-float {
+            float: left;
+        }
+
+        .username {
+            color: #fff;
+            text-align: center;
+            background: #212121;
+            font-size: 14px;
+            line-height: 23px;
+        }
+
+        .selectport {
+            width: 100% !important;
+            height: 25px;
+            padding-top: 1px !important;
+        }
+
+        .km-calendar:after, .km-calendar:before {
+            content: "\E089";
+        }
+
+        .km-ios7-edit:after, .km-ios7-edit:before {
+            content: "\E20A";
+        }
+
+        .km-ship:after, .km-ship:before {
+            content: "\e090";
+        }
+
+        .km-tick:after, .km-tick:before {
+            content: "\E037";
+        }
+
+        .km-paste:after, .km-paste:before {
+            content: "\E07A";
+        }
+
+        .km-comments:after, .km-comments:before {
+            content: "\E093";
+        }
+
+        .km-warning:after, .km-warning:before {
+            content: "\E0FA";
+        }
+
+        .km-state-active {
+            color: #007aff !important;
+        }
+
+        .listspace li {
+            padding: 0px 10px;
+        }
+
+        .txtarea-top {
+            margin-top: 0px !important;
+        }
+
+        .loading-content {
+            height: 100px;
+            width: 400px;
+            background: #aaa;
+            padding: 150px;
+        }
+
+        .loading-loader {
+            background-image: url(/Content/Images/gif-load.gif);
+            height: 80px;
+            width: 80px;
+        }
+
+        .km-key:before, .km-key:after {
+            content: "\E0B1";
+        }
+
+        .km-power:before, .km-power:after {
+            content: "\E0B9";
+        }
+
+        .fnt-clr {
+            color: #fff;
+        }
+        /*#toast-container * {
+            padding: 0px 0px !important;
+        }*/
+        .toast-success {
+            background: #51a351;
+        }
+
+        .toast-error {
+            background: #bd362f;
+        }
+
+        .toast-info {
+            background: #2f96b4;
+        }
+
+        .toast-warning {
+            background: #f89406;
+        }
+
+        .field-w {
+            width: 44% !important;
+        }
+
+        /*input[type="file"] {
+            width: 99% !important;
+        }*/
+        /*.buttonstyle {
+        font-size: .9em !important;
+            padding: .5em .8em !important;
+            border: 1px solid currentcolor !important;
+            border-radius: 3px !important;}*/
+        /* 
+	Max width before this PARTICULAR table gets nasty
+	This query will take effect for any screen smaller than 760px
+	and also iPads specifically.
+	*/
+
+        .stasks table {
+            font-size: 16px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        /* Zebra striping */
+        .stasks tr:nth-of-type(odd) {
+            background: #333;
+        }
+
+        .stasks tr:nth-of-type(even) {
+            background: #555;
+        }
+
+        .stasks th {
+            background: #e02222;
+            color: white;
+            font-weight: bold;
+            padding: 8px;
+            border: 1px solid #a6a6a6;
+            text-align: left;
+        }
+
+        .stasks td {
+            padding: 8px;
+            border: 1px solid #a6a6a6;
+            text-align: left;
+            color: white;
+            font-size: 15PX;
+        }
+
+        .stasks {
+            margin: 5px;
+            color: #FFF;
+        }
+
+    .stasks1 tr td:first-child {
+        color: white;
+        font-weight: bold;
+    }
+    .km-drawer li .km-listview-link:hover{color: #fff;}
+    .km-drawer li.km-state-active .km-listview-link{background: transparent;}
+    </style>
+    @Html.Raw("<style>@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {.staskres td, .staskres th {text-align:left; padding-left:55%;} .staskres  table, .staskres thead, .staskres tbody, .staskres th, .staskres td, .staskres tr {display: block;}.staskres thead tr { position: absolute;top: -9999px;left: -9999px;}.staskres tr { border-bottom: 8px solid #fff; }.staskres td {line-height: 20px;border: none;border-bottom: 1px solid #eee; position: relative;padding-left: 42%;}.staskres td:before { position: absolute; background:#e02222; line-height:32px; top:0px; left: 0px;width: 37%; padding-right: 10px; white-space: nowrap;text-align:right;}.staskres td:nth-of-type(1):before { content: 'VCN'; }.staskres td:nth-of-type(2):before { content: 'Movement'; }.staskres td:nth-of-type(3):before { content: 'VesselName'; }.staskres td:nth-of-type(4):before { content: 'BerthName'; }.staskres td:nth-of-type(5):before { content: 'Due In (Hours)'; }.staskres td:nth-of-type(6):before { content: 'Actions'; }}</style>")
+    @Html.Raw("<style>@media only screen and (max-width:320px){.txt-width{width: 30px !important;} #confirmBox {width: 80% !important;left:85% !important;}.field-w{width:35% important;}.sendbtnw{width:30px !important;}.cancelbtnw{ background: #7dba00 !important; width:30px !important;}.cancelbtnw i{padding-left: 2px; !important;}.addbtnw{width:30px !important;}.addbtnw i{padding-left: 2px; !important;}.dispnone {display:none;}}</style>")
+    @Html.Raw("<style>@media only screen and (max-width:414px){#confirmBox {width: 85% !important;left:70% !important;}.km-listview-label1 input[type=checkbox] {margin-right:113px !important;}}</style>")
+    @Html.Raw("<style>@media only screen and (max-width:350px){#confirmBox {width: 90% !important;left:75% !important;}.km-listview-label1 input[type=checkbox] {margin-right:113px !important;} }</style>")
+    @Html.Raw("<style>@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {.staskres1 td, .staskres1 th {text-align:left; padding-left:55%;} .staskres1  table, .staskres1 thead, .staskres1 tbody, .staskres1 th, .staskres1 td, .staskres1 tr {display: block;}.staskres1 thead tr { position: absolute;top: -9999px;left: -9999px;}.staskres1 tr { border-bottom: 8px solid #fff; }.staskres1 td {line-height: 20px;border: none;border-bottom: 1px solid #eee; position: relative;padding-left: 42%;}.staskres1 td:before { position: absolute; background:#e02222; line-height:32px; top:0px; left: 0px;width: 37%; padding-right: 10px; white-space: nowrap;text-align:right;}.staskres1 td:nth-of-type(1):before { content: 'VCN'; }.staskres1 td:nth-of-type(2):before { content: 'Vessel Name'; }.staskres1 td:nth-of-type(3):before { content: 'Agency Name'; }.staskres1 td:nth-of-type(4):before { content: 'ETA'; }.staskres1 td:nth-of-type(5):before { content: 'ETD'; }.staskres1 td:nth-of-type(6):before { content: 'ATA'; }.staskres1 td:nth-of-type(7):before { content: 'ATD'; }.staskres1 td:nth-of-type(8):before { content: 'Status'; }.staskres1 td:nth-of-type(9):before { content: 'BP Status'; }.staskres1 td:nth-of-type(10):before { content: 'PHO Status'; }.staskres1 td:nth-of-type(11):before { content: 'ISPS Status'; }.staskres1 td:nth-of-type(12):before { content: 'IMDG Status'; }.staskres1 td:nth-of-type(13):before { content: 'DHM Status'; }}</style>")
+
+</head>
+
+
+<script id="customMessageTemplate" type="text/html">
+    <div class="validationError" data-bind='validationMessage: field'></div>
+</script>
+
+<body>
+
+    <div data-role="layout" data-id="app-toolbar">
+        <div data-role="header">
+            <div data-role="navbar">
+                <a href="#sidelinks" data-rel="drawer" class="km-widget km-button" data-role="button" data-icon="drawer-button" data-align="left"></a>
+                <span data-role="view-title">My View Title</span>
+                <a href="#:back" style="width: 30px;" data-rel="back" data-role="button" class="km-widget km-button" data-icon="reply" data-align="right" data-transition="slide:left reverse"></a>
+            </div>
+        </div>
+
+        <footer data-role="footer">
+            <div data-role="tabstrip">
+                <a data-icon="home" href="#Home" data-transition="slide:left reverse">Home</a>
+                <a data-icon="comments" data-bind="    click: $root.MessagesClicked" data-transition="slide:left">Messages<span class="km-badge" data-bind="    text: $root.getMessages().length"></span></a>
+                <a data-icon="warning" data-bind="    click: $root.NotificationsClicked" data-transition="slide:left">Notifications<span class="km-badge" data-bind="    visible: $root.NewNotificationsList().length > 0, text: $root.NewNotificationsList().length"></span></a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Page 1 -->
+    <div data-role="view" id="Home" data-layout="app-toolbar" data-title="Welcome">
+        <div data-role="header">
+            <div data-role="navbar">
+                <a href="#sidelinks" class="km-widget km-button" data-rel="drawer" data-role="button" data-icon="drawer-button" data-align="left"></a>
+                <span data-role="view-title">12345</span>
+            </div>
+        </div>
+        <ul data-role="listview" class="inboxList">
+            <li></li>
+        </ul>
+    </div>
+    <!-- Page 2 -->
+    <div data-role="view" id="Messages" data-layout="app-toolbar" data-title="Messages">
+        <ul data-role="listview" data-type="group" class="slinks">
+            <li>
+                <ul data-bind="    foreach: getMessages">
+                    <li>
+                        <a data-transition="none" data-bind="    click: $root.clickMe" data-role="button">
+                            <span data-bind="    style: { color: IsRead == 'N' ? 'red' : 'black' }, text: FirstName"></span>: <span data-bind="    style: { color: 'black' }, text: Reply"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span data-bind="    text: moment(CreatedDate).format('YYYY-MM-DD HH:mm')"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <a href="#UsersList" data-role="button" class="usersbtn km-button">Users</a>
+    </div>
+    <!-- Page 3 -->
+    <div data-role="view" id="UsersList" data-transition="slide:left reverse" data-layout="app-toolbar" data-title="Conversation Users">
+        <ul data-role="listview" class="time" data-style="inset" data-type="group">
+            <li>
+                <ul class="time">
+                    <li>
+                        <span class="dropdown">
+                            <input id="autocomplete" class="sch-textbox" style="border: 1px solid #ccc; width: 47% !important; height: 34px;" />
+                            <span id="selectedUsrID" hidden="hidden"></span>
+                        </span>
+                        <span class="value" style="padding-top: 11px;" data-bind="">
+                            <div style="float: left;">
+                                <a data-role="button" data-bind="click: $root.addUser" class="addbtnw" style="padding-right: 3px; background: #7dba00 !important; color: #fff !important; padding: 6px 11px; border-radius: 3px; cursor: pointer;">
+                                    <span class="dispnone">ADD </span><i class="km-icon km-add"></i>
+                                </a>
+                            </div>
+                            <div style="float: left;">
+                                <a data-role="button" data-bind="click: $root.userCancel" class="cancelbtnw" style="padding-right: 0px; color: #fff !important; padding: 6px 7px; border-radius: 3px; margin-left: 7px; cursor: pointer;">
+                                    <span class="dispnone">Cancel</span><i class="km-icon k-i-cancel"></i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <ul data-bind="    foreach: $root.getConversationUserDetails, loadingWhen: $root.isLoading" data-role="listview">
+            <li>
+                <a data-role="" data-bind="    click: $root.clickMe">
+                    <span id="username" data-bind="    text: FirstName"></span>
+                </a>
+                <input type="hidden" id="convid" data-bind="    text: ConversationID" />
+                <input type="hidden" id="displayUserID" data-bind="    text: UserID" />
+            </li>
+        </ul>
+    </div>
+
+    <!-- Page 4 -->
+    <div data-role="view" id="Conversations" data-layout="app-toolbar">
+        <div data-role="header" class="km-header">
+            <div data-role="navbar" class="km-navbar">
+                <div class="km-rightitem"><a href="#:back" style="width: 30px;" data-rel="back" data-role="button" class="km-widget km-button" data-icon="reply" data-align="right" data-transition="slide:left reverse"><span class=""></span></a></div>
+                <div class="km-leftitem"><a href="#sidelinks" data-rel="drawer" class="km-widget km-button" data-role="button" data-icon="drawer-button" data-align="left"><span class=""></span></a></div>
+                <div class="km-view-title">
+                    <span data-role="view-title" id="Conversations1"></span>
+                </div>
+            </div>
+        </div>
+        <ul data-role="listview" class="time" data-style="inset" data-type="group">
+
+            <li>
+                <ul class="time">
+                    <p>
+                        <span hidden="hidden" id="loginname">@Html.Encode(User.Identity.Name)</span>
+                        <span id="usrname" hidden="hidden"></span>
+                        <ul data-role="listview" data-style="inset" data-bind="foreach: $root.getConversations, loadingWhen: $root.isLoading">
+                            <li><strong>
+                                <span data-bind="    text: FirstName != null ? FirstName + ':' : ''"></span></strong>
+                                <span data-bind="    text: Reply"></span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                		<span data-bind="    text: Reply != null ? moment(CreatedDate).format('YYYY-MM-DD HH:mm') : ''"></span>
+                                <span id="convID" data-bind="    text: ConversationID" hidden="hidden"></span>
+                            </li>
+                        </ul>
+                        <div id="discussion" class="notify-disp" style="padding-left: 20px; line-height: 25px; color: #666; margin-top: -9px;"></div>
+                    </p>
+                    <li>
+                        <span class="dropdown">
+                            <input type="text" id="message" class="sch-textbox" style="width: 45% !important; height: 34px; left: 0px;" />
+                        </span>
+
+                        <span class="value" style="padding-top: 3px;" data-bind="">
+                            <div style="float: left;">
+                                <a id="sendmessage" data-role="button" data-bind="click: $root.sendtext" class="sendbtnw" style="padding-right: 3px; background: #7dba00 !important; color: #fff !important; padding: 6px 11px; border-radius: 3px; cursor: pointer;">
+                                    <span class="dispnone">Send </span><i class="km-icon k-i-next"></i>
+                                </a>
+                            </div>
+                            <div style="float: left;">
+                                <a data-role="button" data-bind="click: $root.cancel" class="cancelbtnw" style="padding-right: 0px; background: #7dba00 !important; color: #fff !important; padding: 6px 7px; border-radius: 3px; margin-left: 7px; cursor: pointer;">
+                                    <span class="dispnone">Cancel</span><i class="km-icon k-i-cancel"></i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Sliding  sidelinks -->
+    <div data-role="drawer" id="sidelinks">
+        @if (Request.IsAuthenticated)
+        {
+<div style="width: 100%; display: -webkit-box; background: #212121;">
+
+                <div class="username" style="color: white; width: 90%; text-align: left;" id="loginusername">Welcome @Html.Encode(User.Identity.Name)</div>
+                <div class="username" style="color: white; text-align: right; margin-top: 5px;"><a style="text-decoration:none;" href="@Url.Action("Logout", "Account")"><i class="km-icon km-power"></i></a></div>
+            </div>
+            
+<div class="ports">
+                <i class="select">
+                    <select class="selectport" id="port" name="portname" title="PortName" data-bind="options: $root.Portdata, optionsText: 'PortName', optionsValue: 'PortCode', event: { change: $root.SelectedPort }"></select>
+                </i>
+            </div>
+<ul data-role="listview" data-type="group" class="slinks">
+                <li>
+                    <ul data-bind="foreach: MenuItems">
+                        <li data-bind="    attr: { 'data-icon': dataIconvalue }"><a data-transition="none" data-bind="    click: $root.MenuClicked">
+                            <label style="cursor: pointer;" data-bind="    text: name"></label>
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        }
+</div>
+    <div data-role="view" id="Notifications" data-layout="app-toolbar" data-title="Notifications">
+        <ul data-role="listview" class="inboxList" data-bind="foreach: NotificationsList, loadingWhen: $root.isLoading">
+            <li style="padding: 10px; border-bottom: 1px solid #ccc;">
+                <div class="time space1" style="font-weight: bold;" data-bind="    text: moment(CreatedDate).format('YYYY-MM-DD HH:mm')"></div>
+                <div class="space1" data-bind="    style: { color: IsRead == 'N' ? 'red' : 'black' }"><a style="cursor: pointer" data-bind="    click: function (data) { $root.NotificationStatus(data) }, visible: IsRead == 'N'"><span data-bind="    text: NotificationText"></span></a><span data-bind="    visible: IsRead == 'Y', text: NotificationText"></span></div>
+            </li>
+        </ul>
+    </div>
+    <div data-role="view" id="Scheduled-Tasks" data-layout="app-toolbar" data-title="Scheduled Tasks">
+        <div class="stasks staskres">
+            <table>
+                <thead>
+                    <tr>
+                        <th>VCN</th>
+
+                        <th>Movement</th>
+                        <th>Vessel Name</th>
+                        <th>Berth Name</th>
+<th>Due In (Hours)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: $root.scheduledTasks, loadingWhen: $root.isLoading">
+                    <tr>
+                        <td><span data-bind="    text: VCN"></span>
+                            <span hidden="hidden" data-bind="text: ResourceAllocationID, attr: { id: 'span' + ResourceAllocationID }"></span>
+                        </td>
+
+                        <td><span data-bind="    text: MovementTypes"></span></td>
+                        <td><span data-bind="    text:VesselName"></span></td>
+                        <td><span data-bind="     text: FromBetrth"></span></td>
+                        @* <td><span data-bind="    text: OperationTypeName"></span></td>*@
+                        @*<td><span data-bind="text: VesselName"></span></td>*@
+                        @*<td  class="berthheight"><span data-bind="text: FromBetrth"></span></td>*@
+<td><span data-bind="    text: momentTimeDue"></span>&nbsp;</td>
+                        <td style="font-size: 20px; font-weight: bold;"><a style="cursor: pointer;" data-bind="click: $root.AckTasksClicked, visible: TaskStatus == 'CFRI'" data-role="button">Acknowledge</a>
+                            <div style="width: 100px;">
+                                <a style="cursor: pointer;" data-bind="    click: $root.getResourceAllowTaskExecutionClicked, visible: (TaskStatus == 'ACCP' || TaskStatus == 'STRD') && (OperationType != 'BRTH')" data-role="button">Execute</a>
+                                <a style="cursor: pointer;" data-bind="    click: $root.GetBerthsWithBollardsClicked, visible: (OperationType == 'BRTH') && (TaskStatus == 'ACCP' || TaskStatus == 'STRD')" data-role="button">Execute</a>
+                            </div>
+                            <div style="width: 24px; float: right; margin-top: -20px;"><a style="cursor: pointer;" data-bind="click: $root.ViewTasks " style="text-decoration: none;"><i class="km-icon k-i-info" style="font-size: 25px;"></i></a></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div data-role="view" id="VCN-Status" data-layout="app-toolbar" data-title="VCN Status">
+        <div style="height: 15px;"></div>
+        <div class="form-group" style="width: 100%; display: -webkit-box; height: 24px;">
+            <label style="color: #1d1d1d; font: bold">
+                VCN:&nbsp;
+            </label>
+            <div style="width: 45%;">
+                <input type="text" id="vcnid" style="width: 100%; border-radius: 3px; border: 1px solid #1d1d1d;" name="code" maxlength="12" class="form-control">
+            </div>
+            <div style="width: 43%;" align="right">
+                <div class="btns-group form-actions fluid" style="padding-right: 15px;">
+                    <button type="submit" id="saveid" class="btn green" style="background: none; border-radius: 3px; border: 1px solid #1d1d1d;" title="Submit" data-bind="click: $root.LoadVCNSearchDtls">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div class="stasks staskres1">
+            <table style="width: 100%; color: #000000;">
+                <thead>
+                    <tr>
+                        <th>VCN</th>
+                        <th>Vessel Name</th>
+                        <th>Agency Name</th>
+                        <th>ETA</th>
+                        <th>ETD</th>
+                        <th>ATA</th>
+                        <th>ATD</th>
+                        <th>Status</th>
+                        <th>BerthPlanner Status</th>
+                        <th>PHO Status</th>
+                        <th>ISPS Status</th>
+                        <th>IMDG Status</th>
+                        <th>DHM Status</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: $root.searchVCNDtls, loadingWhen: $root.isLoading">
+                    <tr>
+                        <td><span data-bind="    text: VCN"></span></td>
+                        <td><span data-bind="    text: VesselName"></span></td>
+                        <td><span data-bind="    text: AgencyName"></span></td>
+                        <td><span data-bind="    text: moment(ETA).format('YYYY-MM-DD HH:mm')"></span></td>
+                        <td><span data-bind="    text: moment(ETD).format('YYYY-MM-DD HH:mm')"></span></td>
+                        <td><span data-bind="    text: moment(ATA).format('YYYY-MM-DD HH:mm')"></span></td>
+                        <td><span data-bind="    text: moment(ATD).format('YYYY-MM-DD HH:mm')"></span></td>
+                        <td><span data-bind="    text: Status"></span></td>
+                        <td><span data-bind="    text: BerthPlannerStatus"></span></td>
+                        <td><span data-bind="    text: PHOStatus"></span></td>
+                        <td><span data-bind="    text: ISPSStatus"></span></td>
+                        <td><span data-bind="    text: IMDGStatus"></span></td>
+                        <td><span data-bind="    text: DHMStatus"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div data-role="view" id="Schedule-Remarks" data-layout="app-toolbar" data-title="Schedule Remarks" data-bind="    with: ScheduledTaskExecutionModel"  >
+
+<label style="color: #666">Please enter the Acknowledgement Remarks</label>
+
+        <textarea class="txtar sch-textbox" id="scdremarks" style="width: 98%; height: 100px; margin-left: 4px;"></textarea>
+        <p>&nbsp;</p>
+        <div style="text-align: center">
+            <a style="cursor: pointer;" class="ack-btn" data-bind="click: $root.AcceptTasksClicked" data-role="button">Accept</a>
+            <a style="cursor: pointer;" class="ack-btn" data-bind="click: $root.RejectTasksClicked" data-role="button">Reject</a>
+            <a class="ack-btn" href="#Scheduled-Tasks" data-role="button">Cancel</a>
+        </div>
+
+    </div>
+
+
+    <div data-role="view" id="taskinfo" data-layout="app-toolbar" data-title="Schedule Task Information">
+        <ul data-role="listview" class="time" data-style="inset" data-type="group">
+            <li>
+                <ul class="time" data-bind="    foreach: ScheduledTaskView, loadingWhen: $root.isLoading">
+                    <li>
+                        <span data-bind="    text: label"></span><span class="value" data-bind="    text: value"></span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div data-role="view" id="Scheduled-Task-Execution" data-layout="app-toolbar" data-title="Scheduled Task Execution" data-bind="    with: scheduledTaskExecutionModel">
+        <ul data-role="listview" class="inboxList" data-bind="    foreach: $root.ScheduledTaskExecutionView, loadingWhen: $root.isLoading">
+            <li>VCN: <span class="value" data-bind="    text: VCN"></span><span id="oprType" hidden="hidden" data-bind="    text: OperationType"></span><span id="resourceID" hidden="hidden" data-bind="    text: ResourceAllocationID"></span></li>
+            <li>Vessel Name: <span class="value" data-bind="    text: VCNName"></span></li>
+            <li data-bind="visible: OperationType() == 'WTST'">Berth: <span class="value">
+                <select data-bind="    options: $root.BerthsDetails, optionsText: 'BerthName', optionsValue: 'BerthKey', value: BerthKey"></select>
+            </span></li>
+            <li>
+                <div class="left-float"><a style="cursor: pointer;" id="btnsupStrtTime" data-role="button" data-bind="    click: $root.GetStartTime" class="mobile-btn">Start Time</a></div>
+                <span class="value" id="StartTime" data-bind="    text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li data-bind="    visible: OperationType() == 'FCST'">
+                <div class="left-float"><a style="cursor: pointer;" id="btnsupTasTime" data-bind="    click: $root.GetTimeAlongSideTime" class="btn-disable" data-role="button">Time alongside</a></div>
+                <span class="value" data-bind="    text: TimeAlongSide() != null ? moment(TimeAlongSide()).format('YYYY-MM-DD HH:mm') : ''"></span></li>
+            <li data-bind="visible: OperationType() == 'FCST'">
+                <div class="left-float"><a style="cursor: pointer;" id="btnsupFswingTime" data-bind="    click: $root.GetFirstSwingTime" class="btn-disable" data-role="button">First Swing</a></div>
+                <span class="value" data-bind="    text: FirstSwing() != null ? moment(FirstSwing()).format('YYYY-MM-DD HH:mm') : ''"></span></li>
+            <li data-bind="    visible: OperationType() == 'FCST'">
+                <div class="left-float"><a style="cursor: pointer;" id="btnsupLstSwingTime" data-bind="    click: $root.GetLastSwingTime" class="btn-disable" data-role="button">Last Swing</a></div>
+                <span class="value" data-bind="    text: LastSwing() != null ? moment(LastSwing()).format('YYYY-MM-DD HH:mm') : ''"></span></li>
+            <li data-bind="    visible: OperationType() == 'FCST'">
+                <label class="km-listview-label">
+                    <input type="checkbox" style="border: 1px solid #ccc;" class="km-widget km-icon km-check" data-bind="    checked: Extend" />EXtend</label></li>
+            <li data-bind="    visible: OperationType() == 'FCST'">
+                <div class="left-float"><a style="cursor: pointer;" id="btnBacktoQuay" data-role="button" data-bind="    click: $root.GetBackToQuayTime" class="btn-disable">Back To Quay</a></div>
+                <span class="value" id="BacktoQuay" data-bind="    text: BackToQuay() != null ? moment(BackToQuay()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li data-bind="    visible: OperationType() == 'PILT' || OperationType() == 'PIHE'">
+                <div id="divPilotOnBoard" class="left-float">
+                    <a style="cursor: pointer;" id="btnsupPltOnBord" class="btn-disable" data-bind="    click: $root.GetPilotOnBoard" data-role="button">Pilot On Board</a>
+                </div>
+                <span class="value" id="PilotOnBoard" data-bind="    text: PilotOnBoard() != null ? moment(PilotOnBoard()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li data-bind="    visible: OperationType() == 'PILT' || OperationType() == 'PIHE'">
+                <div id="divPilotOff" class="left-float">
+                    <a style="cursor: pointer;" id="btnsupPltOff" class="btn-disable" data-bind="    click: $root.GetPilotOff" data-role="button">Pilot Off</a>
+                </div>
+                <span class="value" id="PilotOff" data-bind="    text: PilotOff() != null ? moment(PilotOff()).format('YYYY-MM-DD HH:mm') : '' "></span>
+            </li>
+            <li data-bind="visible: OperationType() == 'WTST'">
+                <label>Meter Serial Number:<input type="text" class="sch-textbox txt-width" data-bind="    value: MeterSerialNo, event: { keypress: $root.ValidateAlphaNumeric }" name="" id="" maxlength="15" /></label>
+            </li>
+            <li data-bind="    visible: OperationType() == 'WTST'">
+                <label>Opening meter reading:<input type="text" class="sch-textbox txt-width" onkeypress="return allowOnlyThreePositiveDigts(this,event);" data-bind=" value: OpeningMeterReading, event: { keypress: $root.ValidateNumeric }" name="" id="OpeningMeterReading" maxlength="15" /></label>
+            </li>
+            <li data-bind="    visible: OperationType() == 'WTST'">
+                <label>Closing meter reading:<input type="text" class="sch-textbox txt-width" onkeypress="return allowOnlyThreePositiveDigts(this,event);" data-bind=" value: ClosingMeterReading, event: { keypress: $root.ValidateNumeric, change: $root.CalcTotalDispensed }" name="" id="ClosingMeterReading" maxlength="15" /></label>
+            </li>
+            <li data-bind="    visible: OperationType() == 'WTST'">
+                <label>Total dispensed:<input type="text" class="sch-textbox txt-width" data-bind="    value: TotalDispensed, disable: true" name="" id="TotalDispensed" /></label>
+            </li>
+            <li data-bind="    visible: OperationType() == 'TGWR'">
+                <div class="left-float"><a style="cursor: pointer;" id="btnsupLineUpTime" data-bind="    click: $root.GetLineUpTime" class="btn-disable" data-role="button">Line Up</a></div>
+                <span class="value" data-bind="    text: LineUp() != null ? moment(LineUp()).format('YYYY-MM-DD HH:mm') : ''"></span></li>
+            <li data-bind="visible: OperationType() == 'TGWR'">
+                <div class="left-float"><a style="cursor: pointer;" id="btnsupLineDownTime" data-bind="    click: $root.GetLineDownTime" class="btn-disable" data-role="button">Line Down</a></div>
+                <span class="value" data-bind="    text: LineDown() != null ? moment(LineDown()).format('YYYY-MM-DD HH:mm') : ''"></span></li>
+            <li data-bind="visible: OperationType() == 'PILT' || OperationType() == 'TGWR' || OperationType() == 'WTST'">
+                <div class="left-float">
+                    <a style="cursor: pointer;" id="btnWtngStrtTime" class="mobile-btn" data-bind="    click: $root.GetWaitingStartTime" data-role="button">Waiting Start Time</a>
+                </div>
+                <span class="value" id="WaitingStartTime" data-bind="    text: WaitingStartTime() != null ? moment(WaitingStartTime()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li data-bind="visible: OperationType() == 'PILT' || OperationType() == 'TGWR' || OperationType() == 'WTST'">
+                <div id="divWaitingEndTime" class="left-float">
+                    <a style="cursor: pointer;" id="btnWtngEndTime" class="mobile-btn" data-bind="    click: $root.GetWaitingEndTime" data-role="button">Waiting End Time</a>
+                </div>
+                <span class="value" id="WaitingEndTime" data-bind="    text: WaitingEndTime() != null ? moment(WaitingEndTime()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li data-bind="visible: OperationType() == 'PILT' || OperationType() == 'TGWR' || OperationType() == 'WTST'">
+                <label>Delay Reason:<span class="txtar"><textarea style="resize: none;" name="" cols="" class="sch-textbox txtarea-top" rows="" data-bind="    value: DelayReason" maxlength="500"></textarea></span></label></li>
+            <li>
+                <div class="left-float">
+                    <a style="cursor: pointer;" id="btnsupEndTime" class="btn-disable" data-bind="click: $root.GetEndTime" data-role="button">End Time</a>
+                </div>
+                <span class="value" id="EndTime" data-bind="    text: EndTime() != null ? moment(EndTime()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li data-bind="    visible: OperationType() == 'PILT'">
+                <label>
+                    Additional Tugs:<span class="value">
+                        <input type="text" class="sch-textbox" name="additionaltugs" id="additionaltugs" data-bind="    value: AdditionalTugs, event: { keypress: $root.Validatenumeric }" maxlength="1" /></span></label></li>
+            <li data-bind="    visible: OperationType() == 'PILT'">
+                <label class="km-listview-label">
+                    <input type="checkbox" style="border: 1px solid #ccc;" class="km-widget km-icon km-check" data-bind="    checked: OffSteam" />Off Steam</label></li>
+            <li data-bind="    visible: OperationType() == 'PILT'">
+                <label class="km-listview-label">
+                    <input type="checkbox" style="border: 1px solid #ccc;" class="km-widget km-icon km-check" data-bind="    checked: MarineRevenueCleared" />Marine Revenue Cleared</label></li>
+            <li>
+                <label>Remarks:<span class="txtar"><textarea style="resize: none;" name="" cols="" class="sch-textbox txtarea-top" rows="" data-bind="    value: Remarks" maxlength="500"></textarea></span></label></li>
+            <li>
+                <label>Deficiencies:<span class="txtar"><textarea style="resize: none;" name="" cols="" class="sch-textbox txtarea-top" rows="" data-bind="    value: Deficiencies" maxlength="500"></textarea></span></label></li>
+            <li>
+                <span class="sebtn"><a style="cursor: pointer;" id="SaveSupExittab" class="save-exit-disable" data-role="button" data-bind="    click: $root.SaveScheduledTaskExecutonClicked">Save &amp; Exit</a></span></li>
+        </ul>
+    </div>
+
+
+    <div data-role="view" id="Berth-Schedule" data-layout="app-toolbar" data-title="Scheduled Task Execution" data-bind="    with: scheduledTaskExecutionModel">
+        <ul data-role="listview" class="inboxList" data-bind="    foreach: $root.ScheduledTaskExecutionView, loadingWhen: $root.isLoading">
+            <li>VCN: <span class="value" data-bind="    text: VCN"></span><span id="oprType1" hidden="hidden" data-bind="    text: OperationType"></span><span hidden="hidden" data-bind="    text: ResourceAllocationID"></span></li>
+            <li>Vessel Name: <span class="value" data-bind="    text: VCNName"></span></li>
+            <li>
+                <div id="divStartTime" class="left-float"><a style="cursor: pointer;" id="btnStrtTime" data-role="button" data-bind="    click: $root.GetStartTime" class="mobile-btn">Start Time</a></div>
+                <div><span class="value" data-bind="    text: StartTime() != null ? moment(StartTime()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+
+            </li>
+            <li data-bind="    visible: MomentType() != 'ARMV'">
+                <div class="left-float"><a style="cursor: pointer;" data-role="button" id="btnFirstLineoff" data-bind="    click: $root.GetFirstLineOffTime" class="btn-disable">First Line Off</a></div>
+                <div><span class="value" data-bind="    text: FirstLineOut() != null ? moment(FirstLineOut()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+
+            </li>
+            <li data-bind="    visible: MomentType() != 'ARMV'">
+                <div class="left-float"><a style="cursor: pointer;" data-role="button" id="btnLastLineoff" data-bind="    click: $root.GetLastLineOffTime" class="btn-disable">Last Line Off</a></div>
+                <div><span class="value" data-bind="    text: LastLineOut() != null ? moment(LastLineOut()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+            </li>
+
+            <li data-bind="    visible: MomentType() != 'SGMV'">
+                <label>
+                    From Berth:                         
+                             <span class="value">
+
+                                 <select data-bind="    options: $root.masterBerths, optionsText: 'BerthName', optionsCaption: 'Choose....', optionsValue: 'BerthKey', value: FromBerthKey, event: { change: $root.LoadFromBollards }"></select>
+                             </span>
+                </label>
+            </li>
+            <li data-bind="    visible: MomentType() != 'SGMV'">
+                <label>
+                    To Berth: 
+        		<span class="value">
+                    <select data-bind="    options: $root.masterBerths, optionsText: 'BerthName', optionsCaption: 'Choose....', optionsValue: 'BerthKey', value: ToBerthKey, event: { change: $root.LoadToBollards }"></select>
+                </span>
+                </label>
+            </li>
+            <li data-bind="    visible: MomentType() != 'SGMV'">
+                <label>
+                    From Bollard (Bow): 
+                <span class="value">
+                    <select data-bind="    options: $root.FromBollards, optionsText: 'BollardName', optionsCaption: 'Choose....', optionsValue: 'BolardKey', value: FromBolardKey"></select>
+                </span>
+                </label>
+            </li>
+            <li data-bind="    visible: MomentType() != 'SGMV'">
+                <label>
+                    To Bollard (Stern): 
+                <span class="value">
+                    <select id="selectedToBolardKey" data-bind="    options: $root.ToBollards, optionsText: 'BollardName', optionsCaption: 'Choose....', optionsValue: 'BolardKey', value: ToBolardKey, event: { change: $root.GetBollardlength }"></select>
+                </span>
+                </label>
+            </li>
+            <li data-bind="    visible: MomentType() != 'SGMV'">
+                <label>
+                    Mooring Bollard (Bow):  <span class="value">
+                        <select data-bind="    options: $root.FromBollards, optionsText: 'BollardName', optionsCaption: 'Choose....', optionsValue: 'BolardKey', value: MooringBolardBowKey"></select>
+                    </span>
+                </label>
+            </li>
+
+            <li data-bind="    visible: MomentType() != 'SGMV'">
+                <label>
+                    Mooring Bollard (Stern):
+                     <span class="value">
+                         <select data-bind="    options: $root.ToBollards, optionsText: 'BollardName', optionsCaption: 'Choose....', optionsValue: 'BolardKey', value: MooringBolardStemKey"></select>
+                     </span>
+                </label>
+            </li>
+            <li data-bind="    visible: MomentType() != 'SGMV'">
+                <label>
+                    Side AlongSide: 
+                <span class="value">
+                    <select data-bind="    options: $root.berthingSide, optionsText: 'SubCatName', optionsCaption: 'Choose....', optionsValue: 'SubCatCode', value: BerthingSide"></select>
+                </span>
+                </label>
+            </li>
+            <li data-bind="    visible: MomentType() == 'SHMV'">
+                <div id="divFirstlinein" class="left-float"><a style="cursor: pointer;" id="btnFirstlinein" data-role="button" data-bind="    click: $root.GetFirstLineInime" class="btn-disable">First Line In/On</a></div>
+                <span class="value" data-bind="    text: FirstLineIn() != null ? moment(FirstLineIn()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+
+            <li data-bind="    visible: MomentType() == 'SHMV'">
+                <div id="divLastlinein" class="left-float"><a style="cursor: pointer;" id="btnLastlinein" data-role="button" data-bind="    click: $root.GetLastLineInime" class="btn-disable">Last Line In/On</a></div>
+                <div><span class="value" data-bind="    text: LastLineIn() != null ? moment(LastLineIn()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+
+            </li>
+            <li data-bind="    visible: MomentType() == 'ARMV' || MomentType() == 'WRMV'">
+                <div id="divFirstlinein" class="left-float"><a style="cursor: pointer;" id="btnFirstlinein" data-role="button" data-bind="    click: $root.GetFirstLineInime" class="btn-disable">First Line In</a></div>
+                <span class="value" data-bind="    text: FirstLineIn() != null ? moment(FirstLineIn()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li data-bind="    visible: MomentType() == 'ARMV' || MomentType() == 'WRMV'">
+                <div id="divLastlinein" class="left-float"><a style="cursor: pointer;" id="btnLastlinein" data-role="button" data-bind="    click: $root.GetLastLineInime" class="btn-disable">Last Line In</a></div>
+                <div><span class="value" data-bind="    text: LastLineIn() != null ? moment(LastLineIn()).format('YYYY-MM-DD HH:mm') : ''"></span></div>
+
+            </li>
+            <li>
+                <label>Forward Draft (Meters):<input type="text" class="sch-textbox txt-width" data-bind="    value: ForwardDraft, event: { keypress: $root.Validatenumericdecimal }" name="" id="" maxlength="5" /></label></li>
+
+            <li>
+                <label>Aft Draft (Meters):<input type="text" class="sch-textbox txt-width" data-bind="    value: AftDraft, event: { keypress: $root.Validatenumericdecimal }" name="" id="" maxlength="5" /></label></li>
+            <li>
+                <div class="left-float">
+                    <a style="cursor: pointer;" id="berthWtngStrtTime" class="mobile-btn" data-bind="    click: $root.GetWaitingStartTime" data-role="button">Waiting Start Time</a>
+                </div>
+                <span class="value" id="BerthWaitingStartTime" data-bind="    text: WaitingStartTime() != null ? moment(WaitingStartTime()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li>
+                <div id="berthWaitingEndTime" class="left-float">
+                    <a style="cursor: pointer;" id="berthWtngEndTime" class="mobile-btn" data-bind="    click: $root.GetWaitingEndTime" data-role="button">Waiting End Time</a>
+                </div>
+                <span class="value" id="BerthWaitingEndTime" data-bind="    text: WaitingEndTime() != null ? moment(WaitingEndTime()).format('YYYY-MM-DD HH:mm') : ''"></span>
+            </li>
+            <li>
+                <label>Delay Reason:<span class="txtar"><textarea style="resize: none;" name="" cols="" class="sch-textbox txtarea-top" rows="" data-bind="    value: DelayReason" maxlength="500"></textarea></span></label></li>
+            <li>
+                <div>
+                    <div id="divEndTime" class="left-float"><a style="cursor: pointer;" id="btnEndTime" class="btn-disable" data-bind="    click: $root.GetEndTime">End Time</a></div>
+
+                    <span class="value" data-bind="    text: EndTime() != null ? moment(EndTime()).format('YYYY-MM-DD HH:mm') : ''"></span>
+                </div>
+
+            </li>
+            <li>
+                <label>Remarks:<span class="txtar"><textarea style="resize: none;" name="" cols="" class="sch-textbox txtarea-top" rows="" data-bind="    value: Remarks" maxlength="500"></textarea></span></label></li>
+            <li>
+                <label>Deficiencies:<span class="txtar"><textarea style="resize: none;" name="" class="sch-textbox txtarea-top" cols="" rows="" data-bind="    value: Deficiencies" maxlength="500"></textarea></span></label></li>
+            <li><span class="sebtn"><a style="cursor: pointer;" class="save-exit-disable" data-role="button" id="SaveExittab" data-bind="    click: $root.SaveBerthingDetailsClicked">Save &amp; Exit</a></span></li>
+        </ul>
+    </div>
+<div data-role="view" id="AllPorts" data-layout="app-toolbar" data-title="All Ports" id="AllPorts">
+@*<iframe src="/All Ports" width="100%" border="0" style="height: calc(100vh - 95px);" id="AllPorts" ></iframe>*@
+@*<iframe src="/AllPorts" width="100%" border="0" style="height: calc(100vh - 95px);"  id="allportsiframe" ></iframe>*@
+<iframe src="/AllPorts" width="100%" border="0" style="height: calc(100vh - 95px);"  id="allportsiframe"  ></iframe>
+
+</div>
+
+    <div data-role="view" id="My-Schedule" data-layout="app-toolbar" data-title="My Schedule">
+        <ul data-role="listview" class="inboxList">
+            <li>
+                <h2>Sample Display</h2>
+            </li>
+        </ul>
+    </div>
+
+    <div data-role="view" id="Features" data-layout="app-toolbar" data-title="Features">
+        <ul data-role="listview" data-style="inset" data-type="group">
+            <li>
+                <ul>
+                    <li><a href="#Planned-Movements" data-transition="slide:left" data-bind="    click: $root.LoadPendingMovements">
+                        <h3><span class="km-icon km-details km-notext"></span>Planned Movements</h3>
+                    </a></li>
+                    <li><a href="#Berth-Information" data-transition="slide:left" data-bind="    click: $root.LoadBerthInformation">
+                        <h3><span class="km-icon km-details km-notext"></span>Berth Information</h3>
+                    </a></li>
+<li><a href="#MBerthPlanningGIS" data-transition="slide:left" data-bind="click: $root.VesselClick">
+                        <h3><span class="km-icon km-details km-notext"></span>MBerthPlanningGIS</h3>
+                    </a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div data-role="view" id="Mobile-Reports" data-layout="app-toolbar" data-title="Mobile Reports">
+        <ul data-role="listview" data-style="inset" data-type="group">
+            <li class="km-widget listspace">
+                <ul>
+                    <li><a href="#AnchorageReport" data-transition="slide:left">
+                        <h3><span class="km-icon km-details km-notext"></span>Anchorage Report</h3>
+                    </a></li>
+                    <li><a href="#AnchorageWaitingTimeReport" data-transition="slide:left">
+                        <h3><span class="km-icon km-details km-notext"></span>Anchorage Awaiting Report</h3>
+                    </a></li>
+                    <li><a href="#CompleteMovementReport" data-transition="slide:left">
+                        <h3><span class="km-icon km-details km-notext"></span>Complete Movement Report</h3>
+                    </a></li>
+                    
+                    <li><a href="#ETAReport" data-transition="slide:left">
+                        <h3><span class="km-icon km-details km-notext"></span>ETA Report</h3>
+                    </a></li>
+                    <li><a href="#VisitReportSummaryReport" data-transition="slide:left">
+                        <h3><span class="km-icon km-details km-notext"></span>Visit Report Summary</h3>
+                    </a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+<div data-role="view" id="AnchorageReport" data-layout="app-toolbar" data-title="Anchorage Report">
+    @Html.MvcReportViewer(
+        "/IPMS.Reports/AnchorageReport",
+        new { FromDate = DateTime.Now, ToDate = DateTime.Now, Port = ViewBag.PortName, UserName = ViewBag.UserName },
+        new { Height = "550px", Width = "100%", scrolling = "no", style = "border: none" })
+</div>
+<div data-role="view" id="AnchorageWaitingTimeReport" data-layout="app-toolbar" data-title="Anchorage Awaiting Report">
+    @Html.MvcReportViewer(
+        "/IPMS.Reports/AnchorageWaitingTime",
+        new { FromDate = DateTime.Today, ToDate = DateTime.Today, Port = ViewBag.PortName, UserName = ViewBag.UserName },
+        new { Height = "550px", Width = "100%", scrolling = "no", style = "border: none" })
+</div>
+    <div data-role="view" id="CompleteMovementReport" data-layout="app-toolbar" data-title="Complete Movement Report">
+        @Html.MvcReportViewer(
+   "/IPMS.Reports/completemovementrep",
+    new { FromDate = DateTime.Today, ToDate = DateTime.Today, Port = ViewBag.PortName },
+    new { Height = "550px", Width = "100%", scrolling = "no", style = "border: none" })
+</div>
+
+   
+
+    <div data-role="view" id="ETAReport" data-layout="app-toolbar" data-title="ETA Report">
+        @Html.MvcReportViewer(
+   "/IPMS.Reports/ETA",
+    new { FromDate = DateTime.Today, Port = ViewBag.PortName, UserName = ViewBag.UserName },
+    new { Height = "550px", Width = "100%", scrolling = "no", style = "border: none" })
+</div>
+
+    <div data-role="view" id="VisitReportSummaryReport" data-layout="app-toolbar" data-title="Visit Report Summary">
+        @Html.MvcReportViewer(
+   "/IPMS.Reports/VisitReportSummary",
+            new { FromDate = DateTime.Now, ToDate = DateTime.Now, Name=ViewBag.PortName ,UserName=ViewBag.UserName },
+            new { Height = "550px", Width = "100%",scrolling="no", style = "border: none"})
+</div>
+
+    <div data-role="view" id="Planned-Movements" data-layout="app-toolbar" data-title="Planned Movements">
+        <ul data-role="listview" class="inboxList">
+            <li style="padding-bottom: 0px !important; padding-top: 2px !important;">
+                <h3 style="margin-bottom: -3px;" data-bind="    text: moment(new Date()).format('YYYY-MM-DD HH:mm')"></h3>
+            </li>
+        </ul>
+        <div class="stasks stasks1">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Movement Time</th>
+                        <th>Vessel Name</th>
+                        <th>Movement Type</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="    foreach: $root.PlannedMovementsList, loadingWhen: $root.isLoading">
+                    <tr>
+                        <td><span data-bind="    text: MovementDateTime != null ? moment(MovementDateTime).format('HH:mm') : ''" /></td>
+                        <td><span data-bind="    text: VesselName" /></td>
+                        <td><span data-bind="    text: MovementType" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div data-role="view" id="Berth-Information" data-layout="app-toolbar" data-title="Berth Information">
+        <ul data-role="listview" data-style="inset" data-type="group">
+            <li>
+                <ul data-role="listview" data-bind="    with: VMmobileBerthModel">
+                    <li>Quay: <span class="value">
+                        <select data-bind="    options: $root.masterQuays, optionsText: 'QuayName', optionsValue: 'QuayKey', optionsCaption: 'Choose..', value: selectedQuayKey"></select>
+                    </span>
+                    </li>
+                    <li>Berth: <span class="value">
+                        <select data-bind="    options: Berths, optionsText: 'BerthName', optionsValue: 'BerthKey', value: selectedBerthKey"></select>
+                    </span>
+                    </li>
+                    <li>Draft: <span class="value" data-bind="    text: selectedBerth().Draftm != null ? selectedBerth().Draftm + ' meters' : ''"></span></li>
+                    <li>Max Tidal Draft: <span class="value" data-bind="    text: selectedBerth().TidalDraft != null ? selectedBerth().TidalDraft + ' meters' : ''"></span></li>
+                    <li>Length: <span class="value" data-bind="    text: selectedBerth().Lengthm != null ? selectedBerth().Lengthm + ' meters' : ''"></span></li>
+                    <li>From Bollard: <span class="value" data-bind="    text: selectedBerth().FirstBolardName"></span></li>
+                    <li>To Bollard: <span class="value" data-bind="    text: selectedBerth().LastBollardName"></span></li>
+                    <li>Cargo Handled: <span style="width: 50%; text-align: right;" class="value" data-bind="    text: selectedBerth().CargoDetails">Coal</span></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+<div data-role="view" id="MBerthPlanningGIS" data-layout="app-toolbar" data-title="M-Berth Planning GIS">
+<iframe src="/MBerthPlanningGIS" width="100%" border="0" style="height: calc(100vh - 95px);"  id="mberthplanninggis" ></iframe>
+
+</div>
+    <div data-role="view" id="Automatic-Identification-System" data-layout="app-toolbar" data-title="Automatic Identification System">
+        <ul data-role="listview">
+            <li>
+                <h2>Sample Display</h2>
+            </li>
+        </ul>
+    </div>
+    <div data-role="view" id="Pending-Approvals" data-layout="app-toolbar" data-title="Pending Approvals" data-bind='    validationOptions: { messageTemplate: "customMessageTemplate" }'>
+        <div data-bind="    with: VMnotificationModel" class="pending-approvals1">
+
+
+            <div data-bind="    foreach: $root.EntityData, loadingWhen: $root.isLoading" style="margin-top: 10px;">
+
+                <div data-bind="text: EntityName" style="margin-left: 40px; padding-left: 5px; line-height: 30px; background: #f00; color: #fff; font-weight: bold;">
+                </div>
+
+                <div data-bind="foreach: pendingTasks, loadingWhen: $root.isLoading">
+
+                    <ul data-bind="foreach: Rows" style="margin-top: 0px;">
+
+                        <!-- ko if: ($data.Row !== 'RowRemarks' && $data.Row !== 'RowAction')-->
+                        <li data-bind="html: $data.Row"></li>
+                        <!-- /ko -->
+                        <!-- else -->
+                        <!-- ko if: $data.Row === 'RowRemarks' -->
+                        <li>
+                            <div class="nowrap">
+                                <b>Remarks:</b>
+                                <input type="text" name="name" class="form-control sch-textbox" style="width: 100% !important; height: 26px;" data-bind="value: $parent.Remarks, attr: { id: $parent.WorkflowInstanceId }" />
+                                <br />
+
+                                <span class="validationError" data-bind="attr: { id: 'span' + $parent.WorkflowInstanceId() }"></span>
+
+                            </div>
+                        </li>
+                        <!-- /ko -->
+                        <!-- ko if: $data.Row === 'RowAction' -->
+                        <li style="background: #fff; border-bottom: 0px !important;">
+                            <div data-bind="foreach: $parent.GetTask" style="white-space: nowrap;">
+                                <a style="border: 1px solid #999; padding: 5px; background: #7dba00; color: #fff;" data-bind="text: $data.TaskName, click: $root.Actiontask, attr: { title: $data.TaskName }"><i data-bind="    attr: { 'class': 'fa fa-' + $data.TaskCode }"></i>
+                                </a>
+                                &nbsp;
+                               
+                            </div>
+                        </li>
+                        <!-- /ko -->
+                        <!-- /ko -->
+
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div data-role="view" id="Report-Incident" data-layout="app-toolbar" data-title="Report an Incident" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+        <ul data-role="listview" data-style="inset" data-type="group" data-bind="    with: mobileIncidentReportModel">
+            <li>
+                <ul id="MobileIncidentUl" data-role="listview" class="km-button1">
+                    <li>
+                        <label>Location of Incident:<span class="required">*</span><input type="text" class="sch-textbox field-w" data-bind="value: incidentLocation" maxlength="100" /></label></li>
+                    <li>Nature of Incident:<span class="required">*</span>
+                        <div class="value">
+                            <ul class="listnone" data-bind="    foreach: $root.IncidentTypes">
+                                <li class="km-widget">
+                                    <span class="km-listview-label1 km-listview-label">
+                                        <input type="checkbox" class="km-icon km-check paddingright" name="IncidentTypes" data-bind="    checkedValue: SubCatCode, checked: $root.mobileIncidentReportModel().IncedentTypeArray"><label style="color: #7dba00;" data-bind="    text: SubCatName"></label>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <label>Incident Description:<span class="required">*</span><span class="txtar"><textarea class="sch-textbox txtarea-top" data-bind="    value: incidentDescription" maxlength="1000"></textarea></span></label>
+                    </li>
+                    <li>
+                        <div style="float: left">
+                            <div class="fileUpload">
+                                <span id="SelectPicture"><i class="km-icon km-image" style="margin-left: 0px;"></i>Browse</span>
+                                <input type="file" class="upload" name="files[]" id="fileToUpload" multiple />
+                            </div>
+                        </div>
+                        <div style="float: right;">
+                            <a id="CapturePicture" data-icon="upload" data-role="button" data-bind="click: $root.uploadFile" style="width: 90px; background: #7dba00; color: #fff;" class="km-button">Upload</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="docu-upload">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Document Name</th>
+                                        <th style="width: 20px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="    foreach: IncidentDocuments, loadingWhen: $root.isLoading">
+                                    <tr>
+                                        <td><a data-bind="    text: FileName, attr: { href: '/FileDownload/Download/' + DocumentID() }"></a></td>
+                                        <td><a class="km-icon km-delete km-notext" data-role="button" data-icon="delete" data-bind="    click: $root.DeleteDocument" style="border: 0; font-size: 0.8em; color: #FFF; padding: 3px;"></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+                <div class="km-listview-wrapper"><span class="sebtn"><a class="km-button" data-role="button" id="Submit" data-bind="    click: $root.SaveIncident, loadingWhen: $root.isLoading" style="width: 90px; background: #7dba00; font-size: 16px; text-align: center; color: #fff;">Submit</a></span></div>
+            </li>
+        </ul>
+    </div>
+
+    <div data-role="view" id="Diving-Request" data-layout="app-toolbar" data-title="Diving Request">
+        <div class="stasks stasks1">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Berth</th>
+                        <th>Occupation From Date</th>
+                        <th>Occupation To Date</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="    foreach: $root.divingRequestDetails, loadingWhen: $root.isLoading">
+                    <tr>
+                        <td><span data-bind="    text: QuayLocation" /></td>
+                        <td><span data-bind="    text: FromBerthName" /></td>
+                        <td><span data-bind="    text: OcupationFromDate" /></td>
+                        <td><span data-bind="    text: OcupationToDate" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function initForm() {
+            var body = $(".km-pane");
+
+            if (kendo.ui.DropDownList) {
+                $("#dropdown").kendoDropDownList({
+                    // The options are needed only for the desktop demo, remove them for mobile.
+                    popup: { appendTo: body },
+                    animation: { open: { effects: body.hasClass("km-android") ? "fadeIn" : body.hasClass("km-ios") || body.hasClass("km-wp") ? "slideIn:up" : "slideIn:down" } }
+                });
+            }
+
+            if (kendo.ui.Slider) {
+                $("#slider").kendoSlider({ tooltip: { enabled: false } });
+            }
+        }
+    </script>
+
+
+    <script>
+        window.kendoMobileApplication = new kendo.mobile.Application(document.body);
+    </script>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Features";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/MobileModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/MobileViewModel.js"></script>
+}
+@section ko_apply
+{
+var vm = new IPMSROOT.MobileViewModel();
+    ko.applyBindingsWithValidation(vm, $("#ulFeatures")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });   
+}
+<div class="topbar">
+    <div class="user">Welcome to Steve</div>
+    <div class="topicons">
+        <a href="@Url.Action("DashBoard", "Mobile")"><i class="back"></i></a>
+        <a href="@Url.Action("DashBoard", "Mobile")"><i class="home"></i></a>
+        <a href="@Url.Action("Logout", "Mobile")"><i class="logout"></i></a>
+    </div>
+</div>
+<nav>
+    <div data-bind="foreach: $root.Features" id="ulFeatures">
+         <img style="margin-bottom: -32px; padding-left: 7PX" src="~/Content/Images/mobile-icon-notifications.png">
+        <a data-bind="attr: { href: '/' + PageUrl() }">
+            <span class="dbicons" data-bind="text: EntityName"></span><i class="dbarrow"></i>
+        </a>
+    </div>
+</nav>
+
+

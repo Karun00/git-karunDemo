@@ -1,0 +1,424 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "TFR Documents Upload";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+<script src="~/Scripts/Application/Model/TfrDocumentUploadModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/TfrDocumentUploadViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.TfrDocumentUploadViewModel();   
+ko.applyBindingsWithValidation(viewModel, $("#UploadDocs")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<style>
+    .table-style {
+        background: #fff;
+    }
+
+        .table-style th {
+            padding-left: 5px;
+        }
+
+        .table-style thead tr {
+            height: 30px;
+        }
+   .highlighted{
+      background-color: red;
+   }
+
+</style>
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span>Train Upload</span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="UploadDocs"> 
+    <div class="clearfix"></div> 
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <div class="portlet portlet-body form">
+                <form action="#" id="form_sample_1" class="form-horizontal" data-bind="with: TfrDocumentUploadModel">
+                    <div class="form-wizard">
+                        <div class="form-body">
+                            <div class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div> 
+                            <fieldset>
+                                <legend>Document Upload</legend>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-12 alert ">
+                                            <div class="radio-list">
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-4">
+                                                    <label class="col-md-9 radio-inline">
+                                                        <input id="id_radio1" type="radio" name="NewUser" value="RLOP" title="Rail Operations" data-title="Yes" checked>
+                                                        <b>Rail Operations(Daily)</b>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class=" radio-inline col-md-7">
+                                                        <input id="id_radio2" type="radio" name="NewUser" title="Rail Change Notifications" value="RLCN" data-title="No"><b>Rail Changes Notifications</b></label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class=" radio-inline">
+                                                        <input id="id_radio3" type="radio" name="NewUser" value="DAAN" title="Arrival Departure Time" data-title="No"><b>Arrival and Departure Time</b></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <fieldset>
+
+                                    <legend>Documents Upload</legend>
+                                    <div class="row fileupload-buttonbar">
+                                        <div class="form-group">
+
+                                            <div class="col-md-4">
+                                            </div>
+                                            <div class="col-md-7">
+                                                &nbsp;&nbsp;<span class="btn btn-sm green fileinput-button" data-bind="visible: $root.isUploadEnable">
+                                                    <i class="fa fa-plus"></i>
+                                                    <span>Browse
+                                                    </span>
+                                                    <input type="file" name="files[]" id="fileToUpload" multiple>
+                                                </span>
+                                                <button type="button" data-bind="enable: $root.isUploadEnable, click: $root.uploadFile" class="btn btn-sm blue start">
+                                                    <i class="fa fa-upload"></i>
+                                                    <span>Upload
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-md-2">
+                                                &nbsp;&nbsp; <span id="spanmultiplepfileToUpload" class="validationError"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered table-advance">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="bg-dark">Document Category</th>
+                                                        <th class="bg-dark">Document Name</th>
+                                                        
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody data-bind=" with:$root.UploadDocument()[0]">
+                                                    <tr>
+                                                        <td id="UploadFileType" data-bind="text: DocumentName"></td>
+                                                        <td id="lblUploadFileName" data-bind="text: FileName"></td>
+                                                       
+                                                       @* <td><a data-bind="text: FileName">Document</a></td>
+                                                        <td><a href="#" class="btn default btn-xs red" data-bind="visible: $root.isUploadEnable, click: $root.DeleteDocument"><i class="fa fa-trash-o"></i>Delete</a></td>*@
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Preview</legend>
+                                    <div class="form-group RLOP">
+
+                                        <div class="table-toolbar">
+                                            <div style="overflow: auto;" class="td-w">
+                                                <table cellpadding="0" cellspacing="0" border="0" id="table" class=" tinytable table-style">
+                                                    <tr>
+                                                        <td>
+                                                            <h5><b>Rail Operations (Daily)</b></h5>
+                                                        </td>
+                                                        <td>
+                                                            <h5><b><div class="col-md-5"><label style="text-align:left">Corridor :</label></div>
+                                                                <div class="col-md-5">
+                                                                    <label class="displaytxt" data-bind="text: $root.WeekNo"></label></div>
+                                                                 </b></h5>
+                                                        </td>
+                                                        <td>
+                                                            <h5><b>
+                                                                <div class="col-md-4" style="text-align: left"> Date :</div>
+                                                                <div class="col-md-6"><label class="col-md-12 displaytxt" id="lblPlanDate" data-bind="text: $root.PlanDate"></label>
+                                                                </div>
+                                                            </b></h5>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <table cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable table-style">
+                                                    <thead> 
+                                                        <tr>
+                                                            <th>Sl.No.</th>
+                                                            <th>Schedule</th>
+                                                            <th>Train No.</th>
+                                                            <th>Origin </th>
+                                                            <th>Destination</th>
+                                                            <th>Break Type </th>
+                                                            <th>ETD </th>
+                                                            <th>ETA </th>
+                                                            <th>Loco</th>
+                                                            <th>Loco Qty</th>
+                                                            <th>NWB Ref </th>
+                                                            <th>Planned Tons</th>
+                                                            <th>Load</th>
+                                                            <th>Remark</th>
+                                                            <th>YQ(Y/N)</th>
+                                                            <th>Train Status</th> 
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody data-bind="foreach: RailPlan">
+                                                        <tr style="border-top: solid 2px #c6d5e1;" data-bind="style: { backgroundColor: (RecordStatus() == 'E') ? 'orange' : ' ' }">
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: SlNo"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: Schedule"></label>
+                                                            </td>
+                                                            <td >
+                                                                <label class="col-md-12 displaytxt" data-bind="text: TrainNo"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: Origin"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: Destination"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: BreakType"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: PlannedETD"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: PlannedETA"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: Loco"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: LocoQty"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: NWBRef"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: PlannedTons"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: Load"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: Remark"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: YQ"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: TrainStatus"></label>
+                                                            </td>
+                                                        </tr> 
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div> 
+                                    </div>
+
+                                    <div class="form-group RLCN">
+
+                                        <div class="table-toolbar">
+                                            <div style="overflow: auto;" class="td-w"> 
+                                                <div> 
+                                                    <table cellpadding="0" cellspacing="0" border="0" id="table" class=" tinytable table-style" >
+                                                        <tr>
+                                                            <td style="width:35%">
+                                                                <h5><b>Rail Change Notifications</b></h5>
+                                                            </td>
+                                                            <td>
+                                                                <h5><b>
+                                                                    <div class="col-md-4" style="text-align: left">Corridor : </div>                                                                   
+                                                                    </b></h5>
+                                                            </td>
+                                                            <td style="width: 30%"><h5><b>
+                                                                <div class="col-md-4" style="text-align: left">
+                                                                    Date :</div>
+                                                            </b>
+                                                                    <div class="col-md-6"> <label class="displaytxt" id="lblRCNPlanDate" data-bind="text: $root.PlanDate"></label>
+                                                                </div>
+                                                            </h5></td>
+                                                        </tr>
+                                                    </table>
+                                                    <table cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable table-style">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sl.No.</th>
+                                                                <th>Train No</th>
+                                                                <th>Reason for Change</th>
+                                                                <th>Train Status</th>
+                                                                <th>New ETD</th>
+                                                                <th>New ETA</th> 
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody data-bind="foreach: RailChangeNotifications">
+                                                            <tr data-bind="style: { backgroundColor: (RecordStatus() == 'E') ? 'orange' : ' ' }">
+                                                                <td>
+                                                                    <label class="col-md-12 displaytxt" data-bind="text: SlNo"></label>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="col-md-12 displaytxt" data-bind="text: TrainNo"></label>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="col-md-12 displaytxt" data-bind="text: ReasonForChange"></label>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="col-md-12 displaytxt" data-bind="text: TrainStatus"></label>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="col-md-12 displaytxt" data-bind="text: NewETD"></label>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="col-md-12 displaytxt" data-bind="text: NewETA"></label>
+                                                                </td> 
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group DAAN">
+
+                                        <div class="table-toolbar">
+                                            <div style="overflow: auto;" class="td-w">
+                                                <table cellpadding="0" cellspacing="0" border="0" id="table" class=" tinytable table-style">
+                                                    <tr>
+                                                        <td style="width:35%">
+                                                            <h5><b>Arrival and Departure Times</b></h5>
+                                                        </td>
+                                                        <td>
+                                                            <h5><b>
+                                                                <div class="col-md-4" style="text-align: left"> Corridor :</div>                                                                 
+                                                               </b></h5>
+                                                        </td>
+                                                        <td style="width: 30%"><h5><b>
+                                                                <div class="col-md-4" style="text-align: left">
+                                                                    Date:</div>
+                                                                    <div class="col-md-6" style="text-align: left">
+                                                                        <label class="displaytxt" id="lblADTPlanDate" data-bind="text: $root.PlanDate"></label>
+                                                            </div>
+                                                        </b>
+                                                        </h5></td>
+                                                    </tr>
+                                                </table>
+                                                <table cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable table-style">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sl. No.</th>
+                                                            <th>Train No</th>
+                                                            <th>Train Movement</th>
+                                                            <th>Actual Time</th> 
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody data-bind="foreach: ArrivalAndDepartureTimes">
+                                                        <tr data-bind="style: { backgroundColor: (RecordStatus() == 'E') ? 'orange' : ' ' }">
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text:SlNo"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: TrainNo"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text: TrainMovement"></label>
+                                                            </td>
+                                                            <td>
+                                                                <label class="col-md-12 displaytxt" data-bind="text:(TrainMovement() == '0')? 'ATD':'ATA'"></label>
+                                                            </td>                                                       
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </fieldset>
+                            <div class="btns-group form-actions fluid">
+                                <button type="submit" class="btn green" data-bind="click: $parent.SaveTfrDocumentValues">Save</button>
+                                <button type="button" data-bind="click: $parent.Cancel" class="btn red">Cancel</button>
+                            </div>
+                             
+                            <div class="RLOP" style="font-size: smaller">
+                            <table>
+                                <tr><td>* V=Vacuum, A=Air  </td></tr>
+                                <tr>
+                                    <td>* S=Staged, A=Active</td>
+                                </tr>
+                                <tr>
+                                    <td>* 0=Cancellation of train, 1=Change of ETD</td>
+                                </tr>
+                            </table>
+
+                            </div>
+
+                            <div class="RLCN" style="font-size: smaller"> 
+                                <table> 
+                                    <tr>
+                                        <td>* S=Staged, A=Active</td>
+                                    </tr>
+                                    <tr>
+                                        <td>* 0=Cancellation of train, 1=Change of ETD, 2= Change of ETA</td>
+                                    </tr>
+                                </table>
+
+                            </div>
+
+                            <div class="DAAN" style="font-size: smaller">
+                                <table> 
+                                    <tr>
+                                        <td>*For Train Movement, 0 = Confirmation of Train Departure, 1 = Confirmation of Train Arrival </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="javascript">
+    $(document).ready(function () {
+        $(".RLOP").show();
+        $(".RLCN, .DAAN").hide();
+        $('input[type="radio"]').click(function () {
+            if ($(this).attr("value") == "RLOP") {
+                $(".RLOP").show();
+                $(".RLCN, .DAAN").hide();
+            }
+            if ($(this).attr("value") == "RLCN") {
+                $(".RLCN").show();
+                $(".RLOP, .DAAN").hide();
+            }
+            if ($(this).attr("value") == "DAAN") {
+                $(".DAAN").show();
+                $(".RLOP, .RLCN").hide();
+            }
+        });
+    });
+</script>

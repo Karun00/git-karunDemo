@@ -1,0 +1,432 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "Berth Planning";
+    Layout = "~/Views/Shared/_IPMSBerthPlanning.cshtml";
+}
+
+@section scripts
+{
+
+    <script type="text/javascript">
+        $(function () {
+            var moveDown = -270;
+            var moveRight = 20;
+
+            $('a#trigger').hover(function (e) {
+                $('div#pop-up').show();
+                //.css('top', e.pageY + moveDown)
+                //.css('left', e.pageX + moveLeft)
+                //.appendTo('body');
+            }, function () {
+                $('div#pop-up').hide();
+            });
+            $('a#trigger').mousemove(function (e) {
+                $("div#pop-up").css('top', e.pageY + moveDown).css('right', moveRight);
+            });
+
+        });
+
+
+
+
+
+    </script>
+
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.BerthPlanningViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#BerthPlanning")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+      
+}
+<link href="~/Content/Styles/opentip.css" rel="stylesheet" />
+<style type="text/css">
+    .legend-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid #666;
+    }
+
+        .legend-icon span {
+            margin-left: 15px;
+            margin-top: -4px !important;
+            display: block;
+        }
+
+    .td-width {
+        width: 100px;
+    }
+
+    .page-content {
+        margin-left: 0px;
+    }
+
+    .bg-color:active {
+        background: #4d90fe !important;
+    }
+
+    .bg-color:hover {
+        background: #dbe8fb;
+    }
+    /*.btn-group > .btn {
+        box-shadow: none;
+        margin-right: 1px;
+        border: 1px solid #999;
+        border-radius: 0px !important;
+    }*/
+    .btn-group > .btn {
+        margin-right: 4px;
+        margin-top: 3px;
+    }
+
+    .btn:hover, .btn:focus {
+        background: #999;
+    }
+
+    .gray {
+        background-color: #CCC;
+    }
+
+        .gray:hover {
+            background-color: #999;
+        }
+
+    .edge-cut {
+        background-image: url("../Content/Images/buttons-top-edge-cut.png" );
+        background-repeat: no-repeat;
+        width: 7px;
+        height: 19px;
+        position: relative;
+        display: inline-block;
+        float: right;
+        top: 0;
+        margin-top: -3px;
+        margin-right: -6px;
+        background-position: right top;
+    }
+
+
+    #contextMenu {
+        margin: 0;
+        padding: 0px;
+        min-width: 120px;
+        max-width: 250px;
+        display: inline-block;
+        position: absolute;
+        list-style-type: none;
+        background-color: #CCC;
+        opacity: 1 !important;
+        -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        -ms-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        -o-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        font-size: 11px;
+    }
+
+    #contextMenuH {
+        padding: 2px;
+        text-align: center;
+        font-size: 13px;
+        letter-spacing: 2px;
+        border-bottom: 1px solid #808080;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: -moz-none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        #contextMenuH img {
+            margin-right: 5px;
+        }
+
+    #contextMenuB {
+        padding: 2px;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: -moz-none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        #contextMenuB input[type=button] {
+            background-color: #797373;
+            color: #fff;
+            border: 0px;
+            width: 100%;
+            border-bottom: 1px solid #fff;
+        }
+
+            #contextMenuB input[type=button]:hover {
+                background-color: #A9A7A7;
+                color: #000;
+            }
+
+
+    .portlet.box > .portlet-body {
+        background-color: #f5f5f5;
+    }
+
+    .tinytable caption {
+        background-color: #3d3d3d;
+        font-family: OswaldLight, sans-serif;
+        color: #fff;
+        border: 1px solid #000;
+    }
+
+    div#pop-up {
+        display: none;
+        position: absolute;
+        width: 550px;
+        padding: 3px;
+        background: #eeeeee;
+        color: #000000;
+        border: 1px solid #1a1a1a;
+        font-size: 90%;
+        z-index: 999;
+        border-radius: 4px;
+    }
+
+    div#vesselpopup {
+        display: none;
+        position: absolute;
+        width: 200px;
+        height: 100px;
+        padding: 3px;
+        background: #eeeeee;
+        color: #000000;
+        border: 1px solid #1a1a1a;
+        font-size: 90%;
+        z-index: 999;
+        border-radius: 4px;
+    }
+</style>
+
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">Berth Planning</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+
+    </div>
+</div>
+<div id="BerthPlanning">
+    <div class="row">
+        <div class="col-md-12" style="margin-top: -10px;">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet box advbg">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-reorder"></i>Pending Vessels
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse"></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body" style="display: block;">
+                            <form action="#" id="form_sample_1" class="form-horizontal" novalidate="novalidate">
+                                <div class="form-wizard">
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="row">
+                                                        <div class="col-md-7 form-group">
+                                                            <label class="control-label col-md-5">From Date:</label>
+                                                            <div class="col-md-7" style="padding-right: 5px;">
+                                                                <div class="form-control">
+                                                                    <input id="FromDate" onkeypress="return false;" data-bind="event: { change: $root.viewButtonClick }" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        @* <div class="col-md-2 form-group">
+                                                            <label class="control-label col-md-4"></label>
+                                                            <div class="col-md-7">
+                                                                <button type="submit" class="btn btn-xs green" id="btnView" data-bind="click: $root.viewButtonClick">View</button>
+                                                            </div>
+                                                        </div>*@
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <div style="overflow-y: scroll; height: 100px; cursor: move;" data-bind="with: berthplanningModel, loadingWhen: $root.viewModelHelper.isLoading">
+                                                        <table border="0" id="table" class="tinytable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th title="Vessel Information">Info.</th>
+                                                                    <th style="display: none;">VCMID</th>
+                                                                    <th>VCN</th>
+                                                                    <th>Vessel Name</th>
+                                                                    <th>ETB</th>
+                                                                    <th>ETUB</th>
+                                                                    @*<th>Reason for Visit</th>*@
+                                                                    <th>Draft</th>
+                                                                    <th class="nowrap">LOA</th>
+                                                                    <th class="nowrap">Movement Type</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody data-bind="foreach: $parent.unplannedvessels(), loadingWhen: $root.viewModelHelper.isLoading" style="height: 100px;">
+                                                                <tr draggable="true" class="bg-color" data-bind="attr: { id: VesselCallMovementID }, event: { dragstart: $root.drags(event) }">
+                                                                    <td>
+                                                                        <a href="#" data-bind="click: $root.VesselDetailsPop, event: { mouseleave: $root.MouseOut }" title="Click to View"><i class="fa fa-eye"></i></a>
+                                                                    </td>
+                                                                    <td style="display: none;" class="nowrap" data-bind="text: VesselCallMovementID"></td>
+
+                                                                    <td class="nowrap" data-bind="text: VCN, style: { backgroundColor: isVesselArrested() == true ? '#bc1503' : '' }"></td>
+                                                                    @*<td class="nowrap" data-bind="text: VCN"></td>*@
+                                                                    <td class="nowrap" data-bind="text: VesselName"></td>
+                                                                    <td class="nowrap" data-bind="text: ETB"></td>
+                                                                    <td class="nowrap" data-bind="text: ETUB"></td>
+                                                                    @*  <td class="nowrap" data-bind="text: ReasonforVisitName"></td>   *@
+                                                                    <td class="nowrap" data-bind="text: MaxDraft"></td>
+                                                                    <td data-bind="text: LOA"></td>
+                                                                    <td class="nowrap" data-bind="text: MovementTypeName"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="row" style="margin-top: 10px">
+                                                        <div class="col-md-12 form-group">
+                                                            @if (Model.HasAddPrivilege || Model.HasEditPrivilege)
+                                                            {
+                                                                <div class="col-md-10">
+                                                                    <button type="submit" class="btn btn-xs blue" data-bind="click: $root.ScheduleClick, enable: $root.ScheduleEnabled">Schedule</button>
+                                                                    <button type="submit" class="btn btn-xs blue" data-bind="click: $root.ConfirmClick, enable: $root.ScheduleEnabled">Confirm</button>
+                                                                </div>
+                                                                <div class="col-md-2" align="right">
+                                                                    <button type="submit" class="btn btn-sm green" data-bind="click: $root.SaveClick">Save</button>
+                                                                    <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ResetClick">Reset</button>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12" data-bind="with: quayModel, loadingWhen: $root.viewModelHelper.isLoading">
+                    <div class="col-md-12">
+                        <div class="col-md-2">
+                            <button type="submit" data-bind="click: $root.PortClick" class="btn btn-sm  green"><i class="fa fa-anchor"></i><span data-bind="    text: $root.PortName"></span></button>
+                        </div>
+                        <div class="col-md-9">
+                            <div style="text-align: center; margin-bottom: 3px">
+                                <div class="btn-group btn-group-xs btn-group-solid" data-bind="foreach: $parent.QuayValues">
+                                    <button type="submit" data-bind="click: $root.QuayClick, event: { mouseenter: $root.QuayMouseOver, mouseleave: $root.MouseOut }" class="btn blue"><i class="fa fa-eraser"></i><span data-bind="    text: QuayName"></span></button>
+                                </div>
+                            </div>
+
+                            <div style="text-align: center; margin-bottom: 3px; min-height: 22px; height: auto;">
+                                <div class="btn-group btn-group-xs btn-group-solid" data-bind="foreach: $parent.berthsWithBollards">
+                                    <button type="submit" data-bind="click: $root.BerthClick, event: { mouseenter: $root.BerthMouseOver, mouseleave: $root.MouseOut }" class="btn red"><i class="fa fa-th-list"></i><span data-bind="    text: BerthName"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1" align="right">
+                            <a href="#" class="btn btn-sm red" id="trigger">Vessel Status</a>
+                            <div id="pop-up">
+
+                                <table border='0' width="100%" cellpadding='3' cellspacing='3'>
+                                    <tr>
+                                        @*   <td class='td-width'>
+                            <div class='legend-icon' style="background-color: #FFFFFF;"><span class='left-span'>Pending</span></div>
+                        </td>*@
+                                        <td class='td-width'>
+                                            <div class='legend-icon' style="background-color: #FFBF00;"><span class='left-span'>Scheduled</span></div>
+                                        </td>
+                                        <td class='td-width'>
+                                            <div class='legend-icon' style="background-color: #006400;"><span class='left-span'>Confirmed</span></div>
+                                        </td>
+                                        <td class='td-width'>
+                                            <div class='legend-icon' style="background-color: #CD6090;"><span class='left-span'>Berthed</span></div>
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <div class='legend-icon' style="background-color: #0000A0;"><span class='left-span'>Sailed</span></div>
+                                        </td>
+                                        <td class='td-width'>
+                                            <div class='legend-icon' style="background-color: #CFCFCF;"><span class='left-span'>Maintenance</span></div>
+                                        </td>
+                                        <td class='td-width'>
+                                            <div class='legend-icon' style="background-color: #bc1503;"><span class='left-span'>Arrested</span></div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-12" style="display: table;">
+
+                            @*    <script type="text/html" id="popoverBindingTemplate">
+                            <button class="close pull-right" type="button" data-dismiss="popover">×</button>
+                            <form>
+                                <label>Popover Binding Header</label>
+                                <input type="text" data-bind="value: 'Header', valueUpdate: 'afterkeydown'" />
+                            </form>
+                        </script>
+
+*@
+
+                            <div style="display: table-row;">
+
+                                <div style="display: table-cell; padding-top: 0px; background-color: #808080; width: 75px; height: 800px; text-align: center; vertical-align: top;">
+                                    <div style="background-color: #CCC; height: 20px;">Time</div>
+                                    <div id="TimerContainer">
+                                        21/07/2014<p>&nbsp;</p>
+                                        00:00
+                                    </div>
+                                </div>
+
+                                <div style="display: table-cell; background-color: #f1efef">
+                                    <div id="BerthContainer" style="background-color: #CCC; border-bottom: 1px solid #808080;">
+                                        MD-1 MD-2 MD-3 MD-4 MD-5 MD-6
+                                    </div>
+                                    <div id="BollardContainer" style="background-color: #CCC;">
+                                        1 2 3 4 5 6 7 8 9 10
+                                    </div>
+                                    <div id="GridContainer" data-bind="event: { dragover: $root.allowDrop(event), drop: $root.DragEnd(event) }">
+                                    </div>
+                                    <div id="contextMenu" style="display: none">
+                                        <div id="contextMenuH">
+                                        </div>
+                                        <div id="contextMenuB"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+

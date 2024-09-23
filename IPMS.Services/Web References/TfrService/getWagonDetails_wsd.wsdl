@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://TFRDWINWMISA8.inter.transnet.net/tnpa_train_info/webservice/getWagonDetails_wsd" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapjms="http://www.w3.org/2010/soapjms/" name="getWagonDetails_wsd" targetNamespace="http://TFRDWINWMISA8.inter.transnet.net/tnpa_train_info/webservice/getWagonDetails_wsd" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://TFRDWINWMISA8.inter.transnet.net/tnpa_train_info/webservice/getWagonDetails_wsd">
+      <xsd:element name="getWagonDetails" type="tns:getWagonDetails" />
+      <xsd:element name="getWagonDetailsResponse" type="tns:getWagonDetailsResponse" />
+      <xsd:complexType name="getWagonDetails">
+        <xsd:sequence>
+          <xsd:element name="TRAIN_NO" nillable="true" type="xsd:string" />
+          <xsd:element name="TRAIN_ORIGIN" nillable="true" type="xsd:string" />
+          <xsd:element name="ORIGIN_DATE" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="getWagonDetailsResponse">
+        <xsd:sequence>
+          <xsd:element maxOccurs="unbounded" name="WAGON_DETAILS" nillable="true" type="tns:WAGON_DETAILS" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="WAGON_DETAILS">
+        <xsd:sequence>
+          <xsd:element name="TRAIN_NO" nillable="true" type="xsd:string" />
+          <xsd:element name="WAGON_NUMBER" nillable="true" type="xsd:string" />
+          <xsd:element name="WAGON_TYPE" nillable="true" type="xsd:string" />
+          <xsd:element name="COMMODITY" nillable="true" type="xsd:string" />
+          <xsd:element name="TONNAGE" nillable="true" type="xsd:string" />
+          <xsd:element name="ORIGIN_DATE" nillable="true" type="xsd:string" />
+          <xsd:element name="TRAIN_ORIGIN" nillable="true" type="xsd:string" />
+          <xsd:element name="UPDATE_DATETIME" nillable="true" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getWagonDetails_wsd_PortType_getWagonDetails">
+    <wsdl:part name="parameters" element="tns:getWagonDetails" />
+  </wsdl:message>
+  <wsdl:message name="getWagonDetails_wsd_PortType_getWagonDetailsResponse">
+    <wsdl:part name="parameters" element="tns:getWagonDetailsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="getWagonDetails_wsd_PortType">
+    <wsdl:operation name="getWagonDetails">
+      <wsdl:input message="tns:getWagonDetails_wsd_PortType_getWagonDetails" />
+      <wsdl:output message="tns:getWagonDetails_wsd_PortType_getWagonDetailsResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="tnpa_train_info_webservice_getWagonDetails_wsd_Binder" type="tns:getWagonDetails_wsd_PortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getWagonDetails">
+      <soap:operation soapAction="tnpa_train_info_webservice_getWagonDetails_wsd_Binder_getWagonDetails" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" parts="parameters" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" parts="parameters" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="getWagonDetails_wsd">
+    <wsdl:port name="tnpa_train_info_webservice_getWagonDetails_wsd_Port" binding="tns:tnpa_train_info_webservice_getWagonDetails_wsd_Binder">
+      <soap:address location="http://TFRDWINWMISA8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getWagonDetails_wsd/tnpa_train_info_webservice_getWagonDetails_wsd_Port" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,339 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ExternalDivingRegisterModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ExternalDivingRegisterViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ExternalDivingRegisterViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#ExternalDivingRegister")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<!-- Main body content starts here for developers-->
+
+<div id="ExternalDivingRegister">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'ExternalDivingRegisterList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'ExternalDivingRegisterForm-template' }"></div>
+</div>
+<div class="clearfix"></div>
+
+<!-- Grid / List Starts here -->
+<script type="text/html" id="ExternalDivingRegisterList-template">
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+            <div id="tablewrapper15">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addExternalDivingRegister">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: ExternalDivingRegisterList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' }, number: { eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'DivingLogDateTimeSort', title: 'Date Time', filterable: true, width: '120px' },
+                            { field: 'CompanyNameDisplaySort', title: 'Name of Company', filterable: true, width: '160px' },
+                            { field: 'LocationNameSort', title: 'Location of Dive', filterable: true, width: '150px' },
+                            { field: 'VesselNameSort', title: 'Name of Vessel', filterable: true, width: '150px' },
+                            { field: 'StartTimeSort', title: 'Start Time', filterable: true, width: '120px' },
+                            { field: 'StopTimeSort', title: 'Stop Time', filterable: true, width: '120px' },
+                            { field: 'PersonInChargeSort', title: 'Person In-Charge', filterable: true, width: '150px' },
+                            { field: 'OnsiteSupervisorContNoSort', title: 'Onsite Supervisor Contact No.', filterable: true, width: '170px' },
+                            { field: 'ClearanceNoSort', title: 'Clearance No.', filterable: true, width: '150px' },
+        { field: 'NoOfDriversSort', title: 'No. of Divers', filterable: true, type: 'number', width: '130px' },
+        { title: 'Permission Obtained from SVTC', width: '200px' },
+        { title: 'Status', filterable: false, hidden: false },
+        { title: 'Actions', filterable: false, width: '120px' }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: DivingLogDateTime"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: CompanyNameDisplay"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: BerthName"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: VesselName"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: StartTime"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: StopTime"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: PersonInCharge"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: OnsiteSupervisorContNo"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: ClearanceNo"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: NoOfDrivers"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: PermissionObtainedt"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: Statust"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewExternalDivingRegister" title="View"><i class="fa fa-eye"></i></a>                                   
+                                }&nbsp; &nbsp;  
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editExternalDivingRegister" title="Edit"><i class="fa fa-edit"></i></a>
+                                }                                  
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+</script>
+<!-- Grid / List Endss here -->
+
+<!-- Form / Details Starts here -->
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="ExternalDivingRegisterForm-template">
+
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: ExternalDivingRegisterModel">
+                    @*<div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>*@
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="form-group" id="divReqdtls">
+                        <fieldset>
+                            <legend>External Diving Register Details</legend>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Diving Log Date Time:
+                                                        <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            @*<input id="DivingLogDateTime" type="text" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: DivingLogDateTime, format: 'yyyy-MM-dd HH:mm:ss', timeFormat: 'HH:mm', open: calOpen, enable: false }" name="DivingLogDateTime" maxlength="10" />*@
+                                            <input id="DivingLogDateTime" type="text" class="form-control datetime-picker" data-bind="kendoDateTimePicker: { value: DivingLogDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', open: calOpen, enable: false, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="DivingLogDateTime" maxlength="10" />
+                                            <span id="spanDivingLogDateTime" class="validationError" data-bind="validationMessage: DivingLogDateTime "></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Name of Company:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="CompanyName" class="form-control" data-bind="options: $parent.CompanyList, optionsCaption: 'Select...', optionsText: 'RegisteredName', optionsValue: 'LicenseRequestID', value: CompanyName, enable: $parent.IsCodeEnable" />
+                                            <span id="spanCompanyName" class="validationError" data-bind="validationMessage: CompanyName "></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Location of Dive:
+                                                        <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <div class="form-control">
+                                                <select id="BerthCode" class="form-control" data-bind="options: $root.divingReferenceData().Berths, optionsCaption: 'Select...', optionsText: 'BerthName', optionsValue: 'BerthKey', value: BerthKey, enable: $parent.IsCodeEnable" />
+                                                <span id="spanBerthCode" class="validationError" data-bind="validationMessage: BerthKey "></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Name of Vessel:                                                    	
+                                        </label>
+                                        <div class="col-md-6">
+                                            <select id="VesselID" class="form-control" onfocus="return GetVesselList();" data-bind="options: $parent.VesselList, optionsCaption: 'Select...', optionsText: 'VesselName', optionsValue: 'VesselID', value: VesselID, enable: $parent.IsCodeEnable" />                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Person In-Charge:
+                                                        <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="PersonInCharge" type="text" style="text-transform: capitalize;" class="form-control" data-bind="value: PersonInCharge, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $parent.IsCodeEnable " name="PersonInCharge" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Clearance No.:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="ClearanceNo" name="ClearanceNo" type="text" class="form-control" maxlength="10" data-bind="value: ClearanceNo, event: { keypress: ValidateAlphanumeric }, enable: $parent.IsCodeEnable" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Start Time:
+                                                        <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+
+                                            <input id="StartTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: StartTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CalcStartTime, open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsCodeEnable" name="StartTime" maxlength="10" />
+                                            <span id="isStartTimeMsg" class="validationError" data-bind=" visible: $parent.isStartTimeMsg"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Stop Time:
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="StopTime" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDateTimePicker: { value: StopTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', change: CalcEndTime, open: calOpen, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $parent.IsCodeEnable" name="StopTime" maxlength="10" />
+                                            <span id="isEndTtmeMsg" class="validationError" data-bind="visible: $parent.isEndTtmeMsg"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Onsite Supervisor Contact No.:
+                                                        <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="OnsiteSupervisorContNo" name="OnsiteSupervisorContNo" type="text" class="form-control" data-bind="value: OnsiteSupervisorContNo, event: { keypress: Validatenumeric }, enable: $parent.IsCodeEnable" maxlength="17" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            Offsite Supervisor Contact No.:
+                                                    	<span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="OffsiteSupervisorContNo" name="OffsiteSupervisorContNo" type="text" class="form-control" data-bind="value: OffsiteSupervisorContNo, event: { keypress: Validatenumeric }, enable: $parent.IsCodeEnable" maxlength="17" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">
+                                            No. of Divers:
+                                                        <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input id="NoOfDrivers" name="NoOfDrivers" type="text" class="form-control" data-bind="value: NoOfDrivers, event: { keypress: Validatenumeric }, enable: $parent.IsCodeEnable" maxlength="3" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                        <label>
+                                            <input type="checkbox" id="PermissionObtained" data-bind="checked: isPermissionObtained, enable: $parent.IsCodeEnable" />Permission Obtained from SVTC</label>
+                                        <div class="col-md-6">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </fieldset>
+                    </div>
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.SaveExternalDivingRegister, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                        <button type="submit" id="Update" class="btn green" data-bind="click: $parent.ModifyExternalDivingRegister, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                        <button type="submit" id="Reset" class="btn blue" data-bind="click: $parent.ResetExternalDivingRegister, visible: $parent.IsReset ">Reset</button>
+                        <button type="submit" id="Cancel" class="btn red" data-bind="click: $parent.cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</script>
+
+<!-- Form / Details ends here -->

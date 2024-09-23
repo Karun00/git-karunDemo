@@ -1,0 +1,185 @@
+﻿
+<div>
+
+   
+<nav class="page-sidebar-wrapper">
+            <div class="page-sidebar navbar-collapse collapse" id="Menu">
+                <ul class="page-sidebar-menu">
+                    <li class="sidebar-toggler-wrapper">
+                        <div class="sidebar-toggler hidden-phone">
+                        </div>
+                    </li>
+                    <li class="start active ">
+                        <a href="javascript:;">
+                            <i class="fa fa-dashboard"></i>
+                            <span class="title">Dashboard</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                   
+             @*       <li >
+                        <a class="active" href="javascript:;">
+                            <i class="fa fa-book"></i>                          
+                            <span class="title" ></span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class=""><a href="javascript:;"><i class="fa fa-angle-right"></i>User Groups</a></li>
+                            <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Users</a></li>
+                            <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Modules</a></li>
+                            <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Users Privileges</a></li>
+                            <li><a href="javascript:;"><i class="fa fa-angle-right"></i>General Settings</a></li>
+                            <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Audit Trail</a></li>
+                        </ul>
+                    </li>*@
+                    <li data-bind ="foreach: Modules">
+                        <a class="active" href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span class="title" data-bind="text: ModuleName"></span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu" data-bind="foreach: Sub_Modules">
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i><span data-bind="text: SubModuleName"></span><span class="arrow"></span></a>
+                                <ul class="sub-menu" data-bind="foreach: Page">
+                                    <li><a data-bind="attr: { href: '/' + PageUrl }" onclick="GetPageContent(this,event)"><i class="fa fa-angle-right"></i> <span data-bind="    text: PageName"></span></a></li>
+                                    @*<li><a href="javascript:;"><i class="fa fa-angle-right"></i>Quay</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Berth</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Bollard</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Agent</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Master Documents</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Craft</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Services</a></li>*@
+                                </ul>
+                            </li>
+                           @* <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Configuration<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Master Document Configuration</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Scheduling Rules</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Vessel Traffic Services<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessel Registration</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessel Voyage Registration</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Notice Of Arrival</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Voyage Monitoring</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Change Of ETA/ETD</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Berth Status and Planning</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Service Request</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Service Details</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Resource Status and Planning</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Service Recording</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Weather Information</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Automatic Identification System</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Dredging Operations<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Dredging Plan</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Dredging Recording</a></li>
+                                </ul>
+                            </li>*@
+                        </ul>
+                    </li>
+                   @* <li>
+                        <a class="active" href="javascript:;">
+                            <i class="fa fa-asterisk"></i>
+                            <span class="title">Port Operations</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Cargo<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Cargo Manifest</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Fuel Management<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="#"><i class="fa fa-angle-right"></i>Fuel Dispensing</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Infrastructure Management<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Port Service Licences</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Terminal Licenses</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Maintenance Scheduler</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Service Request</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Maintenace Log</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Inspection / Audit</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Permit Request</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Incident Management<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Floor Shop Audits</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Incident Recording</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>SHE Requirements<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Environment Management Plan</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Environment Impact Assessment</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Air & Water Quality Monitoring</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="active" href="javascript:;">
+                            <i class="fa fa-building"></i>
+                            <span class="title">MIS</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Report Builder<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Report Builder</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Marine Operations<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Berth Occupancy & Utilisation</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Shipping Movements</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessel Planned Movements</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessel Tracking</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Expected Vessels at Berth</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessels at Berth</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessels at Anchorage</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessel Schedule</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Vessel Shipping Movements</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="fa fa-chevron-circle-right"></i>Port Operations<span class="arrow"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Cargo Manifest Information</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Commodity Report</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Fuel Comsumption Analysis Report</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Air & Quality Report</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Truck Turnaround Report</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Rail Turnaround Report</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-angle-right"></i>Audit Report</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>*@
+                </ul>
+            </div>
+       </nav>
+
+
+  <script src="~/Scripts/Application/ViewModel/ModuleViewModel.js"></script>
+
+
+</div>

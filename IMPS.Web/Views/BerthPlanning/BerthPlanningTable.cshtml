@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "Berth Planning Table View";
+    Layout = "~/Views/Shared/_IPMSBerthPlanning.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/BerthPlanningTableModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/BerthPlanningTableViewModel.js"></script>
+}
+
+<style type="text/css">
+    .legend-icon {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        border: 1px solid #666;
+    }
+
+        .legend-icon span {
+            margin-left: 15px;
+            margin-top: -4px !important;
+            display: block;
+        }
+
+    .td-width {
+        width: 100px;
+    }
+</style>
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.BerthPlanningTableViewModel;   
+ ko.applyBindingsWithValidation(viewModel, $("#BerthPlanningTable")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">Berth Planning - Table View</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div id="BerthPlanningTable">
+    <div data-bind="template: { name: 'List-template' }"></div>
+</div>
+<div class="portlet-body">
+    <script type="text/html" id="List-template">
+        <div class="portlet portlet-body form">
+            <form action="#" id="form_sample_1" class="form-horizontal">
+                <div class="form-wizard">
+                    <div class="form-body" data-bind="with: berthplanningtableModel">
+
+                        <div class="row">
+                            <div class="col-md-4" style="float: right">
+                                <fieldset>
+                                    <table border='0' width="100%" cellpadding='3' cellspacing='3'>
+                                        <tr>
+                                            @* <td class='td-width'>
+                                                <div class='legend-icon' style="background-color: #FFFFFF;"><span class='left-span'>Pending</span></div>
+                                            </td>*@
+                                            <td class='td-width'>
+                                                <div class='legend-icon' style="background-color: #FFBF00;"><span class='left-span'>Scheduled</span></div>
+                                            </td>
+                                            <td class='td-width'>
+                                                <div class='legend-icon' style="background-color: #006400;"><span class='left-span'>Confirmed</span></div>
+                                            </td>
+                                            <td class='td-width'>
+                                                <div class='legend-icon' style="background-color: #CD6090;"><span class='left-span'>Berthed</span></div>
+                                            </td>
+                                            <td class='td-width'>
+                                                <div class='legend-icon' style="background-color: #0000A0;"><span class='left-span'>Sailed</span></div>
+                                            </td>
+                                            <td class='td-width'>
+                                                <div class='legend-icon' style="background-color: #bc1503;"><span class='left-span'>Arrested</span></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="portlet box advbg">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-reorder"></i>
+                                        Advance Search
+                                    </div>
+                                    <div class="tools">
+                                        <a href="javascript:;" class="collapse"></a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+
+                                                <label class="control-label col-md-6">Quay:</label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="Quay" name="Quay" data-bind="kendoDropDownList: { data: $root.berthplanningtableReferenceData().Quays, value: $root.berthplanningtableReferenceData().QuayCode, dataTextField: 'QuayName', dataValueField: 'QuayCode', optionLabel: 'Select...', select: $root.PortSelect }, event: { change: $parent.LoadBerths }" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Vessel Status:</label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="Vessel" name="Vessel" data-bind="kendoDropDownList: { data: $root.berthplanningtableReferenceData().VesselStatuses, value: $root.berthplanningtableReferenceData().VesselStatus, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'ALL' }" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Berth:</label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control">
+                                                        <input id="Berth" name="Berth" data-bind="kendoDropDownList: { data: $parent.berthValues, value: BerthCode, dataTextField: 'BerthName', dataValueField: 'BerthCode', optionLabel: 'Select...' } " />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Berth Planning For:</label>
+                                                <div class="col-md-6">
+                                                    <div class="form-control col-md-4">
+                                                        <input type="text" class="date-picker" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: SelectedETA, format: 'yyyy-MM-dd', readonly: true }, event: { change: OnDateChange }" name="ETA" maxlength="10" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 fluid" align="center">
+                                            <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetDataClick">Get Data</button>
+                                            @Html.ActionLink("PDF", "ExportPDF", "BerthPlanning", new { @class = "btn btn-xs blue" })
+                                            @Html.ActionLink("Excel", "ExportExcel", "BerthPlanning", new { @class = "btn btn-xs blue" })
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-5"></div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-5"></div>
+                                                <div class="col-md-7 fluid">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                    <div id="grid" data-bind="kendoGrid: {
+    data: BerthPlanningTableList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' }, int: { eq: 'Is equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'VCNSort', title: 'VCN', width: '120px', filterable: false },
+              { field: 'VesselIDSort', title: 'Vessel', width: 100, filterable: false },
+              { field: 'FromBerthSort', title: 'From Berth', width: 100, filterable: false },
+              { field: 'ToBerthSort', title: 'To Berth', width: 100, filterable: false },
+              { field: 'FromBollardSort', title: 'From Bollard', width: 100, filterable: false },
+              { field: 'ToBollardSort', title: 'To Bollard', width: 100, filterable: false },
+              { field: 'MooringBowBollardSort', title: 'From Mooring Bollard', width: 150, filterable: false },
+              { field: 'MooringStemBollardSort', title: 'To Mooring Bollard', width: 150, filterable: false },
+              { field: 'ETBSort', title: 'ETB', width: 120, filterable: false },
+              { field: 'ETUBSort', title: 'ETUB', width: 120, filterable: false },
+              { field: 'ATBSort', title: 'ATB', width: 120, filterable: false },
+              { field: 'ATBSort', title: 'ATUB', width: 120, filterable: false },
+              { field: 'LOASort', title: 'LOA', width: 75, filterable: false },
+              { field: 'CargoSort', title: 'Cargo Type', width: 100, filterable: false },
+              { field: 'ReasonForVisitSort', title: 'Reason For Visit', width: 110, filterable: false }]
+}">
+                    </div>
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        @* <td data-bind="style: { color: isVesselArrested == true ? 'white' : MovementStatus == 'SCH' ? 'white' : MovementStatus == 'CONF' ? 'white' : MovementStatus == 'BERT' ? 'white' : ' ', backgroundColor: isVesselArrested == true ? 'red' : MovementStatus == 'SCH' ? '#FFBF00' : MovementStatus == 'CONF' ? '#006400' : MovementStatus == 'BERT' ? '#CD6090' : 'white' }">*@
+                        <td data-bind="style: { color: isVesselArrested == true ? 'white' : MovementStatus == 'SCH' ? 'white' : MovementStatus == 'CONF' ? 'white' : MovementStatus == 'BERT' ? 'white' : MovementStatus == 'SALD' ? 'white' : ' ', backgroundColor: VesselColor }">
+                            <span data-bind="text: VCN"></span>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Berth"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Berth"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: FromBollard"></span></div>
+                        </td>
+                        <td>
+                            <span data-bind="text: ToBollard"></span>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: MooringBowBollard"></span></div>
+                        </td>
+                        <td>
+                            <span data-bind="text: MooringStemBollard"></span>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(ETB).format('YYYY-MM-DD HH:mm')"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(ETUB).format('YYYY-MM-DD HH:mm') "></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(ATB).format('YYYY-MM-DD HH:mm') == 'Invalid date' ? ' ' : moment(ATB).format('YYYY-MM-DD HH:mm') "></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(ATUB).format('YYYY-MM-DD HH:mm') == 'Invalid date' ? ' ' : moment(ATUB).format('YYYY-MM-DD HH:mm') "></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: LengthOverallInM"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: CargoTypeName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ReasonForVisitName"></span></div>
+                        </td>
+                    </tr>
+                </script>
+            </form>
+        </div>
+    </script>
+</div>

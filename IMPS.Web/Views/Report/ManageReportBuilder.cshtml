@@ -1,0 +1,591 @@
+﻿@model IPMS.Domain.ValueObjects.ReportBuilderVO
+
+@{
+    ViewBag.Title = "ManageReportBuilder";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Lib/knockout.collapse.js"></script>
+    <script src="~/Scripts/Application/Model/ReportBuilderModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ReportBuilderViewModel.js"></script>
+
+    <style>
+        .modal-dialog {
+            margin: 15% 20%;
+            width: 50%;
+        }
+
+        .inner {
+            display: block;
+        }
+
+        .txtblue {
+            text-align: left;
+            padding-top: 1px;
+        }
+        .row-h thead tr {
+            height: 25px;
+        }
+    </style>
+}
+@section ko_apply{
+var viewModel = new IPMSROOT.ReportBuilderViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#tabs")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- Main body content starts here for developers-->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">Report Builder</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <script id="customMessageTemplate" type="text/html">
+        <span class="validationError" data-bind='validationMessage: field'></span>
+    </script>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabbable tabbable-custom" id="it1">
+                <ul class="nav nav-tabs" id="mainmenu">
+                    <li class="active" id="li_tab0">
+                        <a href="#tab_0" data-toggle="tab">Report Generator</a>
+                    </li>
+                    <li id="li_tab1">
+                        <a href="#tab_1" data-toggle="tab">Saved Reports</a>
+                    </li>
+                </ul>
+
+                <form action="#" class="tab-content form-horizontal" id="Form1" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="tab-content" id="tabs" data-bind="with: reportBuilderModel">
+
+                        <div class="tab-pane active" id="tab_0">
+
+                            <div class="form-wizard">
+                                <div class="form-body">
+                                    <div class="clearfix">
+                                        <br>
+                                    </div>
+                                    <div class="row" id="item1">
+                                        <div class="col-md-12">
+                                            <div class="portlet box advbg">
+                                                <div class="portlet-title">
+                                                    <div class="caption">Report Generator</div>
+                                                    <div class="tools">
+                                                        <a id="anchor1" href="javascript:;" class="collapse"></a>
+                                                    </div>
+                                                </div>
+                                                <div class="portlet-body" id="id1">
+                                                    <div class="form-body">
+                                                        <div class="form-group">
+                                                            <fieldset>
+                                                                <legend>Query</legend>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <div class="row">                                                                               
+                                                                            <label class="control-label">Select Category: <span class="required">*</span></label>
+                                                                        </div>
+                                                                        <div class="row col-md-10">
+                                                                            <div class="form-control">
+                                                                                <select id="ReportCategory" name="ReportCategoryname" data-bind="kendoDropDownList: { index: 0, data: $root.reportCategoryList, value: ReportbuilderId, dataTextField: 'ReportCategory', dataValueField: 'ReportbuilderId', optionLabel: 'Select...' }, event: { change: $root.LoadColumns }"></select>
+                                                                                <span id="spid" class="validationError" data-bind="validationMessage: ReportbuilderId"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="row">                                                                           
+                                                                            <label class="control-label">Select Field: <span class="required">*</span></label>
+                                                                        </div>
+                                                                        <div class="row col-md-10">
+                                                                            <div class="form-control">
+                                                                                <select id="Column" name="Columnname" data-bind="kendoDropDownList: { autoBind: false, index: 0, data: $root.reportCategorycolumntypeList, value: SelectedddlColumn, dataTextField: 'COLUMN_NAME', dataValueField: 'COLUMN_NAME', optionLabel: 'Select...'}, event: { change: $parent.ReportQueryOperator }"></select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <div class="form-group">
+                                                                            <div class="row">                                                                         
+                                                                                <label class="control-label">Select Condition: <span class="required">*</span></label>
+                                                                            </div>
+                                                                            <div class="row col-md-8">
+                                                                                <div class="form-control">
+                                                                                    <select id="Operator" name="Operatorname" data-bind="kendoDropDownList: { index: 0, data: $parent.reportBuilderReferenceData, value: OPERATOR_VALUE1, dataTextField: 'OperatorName', dataValueField: 'OperatorValue', optionLabel: 'Select...'}, event: { change: $parent.datatypeFor }"></select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3" data-bind="visible: $parent.dttype2">
+                                                                        <div class="row">
+                                                                            <div class="form-group">
+                                                                                <div class="row">
+                                                                                    <label class="control-label">Date: <span class="required">*</span></label>
+                                                                                </div>
+                                                                                <div class="row col-md-8">
+                                                                                    <input id="datepicker11" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: DateValue, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: $parent.eventForSelectValue }" name="DateValue" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3" data-bind="visible: $parent.dttype3">
+                                                                        <div class="row">
+                                                                            <div class="form-group">
+                                                                                <div class="row">
+                                                                                    <label class="control-label">Value: <span class="required">*</span></label>
+                                                                                </div>
+                                                                                <div class="row form-group col-md-6">
+                                                                                    <input id="txtid" name="VCN" data-bind="kendoAutoComplete: {
+    dataTextField: 'Text', minLength: 1, pageSize: 1,
+    dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: '/api/ReportBuilder/GetLookUpData/', data: { columnName: SelectedddlColumn } }
+        },
+        schema: {
+            data: function (data) {
+                return data;
+            }, total: function (data) {
+                return data.length;
+            },
+        }
+    },
+    value: Text, enable: $parent.editableView
+},
+    event: { change: $parent.eventForSelectValue, keypress: $parent.validationHelper.ValidateAlphaNumericWithStarChracter }" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3" data-bind="visible: $parent.dttype4">
+                                                                        <div class="row">
+                                                                            <div class="form-group">
+                                                                                <div class="row">
+                                                                                    <label class="control-label">Value: <span class="required">*</span></label>
+                                                                                </div>
+                                                                                <div class="row col-md-8">
+                                                                                    <input type="text"  class="form-control" data-bind="value: ValueNumber, event: { change: $parent.eventForSelectValue, keypress: $parent.validationHelper.ValidateNumeric }">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3" data-bind="visible: $parent.dttype1">
+                                                                        <div class="row">
+                                                                            <div class="form-group col-md-6">
+                                                                                <div class="row">
+                                                                                    <label class="control-label">From Date: <span class="required">*</span></label>
+                                                                                </div>
+                                                                                <div class="row col-md-9">
+                                                                                    <input id="datepicker1" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: FromDate, format: 'yyyy-MM-dd', readonly: true }, event: { change: $parent.eventForSelectValue }" name="FromDate" />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <div class="row">
+                                                                                    <label class="control-label">To Date: <span class="required">*</span></label>
+                                                                                </div>
+                                                                                <div class="row col-md-9">
+                                                                                    <input id="datepicker2" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: ToDate, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: $parent.eventForSelectValue }" name="ToDate" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                        <div class="row">
+                                                                        </div>
+                                                                    </div>
+
+                                                                   @* <div class="col-md-1">
+                                                                        <div class="form-group">
+                                                                            <div class="row">&nbsp;</div>
+                                                                            <div class="row">
+                                                                                <div class="nowrap schedule-btns">
+                                                                                    &nbsp;&nbsp; <a href="#" class="btn btn-xs green" title="Add Condition" data-bind="click: $root.GetQuery"><i class="fa fa-plus"></i></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>*@
+
+                                                                </div>
+                                                               <div class="col-md-12">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-md-9">
+                                                                            <div class="row">                                                                                       
+                                                                               <button type="submit" class="btn btn-xs green" data-bind="click: $root.GetQuery">Add Condition </button>                                                                              
+                                                                              @* &nbsp; <button type="submit" class="btn btn-xs green" data-bind="click: $root.RemoveQuery">Remove Condition </button> *@
+                                                                              </div>
+                                                                        </div>
+                                                                        <div>
+                                                                            <br />
+                                                                        </div>
+                                                                        &nbsp;
+                                                                               
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div class="col-md-12">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-md-9">
+                                                                            <div class="row">                                                                                       
+                                                                                <label class="control-label">Selected Conditions:</label>
+                                                                            
+                                                                                <select multiple="multiple" style="width: 100%; height: 50px;" id="listbox" data-bind="options: allItems, selectedOptions: selectedItems"></select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div>
+                                                                            <br />
+                                                                        </div>
+                                                                        &nbsp;
+
+      <div class="col-md-12">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-md-9">
+                                                                            <div class="row">                                                                                       
+                                                                               @*<button type="submit" class="btn btn-xs green" data-bind="click: $root.GetQuery">Add Condition </button> *@                                                                             
+                                                                               &nbsp; <button type="submit" class="btn btn-xs green" data-bind="click: $root.RemoveQuery">Remove Condition </button> 
+                                                                              </div>
+                                                                        </div>
+                                                                        <div>
+                                                                            <br />
+                                                                        </div>
+                                                                        &nbsp;
+                                                                               
+                                                                    </div>
+                                                                </div>
+                                                                                @*<div class="form-group col-md-2">
+                                                                                    <div class="row">
+                                                                                        &nbsp;&nbsp;
+                                                                                         <a href="#" class="btn btn-xs green" title="Delete Condition" data-bind="click: $root.RemoveQuery"><i class="fa fa-minus"></i></a>
+                                                                                    </div>
+                                                                                </div>*@
+                                                                    </div>
+                                                                </div>
+
+                                                            </fieldset>
+  @* <fieldset class="h">
+                                                                            <legend>Sort</legend>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <div class="col-md-2">
+                                                                                        <label class="control-label">Sort By:</label>
+                                                                                    </div>
+                                                                                    <div class="col-md-7">
+                                                                                        <div class="form-control">
+                                                                                            <select id="ReportCategory12" name="ReportCategoryname" data-bind="kendoDropDownList: { index: 0, data: Selectedmultilistcolumn, value: OrderBy, dataValueField: 'COLUMN_NAME', optionLabel: 'Select...' }"></select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <div class="col-md-2">
+                                                                                        <label class="control-label">Sort In:</label>
+                                                                                    </div>
+                                                                                    <div class="col-md-7">
+                                                                                        <div class="form-control">
+                                                                                            <select id="Operator2" name="Operatorvalue" data-bind="kendoDropDownList: { data: [{ name: 'Ascending', val: 'asc' }, { name: 'Descending', val: 'desc' }], value: OrderByAD, dataTextField: 'name', dataValueField: 'val', optionLabel: 'Select...' }"></select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </fieldset>*@
+
+                                                            <div class="row">
+                                                                <div id="idColumns" class="col-md-12">
+                                                                    <fieldset>
+                                                                        <legend>Report Columns</legend>
+                                                                        <div class="form-group">
+                                                                           @* <div class="col-md-2">
+                                                                                <label class="control-label">Columns:</label>
+                                                                            </div>*@
+                                                                            <div class="col-md-11">
+
+                                 <div class="row">                                   
+                                   @*<input type="checkbox" id="chkAllColumns" name="AllColumns" onclick="toggle(this)" />
+                                    <label>Select all columns</label>*@
+                                    <div class="clearfix">
+                                        <br>
+                                    </div>
+                                     <div class="checkbox-list" id="divColumnList" data-bind="foreach: $root.reportCategorycolumntypeList">
+                                        <div class="col-md-3">
+                                          @*<input class=".MycheckboxCls" type="checkbox" name="column" onclick="ReportColumnClick(this);" data-bind="    value: COLUMN_NAME, attr: { id: 'chkPort_' + COLUMN_NAME() }">*@
+                                          <label data-bind="    text: COLUMN_NAME"></label>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <br>
+                                    </div>
+
+                               
+<div>
+                         <label class="control-label">Select Columns: <span class="required">*</span></label>
+                          <select id="required" name="Columnname" data-bind="kendoMultiSelect: { data: $root.reportCategorycolumntypeList, value: Selectedmultilistcolumn, dataTextField: 'COLUMN_NAME', dataValueField: 'COLUMN_NAME', optionLabel: 'Select...' }"></select>
+</div>
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </div>
+                                                            </div>
+   <fieldset class="h">
+                                                                            <legend>Sort</legend>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <div class="col-md-2">
+                                                                                        <label class="control-label">Sort By:</label>
+                                                                                    </div>
+                                                                                    <div class="col-md-7">
+                                                                                        <div class="form-control">
+                                                                                            <select id="ReportCategory12" name="ReportCategoryname" data-bind="kendoDropDownList: { index: 0, data: Selectedmultilistcolumn, value: OrderBy, dataValueField: 'COLUMN_NAME', optionLabel: 'Select...' }"></select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <div class="col-md-2">
+                                                                                        <label class="control-label">Sort In:</label>
+                                                                                    </div>
+                                                                                    <div class="col-md-7">
+                                                                                        <div class="form-control">
+                                                                                            <select id="Operator2" name="Operatorvalue" data-bind="kendoDropDownList: { data: [{ name: 'Ascending', val: 'asc' }, { name: 'Descending', val: 'desc' }], value: OrderByAD, dataTextField: 'name', dataValueField: 'val', optionLabel: 'Select...' }"></select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </fieldset>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div style="margin-left: 1px;">
+                                                                     
+                                                                        <div class="row">
+                                                                            <div class="col-md-8"></div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="form-group">
+                                                                                    <div class="nowrap schedule-btns">
+                                                                                        <button type="submit" class="btn btn-xs green" data-target="#stackResult" data-toggle="modal" data-bind="click: $root.Submit">Submit</button>
+                                                                                        <button type="submit" class="btn btn-xs blue" data-bind="click: $root.ResetReport">Reset</button>
+                                                                                        <a class="btn btn-xs green" href="#" data-target="#stack2" data-toggle="modal">Save Criteria</a>
+                                                                                        <div class="portlet-body" id="popup1">
+                                                                                            <div class="table-toolbar">
+                                                                                                <div id="stack2" class="modal fade" tabindex="-1" data-width="400">
+                                                                                                    <a href="#tab_0" data-toggle="tab">Filters</a>
+                                                                                                    <div class="modal-dialog" id="stk">
+                                                                                                        <div class="modal-content" style="width: 60%">
+                                                                                                            <div class="modal-body">
+                                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                                                                                <div class="scroller" style="height: 130px" data-always-visible="1" data-rail-visible1="1">
+                                                                                                                    <fieldset>
+                                                                                                                        <legend>Save Criteria</legend>
+                                                                                                                        <form action="#" id="form_sample_1" class="form-horizontal">
+                                                                                                                            <div class="form-group row">
+                                                                                                                                <label class="control-label col-md-6">Report Header: <span class="required">*</span></label>
+                                                                                                                                <div class="col-md-5">
+                                                                                                                                    <input type="text" name="name" class="form-control" data-bind="value: ReportHeader">
+                                                                                                                                    <span id="spanvc12" class="validationError" data-bind="validationMessage: ReportHeader"></span>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="form-group row">
+                                                                                                                                <label class="control-label col-md-6">Query Template Name: <span class="required">*</span></label>
+                                                                                                                                <div class="col-md-5">
+                                                                                                                                    <input type="text" name="name" class="form-control" data-bind="value: QueryTemplateName">
+                                                                                                                                    <span id="spanvc17" class="validationError" data-bind="validationMessage: QueryTemplateName"></span>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </form>
+                                                                                                                    </fieldset>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="btns-group ">
+                                                                                                                <button type="submit" class="btn green" data-bind="click: $root.SaveCriteria">Save</button>
+                                                                                                                <button type="button" data-dismiss="modal" class="btn red">Cancel</button>
+                                                                                                            </div>
+                                                                                                            <br>
+                                                                                                            &nbsp;
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--fields ends from here-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix">
+                                <br>
+                            </div>
+                      
+
+                           
+                                                                                        </div>
+
+                                                                                            <div class="portlet-body" id="PopupResult">
+                                                                                            <div class="table-toolbar">
+                                                                                                <div id="stackResult" class="modal fade" tabindex="-1" data-width="400">
+                                                                                                    <a href="#tab_0" data-toggle="tab">Filters</a>
+                                                                                                    <div class="modal-dialog" id="stkResult">
+                                                                                                        <div class="modal-content" style="width: 120%">
+                                                                                                            <div class="modal-body">
+                                                                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                                                                                <div class="scroller" style="height: 350px" data-always-visible="1" data-rail-visible1="1">
+                                                                                                                    <div class="row" id="btnsId">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="nowrap schedule-btns" style="text-align: right">
+                                            <a href='@Url.Action("ExportPDF", "Report")'>
+                                                <img src="../../Content/Images/ico_pdf.gif" title="ExportPDF" /></a>
+                                            <a href='@Url.Action("ExportExcel", "Report")'>
+                                                <img src="../../Content/Images/ico_excel.png" title="ExportExcel"/></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                                                                                    <fieldset>
+                                                                                                                        <legend>Report Data</legend>
+                                                                                                                       <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                                <div class="table-scrollable" id="example" class="k-content">                                   
+                                        <div >
+                                            <table id="tblReportGrid" cellpadding="0" cellspacing="0" border="0" id="table" class="tinytable" data-bind="if: columnNames().length > 0">
+                                                <thead>
+                                                    <tr data-bind="foreach: columnNames">
+                                                        <th>
+                                                            <h5><span data-bind="text: name"></span></h5>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody data-bind="foreach: currentPage">
+                                                    <tr data-bind="foreach: $parent.columnNames">
+                                                        <td data-bind="text: $parent[$data.name]"></td>
+
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td data-bind="attr: { colspan: columnNames().length } ">
+
+                                                            <div class="k-pager-wrap k-grid-pager k-widget" data-role="pager">
+                                                                <a href="#" title="Go to the first page" class="k-link k-pager-nav k-pager-first" data-page="1" tabindex="-1" data-bind="click: LastpreviousPage">
+                                                                    <span class="k-icon k-i-seek-w">Go to the first page</span>
+                                                                </a>
+
+                                                                <a href="#" title="Go to the previous page" class="k-link k-pager-nav" data-page="1" tabindex="-1" data-bind="click: previousPage">
+                                                                    <span class="k-icon k-i-arrow-w">Go to the previous page</span>
+                                                                </a>
+
+                                                                <ul class="k-pager-numbers k-reset">
+                                                                    <li>
+                                                                        <!-- ko foreach: ko.utils.range(0, maxPageIndex) -->
+                                                                        <a href="#" class="k-link" data-bind="text: $data + 1, click: function () { $parent.currentPageIndex($data) }, css: { selected: $data == $parent.currentPageIndex() }"></a>
+                                                                        <!-- /ko -->
+                                                                    </li>
+                                                                </ul>
+
+                                                                <a href="#" title="Go to the next page" class="k-link k-pager-nav" data-page="2" tabindex="-1" data-bind="click: nextPage">
+                                                                    <span class="k-icon k-i-arrow-e">Go to the next page</span>
+                                                                </a>
+
+                                                                <a href="#" title="Go to the last page" class="k-link k-pager-nav k-pager-last" data-page="2" tabindex="-1" data-bind="    click: LastnextPage">
+                                                                    <span class="k-icon k-i-seek-e">Go to the last page</span>
+                                                                </a>
+
+                                                                <span class="k-pager-sizes k-label">
+                                                                    <span style="" class="k-widget k-dropdown k-header" unselectable="on" role="listbox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-owns="" aria-disabled="false" aria-readonly="false" aria-busy="false">
+                                                                        <span unselectable="on" class="k-dropdown-wrap k-state-default"></span>
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                                                                                                                          
+                                                                                                                        
+                                                                                                                    </fieldset>
+                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                          
+                                                                                                            <br>
+                                                                                                            &nbsp;
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                            </div>
+
+
+
+
+                       
+
+                        <div class="tab-pane" id="tab_1" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                            <div class="form-body row-h">
+                                <div data-bind="kendoGrid: {
+    data: $root.reportFilterList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: false,
+    rowTemplate: 'rowTmp',
+    useKOTemplates: true, columns: [
+                        { filed: 'ReportHeader', title: 'Report Header', width: 150 },
+                        { filed: 'QueryTemplateName', title: 'Query Template Name', width: 150 },
+                        { title: 'Actions' }]
+}">
+                                </div>
+                                <script id="rowTmp" type="text/html">
+                                    <tr style="height:25px;">
+                                        <td>
+                                            <div class="nowrap"><span data-bind="text: ReportHeader"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="nowrap"><span data-bind="text: QueryTemplateName"></span></div>
+                                        </td>
+                                        <td>
+                                            <div class="nowrap">
+                                                &nbsp;<a href="#" data-bind="click: $root.viewFilter" title="View" id="viewid"><i class="fa fa-eye"></i></a>&nbsp;    
+                                                &nbsp;<a href="#" data-bind="click: $root.DeleteFilter" title="Delete" id="deleteid"><i class="fa fa-ban"></i></a>&nbsp;                         
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </script>
+                            </div>
+                        </div>
+ </div>
+                    
+                </form>
+                <div class="clearfix"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Main body content ends here for developers-->
+

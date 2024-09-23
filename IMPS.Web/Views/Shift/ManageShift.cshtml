@@ -1,0 +1,207 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "Shift";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ShiftModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ShiftViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ShiftViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#ManageShift")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div id="ManageShift">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+
+</div>
+<script type="text/html" id="List-template">
+    <div class="portlet-body" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="table-toolbar">
+            <div id="tablewrapper15">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addShift">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: Shiftlist,
+    groupable: false,
+    sortable: true,
+    scrollable: false,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'ShiftNameSort', title: 'Shift Name', filterable: true, width: 20 },
+                                    { field: 'StartTimeSort', title: 'Start Time', width: 20, filterable: true },
+                                    { field: 'EndTimeSort', title: 'End Time', width: 20, filterable: true },
+                                    { field: 'IsShiftOffSort', title: 'Is Shift Off?', width: 20, filterable: true },
+                                    { title: 'Status', filterable: false, width: 60 },
+                                    { title: 'Actions', filterable: false, width: 80 }]
+
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap" data-bind="text: ShiftName"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: StartTime "></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: EndTime "></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: ShiftOff"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap" data-bind="text: Statust"></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="javascript:;" title="View" data-bind="click: $root.viewShift"><i class="fa fa-eye"></i></a>}&nbsp; &nbsp;
+                                 @if (Model.HasEditPrivilege)
+                                 {
+                                     <a href="javascript:;" title="Edit" data-bind="click: $root.editShift"><i class="fa fa-edit"></i></a>}&nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+
+
+</script>
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+
+<script type="text/html" id="Form-template">
+
+    <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <form action="#" class="form-horizontal" id="submit_form">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: ShiftModel">
+                    <div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="form-group">
+                        <fieldset>
+                            <legend>Shift Details</legend>
+
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Shift Name:<span class="required">*</span></label>
+                                        <div class="col-md-4">
+                                            <input type="text" id="ShiftName" class="form-control" data-bind="value: ShiftName, enable: $parent.IsCodeEnable, event: { change: ValidEvent, keyup: HandleKeyUp, keypress: ValidateAlphaNumericWithSpaces } " maxlength="100">
+                                            <span id="spanShiftName" class="validationError" data-bind="validationMessage: ShiftName"></span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Start Time:<span class="required">*</span></label>
+                                <div class="col-md-4">
+                                    <input id="startTimepicker" type="text" title="starttime" class="form-control time-picker" data-bind="kendoTimePicker: { value: StartTime, format: 'HH:mm', min: '00:00', max: '23:59', change: ValidStartTime }, enable: $parent.isShiftOff, event: { keypress: ValidateTime }" name="startTimepicker" maxlength="10" />
+                                   @* <span id="valstartTimepicker" class="validationError" data-bind="validationMessage: StartTime"></span>*@
+                                     <span id="valstartTimepicker" class="validationError"></span>
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">End Time:<span class="required">*</span></label>
+                                <div class="col-md-4">
+                                    <input id="endTimepicker" type="text" title="endtime" class="form-control time-picker" data-bind="kendoTimePicker: { value: EndTime, format: 'HH:mm', min: '00:00', max: '23:59', change: ValidEndTime }, enable: $parent.isShiftOff, event: { keypress: ValidateTime }" name="endTimepicker" maxlength="10" />
+                                    <span id="endTime" class="validationError"></span>
+                                    <span id="valendTimepicker" class="validationError"></span>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Is Shift Off?:</label>
+                                <div class="col-md-4">
+                                    <input type="Checkbox" id="IsShiftOffid" name="IsShiftOff" data-bind="checked: IsShiftOff, enable: $parent.IsCodeEnable, event: { change: ChangeIsShiftOffid }">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Is Continuous Shift?:</label>
+                                <div class="col-md-4">
+                                    <input type="Checkbox" id="IsContinuousShift" name="IsContinuousShift" data-bind="checked: IsContinuousShift, enable: $parent.isContinuousShiftEnabled, event: { change: ChangeIsContinuousShift }">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">First Shift:<span class="required">*</span></label>
+                                <div class="col-md-4">
+                                    <select id="FirstShiftID" name="FirstShiftID" title="First Shift" class="form-control" data-bind="enable: $parent.isContinuousShift, options: $parent.getActiveShiftlist, optionsText: 'ShiftName', optionsCaption: 'Select...', optionsValue: 'ShiftID', value: FirstShiftID, event: { change: ChangeFirstShift }"></select>
+                                     <span id="spanFirstShiftID" class="validationError"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Second Shift:<span class="required">*</span></label>
+                                <div class="col-md-4">
+                                    <select id="SecondShiftID" name="SecondShiftID" title="Second Shift" class="form-control" data-bind="enable: $parent.isContinuousShift, options: $parent.getActiveShiftlist, optionsText: 'ShiftName', optionsCaption: 'Select...', optionsValue: 'ShiftID', value: SecondShiftID, event: { change: ChangeSecondShift }"></select>
+                                    <span id="spanSecondShiftID" class="validationError"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Roll Over Attendance:</label>
+                                <div class="col-md-4">
+  <select id="RollOverOn" name="RollOverOn" title="Second Shift" class="form-control" data-bind="enable: $parent.isContinuousShift, options: $parent.getRollOverList, optionsText: 'name', optionsCaption: 'Select...', optionsValue: 'val', value: RollOverOn"></select> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Status</label>
+                                <div class="col-md-4">
+                                    <select id="status" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], enable: $parent.IsCodeEnable, optionsText: 'name', optionsValue: 'val', value: RecordStatus "></select>
+
+                                </div>
+                            </div>
+
+                            <br>
+                        </fieldset>
+                    </div>
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" class="btn green" data-bind=" click: $parent.SaveShift, visible: $parent.IsSave ">Save</button>
+                        <button type="submit" class="btn green" data-bind=" click: $parent.UpdateShift, visible: $parent.IsUpdate ">Update</button>
+                        <button type="submit" class="btn blue" data-bind=" click: $parent.ResetShift, visible: $parent.IsReset ">Reset</button>
+                        <button type="button" class="btn red" data-bind=" click: $parent.CancelShift ">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</script>
+
+
+

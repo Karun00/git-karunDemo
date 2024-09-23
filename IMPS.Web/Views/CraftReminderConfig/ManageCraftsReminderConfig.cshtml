@@ -1,0 +1,579 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "ManageCraftsReminderConfig";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var craftreminderconfigID = 0;
+    var showViewOnLoad = false;
+    if (ViewBag.craftreminderconfigID > 0)
+    {
+        craftreminderconfigID = ViewBag.craftreminderconfigID;
+        showViewOnLoad = true;
+    }
+
+}
+
+@section scripts
+{
+   <script src="~/Scripts/Application/ViewModel/WorkflowTaskExecution.js"></script>
+    <script src="~/Scripts/Application/Model/CraftReminderConfigModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/CraftReminderConfigViewModel.js"></script>
+}
+@section ko_apply
+{
+ var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+
+var viewModel = new IPMSROOT.CraftReminderConfigViewModel("@craftreminderconfigID", showOnLoad);
+ko.applyBindingsWithValidation(viewModel, $("#CraftsReminderConfig")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="CraftsReminderConfig">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Pop', template: { name: 'Pop-template' }"></div>
+
+</div>
+
+<!-- Main body content starts here for developers-->
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div data-bind="kendoGrid: {
+    data: craftmasterList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'CraftCodeSort', title: 'CraftCode', width: 100, filterable: true }
+                       , { field: 'CraftNameSort', title: 'CraftName', width: 100, filterable: true },
+                       { field: 'IMONoSort', title: 'IMONo', width: 100, filterable: true },
+                       { field: 'CallSignSort', title: 'CallSign', filterable: true, width: 100 },
+                        { title: 'Actions', filterable: false, width: 80 }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: CraftCode"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: CraftName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: IMONo"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: CallSign"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                &nbsp;                            
+                            <a href="#" title="Add" data-bind="click: $root.AddConfig"><i class="fa fa-plus"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: craftModel">
+                            @*<div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>*@
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Configuration of Reminder Notifications</legend>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft name:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CraftName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Code:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CraftCode"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Craft Type:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CraftTypeName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">IMO Number:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Fuel Type:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: FuelTypeName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Build Date:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: BuildDate, format: 'yyyy-MM-dd'"></label>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Call Sign:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CallSign"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Status:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CommissionStatus"></label>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix">
+                                        <br>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="table-toolbar">
+
+                                            <div id="stack1" class="modal fade" tabindex="-1" data-width="400">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content" style="width: 600px; align-content: center">
+                                                        <div class="modal-body">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                            <div class="scroller" style="height: 300px" data-always-visible="1" data-rail-visible1="1">
+
+                                                                <fieldset data-bind="with: $root.craftReminderConfigModel1">
+                                                                    <legend>Reminder Configuration Details</legend>
+                                                                    <div class="form-group row">
+                                                                        <div class="col-md-12">
+                                                                            <div class="form-group">
+                                                                                <label class="control-label col-md-5">Particular's Name:<span class="required">*</span></label>
+                                                                                <div class="col-md-5">
+                                                                                    <div class="form-control">
+                                                                                        <select id="particularsname" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().particularTypesData, value: ReminderName, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select' }, enable: $root.IsCodeEnable"></select>
+                                                                                        <span id="spadire" class="validationError" data-bind="validationMessage: ReminderName"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Particular's No.:<span class="required">*</span></label>
+                                                                        <div class="col-md-5">
+                                                                            <input type="text" name="name" class="form-control" data-bind="value: ParticularsNo, enable: $root.IsCodeEnable">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Issuing Authority:<span class="required">*</span></label>
+                                                                        <div class="col-md-5">
+                                                                            <input type="text" name="name" class="form-control" data-bind="value: IssuingAuthority, enable: $root.IsCodeEnable">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Date of Issue:<span class="required">*</span></label>
+                                                                        <div class="col-md-5">
+                                                                            <div class="form-control">
+                                                                                <input id="dateofissue" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: DateOfIssue, format: 'yyyy-MM-dd', max: new Date(), month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $root.IsCodeEnable" name="DateOfIssue" maxlength="10" />
+                                                                                <span id="spadi" class="validationError" data-bind="validationMessage: DateOfIssue"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Date of Validity:<span class="required">*</span></label>
+                                                                        <div class="col-md-5">
+                                                                            <div class="form-control">
+                                                                                <input id="dateofvalidity" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: DateOfValidity, min: DateOfIssue, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, enable: $root.IsCodeEnable" name="DateOfValidity" maxlength="10" />
+                                                                                <span id="spaddv" class="validationError" data-bind="validationMessage: DateOfValidity"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Alert Occurance-1:</label>
+                                                                        <div class="col-md-2">
+                                                                            <input type="text" name="name" class="form-control" data-bind="value: AlertOccurance1, enable: $root.IsCodeEnable, event: { keypress: Validatenumeric }" maxlength="3">
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-control">
+                                                                                <select id="particularsname1" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().calenderTypesData, value: AlertPeriod1, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select', enable: $root.IsCodeEnable }"></select>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Alert Occurance-2:</label>
+                                                                        <div class="col-md-2">
+                                                                            <input type="text" name="name" class="form-control" data-bind="value: AlertOccurance2, enable: $root.IsCodeEnable, event: { keypress: Validatenumeric }" maxlength="3">
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-control">
+                                                                                <select id="particularsname2" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().calenderTypesData, value: AlertPeriod2, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select', enable: $root.IsCodeEnable }"></select>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Alert Occurance-3:</label>
+                                                                        <div class="col-md-2">
+                                                                            <input type="text" name="name" class="form-control" data-bind="value: AlertOccurance3, enable: $root.IsCodeEnable, event: { keypress: Validatenumeric }" maxlength="3">
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-control">
+                                                                                <select id="particularsname3" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().calenderTypesData, value: AlertPeriod3, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...' }, enable: $root.IsCodeEnable"></select>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label class="control-label col-md-5">Reminder Status:</label>
+                                                                        <div class="col-md-5">
+                                                                            <div class="form-control">
+                                                                                <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val' }, enable: $root.IsCodeEnable" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </fieldset>
+                                                            </div>
+                                                            <div class="btns-group ">
+                                                                <button type="submit" class="btn green" data-bind="click: $root.Save, visible: $parent.IsSave">Save</button>
+                                                                <button type="submit" class="btn green" data-bind="click: $root.Update, visible: $parent.IsUpdate">Update</button>
+                                                                <button type="submit" class="btn blue" data-bind="click: $root.Reset, visible: $parent.IsReset">Reset</button>
+                                                                <button type="button" data-dismiss="modal" class="btn red" data-bind="click: $root.Cancel">Cancel</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @* @if (Model.HasAddPrivilege)
+                                             { *@
+                                            <a class="button gbtngreen" href="#" data-target="#stack1" data-toggle="modal" data-bind="event: { click: $root.AddNew }">Add New <i class="fa fa-plus"></i></a>
+                                            @* }*@
+                                            <div id="example" class="k-content">
+
+                                                <div data-bind="kendoGrid: {
+    data: CraftReminderConfig,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: false,
+    rowTemplate: 'rowTmpl1',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'ParticularsNameSort', title: 'Particulars Name', width: 110, filterable: false },
+                       { field: 'ParticularsNoSort', title: 'Particulars No.', width: 100, filterable: false },
+                       { field: 'IssuingAuthoritySort', title: 'Issuing Authority', width: 100, filterable: false },
+                       { field: 'DateOfIssueSort', title: 'Date Of Issue', width: 90, filterable: false },
+                       { field: 'DateOfValiditySort', title: 'Date Of Validity', filterable: false, width: 90 },
+                       { field: 'AlertOccurance1Sort', title: 'Alert Occurance-1', filterable: false, width: 100 },
+                       { field: 'AlertOccurance2Sort', title: 'Alert Occurance-2', filterable: false, width: 100 },
+                       { field: 'AlertOccurance3Sort', title: 'Alert Occurance-3', filterable: false, width: 100 },
+                       { title: 'Reminder Status', filterable: false, width: 100 },
+                        { title: 'Actions', filterable: false, width: 60 }]
+}">
+                                                </div>
+                                                <div style="text-align: center">
+                                                    <button type="button" class="btn red" data-bind="click: $root.Back ">Cancel </button>
+                                                </div>
+                                            </div>
+
+                                            <script id="rowTmpl1" type="text/html">
+                                                <tr>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: ParticularsName"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: ParticularsNo"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: IssuingAuthority"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: moment(DateOfIssue()).format('YYYY-MM-DD')"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: moment(DateOfValidity()).format('YYYY-MM-DD')"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: AlertOccurance1"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: AlertOccurance2"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: AlertOccurance3"></span></div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="nowrap"><span data-bind="text: RecordStatust"></span></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="nowrap">
+                                                            &nbsp; 
+                                                            @*  @if (Model.HasViewPrivilege)
+                                                              {                           
+                                                            <a href="#" title="View" data-target="#stack1" data-toggle="modal" data-bind="event: { click: $root.View }"><i class="fa fa-eye"></i></a> 
+                                                              }*@
+                                                            <a href="#" title="View" data-target="#stack1" data-toggle="modal" data-bind="event: { click: $root.View }"><i class="fa fa-eye"></i></a>&nbsp; &nbsp; &nbsp; 
+                                                             @*@if (Model.HasEditPrivilege)
+                                                             {
+                                                                      <a href="#" title="Edit" data-target="#stack1" data-toggle="modal" data-bind="event: { click: $root.Edit }"><i class="fa fa-edit"></i></a>
+                                                             }*@
+                                                            <a href="#" title="Edit" data-target="#stack1" data-toggle="modal" data-bind="event: { click: $root.Edit }"><i class="fa fa-edit"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </script>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+
+        <script type="text/html" id="Pop-template" >
+           <div class="form-horizontal"  data-always-visible="1" data-rail-visible1="1">
+                  
+                   <fieldset data-bind="with: $root.craftModel">
+                <legend>Craft Details</legend>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Craft name:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CraftName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Craft Code:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CraftCode"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Craft Type:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CraftTypeName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">IMO Number:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: IMONo"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Fuel Type:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: FuelTypeName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Build Date:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: BuildDate, format: 'yyyy-MM-dd'"></label>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Call Sign:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CallSign"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">Status:</label>
+                                                <div class="col-md-6 control-label">
+                                                    <label class="col-md-12 displaytxt" data-bind="text: CommissionStatus"></label>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                   </fieldset>
+                   <fieldset data-bind="with: $root.craftReminderConfigModel1">
+                                                                       <legend>Reminder Configuration Details</legend>
+                                                       <div style= "align-content: center">
+                                                                       <div class="form-group row">
+                                                                           <div class="col-md-12">
+                                                                               <div class="form-group">
+
+                                                                                   <label class="control-label col-md-5">Particular's Name:<span class="required">*</span></label>
+                                                                              
+                                                                                      <div class="col-md-2">
+                                                                                       <div class="form-control">
+                                                                                           <select id="particularsname" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().particularTypesData, value: ReminderName, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select' }" disabled></select>
+                                                                                       
+                                                                                       </div>
+                                                                                   </div>
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Particular's No.:<span class="required">*</span></label>
+                                                                           <div class="col-md-2">
+                                                                               <input type="text" name="name" class="form-control" data-bind="value: ParticularsNo" disabled>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Issuing Authority:<span class="required">*</span></label>
+                                                                           <div class="col-md-2">
+                                                                               <input type="text" name="name" class="form-control" data-bind="value: IssuingAuthority" disabled>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Date of Issue:<span class="required">*</span></label>
+                                                                           <div class="col-md-2">
+                                                                               <div class="form-control">
+                                                                                   <input id="dateofissue" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: DateOfIssue, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="DateOfIssue" maxlength="10" disabled/>
+                                                                                  
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Date of Validity:<span class="required">*</span></label>
+                                                                           <div class="col-md-2">
+                                                                               <div class="form-control">
+                                                                                   <input id="dateofvalidity" type="text" class="form-control datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: DateOfValidity, min: DateOfIssue, format: 'yyyy-MM-dd', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="DateOfValidity" maxlength="10" disabled/>
+                                                                                  
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Alert Occurance-1:</label>
+                                                                           <div class="col-md-1">
+                                                                               <input type="text" name="name" class="form-control" data-bind="value: AlertOccurance1, event: { keypress: Validatenumeric }" maxlength="3" disabled>
+                                                                           </div>
+                                                                           <div class="col-md-1">
+                                                                               <div class="form-control">
+                                                                                   <select id="particularsname1" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().calenderTypesData, value: AlertPeriod1, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select' }" disabled></select>
+
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Alert Occurance-2:</label>
+                                                                           <div class="col-md-1">
+                                                                               <input type="text" name="name" class="form-control" data-bind="value: AlertOccurance2, event: { keypress: Validatenumeric }" maxlength="3" disabled>
+                                                                           </div>
+                                                                           <div class="col-md-1">
+                                                                               <div class="form-control">
+                                                                                   <select id="particularsname2" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().calenderTypesData, value: AlertPeriod2, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select' }" disabled></select>
+
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Alert Occurance-3:</label>
+                                                                           <div class="col-md-1">
+                                                                               <input type="text" name="name" class="form-control" data-bind="value: AlertOccurance3, event: { keypress: Validatenumeric }" maxlength="3" disabled>
+                                                                           </div>
+                                                                           <div class="col-md-1">
+                                                                               <div class="form-control">
+                                                                                   <select id="particularsname3" name="particularsname" data-bind="kendoDropDownList: { index: 0, data: $root.craftconfigreferenceData().calenderTypesData, value: AlertPeriod3, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Select...' }" disabled></select>
+
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-group row">
+                                                                           <label class="control-label col-md-5">Reminder Status:</label>
+                                                                           <div class="col-md-2">
+                                                                               <div class="form-control">
+                                                                                   <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val' }" disabled/>
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div class="form-actions">
+                                                                       @{Html.RenderPartial(Url.Content("~/Views/Shared/PendingTaskView.cshtml"));}
+                                                                       </div>     <div style="height:10px;"></div>
+                                                                      <div class="btns-group fluid " ><button  type="button" data-dismiss="modal" class="btn red" data-bind="click: $root.CancelWF">Cancel</button></div>                         
+                                                                      
+                                                               </div>       
+                                                                   </fieldset>
+
+           </div>
+                                                                
+         </script>
+
+    </div>
+</div>
+
+
+
+
+
+
+

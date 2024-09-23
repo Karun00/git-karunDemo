@@ -1,0 +1,485 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "Change ETA";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+
+    var vcn = "";
+    var VesselETAChangeID = 0;
+    var showViewOnLoad = false;
+    if (!string.IsNullOrEmpty(ViewBag.VCN))
+    {
+        vcn = ViewBag.VCN;
+        showViewOnLoad = true;
+    }
+
+    if (ViewBag.VesselETAChangeID > 0)
+    {
+        VesselETAChangeID = ViewBag.VesselETAChangeID;
+        showViewOnLoad = true;
+    }  
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ChangeETAModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ChangeETAViewModel.js"></script>
+}
+
+@section ko_apply
+{
+    var showOnLoad = false;
+    if ("@showViewOnLoad" == "True")
+    {
+         showOnLoad = true;
+    }
+    var viewModel = new IPMSROOT.ChangeETAViewModel("@vcn","@VesselETAChangeID", showOnLoad);    
+    ko.applyBindingsWithValidation(viewModel, $("#ChangeETA")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="ChangeETA">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<!-- Main body content starts here for developers-->
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div>
+                    <div class="portlet box advbg">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-reorder"></i>Advanced Search
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse"></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="form-wizard form-horizontal">
+                                <div class="form-body">
+
+                                    <div class="form-group" data-bind="with: changeETAModel">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">New ETA From :</label>
+                                                    <div class="col-md-6">
+                                                        <div>
+                                                            <input id="ETAFromSearch" name="ETA From" class="form-control" onkeydown="$root.PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: ETAFrom, format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: ValidDate }" maxlength="10" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">New ETA To:</label>
+                                                    <div class="col-md-8">
+                                                        <div>
+                                                            <input id="ETAToSearch" name="ETA To" class="form-control" onkeydown="$root.PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: ETATo, format: 'yyyy-MM-dd', readonly: true, min: ETAFrom, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" maxlength="10" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">VCN :</label>
+                                                    <div class="col-md-8">
+                                                        <div>
+                                                            <input id="VCNSearch" name="VCN" class="form-control" data-bind="value: VCNSearch" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Vessel Name :</label>
+                                                    <div class="col-md-6">
+                                                        <div>
+                                                            <input id="VesselNameSearch" name="Vessel Name" class="form-control" data-bind="value: VesselNameSearch" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">Agent Name :</label>
+                                                    <div class="col-md-8">
+                                                        <div>
+                                                            <input id="VesselAgentName" name="Agent Name" class="form-control" data-bind="value: AgentNameSearch" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4"></label>
+                                                    <div class="col-md-8">
+                                                        <div>
+                                                            <button type="submit" class="btn btn-sm green" data-bind="click: $root.SrearchChangeETADet">Get Data</button>
+                                                            <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ResetSearchDet">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addchangeeta ">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+
+                <div id="divChangeETAList" data-bind="kendoGrid: {
+    data: ChangeETAList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: {
+        extra: false,
+        operators: {
+            string: {
+                startswith: 'Starts with',
+                eq: 'Is equal to',
+                neq: 'Is not equal to'
+            },
+            date: {
+                gte: 'Is after or equal to',
+                gt: 'Is after',
+                lte: 'Is before or equal to',
+                lt: 'Is before'
+            }
+        }
+    },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 20, pageSizes: 20 },
+    useKOTemplates: true,
+    columns: [{ field: 'VCNSort', title: 'VCN', width: '100px', filterable: true },
+        { field: 'VesselNameSort', title: 'Vessel Name', width: '200px', filterable: true },
+        { field: 'AgentSort', title: 'Agent Name', width: '150px', filterable: true },
+        { field: 'OldETASort', title: 'ETA', width: '110px', filterable: true, type: 'date' },
+        { field: 'OldETDSort', title: 'ETD', width: '110px', filterable: true, type: 'date' },
+        { field: 'NewETASort', title: 'New ETA', width: '110px', filterable: true, type: 'date' },
+        { field: 'NewETDSort', title: 'New ETD', width: '110px', filterable: true, type: 'date' },
+        { title: 'Actions', width: '70px', filterable: false }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td data-bind="attr: { 'class': AnyDangerousGoodsonBoard() == 'A' ? 'DangerousGoods' : '' }"><span data-bind="    text: VCN"></span>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: VesselName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: AgentName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(OldETA()).format('YYYY-MM-DD HH:mm')"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(OldETD()).format('YYYY-MM-DD HH:mm')"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(NewETA()).format('YYYY-MM-DD HH:mm')"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: moment(NewETD()).format('YYYY-MM-DD HH:mm')"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewchangeeta" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                &nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: changeETAModel">
+                            <div>
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>Change ETA</legend>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">VCN:<span class="required">*</span></label>
+                                                    <div class="col-md-5">
+                                                        <input id="txtVCNs" data-bind="kendoAutoComplete: { data: $parent.vesselArrivalList, dataTextField: 'VCN', enable: $parent.editableView, select: $root.VCNSelect, value: VCN, filter: 'contains' }, event: { change: $root.hideerrormesages } " />
+                                                    </div>
+                                                    <span id="spanvcn" class="validationError" data-bind="visible: $parent.IsVCN">Please Select VCN</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Date & Time:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" style="width: 150px" data-bind="text: Date() != '' || null ? moment(Date()).format('YYYY-MM-DD HH:mm') : ''"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Vessel Name:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: VesselName"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Vessel Agent:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: VesselAgent"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">GRT (M/T):</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: GRT"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">LOA:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: LOA"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Agent Name:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: AgentName"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Draft:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: Draft"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group" hidden="hidden">
+                                                    <label class="control-label col-md-6">No of Times ETA Changed:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" data-bind="text: NoofTimesETAChanged"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">ETA:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" style="width: 200px" data-bind="text: ETA() != '' || null ? moment(ETA()).format('YYYY-MM-DD HH:mm') : ''"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">ETD:</label>
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6 control-label">
+                                                            <label class="col-md-12 displaytxt" style="width: 200px" data-bind="text: ETD() != '' || null ? moment(ETD()).format('YYYY-MM-DD HH:mm') : ''"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        New ETA:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-5">
+                                                        <div class="form-control">
+                                                            <input id="neweta" onkeydown="PreventBackSpace();" class="datetime-picker" data-bind="kendoDateTimePicker: { value: NewETA, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: $parent.subscribeNewETD, keypress: ValidateDate }" />
+                                                            <span id="spanneweta" class="validationError" data-bind="visible: $parent.IsNewETAValid"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        New ETD:<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-5">
+                                                        <div class="form-control">
+                                                            <input id="newetd" onkeydown="PreventBackSpace();" class="datetime-picker" data-bind="kendoDateTimePicker: { value: NewETD, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }, event: { change: NewETDChange, keypress: ValidateDate }" />
+                                                            <span id="spannewetd" class="validationError" data-bind="visible: $parent.IsNewETDValid"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Voyage In:
+                                                    </label>
+                                                    <div class="col-md-5">
+                                                        <input type="text" class="form-control" maxlength="30" data-bind="value: VoyageIn, enable: $parent.editableView, event: { keyup: $parent.hideerrormesages }" />
+                                                        <span id="spanvoyagein" class="validationError" data-bind="validationMessage: VoyageIn"></span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Voyage Out:
+                                                    </label>
+                                                    <div class="col-md-5">
+                                                        <input type="text" class="form-control" maxlength="30" data-bind="value: VoyageOut, enable: $parent.editableView, event: { keyup: $parent.hideerrormesages }" />
+                                                        <span id="spanvoyageout" class="validationError" data-bind="validationMessage: VoyageOut"></span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">Remarks:</label>
+                                                    <div class="col-md-6">
+                                                        <textarea class="form-control" style="text-transform: capitalize;" rows="3" name="remarks" maxlength="2000" data-bind="value: Remarks, enable: $parent.editableView, event: { keyup: $parent.hideerrormesages }"></textarea>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <fieldset>
+                                  <legend>Operational Information</legend>
+                                   <div class="row">
+                                   <div class="col-md-6 ">
+                                      <div class="form-group">
+                                         <label class="control-label col-md-6">Plan Date/Time at Berth:<span id="spanPlan1" class="required">*</span></label>
+                                         <div class="col-md-5">
+                                               <input id="PlanDateTimeOfBerth" type="text" title="PlanDateTimeOfBerth" onchange="PlanDate();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isDateEnable, kendoDateTimePicker: { value: PlanDateTimeOfBerth, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeOfBerthCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeOfBerth" maxlength="10" />
+                                               <span id="spanOptValid1" class="validationError" data-bind="visible: $root.isspanOptValid1"></span>
+                                          </div>
+                                      </div>
+                                   </div>
+                                   <div class="col-md-6 ">
+                                      <div class="form-group">
+                                         <label class="control-label col-md-6">Plan Date/Time to Start Cargo OPS:<span id="spanPlan3" class="required">*</span></label>
+                                         <div class="col-md-5">
+                                               <input id="PlanDateTimeToStartCargo" type="text" title="PlanDateTimeToStartCargo" onchange="StartCargoOPS();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isDateEnable, kendoDateTimePicker: { value: PlanDateTimeToStartCargo, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeToStartCargoCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeToStartCargo" maxlength="10" />
+                                               <span id="spanOptValid3" class="validationError" data-bind="visible: $root.isspanOptValid3"></span>
+                                         </div>
+                                      </div>            
+                                   </div> </div>
+                                   <div class="row">
+                                     <div class="col-md-6 ">
+                                        <div class="form-group">
+                                           <label class="control-label col-md-6">Plan Date/Time to Complete Cargo OPS:<span id="spanPlan2" class="required">*</span></label>
+                                           <div class="col-md-5">
+                                              <input id="PlanDateTimeToCompleteCargo" type="text" title="PlanDateTimeToCompleteCargo" onchange="CompleteCargoOPS();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isDateEnable, kendoDateTimePicker: { value: PlanDateTimeToCompleteCargo, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeToCompleteCargoCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeToCompleteCargo" maxlength="10" />
+                                              <span id="spanOptValid2" class="validationError" data-bind="visible: $root.isspanOptValid2"></span>
+                                           </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ">
+                                      <div class="form-group">
+                                         <label class="control-label col-md-6">Plan Date/Time to Vacate Berth:<span id="spanPlan4" class="required">*</span></label>
+                                         <div class="col-md-5">
+                                            <input id="PlanDateTimeToVacateBerth" type="text" title="PlanDateTimeToVacateBerth" onchange="VacateBerth();" class="form-control zeroborder datetime-picker" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="enable: $parent.isDateEnable, kendoDateTimePicker: { value: PlanDateTimeToVacateBerth, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', interval: 05, readonly: true, open: PlanDateTimeToVacateBerthCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="PlanDateTimeToVacateBerth" maxlength="10" />
+                                            <span id="spanOptValid4" class="validationError" data-bind="visible: $root.isspanOptValid4"></span>
+                                        </div>
+                                     </div>
+                                   </div>
+                                    </div>
+                              </fieldset></fieldset>
+                                </div>
+                            </div>
+                            <div class="btns-group form-actions fluid">
+                                <button type="submit" title="Save" class="btn green" data-bind="click: $parent.SaveChangeETA, visible: $parent.IsSave, enable: $parent.IsSaveButtonEnabled">Save</button>
+                                <button type="submit" title="Reset" class="btn blue" data-bind="click: $parent.ResetChangeETA, visible: $parent.IsReset">Reset</button>
+                                <button type="submit" title="Cancel" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+        <!-- Main body content ends here for developers-->
+
+        <!-- END CONTENT -->
+    </div>
+</div>

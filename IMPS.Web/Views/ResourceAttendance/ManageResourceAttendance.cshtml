@@ -1,0 +1,186 @@
+﻿@{  
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ResourceAttendanceModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ResourceAttendanceViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ResourceAttendanceViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#ResourceAttendance")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <div class="row" id="ResourceAttendance">
+            <div class="col-md-12">
+                <div class="portlet box advbg">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-reorder"></i>Advance Search
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <form action="#" id="form_sample_1" class="form-horizontal">
+                            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                                <div class="form-body" data-bind="with: resourceAttendanceModel">
+                                    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Attendance Date:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <input id="attendancedate" onkeypress="return false;" onkeydown="PreventBackSpace();" data-bind="kendoDatePicker: { value: AttendanceDate, format: 'yyyy-MM-dd', max: new Date(), enabled: $root.hasEnable, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" />
+                                                                <span class="validationError" data-bind="validationMessage: AttendanceDate"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group1">
+                                                        <label class="control-label col-md-5 hidden">Name:</label>
+                                                        <div class="col-md-6">
+                                                            <input class="hidden" type="hidden" id="users" data-bind="kendoAutoComplete: { value: StartTime }" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Employee Designation:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <select id="Designation" name="Designation" class="form-control" data-bind="enable: $parent.hasEnable, options: $parent.Designations, optionsText: 'SubCatName', optionsCaption: 'Select Designation', optionsValue: 'SubCatCode', value: Position, event: { change: ChangeDesignation }"></select>
+                                                            <span id="spanvdesgcode" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+
+                                                    <div class="form-group">
+
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Shift:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <select id="Shifts" name="Shifts" class="form-control" data-bind="enable: $parent.hasEnable, options: $parent.Shifts, optionsText: 'ShiftName', optionsCaption: 'Select Shift', optionsValue: 'ShiftID', value: ShiftName, event: { change: ChangeShifts }"></select>
+                                                                <span id="spanvshifts" class="validationError"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group1">
+                                                        <label class="control-label col-md-5"></label>
+                                                        <div class="col-md-6 fluid">
+                                                            <button type="submit" class="btn btn-xs green" data-bind="click: $root.LoadResourceAttendanceData, enable: $root.hasEnable, visible: $root.hasEnable">Display</button>
+                                                            <button type="reset" class="btn btn-xs blue" data-bind="click: $root.ResetResourceAttendance, enable: $root.hasEnable, visible: $root.hasEnable">Reset</button>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p>&nbsp;</p>
+                                            <div data-bind="visible: $root.gridvisiable">
+                                                <div>
+                                                    <div data-bind="kendoGrid: {
+    data: Employees,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    useKOTemplates: true,
+    columns: [
+        { field: 'NameSort', title: 'Name', width: 70, filterable: true },
+        { field: 'PersonalMobileNoSort', title: 'Personal Number', width: 80, filterable: true },
+        { field: 'GenderSort', title: 'Gender', width: 40, filterable: true },
+        { field: 'BirthDateSort', title: 'Date of Birth', width: 50, filterable: true },
+        { field: 'JoiningDateSort', title: 'Shift Date', width: 50, filterable: true },
+        { field: 'ShiftNameSort', title: 'Shift', width: 50, filterable: true },
+        { field: 'AttendanceStatus', title: 'Attendance', width: 40, filterable: false }]
+}">
+                                                    </div>
+
+                                                    <script id="rowTmpl" type="text/html">
+                                                        <tr>
+                                                            <td><span data-bind="text: EmpName"></span></td>
+                                                            <td>
+                                                                <div class="nowrap"><span data-bind="text: PersonalMobileNo"></span></div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="nowrap"><span data-bind="text: Gender"></span></div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="nowrap"><span data-bind="text: moment(BirthDate()).format('YYYY-MM-DD') "></span></div>
+                                                            </td>
+                                                            <td>
+                                                               <div class="nowrap"><span data-bind="text: moment(JoiningDate()).format('YYYY-MM-DD')"></span></div>
+                                                            </td>
+                                                            <td>
+                                                               @* <div class="nowrap"><span data-bind="text: moment(JoiningDate()).format('YYYY-MM-DD')"></span></div>*@
+                                                              <div class="nowrap"><span data-bind="text: ShiftName"></span></div>                                                            
+                                                            </td>
+                                                            <td>
+                                                                <div class="nowrap">
+                                                                    <select class="form-control" id="Status" data-bind="options: [{ name: 'Present', val: 'Y' }, { name: 'Not Present', val: 'N' }], optionsText: 'name', optionsValue: 'val', value: AttendanceStatus, enable: $root.ispresent"></select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </script>
+
+                                                </div>
+
+                                                <div class="btns-group form-actions fluid" data-bind="visi: $root.cancel">
+                                                    <button type="submit" class="btn green" data-bind="click: $root.SaveResourceAttendance, visible: shouldShowSave">Save</button>
+                                                    <button type="submit" class="btn green" data-bind="click: $root.SaveResourceAttendance, visible: shouldShowUpdate">Update</button>
+                                                    <button type="submit" class="btn blue " title="Reset" data-bind="click: $root.ResettotalResourceAttendance">Reset</button>
+                                                    <button type="button" class="btn red" data-bind="click: $root.cancel">Cancel</button>
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

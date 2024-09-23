@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="">
+    <Query>
+      <DataSourceReference>tnpadev</DataSourceReference>
+      <CommandText>SELECT        sub.SubCatName as STATUS
+FROM            SuperCategory AS sup INNER JOIN
+                         SubCategory AS sub ON sub.SupCatCode = sup.SupCatCode
+WHERE        (sup.SupCatCode = 'WFST')
+UNION
+SELECT        'All' AS Expr1
+ORDER BY sub.SubCatName</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="STATUS">
+        <DataField>STATUS</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

@@ -1,0 +1,160 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "ServiceTypeDesignation";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ServiceTypeDesignationModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ServiceTypeDesignationViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ServiceTypeDesignationViewModel();   
+ko.applyBindingsWithValidation(viewModel, $("#ServiceTypeDesignation")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="ServiceTypeDesignation">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div data-bind="kendoGrid: {
+    data: ServiceTypeDesignationList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'ServiceTypeCodeSort', title: 'Service Type Code', width: '80', filterable: true },
+        { field: 'ServiceTypeNameSort', title: 'Service Type Name', width: '80', filterable: true },
+        { title: 'Is Craft', width: '80', filterable: false },
+        { title: 'Actions', filterable: false }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ServiceTypeCode"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ServiceTypeName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: IsCraftStatus"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $root.viewServiceTypeDesignation" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $root.editServiceTypeDesignation" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: ServiceTypeDesignationModel">                            
+                            <div>
+                                <div id="section1">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label class="control-label col-md-6">Service Type Code:</label>
+                                                    <div class="col-md-6">
+                                                        <label class="displaytxt" style="padding-top: 7px;" data-bind="text: $root.selectedServiceTypeCode"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label class="control-label col-md-6">Service Type Name:</label>
+                                                    <div class="col-md-6 form-group">
+                                                        <label class="displaytxt" style="padding-top: 7px;" data-bind="text: $root.selectedServiceTypeName"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div id="section2" class="form-group">
+                                    <fieldset>
+                                        <legend>Add Service Type Designation</legend>
+                                        <div class="table-toolbar">
+                                            @if (Model.HasAddPrivilege)
+                                            {
+                                                <div id="tableheader">
+                                                    <a class="button gbtngreen" id="AddServiceTypeDesignation" data-bind="click: $root.addServiceTypeDesignation, visible: $parent.IsAdd">Add New Designation <i class="fa fa-plus"></i></a>
+                                                </div>
+                                            }
+                                            <div class="table-scrollable" id="ServiceTypeDesignations">
+                                                <table cellpadding="0" cellspacing="0" border="0" id="tblDesignations" class="tinytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Designation</th>
+                                                            <th data-bind="visible: $root.isCraft">Craft Type</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody data-bind="foreach: ServiceTypeDesignations">
+                                                        <tr>
+                                                            <td>
+                                                                <select id="DesignationCode" name="DesignationCode" class="form-control" data-bind="options: $root.designationValues, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: DesignationCode, enable: $root.editableView, event: { change: ChangeDesignationCode }">
+                                                                </select>
+                                                                <span id="spandegcode" class="validationError" data-bind="visible: $parent.UniqueDesignationCodeVisible">Please select another designation.</span>
+                                                            </td>
+                                                            <td data-bind="visible: $root.isCraft">
+                                                                <select id="CraftType" name="CraftType" class="form-control" data-bind="options: $root.CraftTypeDetails, optionsText: 'SubCatName', optionsCaption: 'Select...', optionsValue: 'SubCatCode', value: CraftType, visible: $root.isCraft, enable: $root.editableView">
+                                                                </select>
+                                                            </td>
+                                                            <td><a href='#' id="STDDelete" data-bind='visible: $root.isSTDValEnable, click: $root.removeDesignations, enable: $root.editableView' title="Delete"><i class="fa fa-ban"></i></a></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="btns-group form-actions fluid">
+                                            <button type="submit" data-bind="click: $parent.SaveServiceTypeDesignation, visible: $parent.IsSave, enable: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled" class="btn green">Save</button>
+                                            <button type="submit" data-bind="click: $parent.ModifyServiceTypeDesignation, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled" id="" class="btn green">Update</button>
+                                            <button type="submit" data-bind="click: $parent.ResetServiceTypeDesignation, visible: $parent.IsReset" class="btn blue">Reset</button>
+                                            <button type="button" data-bind="click: $parent.Cancel" class="btn red">Cancel</button>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+    </div>
+</div>

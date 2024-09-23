@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://IPMSConnect_SAP.SAPArrivalObj" xmlns:b="http://schemas.microsoft.com/BizTalk/2003" xmlns:ns0="https://IPMSConnect_SAP.PropertySchema" targetNamespace="http://IPMSConnect_SAP.SAPArrivalObj" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="SAPArrival">
+    <xs:annotation>
+      <xs:appinfo />
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ARRNO" type="xs:string" />
+        <xs:element name="CODE" type="xs:string" />
+        <xs:element name="EDA" type="xs:date" />
+        <xs:element name="KUNNR" type="xs:string" />
+        <xs:element name="PORTCALL" type="xs:string" />
+        <xs:element name="PORTORIGIN" type="xs:string" />
+        <xs:element name="VKORG" type="xs:string" />
+        <xs:element name="VOYIN" type="xs:string" />
+        <xs:element name="VOYOUT" type="xs:string" />
+        <xs:element name="ZZBERTH" type="xs:string" />
+        <xs:element name="VCN" type="xs:string" />
+        <xs:element name="EDD" type="xs:date" />
+        <xs:element name="SAPPostingID" type="xs:int" />
+        <xs:element name="MESSAGETYPE" type="xs:string" />
+        <xs:element name="AED" type="xs:string" />
+        <xs:element name="AET" type="xs:string" />
+        <xs:element name="DED" type="xs:string" />
+        <xs:element name="DET" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

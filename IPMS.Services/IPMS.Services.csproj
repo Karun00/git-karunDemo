@@ -1,0 +1,463 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19F71BF8-3EC2-4100-BF3A-4B78A9F09CC5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IPMS.Services</RootNamespace>
+    <AssemblyName>IPMS.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\QA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EFCache">
+      <HintPath>..\packages\EntityFramework.Cache.1.0.0-beta\lib\net45\EFCache.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MsgPack, Version=0.1.4298.15470, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MsgPack.0.1.0.2011042300\lib\net40\MsgPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NetJSON, Version=1.0.15.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetJSON.1.0.15\lib\net40\NetJSON.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.40804.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Business\CodeGenerator.cs" />
+    <Compile Include="Contracts\IAutomatedSlotBlockingService.cs" />
+    <Compile Include="Contracts\IBiztalkAnchorageResponseService.cs" />
+    <Compile Include="Contracts\IBiztalkInvoiceResponseService.cs" />
+    <Compile Include="Contracts\IBiztalkMarineOrderResponseService.cs" />
+    <Compile Include="Contracts\IBiztalkPortLimitResponseService.cs" />
+    <Compile Include="Contracts\IBiztalkResponseService.cs" />
+    <Compile Include="Contracts\IBiztalkVesselCreateResponseService.cs" />
+    <Compile Include="Contracts\IBudgetedValuesService.cs" />
+    <Compile Include="Contracts\ICraftReminderConfigService.cs" />
+    <Compile Include="Contracts\IDepartureNoticeService.cs" />
+    <Compile Include="Contracts\IDockingPlanService.cs" />
+    <Compile Include="Contracts\IDredgingPriorityService.cs" />
+    <Compile Include="Contracts\IDryDockSchedulerService.cs" />
+    <Compile Include="Contracts\IEventSchedulerService.cs" />
+    <Compile Include="Contracts\IFuelReceiptService.cs" />
+    <Compile Include="Contracts\IHour24Report625Service.cs" />
+    <Compile Include="Contracts\ILocationService.cs" />
+    <Compile Include="Contracts\IMarineRevenueService.cs" />
+    <Compile Include="Contracts\IMarpolService.cs" />
+    <Compile Include="Contracts\IMaterialCodeMasterService.cs" />
+    <Compile Include="Contracts\IMobileScheduledTasksService.cs" />
+    <Compile Include="Contracts\IAutomatedSlotConfigurationService.cs" />
+    <Compile Include="Contracts\IBerthPlanningConfigurationsService.cs" />
+    <Compile Include="Contracts\ICargoManifestService.cs" />
+    <Compile Include="Contracts\ICraftOutOfCommissionService.cs" />
+    <Compile Include="Contracts\IFuelConsumptionDailyLogService.cs" />
+    <Compile Include="Contracts\IDeploymentPlanService.cs" />
+    <Compile Include="Contracts\INotificationPublisherService.cs" />
+    <Compile Include="Contracts\IPortEntryPassApplicationService.cs" />
+    <Compile Include="Contracts\IPortGeneralConfigsService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\IPortInformationService.cs" />
+    <Compile Include="Contracts\IResourceAllocationConfigRuleService.cs" />
+    <Compile Include="Contracts\IFuelRequisitionService.cs" />
+    <Compile Include="Contracts\IResourceAllocationService.cs" />
+    <Compile Include="Contracts\IResourceAttendanceService.cs" />
+    <Compile Include="Contracts\IAutomatedResourceSchedulingService.cs" />
+    <Compile Include="Contracts\IAutomatedSlottingService.cs" />
+    <Compile Include="Contracts\IBerthPreSchedulingService.cs" />
+    <Compile Include="Contracts\IDashBoardService.cs" />
+    <Compile Include="Contracts\IExternalDivingRegisterService.cs" />
+    <Compile Include="Contracts\IMobileConversationService.cs" />
+    <Compile Include="Contracts\IReportBuilderService.cs" />
+    <Compile Include="Contracts\IRevenueStopListService.cs" />
+    <Compile Include="Contracts\IRosterService.cs" />
+    <Compile Include="Contracts\ISAPInvoiceService.cs" />
+    <Compile Include="Contracts\ISAPMarineOrderChangeService.cs" />
+    <Compile Include="Contracts\ISAPMarineOrderCreateService.cs" />
+    <Compile Include="Contracts\ISAPPostingService.cs" />
+    <Compile Include="Contracts\ISAPVesselArrivalChangeService.cs" />
+    <Compile Include="Contracts\ISAPVesselCreateService.cs" />
+    <Compile Include="Contracts\IServiceTypeDesignationService.cs" />
+    <Compile Include="Contracts\IServiceTypeService.cs" />
+    <Compile Include="Contracts\IStatementFactService.cs" />
+    <Compile Include="Contracts\ISuppDockUnDockTimeService.cs" />
+    <Compile Include="Contracts\ISuppDryDockExtensionService.cs" />
+    <Compile Include="Contracts\ISuppDryDockService.cs" />
+    <Compile Include="Contracts\ISuppHotWorkInspectionService.cs" />
+    <Compile Include="Contracts\ISupplymentaryServiceRequestService.cs" />
+    <Compile Include="Contracts\ISuppMiscServiceRecordingService.cs" />
+    <Compile Include="Contracts\ISuppServiceResourceAllocService.cs" />
+    <Compile Include="Contracts\ITptDocumentUploadService.cs" />
+    <Compile Include="Contracts\IUserPreferenceService.cs" />
+    <Compile Include="Contracts\IUserRegistration.cs" />
+    <Compile Include="Contracts\IVesselSAPPostingService.cs" />
+    <Compile Include="Contracts\IWorkFlowTaskService.cs" />
+    <Compile Include="Contracts\IBerthMaintenanceCompletionService.cs" />
+    <Compile Include="Contracts\IMobileIncidentReportService.cs" />
+    <Compile Include="Contracts\IMobileService.cs" />
+    <Compile Include="Contracts\IBerthMaintenanceService.cs" />
+    <Compile Include="Contracts\IDivingRequestService.cs" />
+    <Compile Include="Contracts\IFileService.cs" />
+    <Compile Include="Contracts\IArrivalNotificationService.cs" />
+    <Compile Include="Contracts\IBerthPlanningService.cs" />
+    <Compile Include="Contracts\ICommonService.cs" />
+    <Compile Include="Contracts\ICraftMasterService.cs" />
+    <Compile Include="Contracts\IEmployeeService.cs" />
+    <Compile Include="Contracts\IEntityService.cs" />
+    <Compile Include="Contracts\ILicensingRequestService.cs" />
+    <Compile Include="Contracts\IModuleService.cs" />
+    <Compile Include="Contracts\INewsService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\IPilotExemptionRequestService.cs" />
+    <Compile Include="Contracts\IResourceGroupService.cs" />
+    <Compile Include="Contracts\IRolePrivilegeService.cs" />
+    <Compile Include="Contracts\IServiceRequestService.cs" />
+    <Compile Include="Contracts\IShiftService.cs" />
+    <Compile Include="Contracts\ISubCategoryService.cs" />
+    <Compile Include="Contracts\ISuperCategoryService.cs" />
+    <Compile Include="Contracts\ITerminalOperatorService.cs" />
+    <Compile Include="Contracts\IUserService.cs" />
+    <Compile Include="Contracts\IElectronicNotificationsService.cs" />
+    <Compile Include="Contracts\IBollardService.cs" />
+    <Compile Include="Contracts\IEmailService.cs" />
+    <Compile Include="Contracts\IVesselArrestImmobilizationSAMSAStopService.cs" />
+    <Compile Include="Contracts\IVesselCallAnchorageService.cs" />
+    <Compile Include="Contracts\IVesselETAChangeService.cs" />
+    <Compile Include="Contracts\IVesselAgentChangeService.cs" />
+    <Compile Include="Contracts\IVesselRegistrationService.cs" />
+    <Compile Include="Contracts\IVoyageMonitoringService.cs" />
+    <Compile Include="Implementations\AgentService.cs" />
+    <Compile Include="Implementations\ArrivalNotificationService.cs" />
+    <Compile Include="Implementations\AutomatedSlotBlockingService.cs" />
+    <Compile Include="Implementations\AutomatedSlotConfigService.cs" />
+    <Compile Include="Implementations\AutomatedResourceSchedulingService.cs" />
+    <Compile Include="Implementations\AutomatedSlottingService.cs" />
+    <Compile Include="Implementations\BerthMaintenanceService.cs" />
+    <Compile Include="Implementations\BerthMaintenanceCompletionService.cs" />
+    <Compile Include="Implementations\BerthPlanningConfigurationsService.cs" />
+    <Compile Include="Implementations\BerthPlanningService.cs" />
+    <Compile Include="Implementations\BerthPreSchedulingService.cs" />
+    <Compile Include="Implementations\BerthService.cs" />
+    <Compile Include="Implementations\BiztalkAnchorageResponseService.cs" />
+    <Compile Include="Implementations\BiztalkInvoiceResponseService.cs" />
+    <Compile Include="Implementations\BiztalkMarineOrderResponseService.cs" />
+    <Compile Include="Implementations\BiztalkPortLimitResponseService.cs" />
+    <Compile Include="Implementations\BiztalkResponseService.cs" />
+    <Compile Include="Implementations\BiztalkVesselCreateResponseService.cs" />
+    <Compile Include="Implementations\BollardService.cs" />
+    <Compile Include="Implementations\BudgetedValuesService.cs" />
+    <Compile Include="Implementations\CargoManifestService.cs" />
+    <Compile Include="Implementations\CommonService.cs" />
+    <Compile Include="Implementations\CraftReminderConfigService.cs" />
+    <Compile Include="Implementations\DepartureNoticeService.cs" />
+    <Compile Include="Implementations\DeploymentPlanService.cs" />
+    <Compile Include="Implementations\DockingPlanService.cs" />
+    <Compile Include="Implementations\DredgingPriorityService.cs" />
+    <Compile Include="Implementations\DryDockSchedulerService.cs" />
+    <Compile Include="Implementations\EventSchedulerService.cs" />
+    <Compile Include="Implementations\FuelReceiptService.cs" />
+    <Compile Include="Implementations\Hour24Report625Service.cs" />
+    <Compile Include="Implementations\LocationService.cs" />
+    <Compile Include="Implementations\MarineRevenueService.cs" />
+    <Compile Include="Implementations\MarpolService.cs" />
+    <Compile Include="Implementations\MaterialCodeMasterService.cs" />
+    <Compile Include="Implementations\MobileScheduledTasksService.cs" />
+    <Compile Include="Implementations\CraftOutOfCommissionService.cs" />
+    <Compile Include="Implementations\FuelConsumptionDailyLogService.cs" />
+    <Compile Include="Implementations\NotificationPublisherService.cs" />
+    <Compile Include="Implementations\PortEntryPassApplicationService.cs" />
+    <Compile Include="Implementations\PortGeneralConfigsService.cs" />
+    <Compile Include="Implementations\PortInformationService.cs" />
+    <Compile Include="Implementations\ResourceAllocationConfigRuleService.cs" />
+    <Compile Include="Implementations\FuelRequisitionService.cs" />
+    <Compile Include="Implementations\ResourceAllocationService.cs" />
+    <Compile Include="Implementations\ResourceAttendanceService.cs" />
+    <Compile Include="Implementations\ExternalDivingRegisterService.cs" />
+    <Compile Include="Implementations\MobileConversationService.cs" />
+    <Compile Include="Implementations\DashBoardService.cs" />
+    <Compile Include="Implementations\ReportBuilderService.cs" />
+    <Compile Include="Implementations\RevenueStopListService.cs" />
+    <Compile Include="Implementations\RosterService.cs" />
+    <Compile Include="Implementations\SAPInvoiceService.cs" />
+    <Compile Include="Implementations\SAPMarineOrderChangeService.cs" />
+    <Compile Include="Implementations\SAPMarineOrderCreateService.cs" />
+    <Compile Include="Implementations\SAPPostingService.cs" />
+    <Compile Include="Implementations\SAPVesselArrivalChangeService.cs" />
+    <Compile Include="Implementations\SAPVesselCreateService.cs" />
+    <Compile Include="Implementations\ServiceTypeDesignationService.cs" />
+    <Compile Include="Implementations\ServiceTypeService.cs" />
+    <Compile Include="Implementations\StatementFactService.cs" />
+    <Compile Include="Implementations\SuppDockUnDockTimeService.cs" />
+    <Compile Include="Implementations\SuppDryDockExtensionService.cs" />
+    <Compile Include="Implementations\SuppDryDockService.cs" />
+    <Compile Include="Implementations\SuppHotWorkInspectionService.cs" />
+    <Compile Include="Implementations\SupplymentaryServiceRequestService.cs" />
+    <Compile Include="Implementations\SuppMiscServiceRecordingService.cs" />
+    <Compile Include="Implementations\SuppServiceResourceAllocService.cs" />
+    <Compile Include="Implementations\TptDocumentUploadService.cs" />
+    <Compile Include="Implementations\UserPreferenceService.cs" />
+    <Compile Include="Implementations\UserRegistration.cs" />
+    <Compile Include="Implementations\VesselSAPPostingService.cs" />
+    <Compile Include="Implementations\WorkFlowTaskService.cs" />
+    <Compile Include="Implementations\MobileIncidentReportService.cs" />
+    <Compile Include="Implementations\MobileService.cs" />
+    <Compile Include="Implementations\DivingRequestService.cs" />
+    <Compile Include="Implementations\FileService.cs" />
+    <Compile Include="Implementations\CraftService.cs" />
+    <Compile Include="Implementations\ElectronicNotificationsService.cs" />
+    <Compile Include="Implementations\EmailService.cs" />
+    <Compile Include="Implementations\EmployeeService.cs" />
+    <Compile Include="Implementations\EntityService.cs" />
+    <Compile Include="Implementations\HomeService.cs" />
+    <Compile Include="Contracts\IAgentService.cs" />
+    <Compile Include="Contracts\IBerthService.cs" />
+    <Compile Include="Contracts\IHomeService.cs" />
+    <Compile Include="Contracts\IAccountService.cs" />
+    <Compile Include="Contracts\IAuditLogService.cs" />
+    <Compile Include="Contracts\IPortService.cs" />
+    <Compile Include="Contracts\IQuayService.cs" />
+    <Compile Include="Implementations\AccountService.cs" />
+    <Compile Include="Implementations\AuditLogService.cs" />
+    <Compile Include="Implementations\LicensingRequestService.cs" />
+    <Compile Include="Implementations\ModuleService.cs" />
+    <Compile Include="Implementations\NewsService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implementations\PilotExemptionRequestService.cs" />
+    <Compile Include="Implementations\PortService.cs" />
+    <Compile Include="Implementations\ResourceGroupService.cs" />
+    <Compile Include="Implementations\RolePrivilegeService.cs" />
+    <Compile Include="Implementations\ServiceRequestService.cs" />
+    <Compile Include="Implementations\ShiftService.cs" />
+    <Compile Include="Implementations\SubCategoryService.cs" />
+    <Compile Include="Implementations\SuperCategoryService.cs" />
+    <Compile Include="Implementations\TerminalOperatorService.cs" />
+    <Compile Include="Implementations\UserService.cs" />
+    <Compile Include="Implementations\VesselArrestImmobilizationSAMSAStopService.cs" />
+    <Compile Include="Implementations\VesselCallAnchorageService.cs" />
+    <Compile Include="Implementations\VesselETAChangeService.cs" />
+    <Compile Include="Implementations\VesselAgentChangeService.cs" />
+    <Compile Include="Implementations\VesselRegistrationService.cs" />
+    <Compile Include="Implementations\VoyageMonitoringService.cs" />
+    <Compile Include="Password.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Implementations\QuayService.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceBase.cs" />
+    <Compile Include="Web References\LloydsSOAPForVesselRegistration\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\TfrService\Reference.cs" />
+    <Compile Include="Web References\TrainSummary\Reference.cs" />
+    <Compile Include="WorkFlow\AgentRegistrationWorkFlow.cs" />
+    <Compile Include="WorkFlow\ArrivalNotificationWorkFlow.cs" />
+    <Compile Include="WorkFlow\BerthMaintenanceApprovalWorkFlow.cs" />
+    <Compile Include="WorkFlow\BerthMaintenanceCompletionWorkFlow.cs" />
+    <Compile Include="WorkFlow\BerthOccupationWorkFlow.cs" />
+    <Compile Include="WorkFlow\Common.cs" />
+    <Compile Include="WorkFlow\CraftReminderConfigWorkFlow.cs" />
+    <Compile Include="WorkFlow\DepartureNoticeWorkFlow.cs" />
+    <Compile Include="WorkFlow\DHMArrivalNotificationWorkFlow.cs" />
+    <Compile Include="WorkFlow\DivingRequestOccupationWorkFlow.cs" />
+    <Compile Include="WorkFlow\DockingPlanWorkFlow.cs" />
+    <Compile Include="WorkFlow\DredgingPriorityWorkFlow.cs" />
+    <Compile Include="WorkFlow\DredgingVolumeWorkFlow.cs" />
+    <Compile Include="WorkFlow\FuelReceiptWorkFlow.cs" />
+    <Compile Include="WorkFlow\FuelRequisitionWorkFlow.cs" />
+    <Compile Include="WorkFlow\LicensingRequestServiceWorkFlow.cs" />
+    <Compile Include="WorkFlow\PHArrivalNotificationWorkFlow.cs" />
+    <Compile Include="WorkFlow\ISPSArrivalNotificationWorkFlow.cs" />
+    <Compile Include="WorkFlow\IMDGArrivalNotificationWorkFlow.cs" />
+    <Compile Include="WorkFlow\INotificationPublisher.cs" />
+    <Compile Include="WorkFlow\IWorkFlowEngine.cs" />
+    <Compile Include="WorkFlow\IWorkFlowEntity.cs" />
+    <Compile Include="WorkFlow\NotificationPublisher.cs" />
+    <Compile Include="WorkFlow\PilotExemptionRequestWorkflow.cs" />
+    <Compile Include="WorkFlow\PortEntryPassWorkFlow.cs" />
+    <Compile Include="WorkFlow\ServiceRequestShiftingWorkFlow.cs" />
+    <Compile Include="WorkFlow\ServiceRequestWorkFlow.cs" />
+    <Compile Include="WorkFlow\SuppDryDockExtensionWorkFlow.cs" />
+    <Compile Include="WorkFlow\SuppDryDockWorkFlow.cs" />
+    <Compile Include="WorkFlow\SupplymentaryServiceRequestWorkFlow.cs" />
+    <Compile Include="WorkFlow\UserRegistrationWorkFlow.cs" />
+    <Compile Include="WorkFlow\VesselAgentChangeReqWorkFlow.cs" />
+    <Compile Include="WorkFlow\VesselRegistrationWorkFlow.cs" />
+    <Compile Include="WorkFlow\WasteDeclarationArrivalNotificationWorkFlow.cs" />
+    <Compile Include="WorkFlow\WorkFlowEngine.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IPMS.Core.Repository\Core.Repository.csproj">
+      <Project>{7a02df10-6661-4268-8bc0-b4d62478b934}</Project>
+      <Name>Core.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Data\IPMS.Data.csproj">
+      <Project>{d090ea4b-08b0-4d64-9c7a-b9795b4544f7}</Project>
+      <Name>IPMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Domain\IPMS.Domain.csproj">
+      <Project>{e00e43c0-e42a-4793-889f-eaa2da343c40}</Project>
+      <Name>IPMS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IPMS.Repository\IPMS.Repository.csproj">
+      <Project>{8e84d313-d5d5-4915-acb3-2ac2ffaef552}</Project>
+      <Name>IPMS.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MessageQueuing\MessageQueuing.csproj">
+      <Project>{6010d01d-9780-4534-9fb2-be0d9f5aa74c}</Project>
+      <Name>MessageQueuing</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\LloydsSOAPForVesselRegistration\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\LloydsSOAPForVesselRegistration\SidDBRequest.wsdl" />
+    <None Include="Web References\TfrService\getWagonDetails_wsd.wsdl" />
+    <None Include="Web References\TfrService\Reference.map" />
+    <None Include="Web References\TfrService\WAGON_DETAILS.datasource" />
+    <None Include="Web References\TrainSummary\getTrainSummary_wsd.wsdl" />
+    <None Include="Web References\TrainSummary\Reference.map" />
+    <None Include="Web References\TrainSummary\TRAIN_SUMMARY.datasource" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LloydsSOAPForVesselRegistration\</RelPath>
+      <UpdateFromURL>https://sidgw.lloydslistintelligence.com/sidgw/services/SidDBRequest%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>IPMS_Services_LloydsSOAPForVesselRegistration_SidDBRequestService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://tfrdwinwmisa8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getTrainSummary_wsd%3fWSDL">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\TrainSummary\</RelPath>
+      <UpdateFromURL>http://tfrdwinwmisa8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getTrainSummary_wsd%3fWSDL</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>WebServiceConsoleApplication_TrainSummary_getTrainSummary_wsd</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://tfrdwinwmisa8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getWagonDetails_wsd%3fWSDL">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\TfrService\</RelPath>
+      <UpdateFromURL>http://tfrdwinwmisa8.inter.transnet.net:5555/ws/tnpa_train_info.webservice:getWagonDetails_wsd%3fWSDL</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>WebServiceConsoleApplication_TfrService_getWagonDetails_wsd</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,138 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "test";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/PortGeneralConfigsModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/PortGeneralConfigsViewModel.js"></script>
+}
+@section ko_apply{
+var viewModel = new IPMSROOT.PortGeneralConfigsViewModel();  
+	ko.applyBindingsWithValidation(viewModel, $("#PortGeneralConfigs")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div id="PortGeneralConfigs">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div id="tablewrapper15">
+                        <div id="tableheader">
+                            @*<a class="button gbtngreen" data-bind="click: $root.addWorkFlowTask">Add New <i class="fa fa-plus"></i></a>*@
+                        </div>
+                        <div data-bind="kendoGrid: {
+    data: PortGeneralConfigsList,
+    groupable: false,
+    sortable: true,
+    scrollable: false,
+    filterable: {
+        extra: false,
+        operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } }
+    },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'GroupNameSort', title: 'Group Name', filterable: true, width: 80 },
+              { title: 'Status', filterable: false, width: 20 },
+              { title: 'Actions', filterable: false, width: 20 }]
+}">
+                        </div>
+                        <script id="rowTmpl" type="text/html">
+                            <tr>
+                                <td>
+                                    <div class="nowrap" data-bind="text: GroupName"></div>
+                                </td>
+                                <td>
+                                    <div class="nowrap" data-bind="text: Statust"></div>
+                                </td>
+                                <td>
+                                    <div class="nowrap">
+                                        @if (Model.HasViewPrivilege)
+                                        {
+                                            <a href="javascript:;" title="View" data-bind="click: $root.viewPortGeneralConfigs"><i class="fa fa-eye"></i></a>
+                                        }&nbsp; &nbsp;
+                                         @if (Model.HasEditPrivilege)
+                                         {
+                                             <a href="javascript:;" title="Edit" data-bind="click: $root.editPortGeneralConfigs"><i class="fa fa-edit"></i></a>
+                                         }&nbsp; &nbsp;
+                                    </div>
+                                </td>
+                            </tr>
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: PortGeneralConfigsModel">
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Port General Configuration</legend>
+                                    <br>
+                                    <div id="grid" data-bind="kendoGrid: {
+    data: GroupNames,
+    rowTemplate: 'rowtmpl1',
+    useKOTemplates: true,
+    columns: [{ field: 'ConfigLabelName', title: 'Configuration Name', width: '50px' },
+              { field: 'ConfigValueSort', title: 'Configuration Value', width: '100px' }],
+    scrollable: false,
+    groupable: false
+}">
+                                    </div>
+                                    <div class="btns-group form-actions fluid">
+                                        <button type="submit" title="Update" id="IsUpdate" class="btn green" data-bind="click: $parent.ModifyPortGeneralConfigs, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                        <button type="submit" title="Cancel" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                    </div>
+                                    <script type="text/html" id="rowtmpl1">
+                                        <tr>
+                                            <td>
+                                                <div class="nowrap"><span data-bind="text: ConfigLabelName, enable: $root.IsCodeEnable"></span></div>
+                                            </td>
+                                            <td>
+                                                <!-- ko if: ($data.ConfigName() === 'ARRESTED' || $data.ConfigName() === 'BERTHED' || $data.ConfigName() === 'CONFIRMED' || $data.ConfigName() === 'MAINTAINENCE' || $data.ConfigName() === 'PENDING' || $data.ConfigName() === 'SCHEDULED' || $data.ConfigName() === 'SAILED')-->
+                                                <div class="nowrap">
+                                                    <input id="background-color" type="color" onchange="ColorCodeChange();" data-bind="value: ConfigValue, enable: $root.IsCodeEnable" placeholder="#000000" maxlength="10">
+                                                    &nbsp;<input id="chosen-color" type="text" style="width: 72px;" readonly data-bind="value: ConfigValue, enable: false" />
+                                                </div>
+                                                <!-- /ko -->
+
+                                                <!-- ko if: ($data.ConfigName() !== 'ARRESTED' && $data.ConfigName() !== 'BERTHED' && $data.ConfigName() !== 'CONFIRMED' && $data.ConfigName() !== 'MAINTAINENCE' && $data.ConfigName() !== 'PENDING' && $data.ConfigName() !== 'SCHEDULED' && $data.ConfigName() !== 'SAILED')-->
+                                                <div class="nowrap">
+                                                    <input type="text" id="ConfigValue" data-bind="value: ConfigValue, enable: $root.IsCodeEnable" maxlength="200" />
+                                                </div>
+                                                <!-- /ko -->
+                                            </td>
+                                        </tr>
+                                    </script>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+    </div>
+</div>
+

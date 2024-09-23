@@ -1,0 +1,183 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    ViewBag.Title = "IncidentReporting";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";  
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/IncidentReportModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/IncidentReportViewModel.js"></script>
+}
+@section ko_apply
+{
+var vm = new IPMSROOT.IncidentReportViewModel();
+    ko.applyBindingsWithValidation(vm, $("#IncidentReport")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });   
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="incRptTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+
+<div id="IncidentReport">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="kendoGrid: {
+    data: IncidentReportList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' }, number: { eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'IncidentLocationSort', title: 'Incident Location', width: '150px', filterable: true }
+               , { field: 'IncidentDescriptionSort', title: 'Incident Description', width: '160px', filterable: true }
+     , { field: 'IncidentNatureDetailsSort', title: 'Nature of Incident', width: '200px', filterable: true }
+     , { title: 'Actions', width: '60px', filterable: false }]
+}">
+            </div>
+            <script id="rowTmpl" type="text/html">
+                <tr>
+                    <td><span data-bind="text: IncidentLocation"></span></td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: IncidentDescription" style="text-transform: capitalize;"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            <span data-bind="text: IncidentNatureDetails"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="nowrap">
+                            &nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasViewPrivilege)
+                            {
+                                <a href="#" data-bind="click: $root.viewIncidentReport" title="View"><i class="fa fa-eye"></i></a>
+                            }&nbsp; &nbsp;&nbsp; &nbsp;
+                            @if (Model.HasEditPrivilege)
+                            {
+                                <a href="#" data-bind="click: $root.editIncidentReport" title="Edit"><i class="fa fa-edit"></i></a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </script>
+        </script>
+    </div>
+</div>
+
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+<script type="text/html" id="Form-template">
+    <div class="portlet portlet-body form">
+        <form action="#" id="form_sample_1" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: incidentReportModel">
+                    <fieldset>
+                        <legend>Incident Details</legend>
+                        <div class="row">
+                            
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">
+                                        Location of Incident:
+                                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" data-bind="value: IncidentLocation, enable: $root.IsCodeEnable" maxlength="100" />
+                                    </div>
+                                </div>
+                            
+                            </div>
+                            <div class="row">
+                            
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">
+                                        Incident Description:
+                                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6">
+                                        <textarea class="form-control" style="resize: none;" data-bind="    value: IncidentDescription, enable: $root.IsCodeEnable" maxlength="1000"></textarea>
+                                    </div>
+                                </div>
+                           
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-6">
+                                        Nature of Incident:
+                                                    	<span class="required">*</span>
+                                    </label>
+                                    <ul class="col-md-4" style="list-style: none; margin-left: -38px;" data-bind="    foreach: $root.IncidentTypes">
+                                        <li>
+                                            <input type="checkbox" class="km-icon km-check paddingright" name="IncidentTypes" data-bind="    checkedValue: SubCatCode, checked: $root.incidentReportModel().IncedentTypeArray, enable: $root.IsCodeEnable"><label style="color: #7dba00;" data-bind="    text: SubCatName"></label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <fieldset data-bind="visible: $root.IsCodeEnable">
+                            <legend>Upload Documents</legend>
+                            <div class="row fileupload-buttonbar">
+                                <div class="form-group">
+                                    <div class="col-md-1">
+                                    </div>
+                                    <div class="col-md-7">
+                                        <span class="btn btn-sm green fileinput-button">
+                                            <i class="fa fa-plus"></i>
+                                            <span>Browse
+                                            </span>
+                                            <input type="file" class="upload" name="files[]" id="fileToUpload" multiple />
+                                        </span>
+                                        <button type="button" id="CapturePicture" data-icon="upload" data-role="button" data-bind="click: $root.uploadFile" class="btn btn-sm blue start">
+                                            <i class="fa fa-upload"></i>
+                                            <span>Upload
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-advance">
+                                    <thead>
+                                        <tr>
+                                            <th class="bg-dark">Document Name</th>
+                                            <th class="bg-dark"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="    foreach: IncidentDocuments, loadingWhen: $root.isLoading">
+                                        <tr>
+                                            <td><a data-bind="text: FileName, attr: { href: '/FileDownload/IncidentReportingDocuments/' + DocumentID() }"></a></td>
+                                            <td><a href="#" class="btn default btn-xs red" data-bind="click: $root.DeleteDocument, visible: $root.IsCodeEnable"><i class="fa fa-trash-o"></i>Delete</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="btns-group form-actions fluid">
+                        <button type="submit" class="btn green" title="Update" data-bind="click: $root.ModifyIncident, loadingWhen: $root.isLoading, visible: $root.IsCodeEnable">Update</button>
+                        <button type="submit" class="btn blue" title="Reset" data-bind="click: $root.ResetIncidentReport, visible: $root.IsCodeEnable">Reset</button>
+                        <button type="submit" class="btn red" title="Cancel" data-bind="click: $root.Cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+
+

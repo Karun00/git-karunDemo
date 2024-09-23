@@ -1,0 +1,267 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{   
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/EntityModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/EntityViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.EntityViewModel();  
+ko.applyBindingsWithValidation(viewModel, $("#EntityMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="EntityMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addentity ">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: EntityList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' }, int: { eq: 'Is equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'EntityCodeSort', title: 'Page Code', width: '100px', filterable: true },
+              { field: 'EntityNameSort', title: 'Page Name', width: '160px', filterable: true },
+              { field: 'PageUrlSort', title: 'Page URL', width: '180px', filterable: true },
+              { field: 'OrderNoSort', title: 'Sequence No.', width: '120px', filterable: true, type: 'int' },
+              { field: 'ModuleNameSort', title: 'Sub Module Name', width: '150px', filterable: true },
+              { field: 'HasWorkflowSort', title: 'Workflow Applicable', width: '160px', filterable: true },
+              { field: 'HasMenuItemSort', title: 'Menu Item', width: '110px', filterable: true },
+              { field: 'StatusSort', title: 'Status', width: '75px', filterable: true },
+              { title: 'Actions', width: '70px', filterable: false }]
+
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td><span data-bind="text: EntityCode"></span></td>
+                        <td><span data-bind="text: EntityName"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: PageUrl"></span></div>
+                        </td>
+                        <td>
+                            <span data-bind="text: OrderNo"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ModuleNameList"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: HasWorkflow"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: HasMenuItem"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: Statust"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editentity" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewentity" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                &nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet portlet-body form">
+                    <form action="#" id="form_sample_1" class="form-horizontal">
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                            <div class="form-body" data-bind="with: entityModel">
+                                @*<div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>*@
+                                <div class="tab-pane active" id="tab1">
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend>Entity Details</legend>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Page Code:
+                                                        <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" id="EntityCode" name="code" maxlength="4" autofocus="autofocus" class="form-control" data-bind="value: EntityCode, enable: $parent.IsCodeEnable, event: { keyup: HandleEntityCodeKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumeric } ">
+                                                            <span id="spanEntcode" class="validationError" data-bind="visible: $parent.UniqueCodeVisible">This Entity Code already exists</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Page Name:
+                                                    	<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" id="EntityName" name="name" maxlength="50" data-required="1" class="form-control" data-bind="value: EntityName, enable: $parent.editableView, event: { keyup: HandleEntityNameKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }">
+                                                            <span id="spanentityname" class="validationError" data-bind="visible: $parent.UniqueNameVisible">This Entity Name already exists</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Page URL:
+                                                      <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" class="form-control" name="page" maxlength="150" data-bind="value: PageUrl, enable: $parent.editableView ">
+                                                            <span id="spanpageurl" class="validationError" data-bind="validationMessage: PageUrl "></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Sub Module/Module:
+                                                     <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input data-bind="kendoDropDownList: { data: $parent.masterModules, value: ModuleID, dataTextField: 'ModuleName', dataValueField: 'ModuleID', enable: $parent.editableView, optionLabel: 'Select...' }" />
+                                                            <span id="spanmodid" class="validationError" data-bind="validationMessage: ModuleID "></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group1">
+                                                        <label class="control-label col-md-6">Workflow applicable:</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" id="HasWorkflow" data-bind="checked: HasWorkflowStatus, enable: $parent.editableView " />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group1">
+                                                        <label class="control-label col-md-6">Menu Item:</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" id="HasMenuItem" data-bind="checked: HasMenuItemStatus, enable: $parent.editableView " />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group1">
+                                                        <label class="control-label col-md-3">
+                                                            Privileges:
+                                                     <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-3">
+                                                            <div class="col-md-9" style="height: 80px; overflow: auto;">
+                                                                <table id="tblentitypriv" width="100%" class="table1 table-striped table-bordered table-hover" data-bind="foreach: $parent.masterPriviligeTypes">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input id="SubCatCode" type="checkbox" data-bind="checkedValue: $data.SubCatCode, checked: $root.entityModel().EntityPrivileges, enable: $root.IsPrivelegeEnable, event: { change: HandleEntityPrivilege }"><label data-bind="    text: SubCatName"> </label>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <span id="spanEntityPriv" class="validationError">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-md-6">
+                                                                Sequence No.:
+                                                    	<span class="required">*</span>
+                                                            </label>
+                                                            <div class="col-md-6">
+                                                                <input id="OrderNo" class="form-control" name="intcharacter" maxlength="10" data-bind="value: OrderNo, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateNumeric } ">
+                                                                <span id="spanSeqid" class="validationError" data-bind="validationMessage: OrderNo "></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <p>
+                                            </p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Status:<span class="required"></span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView } " />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                    <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.SaveEntity, visible: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled">Save</button>
+                                    <button type="submit" class="btn green" data-bind="click: $parent.ModifyEntity, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled">Update</button>
+                                    <button type="submit" class="btn blue" data-bind="click: $parent.ResetEntity, visible: $parent.IsReset ">Reset</button>
+                                    <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </script>
+    </div>
+</div>
+

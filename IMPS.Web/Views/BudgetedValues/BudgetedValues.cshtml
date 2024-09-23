@@ -1,0 +1,260 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "BudgetedValues";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/BudgetedValuesModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/BudgetedValuesViewModel.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.BudgetedValuesViewModel();   
+ko.applyBindingsWithValidation(viewModel, $("#BudgetedValues")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="BudgetedValues">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="List-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div data-bind="kendoGrid: {
+    data: BudgetedValuesList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'FinancialYearSort', title: 'Financial Year', width: '170', filterable: true },
+        { field: 'BudgetedValuesFYDescriptionSort', title: 'Description', filterable: true },
+        { title: 'Actions', filterable: false }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: FinancialYear"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: BudgetedValuesFYDescription"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $root.viewBudgetedValues" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $root.editBudgetedValues, visible: isEditVisible" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" class="form-horizontal" id="submit_form">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: BudgetedValuesModel">
+                            @*<div class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>*@
+                            <div class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Budgeted Values</legend>
+                                    <div style="overflow: scroll;">
+                                        <table cellpadding="0" cellspacing="0" border="0" id="table3" class="tinytable">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" style="text-align: center">
+                                                        <h5 style="width: 140px;"><strong>Port</strong></h5>
+                                                    </th>
+                                                    <th colspan="4" style="text-align: center">
+                                                        <h5><strong>Volumes</strong></h5>
+                                                    </th>
+                                                    <th colspan="4" style="text-align: center">
+                                                        <h5><strong>Movements</strong></h5>
+                                                    </th>
+                                                    <th colspan="4" style="text-align: center">
+                                                        <h5><strong>Ship Turn Around Time</strong></h5>
+                                                    </th>
+                                                    <th colspan="7" style="text-align: center">
+                                                        <h5><strong>Total</strong></h5>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th>
+                                                        <h5 style="width: 90px; text-align: center;">Containers (TEUs)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">RBCT Volumes</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 80px; text-align: center;">Dry Bulk (Tons)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Break Bulk (Tons)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 90px; text-align: center;">Containers (TEUs)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">RBCT Volumes</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 80px; text-align: center;">Dry Bulk (Tons)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Break Bulk (Tons)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 90px; text-align: center;">Containers (TEUs)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">RBCT Volumes</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 80px; text-align: center;">Dry Bulk (Tons)</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Break Bulk (Tons)</h5>
+                                                    </th>
+
+                                                    @*......Newly Added Columns as Per Report Format......*@
+                                                    <th>
+                                                        <h5 style="width: 80px; text-align: center;">Arrivals</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 80px; text-align: center;">GT</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Pilot Delays</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Berthing Delays</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Tug Delays</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Tug Availability</h5>
+                                                    </th>
+                                                    <th>
+                                                        <h5 style="width: 100px; text-align: center;">Tug Utilization</h5>
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody data-bind="foreach: BudgetedValuesVO">
+                                                <tr>
+                                                    <td>
+                                                        <label class="col-md-12 displaytxt" data-bind="text: PortName"></label>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="VolumesContainers" name="VolumesContainers" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: VolumesContainers, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="VolumesRBCT" name="VolumesRBCT" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: VolumesRBCT, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="VolumesDryBulk" name="VolumesDryBulk" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: VolumesDryBulk, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="VolumesBreakBulk" name="VolumesBreakBulk" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: VolumesBreakBulk, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="MovementsContainers" name="MovementsContainers" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: MovementsContainers, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="MovementsRBCT" name="MovementsRBCT" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: MovementsRBCT, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="MovementsDryBulk" name="MovementsDryBulk" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: MovementsDryBulk, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="MovementsBreakBulk" name="MovementsBreakBulk" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: MovementsBreakBulk, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="STATContainers" name="STATContainers" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: STATContainers, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="STATRBCT" name="STATRBCT" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: STATRBCT, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="STATDryBulk" name="STATDryBulk" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: STATDryBulk, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="STATBreakBulk" name="STATBreakBulk" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: STATBreakBulk, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+
+                                                    @*......Newly Added Columns as Per Report Format......*@
+                                                    <td>
+                                                        <input type="text" id="TotalArrivals" name="TotalArrivals" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: TotalArrivals, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="TotalGT" name="TotalGT" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: TotalGT, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="TotalPilotDelays" name="TotalPilotDelays" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: TotalPilotDelays, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="TotalTugDelays" name="TotalTugDelays" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: TotalTugDelays, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="TotalBerthingDelays" name="TotalBerthingDelays" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: TotalBerthingDelays, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="TotalTugAvailability" name="TotalTugAvailability" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: TotalTugAvailability, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" id="TotalTugUtilization" name="TotalTugUtilization" maxlength="8" class="form-control" onkeypress="return AllowOnlyTwoPositiveDigitsForDecimal(this,event);" data-bind="value: TotalTugUtilization, enable: $root.editableView, event: { keypress: $root.validationHelper.ValidateNumeric }" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="btns-group form-actions fluid">
+                                <button type="submit" data-bind="click: $parent.SaveBudgetedValues, visible: $parent.IsSave, enable: $parent.IsSave, disable: $parent.IsSaveUpdateDisabled" class="btn green">Save</button>
+                                @*<button type="submit" data-bind="click: $parent.ModifyBudgetedValues, visible: $parent.IsUpdate, disable: $parent.IsSaveUpdateDisabled" class="btn green">Update</button>*@
+                                <button type="submit" data-bind="click: $parent.ResetBudgetedValues, visible: $parent.IsReset" class="btn blue">Reset</button>
+                                <button type="button" data-bind="click: $parent.Cancel" class="btn red">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </script>
+    </div>
+</div>

@@ -1,0 +1,197 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+@{
+    
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/ResourceGroupModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/ResourceGroupViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.ResourceGroupViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#ResourceGroup")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="ResourceGroup">
+
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'ResourceList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'ResourceForm-template' }"></div>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script type="text/html" id="ResourceList-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addResourceGroup">Add New <i class="fa fa-plus"></i></a>
+                    }
+                </div>
+                <div data-bind="kendoGrid: {
+    data: ResourceGroupList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true, columns: [{ field: 'ResourceGroupCodeSort', title: 'Resource Group Code', width: 70, filterable: true }
+                       , { field: 'ResourceGroupNameSort', title: 'Resource Group Name', width: 80, filterable: true },
+                       { field: 'DesignationSort', title: 'Designation', width: 80, filterable: false },
+                        { title: 'Status', filterable: false, width: 50 },
+                       { title: 'Actions', width: 40, filterable: false }]
+}">
+                </div>
+
+                <script id="rowTmpl" type="text/html" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                    <tr>
+                        <td><span data-bind="text: ResourceGroupCode"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ResourceGroupName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Designation"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: Status"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewData" title="View"><i class="fa fa-eye"></i></a>}
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editData" title="Edit"><i class="fa fa-edit"></i></a>
+                                }&nbsp; &nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                    <div data-bind="visible: ResourceGroupList().length === 0">
+                        No Records Found...
+                    </div>
+                </script>
+            </div>
+        </script>
+
+        <script id="customMessageTemplate" type="text/html" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <span class="validationError" data-bind="validationMessage: field"></span>
+        </script>
+
+        <script type="text/html" id="ResourceForm-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+
+                        <div class="form-body" data-bind="with: ResourceModel">
+                            @*<div id="divValidationError" class="alert alert-danger display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                You have some form errors. Please check below.
+                            </div>*@
+                            <div id="divValidationSuccess" class="alert alert-success display-none">
+                                <button class="close" data-dismiss="alert"></button>
+                                Your form validation is successful!
+                            </div>
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Resource Grouping</legend>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Resource Grouping Code:<span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="ResourceGroupCode" name="code" maxlength="4" class="form-control" data-bind="value: ResourceGroupCode, enable: $parent.IsResourceCodeEnable, event: { change: ValidEventResourceCode, keyup: HandleKeyUpResourceCode, keypress: ValidateAlphabetsWithSpaces }">
+                                                    <span id="spanimono" class="validationError" style="display: none"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Resource Grouping Name:<span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" id="ResourceGroupName" name="code" maxlength="50" autofocus="autofocus" class="form-control" data-bind="value: ResourceGroupName, enable: $parent.IsResourceNameEnable, event: { change: ValidEventResourceName, keyup: HandleKeyUpResourceName }" />
+                                                    <span id="spanRsrcName" class="validationError" style="display: none"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Designation:<span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input data-bind="kendoDropDownList: { data: $parent.Designations, value: Position, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', enable: $parent.IsResourceCodeEnable, change: function () { var id = this.value(); if (id != '') { $parent.LoadEmployees(id); } }, optionLabel: 'Select...' }" />
+                                                    <span id="spanDesignations" class="validationError  display-none" data-bind="validationMessage: Position "></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Employee(s):<span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <input id="MultiSelect1" data-bind="kendoMultiSelect: { dataTextField: 'FirstName', dataValueField: 'EmployeeID', data: $parent.ResourceEmployeeGroups, value: ResourceEmpList, enable: $parent.IsViewMode }" />
+                                                   
+                                                    <span id="spanvemp" class="validationError display-none" data-bind="validationMessage: ResourceEmpList"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">
+                                                    Status:
+                                                </label>
+                                                <div class="col-md-6">
+                                                    <select id="status" name="" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.IsViewMode"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </fieldset>
+                            </div>
+
+                            <div class="btns-group form-actions fluid">
+                                <button type="submit" class="btn green" id="btnSave" data-bind="click: $root.saveResourceGroup, visible: $parent.IsAddMode">Save</button>
+                                <button type="submit" class="btn green" id="btnUpdate" data-bind="click: $root.saveResourceGroup, visible: $parent.IsEditMode">Update</button>
+                                <button type="reset" class="btn blue" data-bind="click: $root.resetResourceGroup, visible: $parent.IsResetVisible">Reset</button>
+                                <button type="button" id="btnCancel" data-dismiss="modal" class="btn red" data-bind="click: $root.cancelResourceGroup">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </script>
+
+    </div>
+</div>

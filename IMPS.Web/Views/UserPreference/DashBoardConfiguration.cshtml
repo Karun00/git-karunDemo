@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "DashBoardConfiguration";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+<script src="~/Scripts/Application/Model/UserPreferenceModel.js"></script>
+<script src="~/Scripts/Application/ViewModel/UserPreferenceViewModel.js"></script>
+
+<style>
+    .modal-dialog {
+        margin: 15% 20%;
+        width: 50%;
+    }
+
+    .inner {
+        display: block;
+    }
+
+    .txtblue {
+        text-align: left;
+        padding-top: 1px;
+    }
+</style>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.UserPreferenceViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#UserPreference11")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- Main body content starts here for developers-->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">DashBoard Configuration</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="portlet-body" id="UserPreference11">
+    <script id="customMessageTemplate" type="text/html">
+        <span class="validationError" data-bind='validationMessage: field'></span>
+    </script>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-wizard">
+                    <div class="form-body">
+                        <div class="alert alert-danger display-none">
+                            <button class="close" data-dismiss="alert"></button>
+                            You have some form errors. Please check below.
+                        </div>
+                        <div class="alert alert-success display-none">
+                            <button class="close" data-dismiss="alert"></button>
+                            Your form validation is successful!
+                        </div>
+                        <div class="clearfix">
+                            <br>
+                        </div>
+                        <div class="row" id="item1">
+                            <div class="col-md-12">
+                                <div class="portlet box advbg">
+                                    <div class="portlet-body" id="id1">
+                                        <div class="form-body" data-bind="with: userpreferenceModel">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="form-group">
+                                                                <div class="row">
+                                                                    <select multiple="multiple" style="width: 80%; height: 150px;" id="listbox" data-bind="options: $root.userPreferenceDetailsByRole, optionsText: 'Entityname', selectedOptions: allSelected"></select>
+                                                                </div>
+
+                                                            </div>
+                                                            <div>
+                                                                <br />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div></div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="row">
+                                                            &nbsp;
+                                                                                <div class="form-group">
+                                                                                    <div class="row">
+                                                                                        &nbsp;&nbsp;
+                                                                                         <a href="#" class="btn btn-xs green" data-bind="click: $root.AddList"><i class="fa fa-plus"></i></a>
+
+                                                                                    </div>
+                                                                                </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            &nbsp;
+                                                                                <div class="form-group">
+                                                                                    <div class="row">
+                                                                                        &nbsp;&nbsp;<br>
+                                                                                        <a href="#" class="btn btn-xs green" data-bind="click: $root.RemoveList"><i class="fa fa-minus"></i></a>
+                                                                                    </div>
+                                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div></div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="form-group">
+                                                                <div class="row">
+                                                                    <select multiple="multiple" style="width: 80%; height: 150px;" id="listbox12" data-bind="options: $root.userPreferenceDetailsByUser, selectedIndex : 0, optionsText: 'Entityname', selectedOptions: itemSelected"></select>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="form-group col-md-2">
+                                                                <button type="submit" class="btn green" data-bind="click:$parent.Save" >Save</button>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="clearfix"></div>
+        </div>
+</div>
+
+</div>
+
+
+

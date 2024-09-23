@@ -1,0 +1,197 @@
+#sidelinks .km-content {
+    background-color: #3d3d3d;
+}
+
+.km-drawer-button:before, .km-drawer-button:after {
+    content: "\E077";
+}
+
+.km-inbox:before, .km-inbox:after {
+    content: "\E0B0";
+}
+
+.km-sent:before, .km-sent:after {
+    content: "\E0C6";
+}
+
+.km-trash:before, .km-trash:after {
+    content: "\E0C3";
+}
+
+.km-spam:before, .km-spam:after {
+    content: "\E0C5";
+}
+
+.km-star:before, .km-star:after {
+    content: "\E0D7";
+}
+
+.km-settings:before, .km-settings:after {
+    content: "\E0DA";
+}
+
+.km-off:before, .km-off:after {
+    content: "\E0B9";
+}
+
+.km-envelop:before, .km-envelop:after {
+    content: "\E099";
+}
+/*.km-home:before, .km-home:after { content: "\E0AF"; }*/
+.km-back:before, .km-back:after {
+    content: "\e003";
+}
+
+.inboxList {
+    font-size: 1em;
+}
+
+    .inboxList p,
+    .inboxList h2,
+    .inboxList h3 {
+        margin: 5px 2px;
+    }
+
+    .inboxList p,
+    .inboxList h3 {
+        color: #555;
+    }
+
+.km-ios7 .km-list > li {
+    color: #000;
+}
+
+.slinks .km-list > li {
+    color: #999ea9;
+}
+
+.inboxList h3.time {
+    color: #0A83EF;
+    float: left;
+    margin-right: 10px;
+}
+
+.ports {
+    background-color: #212121;
+    height: 45px;
+}
+
+    .ports select {
+        font-size: 18px;
+        width: 90%;
+    }
+
+        .ports select:not([multiple]) {
+            border-width: 0px;
+            background-size: none;
+        }
+
+.km-group-title {
+    display: none;
+}
+
+.value {
+    float: right;
+    padding-top: 7px;
+    color: #7dba00;
+    font-weight: bold;
+}
+
+.stasks table {
+    font-size: 16px;
+    width: 100%;
+    border-collapse: collapse;
+}
+/* Zebra striping */
+.stasks tr:nth-of-type(odd) {
+    background: #333;
+}
+
+.stasks tr:nth-of-type(even) {
+    background: #555;
+}
+
+.stasks th {
+    background: #e02222;
+    color: white;
+    font-weight: bold;
+}
+
+.stasks td, th {
+    padding: 6px;
+    border: 1px solid #a6a6a6;
+    text-align: left;
+}
+
+.stasks {
+    margin: 15px;
+    color: #FFF;
+}
+/* 
+	Max width before this PARTICULAR table gets nasty
+	This query will take effect for any screen smaller than 760px
+	and also iPads specifically.
+	*/
+@media only screen and (max-width: 760px) /*,
+	(min-device-width: 768px) and (max-device-width: 1024px)*/ {
+    .km-root .km-android .km-tabstrip .km-button {
+        background: #212121 /*7dba00 height:50px*/;
+        padding-bottom: 15px;
+    }
+    /* Force table to not be like tables anymore */
+    .stasks table, .stasks thead, .stasks tbody, .stasks th, .stasks td, .stasks tr {
+        display: block;
+        color: #7dba00;
+        border: 0;
+    }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .stasks thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            margin-bottom:;
+        }
+
+    .stasks tr {
+        margin-bottom: 10px;
+    }
+
+    .stasks td {
+        /* Behave  like a "row" 
+			border: none;*/
+        position: relative;
+        padding-left: 50%;
+        border-bottom: 1px solid #6f6f6f;
+    }
+
+        .stasks td:before {
+            /* Now like a table header */
+            position: absolute;
+            color: #B6B6B6;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+        }
+        /*
+		Label the data
+		*/
+        .stasks td:nth-of-type(1):before {
+            content: "Vessel Name";
+        }
+
+        .stasks td:nth-of-type(2):before {
+            content: "Movement";
+        }
+
+        .stasks td:nth-of-type(3):before {
+            content: "JDue In (Hours)";
+        }
+
+        .stasks td:nth-of-type(4):before {
+            content: "Actions";
+        }
+}

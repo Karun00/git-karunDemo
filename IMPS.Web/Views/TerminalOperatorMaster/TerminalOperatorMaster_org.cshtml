@@ -1,0 +1,491 @@
+﻿@{
+    ViewBag.Title = "TerminalOperatorMaster";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/TerminalOperatorModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/TerminalOperatorViewModel.js"></script>
+
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.TerminalOperatorViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#TerminalOperatorMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="TerminalOperatorMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+   
+</div>
+<!-- Main body content starts here for developers-->
+<script type="text/html" id="List-template">
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <div id="tablewrapper15">
+                <div id="tableheader">
+                    <a class="button gbtngreen" data-bind="click: $root.addTerminalOperator">Add New <i class="fa fa-plus"></i></a>
+                 @*   <div class="search">
+                        <select id="columns" onchange="sorter.search('query')"></select>
+                        <input type="text" id="query" onkeyup="sorter.search('query')" placeholder="Search" />
+                        <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                    </div>*@
+                </div>
+                <div data-bind="kendoGrid: {
+    data: terminaloperatorList,
+    groupable: false,
+    sortable: true,
+    scrollable: false,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: {
+        refresh: true,
+        pageSizes: true,
+        buttonCount: 5
+    },
+    useKOTemplates: true, columns: [{ field: 'TerminalOperatorIDSort', title: 'TO Code', width: 20, filterable: true },
+                                    { field: 'RegisteredNameSort', title: 'TO Rep. Name', width: 80, filterable: true },
+                                    { field: 'TradingNameSort', title: 'TO Trading Name', width: 80, filterable: true },
+                                    { field: 'LicensedForSort', title: 'Licensed For', width: 100, filterable: true },
+                                    { field: 'RegistrationNumberSort', title: 'Reg No.', width: 80, filterable: true },
+                                    { field: 'RegistrationDateSort', title: 'Reg. Dt', width: 100, filterable: true },
+                                    { field: 'ValidityDateSort', title: 'Validity', filterable: true, width: 80 },
+                                    { title: 'Status', filterable: false, width: 60 },
+                                    { title: 'Actions', filterable: true, width: 80 }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td data-bind="text: TerminalOperatorID"></td>
+                        <td>
+                            <div class="nowrap" data-bind="text: RegisteredName"></div>
+                        </td>
+                       <td data-bind="text: TradingName"></td>
+                        <td data-bind="text: LicensedFor"></td>
+                        <td data-bind="text: RegistrationNumber"></td>
+                        <td>
+                            <div class="nowrap" data-bind="text: RegistrationDate"></div>
+                        </td>
+                        <td data-bind="text: ValidityDate"></td>
+                        <td data-bind="text: RecordStatus"></td>
+                        <td>
+                            <div class="nowrap">
+                                <a href="javascript:;" title="View" data-bind="click: $parent.viewTerminalOperator" ><i class="fa fa-eye"></i></a>&nbsp; &nbsp;
+                                    <a href="javascript:;" title="Edit" data-bind="click: $parent.EditTerminalOperator" ><i class="fa fa-edit"></i></a>&nbsp; &nbsp;
+                                    <a href="javascript:;"  title="Delete" data-bind="click: $parent.DeleteTerminalOperator" ><i class="fa fa-ban"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+    
+  
+</script>
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+<script type="text/html" id="Form-template">
+    <div class="portlet portlet-body form">
+        <form action="#" id="form_sample_1" class="form-horizontal">
+            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                <div class="form-body" data-bind="with: terminaloperatorModel">
+                    <div id="divValidationError" class="alert alert-danger display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        You have some form errors. Please check below.
+                    </div>
+                    <div id="divValidationSuccess" class="alert alert-success display-none">
+                        <button class="close" data-dismiss="alert"></button>
+                        Your form validation is successful!
+                    </div>
+                    <div class="form-group">
+                        <fieldset>
+                            <legend>TerminalOperator Details</legend>
+                            <div class="row" id="divtoregfirstdetails">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-md-6">Registered Name of the Applicant: <span class="required">*</span></label>
+
+                                        <div class="col-md-6">
+                                            <input id="RegisteredName" type="text" title="RegisteredName" placeholder="RegisteredName" class="form-control" data-bind="value: RegisteredName, event: { keypress: ValidateAlphabetsWithSpaces }" name="RegisteredName" />
+                                            <span id="spanterminaloperatorRegisteredName" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-md-6">TradingName: <span class="required">*</span></label>
+
+                                        <div class="col-md-6">
+                                            <input id="TradingName" type="text" title="TradingName" placeholder="TradingName" class="form-control" data-bind="value: TradingName, event: { keypress: ValidateAlphabetsWithSpaces }" name="TradingName" />
+                                            <span id="spanterminaloperatorTradingName" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-md-6">RegistrationNumber:  <span class="required">*</span></label>
+
+                                        <div class="col-md-6">
+                                            <input id="RegistrationNumber" placeholder="RegistrationNumber"  type="text" title="RegistrationNumber" data-bind="value: RegistrationNumber" class="form-control" name="RegistrationNumber" />
+                                            <span id="spanterminaloperatorRegistrationNumber" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="divtoregseconddetails">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6">Registration Date:<span class="required">*</span></label>
+
+                                        <div class="col-md-6">
+                                            <div class="input-icon">
+                                            <i class="fa fa-calendar"></i>
+@*                                            <input id="RegistrationDate" placeholder="yyyy-MM-dd" type="text" title="RegistrationDate" class="form-control date-picker" " data-bind="value: RegistrationDate" name="RegistrationDate" maxlength="10" />*@
+                                                <input id="datepicker" type="text" title="RegistrationDate" class="form-control datetime-picker"  data-bind="kendoDatePicker: { value: RegistrationDate, format: 'yyyy-MM-dd' }"" name="RegistrationDate" maxlength="10" />
+                                            <span id="spanterminaloperatorRegistrationDate" class="validationError"></span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-md-6">Validity Date:<span class="required">*</span></label>
+
+                                        <div class="col-md-6">
+                                            <div class="input-icon">
+                                              <i class="fa fa-calendar"></i>
+@*                                            <input id="ValidityDate" type="text" placeholder="yyyy-MM-dd" title="ValidityDate"  class="form-control date-picker"  data-bind=" value: ValidityDate" name="ValidityDate" maxlength="10" />*@
+                                                 <input id="datepickerv" type="text" title="ValidityDate" class="form-control datetime-picker"  data-bind="kendoDatePicker: { value: ValidityDate, format: 'yyyy-MM-dd' }"" name="ValidityDate" maxlength="10" />
+                                            <span id="spanterminaloperatorValidityDate" class="validationError"></span>
+                                        </div>
+                                       </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-md-6">Terminal Premise Location:<span class="required">*</span></label>
+
+                                        <div class="col-md-6">
+                                            <input id="PremiseLocation" placeholder="PremiseLocation" type="text" title="PremiseLocation" class="form-control" data-bind="value: PremiseLocation, event: { keypress: ValidateAlphabetsWithSpaces }" name="PremiseLocation" />
+                                            <span id="spanterminaloperatorPremiseLocation" class="validationError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Status:</label>
+                                                    <div class="col-md-6">
+                                                        <select id="status" name="" data-bind="options: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], optionsText: 'name', optionsValue: 'val', value: RecordStatus, enable: $parent.editableView "></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                            <div class="clearfix">
+                                <br>
+                            </div>
+                            <div class="row" id="divtoaddressdetails">
+                                <div class="col-md-6">
+                                    <div style="margin-right: 5px;">
+                                        <fieldset>
+                                            <legend>Principal place of Business</legend>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Number &amp; Street:
+                                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        <input id="NumStreet" type="text" title="NumStreet" class="form-control" data-bind="value: NumStreet " name="NumStreet" />
+                                                        <span id="spanterminaloperatorNumberStreet" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Suburb:
+                                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        <input id="Suburb" type="text" title="Suburb" class="form-control" data-bind="value: Suburb " name="Suburb" />
+                                                        <span id="spanterminaloperatorSuburb" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Town &amp; City:
+                                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        <input id="TownCity" type="text" title="TownCity" class="form-control" data-bind="value: TownCity, event: { keypress: ValidateAlphabetsWithSpaces }" name="TownCity" />
+                                                        <span id="spanterminaloperatorTownCity" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Postal Code:
+                                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-5">
+                                                        <input id="PostalCode" type="text" title="PostalCode" class="form-control" data-bind="value: PostalCode, event: { keypress: Validatenumeric } " name="PostalCode" />
+                                                        <span id="spanterminaloperatorPostalCode" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Telephone No.:
+                                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-3">
+                                                        <input id="TelephoneNo1" type="text" title="TelephoneNo1" class="form-control" data-bind="value: TelephoneNo1, event: { keypress: Validatenumeric } " name="TelephoneNo1" />
+                                                        <span id="spanterminaloperatorTelephoneNo1" class="validationError"></span>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        @*<label class="control-label fc-col0">&nbsp;<a href="#">Add New</a></label>*@
+                                                        @* <button class="control-label fc-col0" id="addnewtelephone" data-bind="click: $root.Addtelephone, valueupdate: 'click'">Add New</button>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Fax No.:
+                                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-5">
+                                                        <input id="FaxNo" type="text" title="FaxNo" class="form-control" data-bind="value: FaxNo, event: { keypress: Validatenumeric } " name="FaxNo" />
+                                                        <span id="spanterminaloperatorFaxNo" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div style="margin-left: 5px;">
+                                        <fieldset style="height: 258px;">
+                                            <legend>Postal Address</legend>
+                                            <div class="col-md-11">
+                                                <div>
+                                                    <label>
+                                                        <input type="checkbox" id="chkBuisinessAddress" data-bind="click: $root.FillPostal, valueupdate: 'click'">Same as 'Principal place of Business'
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Number &amp; Street:
+                                                            <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        <input id="NumStreet2" type="text" title="NumStreet2" class="form-control" data-bind="value: NumStreet2 " name="NumStreet2" />
+                                                        <span id="spanterminaloperatorNumStreet2" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Suburb:
+                                                            <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        <input id="Suburb2" type="text" title="Suburb2" class="form-control" data-bind="value: Suburb2, event: { keypress: ValidateAlphabetsWithSpaces }" name="Suburb2" />
+                                                        <span id="spanterminaloperatorSuburb2" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Town &amp; City:
+                                                            <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        <input id="TownCity2" type="text" title="TownCity2" class="form-control" data-bind="value: TownCity2, event: { keypress: ValidateAlphabetsWithSpaces }" name="TownCity2" />
+                                                        <span id="spanterminaloperatorTownCity2" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">
+                                                        Postal Code:
+                                                            <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-5">
+                                                        <input id="PostalCode2" type="text" title="PostalCode2" class="form-control" data-bind="value: PostalCode2, event: { keypress: Validatenumeric }  " name="PostalCode2" />
+                                                        <span id="spanterminaloperatorPostalCode2" class="validationError"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="clearfix">
+                                <br>
+                            </div>
+
+                            <fieldset>
+                                <legend>Berth Configurations</legend>
+                                <div class="row col-md-12" id="divlicensedfor">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">
+                                                Licensed for:
+                                                                <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                <div class="radio-list">
+                                                    <input type="radio" id="radioBerths" name="LicensedFor" value="TOB" data-bind="click: $root.FillBirth, valueupdate: ' checked', checked: LicensedFor " />
+                                                    <label class="radio-inline">Berths</label>
+                                                    <input type="radio" id="radioCargoHandling" name="LicensedFor" value="TOCH" data-bind="click: $root.FillBirth, valueupdate: 'checked', checked: LicensedFor " />
+                                                    <label class="radio-inline">Cargo Handling</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+     
+                                      @*  <select data-bind="options: quays, optionsName: 'QueyName', optionsValue: 'QueyName', value: $parent.Quaynamevalues"></select>*@
+                          
+
+
+                                      <div class="col-md-4" id="divcargo"  > @*style="display: none"*@
+                                        <div style="margin-left: 8px;">
+                                            <div class="portlet-body">
+                                                <div class="table-scrollable">
+                                                    <table width="100%" id="tblcargo" class="table1 table-striped table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th colspan="2" scope="col">
+                                                                    <div align="center">Cargo Type</div>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody data-bind="foreach: $parent.Cargovalues">
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="checkbox" name="cargo" data-bind="value: SubCatCode, attr: { id: 'chkcargo_' + SubCatCode }"><label data-bind="    text: SubCatCode"></label>
+                                                                </td>
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                                                  <div class="col-md-6" id="divquay" >
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">Select Quay:</label>
+                                            <div class="col-md-6">
+                                                <select id="Quaynames" name="Quaynames" title="Quaynames" class="form-control" data-bind="options: $parent.Quaynamevalues, optionsText: 'QuayName', optionsCaption: 'Select', optionsValue: 'QuayKey', value: selectedQuayCode, event: { change: $parent.loadQuayandBerthname }"></select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                        @*  <select id="Quaynames" name="Quaynames" title="Quaynames" class="form-control" data-bind="options: $parent.Quaynamevalues, optionsText: 'QuayName', optionsCaption: 'Select', optionsValue: 'QuayCode', value: selectedQuayCode"></select>
+                        *@                       
+
+   @*    <div data-bind="with: selectedQuay">
+        <ul data-bind="foreach: $parent.berthValues">
+            <li>
+            <span data-bind="text: BerthCode"></span> -- <input type="checkbox" data-bind="    checkedValue: $data.BerthName" />
+            </li>
+        </ul>
+        </div>*@
+
+
+
+
+
+
+                                    <div class="row col-md-12">
+                                        <div class="col-md-8" id="divberth" >
+                                            <div style="margin-right: 8px;">
+                                                <div class="portlet-body">
+                                                    <div class="table-scrollable">
+
+                                                        <table width="100%" id="tblberth" class="table1 table-striped table-bordered table-hover">
+                                                            <thead>
+
+                                                                <tr>
+                                                                    <th scope="col">QUAY</th>
+                                                                    <th colspan="5" scope="col">
+                                                                        <div align="center">Berths</div>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody data-bind="foreach: $parent.berthValues">
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="nowrap"><span data-bind="text: QuayCode"></span></div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="checkbox" name="Berth" data-bind="value: BerthCode, attr: { id: 'chkberth_' + BerthCode }"><label data-bind="    text: BerthName"></label>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                  
+                                </div>
+                            </fieldset>
+                            <div class="clearfix">
+                                <br>
+                                <br>
+                            </div>
+                        </fieldset>
+  
+
+
+                    </div>
+    <div class="btns-group form-actions fluid">
+        <button type="submit" class="btn green" data-bind=" click: $parent.SaveTerminalOperator, visible: $parent.IsSave">Save</button>
+        <button type="submit" class="btn green" title="Update" data-bind="click: $parent.UpdateTerminalOperator, visible: $parent.IsUpdate">Update</button>
+        <button type="submit" class="btn blue" data-bind="click: $parent.ResetTerminalOperators, visible: $parent.IsReset">Reset</button>
+        <button type="submit" class="btn red button-submit" data-bind="click: $parent.cancel">Cancel</button>
+    </div>
+    </div>
+            </div>
+        </form>
+    </div>
+
+</script>
+

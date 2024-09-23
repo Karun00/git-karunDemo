@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "Roster";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml"; 
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Application/ViewModel/RosterViewModel.js"></script>
+    <script src="~/Scripts/Application/Model/RosterModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.RosterMasterViewModel();
+    ko.applyBindingsWithValidation(viewModel, $("#RosterMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitle"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+
+<div class="portlet portlet-body form">
+    <div class="table-toolbar" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <div class="row" id="RosterMaster">
+            <div class="portlet-body">
+                <form action="#" class="form-horizontal" id="submit_form">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                                <div>
+                                    @*<div id="divValidationError1" class="alert alert-danger display-none">
+                                        <button class="close" data-dismiss="alert"></button>
+                                        You have some form errors. Please check below.                                
+                                    </div>*@
+                                    <div class="alert alert-success display-none">
+                                        <button class="close" data-dismiss="alert"></button>
+                                        Your form validation is successful!
+                                    </div>
+
+                                    <div class="form-body" data-bind='with: rostermasterModel'>
+                                        <fieldset>
+                                            <legend>Add Roster</legend>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Year:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <select id="YearName" name="YearName" class="form-control" data-bind="options: $root.rosterReferenceData().Years, optionsText: 'YearName', optionsValue: 'YearName', value: $root.rostermasterModel().Year, optionsCaption: 'Select Year', enable: $root.hasEnable"></select>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Month:<span class="required">*</span></label>
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <select id="Months" name="Months" class="form-control" data-bind="options: $root.rosterReferenceData().Months, optionsText: 'monthname', optionsValue: 'number', value: $root.rostermasterModel().month, optionsCaption: 'Select Month', enable: $root.hasEnable"></select>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">Employee Designation:<span class="required">*</span></label>
+
+                                                        <div class="col-md-6">
+                                                            <div class="form-control">
+                                                                <select id="Designation" name="Designation" class="form-control" data-bind="options: $root.rosterReferenceData().Designations, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: $root.rostermasterModel().Designation, optionsCaption: 'Select Designation', enable: $root.hasEnable"></select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6"></label>
+                                                        <div class="col-md-6 fluid">
+                                                            <button type="submit" class="btn btn-xs green " data-bind="click: $root.LoadRosterDetails, enable: $root.hasEnable">Display</button>&nbsp;&nbsp;
+                                                            <button type="submit" class="btn btn-xs blue" data-bind="enable: $root.hasEnable, click: $root.ResetRosterMaster">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            &nbsp;                                           
+                                               <br>
+                                        </fieldset>
+                                        <div>
+
+                                            <div data-bind="kendoGrid: {
+    data: RosterAloocationLists,
+    sortable: true,
+    scrollable: true,
+    rowTemplate: 'rowTmpl',
+
+    useKOTemplates: true, columns: [
+                        { field: 'WeekNo', title: 'Week No.', width: '60px', filterable: false },
+                         { field: 'DayFromTo', title: 'Day From To (Day/Month)', width: '100px', filterable: false },
+                        { field: 'Group Name', title: 'Group Name', width: '130px', filterable: false },
+                        { field: 'Sunday', title: 'SUN', width: '80px', filterable: false },                     
+                        { field: 'Monday', title: 'MON', width: '80px', filterable: false },
+                        { field: 'Tuesday', title: 'TUE', width: '80px', filterable: false },
+                        { field: 'Wednesday', title: 'WED', width: '80px', filterable: false },
+                        { field: 'Thursday', title: 'THU', width: '80px', filterable: false },
+                        { field: 'Friday', title: 'FRI', width: '80px', filterable: false },
+                        { field: 'Saturday', title: 'SAT', width: '80px', filterable: false }
+                     ]
+}">
+
+
+                                                <script id="rowTmpl" type="text/html">
+                                                    <tr>
+                                                        <td>
+                                                            <div class="nowrap"><span data-bind="text: WeekNo"></span></div>
+                                                        </td>
+                                                         <td>
+                                                            <div class="nowrap"><span data-bind="text: DayFromTo"></span></div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <span class="hide" data-bind="text: ResourceGroupID"></span><span data-bind="    text: ResourceGroupName"></span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <select class="form-control" data-bind="options: $root.rosterReferenceData().Shifts, optionsText: 'ShiftFormat', optionsValue: 'ShiftID', value: Sunday, optionsCaption: 'Select Shift'"></select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <select class="form-control" data-bind="options: $root.rosterReferenceData().Shifts, optionsText: 'ShiftFormat', optionsValue: 'ShiftID', value: Monday, optionsCaption: 'Select Shift'"></select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <select class="form-control" data-bind="options: $root.rosterReferenceData().Shifts, optionsText: 'ShiftFormat', optionsValue: 'ShiftID', value: Tuesday, optionsCaption: 'Select Shift'"></select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <select class="form-control" data-bind="options: $root.rosterReferenceData().Shifts, optionsText: 'ShiftFormat', optionsValue: 'ShiftID', value: Wednesday, optionsCaption: 'Select Shift'"></select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <select class="form-control" data-bind="options: $root.rosterReferenceData().Shifts, optionsText: 'ShiftFormat', optionsValue: 'ShiftID', value: Thursday, optionsCaption: 'Select Shift'"></select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <select class="form-control" data-bind="options: $root.rosterReferenceData().Shifts, optionsText: 'ShiftFormat', optionsValue: 'ShiftID', value: Friday, optionsCaption: 'Select Shift'"></select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="nowrap">
+                                                                <select class="form-control" data-bind="options: $root.rosterReferenceData().Shifts, optionsText: 'ShiftFormat', optionsValue: 'ShiftID', value: Saturday, optionsCaption: 'Select Shift'"></select>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </script>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <br />
+                                        <p>&nbsp;</p>
+                                        <div class="clearfix">
+                                            <div class="btns-group form-actions fluid">
+                                                <button type="submit" class="btn green" data-bind="click: $root.SaveRoster, visible: shouldShowUpdate">Update</button>
+                                                <button type="submit" class="btn green" data-bind="click: $root.SaveRoster, visible: shouldShowSave">Save</button>
+                                                <button type="submit" class="btn blue" data-bind="click: $root.ResetRosterMaster, visible: shouldShowReset">Reset</button>
+                                                <button type="button" class="btn red" id="cancel" data-bind="click: $root.CancelRosterMaster, visible: shouldShowResetCan">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

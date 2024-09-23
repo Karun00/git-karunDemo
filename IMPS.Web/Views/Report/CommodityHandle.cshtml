@@ -1,0 +1,26 @@
+﻿@using MvcReportViewer;
+@{
+    Layout="~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+    @Html.MvcReportViewer(
+   "/IPMS.Reports/GraphCommodityHand",
+    new { FromDate = DateTime.Today.ToString("yyyy-MM-dd"), ToDate = DateTime.Today.ToString("yyyy-MM-dd"), Port=ViewBag.PortName,UserName=ViewBag.UserName },
+    new { Height = "550px", Width = "100%",scrolling="no", style = "border: none"})
+    </div>
+</body>
+</html>
+
+
+
+
+

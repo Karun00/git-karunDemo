@@ -1,0 +1,332 @@
+#tablewrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+#tableheader {
+    width: 100%;
+}
+
+    #tableheader option {
+        padding-left: 4px;
+        font-size: 13px;
+        background-color: #fff;
+    }
+
+.search {
+    float: right;
+    padding: 2px;
+    border: 1px solid #c6d5e1;
+    background: #fff;
+}
+
+#tableheader select {
+    float: left;
+    font-size: 13px; /*width:125px; */
+    padding: 1px;
+}
+
+#tablenav select {
+    float: left;
+    font-size: 13px;
+    width: 40px;
+    padding: 1px 4px 2px 3px;
+    margin-left: 4px;
+    display: inline-block;
+}
+
+#tableheader input {
+    float: left;
+    font-size: 13px;
+    width: 200px;
+    height: 24px;
+    padding: 2px;
+    margin-left: 4px;
+    border: 1px solid #c1bdbd;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.details {
+    float: right;
+    padding-top: 12px;
+}
+
+    .details div {
+        float: left;
+        font-family: OswaldLight, sans-serif;
+        margin-left: 15px;
+        font-size: 17px;
+    }
+
+.tinytable {
+    width: 100%;
+    border-left: 1px solid #c6d5e1;
+    border-top: 1px solid #c6d5e1;
+    border-bottom: none;
+}
+
+    .tinytable th {
+        background-color: #019dd8;
+        font-family: OswaldLight, sans-serif;
+        text-align: left;
+        color: #fff;
+        border: 1px solid #000;
+    }
+
+        .tinytable th h5 {
+            font-size: 13px;
+            text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+            margin: 6px 4px;
+        }
+
+    .tinytable td {
+        padding: 3px 6px 3px;
+        border-bottom: 1px solid #c6d5e1;
+        border-right: 1px solid #c6d5e1;
+    }
+
+    .tinytable .head h5 {
+        background: url(../img/sort.png) 3px center no-repeat;
+        cursor: pointer;
+        padding-left: 12px;
+    }
+    /*.tinytable .desc, .sortable .asc {background-color:#35aa47; border-bottom:1px solid #35aa47;}*/
+    .tinytable .desc h5 {
+        background: url(../img/desc.png) 3px center no-repeat;
+        cursor: pointer;
+        padding-left: 12px;
+    }
+
+    .tinytable .asc h5 {
+        background: url(../img/asc.png) 3px center no-repeat;
+        cursor: pointer;
+        padding-left: 12px;
+    }
+
+    .tinytable .head:hover, .tinytable .desc:hover, .tinytable .asc:hover {
+        color: #fff;
+    }
+
+    .tinytable .evenrow td {
+        background: #fff;
+    }
+
+    .tinytable .oddrow td {
+        background: #eee;
+    }
+    /*.tinytable td.evenselected {background:#e3e3e3}
+.tinytable td.oddselected {background:#d7d7d7}*/
+    .tinytable tfoot {
+        background: #fff;
+        font-weight: bold;
+    }
+
+        .tinytable tfoot td {
+            padding: 6px 8px 8px;
+        }
+
+    .tinytable td a {
+        color: #3d3d3d;
+    }
+
+#tablefooter {
+    height: 15px;
+    width: 100%;
+}
+
+#tablenav {
+    float: left;
+}
+
+    #tablenav img {
+        cursor: pointer;
+    }
+
+    #tablenav div {
+        float: left; /* margin-right:15px*/
+    }
+
+#tablelocation {
+    float: right;
+    font-family: OswaldLight, sans-serif;
+    font-size: 13px; /*;background: none repeat scroll 0 0 #FFFFFF;border: 1px solid #C6D5E1;padding: 2px;*/
+}
+
+.tlbox {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #C6D5E1;
+    padding: 2px 3px 2px 0;
+}
+
+#tablelocation select {
+    margin-right: 3px;
+    background-color: #f7fbfe;
+    width: 40px;
+    margin-right: -12px;
+}
+
+#tablelocation option {
+    background-color: #fff;
+}
+
+#pagedropdown {
+    width: 40px;
+    height: 24px;
+    background-color: #f7fbfe;
+}
+
+    #pagedropdown option {
+        background-color: #fff;
+    }
+
+#tablelocation div {
+    float: left;
+    margin-left: 15px;
+}
+
+.page {
+    margin-top: 2px;
+    font-style: normal;
+}
+
+.txt-page {
+    font-family: OswaldLight, sans-serif;
+    font-size: 17px;
+}
+
+/***Heading pannel contact***/
+.heading-color {
+    background: #019dd8;
+    border-bottom: 1px solid #54c9f5;
+}
+
+/*****************Button Style******************/
+
+.btn-reset {
+}
+
+.txt-txt {
+    font-family: OswaldLight, sans-serif;
+    font-size: 17px;
+}
+
+.button {
+    display: inline-block;
+    zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */
+    *display: inline;
+    vertical-align: baseline;
+    /*margin: 0 2px;*/
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    padding: .2em 1em .35em;
+    text-shadow: 0px 1px 3px rgba(150, 150, 150, 1);
+    -webkit-border-radius: .1em;
+    -moz-border-radius: .1em;
+    border-radius: .1em;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+
+    .button:hover {
+        text-decoration: none;
+    }
+
+    .button:active {
+        position: relative;
+        /*top: 1px;*/
+    }
+/* blue */
+
+
+/* 
+	Max width before this PARTICULAR table gets nasty
+	This query will take effect for any screen smaller than 760px
+	and also iPads specifically.
+	*/
+
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+    body {
+        padding: 0;
+        margin: 0;
+        width: 320px;
+    }
+
+    #tableheader input {
+        margin-top: 10px;
+    }
+}
+
+/* iPads (portrait and landscape) ----------- */
+
+
+
+
+/*Preview*/
+.preview-top {
+    width: 100%;
+    height: 30px;
+}
+
+.sub-preview {
+    width: 900px;
+    height: 30px;
+    margin: 0 auto;
+}
+
+.button-top {
+    float: left;
+    margin: 0 auto;
+}
+
+
+.gbtngreen {
+    background: #35aa47;
+    color: #fff;
+    border: solid 1px #777;
+    margin-top: 5px;
+    /*width:20px; height:16px;*/
+}
+
+    .gbtngreen:hover {
+        background: #239135;
+        color: #fff;
+    }
+
+    .gbtngreen:active {
+        color: #155f21;
+        background: #4ab65b;
+    }
+
+.blueTop {
+    background: #0095cd;
+    width: 20px;
+    height: 16px;
+}
+
+.gridhead {
+    padding: 3px 5px;
+    background-color: #AFFEB1;
+    color: #060;
+    font-size: 15px;
+}
+
+.taskblock {
+    font-size: 11px;
+}
+
+    .taskblock .tinytable th h5 {
+        font-size: 11px;
+        margin: 5px;
+    }
+
+    .taskblock .gridhead {
+        padding: 2px 10px;
+        font-size: 13px;
+    }

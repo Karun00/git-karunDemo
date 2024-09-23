@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Notifications";
+    Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/MobileModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/MobileViewModel.js"></script>
+}
+@section ko_apply
+{
+var vm = new IPMSROOT.MobileViewModel();
+    ko.applyBindingsWithValidation(vm, $("#ulNotifications")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true } });   
+}
+<div class="topbar">
+    <div class="user">Welcome Steve</div>
+    <div class="topicons">
+        <a href="@Url.Action("DashBoard", "Mobile")"><i class="back"></i></a>
+        <a href="@Url.Action("DashBoard", "Mobile")"><i class="home"></i></a>
+        <a href="@Url.Action("Logout", "Mobile")"><i class="logout"></i></a>
+    </div>
+</div>
+
+
+<span id="Info">
+    <div data-bind="foreach: $root.Notifications" id="ulNotifications">
+        <div class="notify-disp" data-bind="style: { color: IsRead() == 'N' ? 'red' : 'black', fontWeight: IsRead() == 'N' ? 'bold' : '' }, click: $root.NotificationPopUp">
+            <li><span data-bind="text: NotificationText"></span></li>
+            <li><span data-bind="text: CreatedDate"></span>
+            </li>
+        </div>
+    </div>
+</span>

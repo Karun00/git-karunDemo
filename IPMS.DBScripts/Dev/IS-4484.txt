@@ -1,0 +1,32 @@
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[usp_rpt_GetSlotsOveridden]') AND type in (N'P'))
+DROP PROCEDURE [dbo].[usp_rpt_GetSlotsOveridden]
+GO
+CREATE PROCEDURE [dbo].[usp_rpt_GetSlotsOveridden]
+  @FromDate DATETIME, @ToDate DATETIME,  @Port VARCHAR (50)
+   WITH
+   EXECUTE AS CALLER
+AS
+   BEGIN  
+   
+   select VCM.[VCN],V.[VesselName],SOR.PreviousSlot,SOR.OverriddenSlot
+     ,sc.SubCatName as 'Reason_for_Over_ride',SOR.EnteredDateAndTime as 'DateTime',U.[FirstName] + ' ' + U.[LastName]as 'User'    
+     ,case when SOR.PreviousSlotDate is null then VCM.slotdate else SOR.PreviousSlotDate end as PreviousSlotDate
+     ,SOR.EnteredDateAndTime as OverriddenSlotDate, sb.SubCatName MovementType
+  from [dbo].[SlotOverRidingReasons] SOR 
+       join [dbo].[VesselCallMovement] VCM on SOR.[VesselCallMovementID]=VCM.[VesselCallMovementID] 
+       join [dbo].[SubCategory] sb on sb.SubCatCode = VCM.MovementType
+       join [dbo].[ArrivalNotification] AN on AN.VCN=VCM.VCN
+       join [dbo].[Vessel] V on AN.[VesselID]=V.[VesselID] join SubCategory SC on SOR.ReasonCode=SC.SubCatCode 
+       join [dbo].[Users] U on [UserID]=SOR.ModifiedBy
+       where CAST (SOR.EnteredDateAndTime AS DATETIME) BETWEEN @FromDate AND @ToDate
+	    AND (AN.PortCode = @Port OR @Port IS NULL)
+       order by SOR.OverRideSlotID asc
+
+  END
+GO
+
+
+
+
+

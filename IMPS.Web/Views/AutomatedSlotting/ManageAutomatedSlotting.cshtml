@@ -1,0 +1,166 @@
+﻿ @{
+    ViewBag.Title = "AutomatedSlotting";
+    Layout = "~/Views/Shared/_IPMSBerthPlanning.cshtml";
+}
+
+@section scripts
+{<script src="~/Scripts/Lib/opentip.js"></script>
+    <script src="~/Scripts/Lib/adapter-jquery.js"></script>
+    <script src="~/Scripts/Lib/knockout-3.0.0.js"></script>
+    <script src="~/Scripts/Lib/kinetic-v5.0.1.min.js"></script>
+    <script src="~/Scripts/Lib/knockout.mapping-latest.debug.js"></script>
+    <script src="~/Scripts/Application/Model/AutomatedSlottingModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AutomatedSlottingViewModel.js"></script>
+    @*<script src="~/Scripts/BerthingRules.js"></script>*@
+   
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.AutomatedSlottingViewModel();
+    ko.applyBindings(viewModel, $("#AutomatedSlotting")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<link href="~/Content/Styles/opentip.css" rel="stylesheet" />
+<style type="text/css">
+    .page-content {
+        margin-left: 0px;
+    }
+
+    .btn-group > .btn {
+        box-shadow: none;
+        margin-right: 1px;
+        border: 1px solid #999;
+        border-radius: 0px !important;
+    }
+
+    .gray {
+        background-color: #CCC;
+    }
+
+        .gray:hover {
+            background-color: #999;
+        }
+
+    .edge-cut {
+        background-image: url("../Content/Images/buttons-top-edge-cut.png" );
+        background-repeat: no-repeat;
+        width: 7px;
+        height: 19px;
+        position: relative;
+        display: inline-block;
+        float: right;
+        top: 0;
+        margin-top: -3px;
+        margin-right: -6px;
+        background-position: right top;
+    }
+
+
+    #contextMenu {
+ margin:0; 
+    padding:0;
+    
+    min-width: 120px;
+    max-width: 250px;
+    display: inline-block;
+    position: absolute;
+    list-style-type: none;
+    
+    border: 1px solid #DDD;
+    background-color:#CCC;
+   
+    
+    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+       -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        -ms-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+         -o-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+
+#contextMenuH {
+  padding: 2px;
+   
+    position: relative;
+    -webkit-user-select: none;
+       -moz-user-select: -moz-none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+#contextMenuH img {
+margin-right:5px
+}
+
+#contextMenuB {
+  padding: 2px;
+  
+    position: relative;
+    -webkit-user-select: none;
+       -moz-user-select: -moz-none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+#contextMenuB input[type=button]{       
+    background-color:#fff;        
+    color:black;    
+}
+.portlet.box > .portlet-body {
+background-color: #feefef;
+}
+</style>
+
+
+
+<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title">Automated Slotting</h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div class="col-md-12" style="display: table;">
+            <div style="display: table-row;">             
+
+                <div style="display: table-cell; background-color: #f1efef">                   
+
+                    <div id="GridContainer" data-bind="event: { dragover: $root.allowDrop(event), drop: $root.DragEnd(event) }">
+                    </div>
+                    <div id="contextMenu" style="display: none">
+                        <div id="contextMenuH">
+                        </div>
+                        <div id="contextMenuB"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+<div class="clearfix"></div>
+
+
+<script>
+$(function () {
+	$('#newsList').newsTicker();
+});
+</script>
+<script>
+jQuery(document).ready(function() { 
+
+	 //Dropdown
+	$("#designation").kendoDropDownList();
+	//Multiselect
+   var required = $("#employee").kendoMultiSelect().data("kendoMultiSelect"); var optional = $("#optional").kendoMultiSelect().data("kendoMultiSelect"); $("#get").click(function() { alert("Attendees:\n\nRequired: " + required.value() + "\nOptional: " + optional.value()); });
+	 
+   App.init();
+   FormValidation.init();
+   FormWizard.init();
+   FormComponents.init();
+});
+</script>
+</body>
+</html>

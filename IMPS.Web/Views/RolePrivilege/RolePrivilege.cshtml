@@ -1,0 +1,239 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{
+    ViewBag.Title = "Role Privileges";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/RolePrivilegeModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/RolePrivilegeViewModel.js"></script>
+}
+@section ko_apply
+{
+var viewModel = new IPMSROOT.RolePrivilegeViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#RolePrivilege")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="RolePrivilege">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+</div>
+
+<script type="text/x-kendo-tmpl" id="EntityTemp">
+    <div class="product">
+        <h3>#:EntityName#</h3>
+    </div>
+</script>
+
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <script type="text/html" id="List-template">
+                <div id="tableheader">
+                    @if (Model.HasAddPrivilege)
+                    {
+                        <a class="button gbtngreen" data-bind="click: $root.addrolepriv ">Add New <i class="fa fa-plus"></i></a> 
+                    }
+
+                </div>
+                <div data-bind="kendoGrid: {
+    data: RolePrivList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'RoleCodeSort', title: 'Role Code', width: '80', filterable: true },
+        { field: 'RoleNameSort', title: 'Role Name', width: '80', filterable: true },
+        { title: 'Status', filterable: false },
+        { title: 'Actions', filterable: false }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+                    <tr>
+                        <td><span data-bind="text: RoleCode"></span></td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: RoleName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                <span data-bind="text: Statust"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="nowrap">
+                                @if (Model.HasEditPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.editrolepriv" title="Edit"><i class="fa fa-edit"></i></a>
+                                }
+                                @if (Model.HasViewPrivilege)
+                                {
+                                    <a href="#" data-bind="click: $parent.viewrolepriv" title="View"><i class="fa fa-eye"></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </script>
+        </div>
+
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+
+        <script type="text/html" id="Form-template">
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet portlet-body form">
+                    <form action="#" id="form_sample_1" class="form-horizontal">
+                        <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                            <div class="form-body" data-bind="with: roleprivilegeModel">
+                                <div class="tab-pane active" id="tab1">
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <legend>Role Details</legend>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Role Code:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" id="RoleCode" name="code" maxlength="4" autofocus="autofocus" class="form-control" data-bind="value: RoleCode, enable: $parent.IsCodeEnable, event: { keyup: HandleRolePrivCodeKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumeric } ">
+                                                            <span id="spanRolecode" class="validationError" data-bind="visible: $parent.UniqueCodeVisible">This role code already exists</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Role Name:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input type="text" id="RoleName" name="name" maxlength="30" data-required="1" class="form-control" data-bind="value: RoleName, enable: $parent.editableView, event: { keyup: HandleRolePrivNameKeyUp, keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }">
+                                                            <span id="spanRolename" class="validationError" data-bind="visible: $parent.UniqueNameVisible">This role name already exists</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Role Description:
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <textarea id="RoleDescription" name="Description" maxlength="50" rows="3" data-required="1" class="form-control" data-bind="value: RoleDescription, enable: $parent.editableView"> </textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Status:
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input id="Status" name="status" data-bind="kendoDropDownList: { data: [{ name: 'Active', val: 'A' }, { name: 'Inactive', val: 'I' }], value: RecordStatus, dataTextField: 'name', dataValueField: 'val', enabled: $parent.editableView } " />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <legend>Search</legend>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Module Name:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input id="Mod" name="Modname" data-bind="kendoDropDownList: { data: $parent.masterModules, value: ModuleID, dataTextField: 'ModuleName', dataValueField: 'ModuleID', optionLabel: 'Select...' }, event: { change: $parent.FillSubMod }" />
+                                                            <span id="spanModid" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">
+                                                            Sub Module Name:<span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6">
+                                                            <input id="SubMod" name="SubModname" data-bind="kendoDropDownList: { data: $parent.SubModulesList, value: SubModuleID, dataTextField: 'ModuleName', dataValueField: 'ModuleID', optionLabel: 'Select...' }, event: { change: $parent.SetSubModuleID }" />
+                                                            <span id="spanSubModid" class="validationError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2" style="padding-left: 10px;">
+                                                    <div>
+                                                        <button type="submit" id="Displaybtn" class="btn btn-xs blue" data-bind="click: $parent.Displaybtn">Display</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <div id="tblAssign" data-bind="visible: $parent.IsAssign">
+                                            <span id="tblAsssignpriv"></span>
+                                            <fieldset>
+                                                <legend>Assign Privileges</legend>
+                                                <div class="row col-md-12">
+                                                    <div class="col-md-12" id="divberth">
+                                                        <div style="margin-right: 8px;">
+                                                            <div class="portlet-body">
+                                                                <div class="table-scrollable">
+                                                                    <table width="100%" id="tblAssn" class="table1 table-striped table-bordered table-hover" data-bind="foreach: $parent.EntitiesList">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="nowrap"><span data-bind="text: EntityName"></span></div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <table id="table1">
+                                                                                    <tr data-bind="foreach: EntityPrivileges">
+                                                                                        <td>
+                                                                                            <input type="checkbox" data-bind="checked: $data.IsRole, disable: $root.IsviewMode">
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="nowrap"><span data-bind="text: SubCatName"></span></div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                        <br>
+                                    </div>
+                                    <div class="btns-group form-actions fluid" data-bind="loadingWhen: $parent.viewModelHelper.isLoading">
+                                        <span id="divSave">
+                                            <button type="submit" id="rpSave" class="btn green" value="POST VAL" data-bind="click: $parent.SaveRolePriv, visible: $parent.IsSave, disable: $root.IsSaveUpdateDisabled">Save</button>
+                                        </span>
+                                        <span id="divUpdate">
+                                            <button type="submit" id="rpUpdate" class="btn green" data-bind="click: $parent.ModifyRolePriv, visible: $parent.IsUpdate, disable: $root.IsSaveUpdateDisabled">Update</button>
+                                        </span>
+                                        <button type="submit" class="btn blue" data-bind="click: $parent.ResetRolePriv, visible: $parent.IsReset ">Reset</button>
+                                        <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </script>
+    </div>
+</div>

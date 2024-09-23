@@ -1,0 +1,487 @@
+Go
+  update SubCategory set RecordStatus='I' where SupCatCode='APCT'
+
+  Go
+  insert into SubCategory values('APCF','APCT','Individual Application','A',1,getdate(),1,getdate())
+
+  GO
+  insert into SubCategory values('APCH','APCT','Contractors Application','A',1,getdate(),1,getdate())
+
+Go
+  insert into SuperCategory values('TEMI','Individual Temporary Permit','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('TEIA','TEMI','1-2 Days','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('TEIB','TEMI','3-14 Days','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('TEIC','TEMI','max 90 Days','A',1,getdate(),1,getdate())
+
+
+  Go
+  insert into SuperCategory values('TEPI','Individual Permanent Permit','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('TEPA','TEPI','1-3 Years','A',1,getdate(),1,getdate())
+
+
+Go 
+insert into SubCategory values('ARRA','ARRB','TPT MPT','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRL','ARRB','TPT DBT','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRC','ARRB','South Dues','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRD','ARRB','South Dunes','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRE','ARRB','South Dunes','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRF','ARRB','NEWARK Precinct','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRG','ARRB','NEWARK Precinct','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRH','ARRB','All Areas','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRI','ARRB','Port Control','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRJ','ARRB','Helipad','A',1,getdate(),1,getdate())
+Go 
+insert into SubCategory values('ARRK','ARRB','Tuzi Gazzi','A',1,getdate(),1,getdate())
+
+------------------
+Go
+  insert into SuperCategory values('CRAP','Contractor Application Permit Temporary','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('CRAA','CRAP','2 Days','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('CRAB','CRAP','3-7 Days','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('CRAC','CRAP','2-4 Weeks','A',1,getdate(),1,getdate())
+
+
+  Go
+  insert into SuperCategory values('CRPR','Contractor Application Permit Permanant','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('CRPA','CRPR','1 Year','A',1,getdate(),1,getdate())
+
+ GO 
+  insert into SubCategory values('SE10','SECR','Passport','A',1,getdate(),1,getdate())
+
+  GO 
+  insert into SubCategory values('SE11','SECR','Others','A',1,getdate(),1,getdate())
+--------------
+
+GO
+insert into SuperCategory values('RSPR','Reasons for permit Application','A',1,getdate(),1,getdate())
+
+
+Go
+  insert into SubCategory values('RSPA','RSPR','Section 56 / 57 license Number','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('RSPB','RSPR','Port Lease agreement','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('RSPC','RSPR','New Employee','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('RSPD','RSPR','Port Access Permit Renewal','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('RSPE','RSPR','Short-term Project','A',1,getdate(),1,getdate())
+
+  Go
+  insert into SubCategory values('RSPF','RSPR','Other','A',1,getdate(),1,getdate())
+
+Go
+insert into SuperCategory values('ARRA','TPT MPT Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRC','South Dues Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRD','South Dunes Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRE','South Dunes Access Areas For RB1','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRF','NEWARK Precinct Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRG','NEWARK Precinct Access Areas For RB1','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRH','All Areas Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRI','Port Control Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRJ','Helipad Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRK','Tuzi Gazzi Access Areas For RB','A',1,getdate(),1,getdate())
+Go
+insert into SuperCategory values('ARRL','TPT DBT Access Areas For RB','A',1,getdate(),1,getdate())
+
+Go
+insert into SubCategory values('ACCA','ARRA','600 Series','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCB','ARRA','700 Series','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCC','ARRA','Neobulk','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCD','ARRL','Export','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCE','ARRL','Import','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCF','ARRL','Storage  PRT','A',1,getdate(),1,getdate())
+--------------------
+Go
+insert into SubCategory values('ACCG','ARRC','208/9','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCH','ARRC','300 SERIES','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCI','ARRC','Quayside','A',1,getdate(),1,getdate())
+------------------
+Go
+insert into SubCategory values('ACCJ','ARRD','Fishing Club','A',1,getdate(),1,getdate())
+------------------------
+Go
+insert into SubCategory values('ACCK','ARRE','2279','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCY','ARRE','RBCT','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCM','ARRE','BTT','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCN','ARRE','ENGEN','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCO','ARRE','208/209 Series','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCZ','ARRE','300 SERIES','A',1,getdate(),1,getdate())
+---------------
+Go
+insert into SubCategory values('ACCQ','ARRF','Port User TFR','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCR','ARRF','Marine Service Park','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCS','ARRF','North more','A',1,getdate(),1,getdate())
+------------
+Go
+insert into SubCategory values('ACCT','ARRG','TNPA All Areas','A',1,getdate(),1,getdate())
+--------------
+Go
+insert into SubCategory values('ACCU','ARRH','Law Enforcement','A',1,getdate(),1,getdate())
+-------
+Go
+insert into SubCategory values('ACCV','ARRK','Repair Quay','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCW','ARRK','Tugs Gate','A',1,getdate(),1,getdate())
+Go
+insert into SubCategory values('ACCX','ARRK','Dredger','A',1,getdate(),1,getdate())
+
+---------------------------------------------------------------------------------------------------------------------------------------
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[IndividualPermitApplicationDetails](
+	[IndividualApplicationID] [int] IDENTITY(1,1) NOT NULL,
+	[PermitRequestID] [int] NOT NULL,
+	[Initial] [nvarchar](50) NULL,
+	[SACitizen] [char](1) NOT NULL,
+	[Gender] [char](1) NOT NULL,
+	[Suburb] [nvarchar](50) NOT NULL,
+	[City] [nvarchar](50) NOT NULL,
+	[PostalCode] [nvarchar](50) NOT NULL,
+	[CountryOfOrigin] [nvarchar](50) NOT NULL,
+	[DepartmentManager] [nvarchar](50) NOT NULL,
+	[JobTitle] [nvarchar](50) NOT NULL,
+	[Current_Permit_Exists] [char](1) NOT NULL,
+	[Reason_Reapplication] [nvarchar](50) NULL,
+	[Port_Induction_Training] [char](1) NOT NULL,
+	[Training_Date] [datetime] NULL,
+	[Criminal_Bckground] [char](1) NOT NULL,
+	[Signature] [nvarchar](50) NOT NULL,
+	[Date] [datetime] NULL,
+ CONSTRAINT [PK_IndividualApplicationDetails] PRIMARY KEY CLUSTERED 
+(
+	[IndividualApplicationID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[IndividualPermitApplicationDetails]  WITH CHECK ADD  CONSTRAINT [FK_IndividualApplicationDetails_PermitRequest] FOREIGN KEY([PermitRequestID])
+REFERENCES [dbo].[PermitRequest] ([PermitRequestID])
+GO
+
+ALTER TABLE [dbo].[IndividualPermitApplicationDetails] CHECK CONSTRAINT [FK_IndividualApplicationDetails_PermitRequest]
+GO
+
+----------------------------------------------------------
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[IndividualPersonalPermit](
+	[IndividualPersonalPermitID] [int] IDENTITY(1,1) NOT NULL,
+	[PermitRequestID] [int] NOT NULL,
+	[permittype] [nvarchar](10) NOT NULL,
+	[IndividualTemporaryPermits] [nvarchar](4) NULL,
+	[IndividualPermanentPermits] [nvarchar](4) NULL,
+	[TempFromDate] [datetime] NULL,
+	[TempToDate] [datetime] NULL,
+	[PerFromDate] [datetime] NULL,
+	[PerToDate] [datetime] NULL,
+	[IsCamera] [char](1) NOT NULL,
+	[CameraDetails] [nvarchar](200) NULL,
+	[IsTools] [char](1) NOT NULL,
+	[ToolsDetails] [nvarchar](200) NULL,
+	[IsSpclEquipment] [char](1) NOT NULL,
+	[SpclEquipmentDetails] [nvarchar](200) NULL,
+	[AuthorisedSurname] [nvarchar](50) NOT NULL,
+	[TelephoneWork] [nvarchar](50) NULL,
+	[AuthorisedMobile] [nvarchar](50) NULL,
+	[AuthorisedIdentityNumber] [nvarchar](50) NULL,
+	[AuthorisedEmail] [nvarchar](50) NULL,
+	[AuthorisedSignature] [nvarchar](50) NULL,
+	[SignatoryDate] [nvarchar](50) NULL,
+	[ContractorTemporaryPermits] [nvarchar](4) NULL,
+	[ContractorPermanentPermits] [nvarchar](4) NULL,
+	[ContractorTempFromDate] [datetime] NULL,
+	[ContractorTempToDate] [datetime] NULL,
+	[ContractorPerFromDate] [datetime] NULL,
+	[ContractorPerToDate] [datetime] NULL,
+ CONSTRAINT [PK_IndividualPersonalPermit] PRIMARY KEY CLUSTERED 
+(
+	[IndividualPersonalPermitID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[IndividualPersonalPermit]  WITH CHECK ADD FOREIGN KEY([ContractorTemporaryPermits])
+REFERENCES [dbo].[SubCategory] ([SubCatCode])
+GO
+
+ALTER TABLE [dbo].[IndividualPersonalPermit]  WITH CHECK ADD FOREIGN KEY([ContractorPermanentPermits])
+REFERENCES [dbo].[SubCategory] ([SubCatCode])
+GO
+
+ALTER TABLE [dbo].[IndividualPersonalPermit]  WITH CHECK ADD FOREIGN KEY([IndividualTemporaryPermits])
+REFERENCES [dbo].[SubCategory] ([SubCatCode])
+GO
+
+ALTER TABLE [dbo].[IndividualPersonalPermit]  WITH CHECK ADD FOREIGN KEY([IndividualPermanentPermits])
+REFERENCES [dbo].[SubCategory] ([SubCatCode])
+GO
+
+ALTER TABLE [dbo].[IndividualPersonalPermit]  WITH CHECK ADD  CONSTRAINT [FK_IndividualPersonalPermit_PermitRequest] FOREIGN KEY([PermitRequestID])
+REFERENCES [dbo].[PermitRequest] ([PermitRequestID])
+GO
+
+ALTER TABLE [dbo].[IndividualPersonalPermit] CHECK CONSTRAINT [FK_IndividualPersonalPermit_PermitRequest]
+GO
+
+
+
+-----------------------
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[IndividualVehiclePermit](
+	[IndividualVehiclePermitId] [int] IDENTITY(1,1) NOT NULL,
+	[PermitRequestId] [int] NOT NULL,
+	[VehicleRegnNo] [nvarchar](50) NOT NULL,
+	[VehicleMake] [nvarchar](50) NOT NULL,
+	[VehicleModel] [nvarchar](50) NULL,
+	[Chassis_VinNo] [nvarchar](50) NULL,
+	[Colour] [nvarchar](50) NULL,
+ CONSTRAINT [PK_IndivudualVehiclePermit] PRIMARY KEY CLUSTERED 
+(
+	[IndividualVehiclePermitId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[IndividualVehiclePermit]  WITH CHECK ADD  CONSTRAINT [FK_IndivudualVehiclePermit_PermitRequest] FOREIGN KEY([PermitRequestId])
+REFERENCES [dbo].[PermitRequest] ([PermitRequestID])
+GO
+
+ALTER TABLE [dbo].[IndividualVehiclePermit] CHECK CONSTRAINT [FK_IndivudualVehiclePermit_PermitRequest]
+GO
+----------------
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[PermitReason](
+	[PermitReasonID] [int] IDENTITY(1,1) NOT NULL,
+	[PermitRequestID] [int] NOT NULL,
+	[ReasonCode] [nvarchar](4) NOT NULL,
+ CONSTRAINT [PK_PermitReason] PRIMARY KEY CLUSTERED 
+(
+	[PermitReasonID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[PermitReason]  WITH CHECK ADD  CONSTRAINT [FK_PermitReason_SubCategory] FOREIGN KEY([ReasonCode])
+REFERENCES [dbo].[SubCategory] ([SubCatCode])
+GO
+
+ALTER TABLE [dbo].[PermitReason] CHECK CONSTRAINT [FK_PermitReason_SubCategory]
+GO
+--------------
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[PermitRequestSubArea](
+	[PermitRequestSubAreaID] [int] IDENTITY(1,1) NOT NULL,
+	[PermitRequestID] [int] NOT NULL,
+	[PermitRequestAreaCode] [nvarchar](4) NOT NULL,
+	[PermitRequestSubAreaCode] [nvarchar](4) NOT NULL,
+ CONSTRAINT [PK_PermitRequestSubArea] PRIMARY KEY CLUSTERED 
+(
+	[PermitRequestSubAreaID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[PermitRequestSubArea]  WITH CHECK ADD FOREIGN KEY([PermitRequestAreaCode])
+REFERENCES [dbo].[SuperCategory] ([SupCatCode])
+GO
+
+ALTER TABLE [dbo].[PermitRequestSubArea]  WITH CHECK ADD FOREIGN KEY([PermitRequestSubAreaCode])
+REFERENCES [dbo].[SubCategory] ([SubCatCode])
+GO
+
+ALTER TABLE [dbo].[PermitRequestSubArea]  WITH CHECK ADD  CONSTRAINT [FK_PermitRequestSubArea_PermitRequest] FOREIGN KEY([PermitRequestID])
+REFERENCES [dbo].[PermitRequest] ([PermitRequestID])
+GO
+
+ALTER TABLE [dbo].[PermitRequestSubArea] CHECK CONSTRAINT [FK_PermitRequestSubArea_PermitRequest]
+GO
+-------------------------
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[ContractorPermitApplicationDetails](
+	[ContractorPermitApplicationID] [int] IDENTITY(1,1) NOT NULL,
+	[PermitRequestID] [int] NOT NULL,
+	[ContractorCompanyName] [nvarchar](50) NOT NULL,
+	[ContractorCompanyManager] [nvarchar](50) NOT NULL,
+	[Department] [nvarchar](50) NOT NULL,
+	[TelephoneNumber] [nvarchar](50) NOT NULL,
+	[SubContractorCompanyName] [nvarchar](50) NOT NULL,
+	[SubContractorTelephoneNumber] [nvarchar](50) NOT NULL,
+	[RecordStatus] [char](1) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedDate] [datetime] NOT NULL,
+	[ModifiedBy] [int] NOT NULL,
+	[ModifiedDate] [datetime] NOT NULL,
+ CONSTRAINT [PK_ContractorPermitApplicationDetails] PRIMARY KEY CLUSTERED 
+(
+	[ContractorPermitApplicationID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[ContractorPermitApplicationDetails]  WITH CHECK ADD FOREIGN KEY([CreatedBy])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+
+ALTER TABLE [dbo].[ContractorPermitApplicationDetails]  WITH CHECK ADD FOREIGN KEY([ModifiedBy])
+REFERENCES [dbo].[Users] ([UserID])
+GO
+
+ALTER TABLE [dbo].[ContractorPermitApplicationDetails]  WITH CHECK ADD  CONSTRAINT [FK_ContractorPermitApplicationDetails_PermitRequest] FOREIGN KEY([PermitRequestID])
+REFERENCES [dbo].[PermitRequest] ([PermitRequestID])
+GO
+
+ALTER TABLE [dbo].[ContractorPermitApplicationDetails] CHECK CONSTRAINT [FK_ContractorPermitApplicationDetails_PermitRequest]
+GO
+
+
+------------------
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[ContractorPermitEmployeeDetails](
+	[ContractorPermitEmployeeID] [int] IDENTITY(1,1) NOT NULL,
+	[PermitRequestID] [int] NOT NULL,
+	[EmployeeName] [nvarchar](50) NOT NULL,
+	[IDNumber] [nvarchar](50) NOT NULL,
+	[JobTitle] [nvarchar](50) NOT NULL,
+	[CriminalRecord] [char](1) NOT NULL,
+	[EmpSignature] [nvarchar](50) NOT NULL,
+	[RecordStatus] [char](1) NOT NULL,
+ CONSTRAINT [PK_ContractorPermitEmployeeDetails] PRIMARY KEY CLUSTERED 
+(
+	[ContractorPermitEmployeeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[ContractorPermitEmployeeDetails]  WITH CHECK ADD  CONSTRAINT [FK_ContractorPermitEmployeeDetails_PermitRequest] FOREIGN KEY([PermitRequestID])
+REFERENCES [dbo].[PermitRequest] ([PermitRequestID])
+GO
+
+ALTER TABLE [dbo].[ContractorPermitEmployeeDetails] CHECK CONSTRAINT [FK_ContractorPermitEmployeeDetails_PermitRequest]
+GO
+
+
+
+
+
+
+
+

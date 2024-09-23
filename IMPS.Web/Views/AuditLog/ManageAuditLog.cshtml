@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "ManageAuditLog";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+@section scripts
+{
+    <script src="~/Scripts/Lib/Globalize.min.js"></script>
+    <script src="~/Scripts/Application/Model/AuditLogModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/AuditLogViewModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/WorkflowTaskExecution.js"></script>
+    <script src="~/Scripts/Lib/moment.js"></script>
+}
+
+@section ko_apply
+{
+var viewModel = new IPMSROOT.AuditLogViewModel();
+ko.applyBindingsWithValidation(viewModel, $("#AuditLogMaster")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+
+<div id="AuditLogMaster">
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'List-template' }"></div>
+</div>
+<div class="clearfix"></div>
+
+<script type="text/html" id="List-template">
+
+    <div class="portlet-body">
+
+        <div class="table-toolbar">
+            <div>
+                <div class="portlet box advbg">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-reorder"></i>Advance Search
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" data-bind="with: auditLogSearch">
+                        <div class="form-wizard form-horizontal">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">User Name:</label>
+                                                <div class="col-md-5">
+                                                    <input type="text" id="userName" class="form-control" data-bind="value: UserName" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">Audit From :</label>
+                                                <div class="col-md-6">
+                                                    <input id="AuditFromDt" type="text" class="form-control datetime-picker" onkeydown="PreventBackSpace();"   onkeypress="return false;" data-bind="kendoDateTimePicker: { value: AuditFromDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', month: { empty: '<span class=k-state-disabled>#= data.value #</span>' }  }, event: { change: AddDayToAuditToDate }" name="AuditFromDate" maxlength="18" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Audit To :</label>
+                                                <div class="col-md-6">
+                                                    <input id="AuditToDt" type="text" class="form-control datetime-picker" onkeydown="PreventBackSpace();"  onkeypress="return false;" data-bind="kendoDateTimePicker: { value: AuditToDateTime, format: 'yyyy-MM-dd HH:mm', timeFormat: 'HH:mm', min: AuditFromDateTime, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }," name="AuditToDate" maxlength="18" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group1">
+                                                <label class="control-label col-md-8">Is Security Audit Trail:</label>
+                                                <div >
+                                                    <input style="margin-top:5px;" type="checkbox" id="chkIsSecurityAuditTrail" checked="checked" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-10"></div>
+                                            <div class="col-md-2 fluid">
+                                                <button type="submit" class="btn btn-xs green" data-bind="click:$root.GetAuditSearchDetails">Get Data</button>
+                                                <button type="submit" class="btn btn-xs blue" data-bind="click: $root.ResetAuditSearchDetails">Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <div class="portlet-body">
+                    <div class="table-toolbar">
+                        <div id="tablewrapper15">
+                            <div id="tableheader">
+                                <div class="search" style="display: none">
+                                    <select id="columns" onchange="sorter.search('query')"></select>
+                                    <input type="text" id="query" onkeyup="sorter.search('query')" />
+                                    <a class="button gbtn" href="javascript:sorter.reset()">Reset <i class="fa fa-rotate-left"></i></a>
+                                </div>
+                            </div>
+                            <div id="divAuditGrd" data-bind="kendoGrid: {
+    data: auditLogList,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: {
+        extra: false, operators: {
+            string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' }
+        }
+    },
+    rowTemplate: 'auditLogList',
+    pageable: { refresh: false, pageSize: 20, pageSizes: 20, buttonCount:10 },
+    useKOTemplates: true, columns: [{ field: 'UserNameSort', title: 'User Name', width: 100, filterable: true },
+    { field: 'ControlerNameSort', title: 'Controller Name', width: 150, filterable: true },
+    { field: 'ActionNameSort', title: 'Action Name', width: 220, filterable: true },
+    { field: 'UserFriendlyDescriptionSort', title: 'Description', width: 250, filterable: true, extra: true },
+    { field: 'UserIPAddressSort', title: 'User IP Address', width: 120, filterable: true },
+    { field: 'AuditDateTimeSort', title: 'Audit Date & Time', width: 100, filterable: true, type: 'date' },
+    { field: 'UserComputerNameSort', title: 'User Computer Name', width: 150, filterable: true }
+    ]
+}">
+                            </div>
+                            <script id="auditLogList" type="text/html">
+                                <tr>
+                                    <td>
+                                        <div data-bind="text: UserName() == '' ? 'Anonymous User' : UserName"></div>
+                                    </td>
+                                    <td>
+                                        <div data-bind="text: ControlerName"></div>
+                                    </td>
+                                    <td>
+                                        <div data-bind="text: ActionName"></div>
+                                    </td>
+                                    <td>
+                                        <div data-bind="text: UserFriendlyDescription"></div>
+                                    </td>
+                                    <td>
+                                        <div data-bind="text: UserIPAddress"></div>
+                                    </td>
+                                    <td>
+                                        <div data-bind="text: AuditDateTime"></div>
+                                    </td>
+                                     <td>
+                                        <div data-bind="text: UserComputerName"></div>
+                                    </td>
+                                </tr>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</script>

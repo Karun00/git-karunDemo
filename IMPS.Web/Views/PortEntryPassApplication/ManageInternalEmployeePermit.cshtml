@@ -1,0 +1,876 @@
+﻿@model IPMS.Domain.ValueObjects.PermitRequestVerifyedDetailVO
+@{
+    ViewBag.Title = "ManagePortEntryPassApplicationList";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+
+<style type="text/css">
+    .txt {
+        font-size: 13px; /*font-weight:bold;*/
+        margin: 0;
+        padding: 3px 5px;
+        color: #999;
+        background: #d5d5d5;
+        display: inline-block;
+        margin-left: 45%;
+    }
+
+    .txtline {
+        position: relative;
+        z-index: 2;
+    }
+
+        .txtline:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            border-top: solid 1px #b1b1b1;
+            z-index: -1;
+        }
+</style>
+<script id="customMessageTemplate" type="text/html">
+    <span class="validationError" data-bind='validationMessage: field'></span>
+</script>
+
+@section scripts{
+    <script src="~/Scripts/Application/Model/InternalEmployeePermitModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/InternalEmployeePermitViewModel.js"></script>
+}
+@section ko_apply
+{
+var showOnLoad = 1;
+    var viewModel = new IPMSROOT.InternalEmployeePermitViewModel( showOnLoad);	   	
+	ko.applyBindingsWithValidation(viewModel, $("#divArrivalNotifications")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }}   );   
+}
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"><span id="spnTitle"></span>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+
+    </div>
+</div>
+<div id="divArrivalNotifications">
+
+    <div data-bind="visible: viewMode() == 'List', template: { name: 'InternalEmployeePermitList-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'InternalEmployeePermitForm-template' }"></div>
+</div>
+<div class="clearfix"></div>
+
+<script type="text/html" id="InternalEmployeePermitList-template" data-bind=" loadingWhen: $root.viewModelHelper.isLoading">
+    <div class="clearfix"></div>
+ <div>
+                <div class="portlet box advbg">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-reorder"></i>Advance Search
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"></a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" data-bind="with: AdvnceSearchmodel">
+                        <div class="form-wizard">
+                            <div class="form-body form-horizontal">
+                                <div class="form-group">
+
+                                    <div class="row">
+                                        <div class="col-md-4 ">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">From Date:</label>
+                                                <div class="col-md-5">
+                                                    <input id="SearchRequestFrom" style="margin-top: 0px;" type="text" title="Movement From" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value:RequestFrom , format: 'yyyy-MM-dd', readonly: true, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="RequestFrom" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-6">To Date:</label>
+                                                <div class="col-md-5">
+                                                    <input id="SearchRequestTo" style="margin-top: 0px;" type="text" title="Movement To" class="date-picker" onkeydown="PreventBackSpace();" onkeypress="return false;" data-bind="kendoDatePicker: { value: RequestTo, format: 'yyyy-MM-dd', readonly: true, open: SearchRequesttoCal, month: { empty: '<span class=k-state-disabled>#= data.value #</span>' } }" name="RequestTo" maxlength="10" />
+                                                </div>
+                                            </div>
+                                        </div>
+                          
+                                    </div>
+                                    <div class="row">
+                            
+                                        <div class="col-md-11">
+                                            <div class="form-group">
+                                                <div class="col-md-6"></div>
+                                                <div class="col-md-5  fluid">
+
+                                                    <button type="submit" class="btn btn-sm green" data-bind="click: $root.GetDataClick">Get Data</button>
+                                                    <button type="submit" class="btn btn-sm blue" data-bind="click: $root.ClearFilter">Reset</button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+    <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+        <div class="portlet-body">
+
+  
+
+            <div id="tableheader">
+                <a class="button gbtngreen" data-bind="click: $root.ADDportentrypassapplication">Add New <i class="fa fa-plus"></i></a>
+            </div>
+            <div class="table-toolbar">
+                <div data-bind="kendoGrid: {
+    data: Internalemployeepermitlist,
+    groupable: false,
+    sortable: true,
+    scrollable: true,
+    filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to' } } },
+    rowTemplate: 'rowTmpl',
+    pageable: { pageSize: 5, pageSizes: 5 },
+    useKOTemplates: true,
+    columns: [{ field: 'CreatedDateSort', title: 'Date', width: 30, filterable: true },
+        { field: 'ApplicantFullNameSort', title: 'Applicant Name', width: 75, filterable: true },
+        { field: 'ReferenceNoSort', title: 'Application No.', width: 75, filterable: true },
+        { field: 'PermitRequestTypeCodeNameSort', title: 'Permit Request Type', width: 75, filterable: true },
+        { field: 'permitStatusNameSort', title: 'Permit Status', width: 50, filterable: true },
+        { title: 'Actions', filterable: true, width: 75 }]
+}">
+                </div>
+                <script id="rowTmpl" type="text/html">
+
+                    <tr>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: CreatedDate"></span></div>
+                        </td>
+
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ApplicantFullName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: ReferenceNo"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: PermitRequestTypeCodeName"></span></div>
+                        </td>
+                        <td>
+                            <div class="nowrap"><span data-bind="text: permitStatusName"></span></div>
+                        </td>
+                        @* <td>
+                        <div class="nowrap"><span data-bind="text: IDPassportNo"></span></div>
+                    </td>
+                    <td>
+                        <div class="nowrap"><span data-bind="text: PensionEmployeeNo"></span></div>
+                    </td>*@
+
+                        @*      <td>
+                        <div class="nowrap"><span data-bind="text: NominationDate"></span></div>
+                    </td>
+
+                    <td>
+                        <div class="nowrap"><span data-bind="text: WFStatus"></span></div>
+                    </td>*@
+                        <td>
+                            <div class="nowrap">
+                                &nbsp;                        
+                            <a href="#" data-bind="click: $parent.viewInternalEmployeePermit" title="View"><i class="fa fa-eye"></i></a>&nbsp;   
+                     @*       <a href="#" data-bind="click: $parent.editportentrypassapplication" title="Edit"><i class="fa fa-edit"></i></a>    *@
+                            </div>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    </div>
+</script>
+
+<script type="text/html" id="InternalEmployeePermitForm-template">
+    <div class="portlet portlet-body form">
+        <div data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+            <form action="#" id="submit_form" class="form-horizontal">
+                <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                    <div class="form-body" data-bind=" with: internalemployeepermitModel ">
+                        <div class="form-group D1">
+                            <div class="tabbable tabbable-custom">
+                                <fieldset>
+                                    <legend>Particulars of Applicant</legend>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Company Name:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: CompanyName, enable: $root.IsCodeEnable" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Department:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: DepartmentName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsCodeEnable" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Full Name of the Applicant:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: ApplicantFullName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsCodeEnable" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Surname of the Applicant:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: ApplicantSurName, event: { keypress: ValidateAlphabetsWithSpaces }, enable: $root.IsCodeEnable" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Pension/Employee No.:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: PensionEmployeeNo, event: { keypress: ValidateAlphanumeric }, enable: $root.IsCodeEnable" maxlength="20">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">ID/Passport No.:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: IDPassportNo, event: { keypress: ValidateAlphanumeric }, enable: $root.IsCodeEnable" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Occupation:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: Occupation, event: { keypress: ValidateAlphanumeric }, enable: $root.IsCodeEnable" maxlength="30">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Email:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" class="form-control" data-bind="value: Email, enable: $parent.IsCodeEnable" maxlength="50">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Mobile No.:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" id="MobileNointernalEmployee" class="form-control" data-bind="value: MobileNo, event: { keypress: Validatenumeric }, enable: $root.IsCodeEnable" maxlength="10">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Home Address:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <textarea name="" class="form-control" data-bind="value: HomeAddress, enable: $root.IsCodeEnable" maxlength="500"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Company Address:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <textarea name="" class="form-control" data-bind="value: CompanyAddress, enable: $root.IsCodeEnable" maxlength="500"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Company Telephone No.:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" id="CompanyTelephoneNointernalEmployee" class="form-control" data-bind="value: CompanyTelephoneNo, event: { keypress: Validatenumeric }, enable: $root.IsCodeEnable" maxlength="10">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Company Fax No.:<span class="required">*</span> </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="" id="CompanyFaxNointernalemployee" class="form-control" data-bind="value: CompanyFaxNo, event: { keypress: Validatenumeric }, enable: $root.IsCodeEnable" maxlength="10">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Permit Requirements: (This Section is to be completed by the Sponsor Company / Authorised Signatory )</legend>
+                                    <fieldset>
+                                        <legend>Permanent Permits </legend>
+                                        <div class="row ">
+                                            <div class="radio-list">
+                                                <div data-bind="foreach: $root.portentrypassapplicationreferencedata().PermitTypes">
+                                                    <div class="col-md-2">
+                                                        <input name="UserType113" type="radio" class="radio-inline" data-bind=" checkedValue: SubCatCode, checked: $root.internalemployeepermitModel().PersonalPermits().PermitCategoryCode, click: $parent.toggleAssociationrediobutton11, enable: $root.IsCodeEnable"><label data-bind="    text: SubCatName"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>TPT Operated Terminals</legend>
+                                        <div class=" row col-md-12">
+                                           (Applicant to specify the specific TPT site, for which purpose access is required. The TPT Terminal Manager / Designated authority is required to approve the application, where access to a specific TPT site is required)
+                                        </div>
+                                        <div class="row ">
+                                            <div class="checkbox-list" id="divPortList1" data-bind="foreach: $root.portentrypassapplicationreferencedata().OperatedTerminals">
+                                                <div class="col-md-2">
+                                                    <input type="checkbox" name="checkboxlist1" data-bind="    checkedValue: SubCatCode, checked: $root.internalemployeepermitModel().PermitRequestAreas, enable: $root.IsCodeEnable"><label data-bind="    text: SubCatName"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>NPA Sites </legend>
+                                        <div class=" row col-md-12">
+                                            (Applicant to specify his/her specific place of work. Business Unit Manager/Line Manger to approve application where access to other NPA sites/Leaseholder Sites is required to perform job function)
+                                        </div>
+                           @*             <div class="row">
+                                            <div class="col-md-4" data-bind="with: PersonalPermits">
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" name="port12" id="AllNPASites" data-bind="checked: AllNPASites, enable: $root.IsCodeEnable">All NPA Sites </label> (this is only applicable on an "A" Category Permit)
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                        <div class="row" data-bind="with: PersonalPermits">
+                                            <div class="col-md-5" >
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" name="port13" data-bind="checked: SpecificNPASites, enable: $root.IsCodeEnable">Specific NPA Sites</label>
+                                                    @*, enable: $parent.IsCodeEnable*@
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="form-group"  style="display: none" data-bind="visible: SpecificNPASites">
+                                                    <div>
+                                                        <label class="control-label col-md-6">Specify Name &amp; Specific Location of Area/Site:</label>
+                                                        <div class="col-md-4">
+                                                            <input type="text" name="" class="form-control" data-bind="value: SpecifyArea, enable: $root.IsCodeEnable">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>Private Terminals / Lease Holding Sites</legend>
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-5">Specify Name And Specific Location of Lease Holding Site:<span class="required">*</span> </label>
+                                                    <div class="col-md-5" data-bind="with: PersonalPermits">
+                                                        <input type="text" name="" class="form-control" data-bind="value: LeaseholdSite, enable: $root.IsCodeEnable">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-5">Physical Address:<span class="required">*</span> </label>
+                                                    <div class="col-md-5" data-bind="with: PersonalPermits">
+                                                        <textarea name="" class="form-control" data-bind="value: PhysicalAddress, enable: $root.IsCodeEnable" maxlength="500"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Permits </legend>
+                                    <div class="col-md-12 alert alert-info" style="text-align: center">
+                                        <div class="col-md-12">
+                                            <div class="radio-list">
+                                   @*             <label class="radio-inline">
+                                                    <input type="radio" value="adhoc" name="portentry" data-bind=" checked: $root.internalemployeepermitModel().PersonalPermits().permittype, enable: $root.IsCodeEnable" id="ApplicationStatus1">Ad Hoc Permits
+                                                </label>*@
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="temporary" name="portentry" data-bind="checked: $root.internalemployeepermitModel().PersonalPermits().permittype, enable: $root.IsCodeEnable" id="ApplicationStatus2"> Temporary Permits</label>
+                                          @*      <label class="radio-inline">
+                                                    <input type="radio" value="allports" name="portentry" data-bind="checked: $root.internalemployeepermitModel().PersonalPermits().permittype, enable: $root.IsCodeEnable" id="ApplicationStatus3">All Ports</label>*@
+                                        @*        <label class="radio-inline">
+                                                    <input type="radio" value="contractor" name="portentry" data-bind="checked: $root.internalemployeepermitModel().PersonalPermits().permittype, enable: $root.IsCodeEnable" id="ApplicationStatus4">Contractors</label>*@
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="permanent" name="portentry" data-bind="checked: $root.internalemployeepermitModel().PersonalPermits().permittype, enable: $root.IsCodeEnable" id="ApplicationStatus5">Permanent Permits</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<div id="adhocpermits" style="display: none" data-bind=" visible: $root.internalemployeepermitModel().PersonalPermits().permittype() == 'adhoc', loadingWhen: $root.viewModelHelper.isLoading">
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"> Ad Hoc Permits:</label>
+                                                    <div class="row">
+                                                        <div class="radio-list">
+                                                            <div data-bind="foreach: $root.portentrypassapplicationreferencedata().AdhocPermits">
+                                                                <div class="col-md-1">
+                                                                    <input name="UserType114" type="radio" class="radio-inline" data-bind=" checkedValue: SubCatCode, checked: $root.internalemployeepermitModel().PersonalPermits().AdhocPermits, click: $parent.toggleAssociationrediobutton12, enable: $root.IsCodeEnable"><label data-bind="    text: SubCatName"></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-10">
+                                                        <div class="form-group">
+                                                            (Only for holders of permanent permits who have left their permits at home and are in possession of a valid ID document)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="txtline"></div>
+                                        <div class="clearfix">
+                                            <br>
+                                        </div>
+                                        &nbsp;
+                                    </div>*@
+                                    <div id="temporarypermits" style="display: none" data-bind=" visible: $root.internalemployeepermitModel().PersonalPermits().permittype() == 'temporary', loadingWhen: $root.viewModelHelper.isLoading">
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"> Temporary Permits:</label>
+                                                    <div class="col-md-10">
+                                                        <div class="radio-list">
+                                                            <div data-bind="foreach: $root.portentrypassapplicationreferencedata().TemporaryPermits">
+                                                                <div class="col-md-2">
+                                                                    <input name="UserType115" type="radio" class="radio-inline" data-bind=" checkedValue: SubCatCode, checked: $root.internalemployeepermitModel().PersonalPermits().TemporaryPermits, click: $parent.toggleAssociationrediobutton13, enable: $root.IsCodeEnable"><label data-bind="    text: SubCatName"></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-10">
+                                                (This category applies to all individuals who are not permanently employed or based on NPA owned or managed by  the Port)
+                                            </div>
+                                        </div>
+
+                                        <div class="clearfix">
+                                            <br>
+                                        </div>
+                                        &nbsp;
+                                 <div class="txtline"></div>
+                                        <div class="clearfix">
+                                            <br>
+                                        </div>
+                                        &nbsp;
+                                    </div>
+                                    @*<div id="allportspermits" style="display: none" data-bind=" visible: $root.internalemployeepermitModel().PersonalPermits().permittype() == 'allports', loadingWhen: $root.viewModelHelper.isLoading">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"> All Ports:</label>
+                                                    <div class="col-md-1">
+                                                        <div class="form-group" data-bind="with: PersonalPermits">
+                                                            <input type="checkbox" name="port14" data-bind="checked: AllPorts, enable: $root.IsCodeEnable">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-2"></div>
+                                                <div class="col-md-10">
+                                                    (This permit could only be considered if accompanied by letter of recommendation and strict compliance with Permit Regulations)
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="clearfix">
+                                            <br>
+                                        </div>
+                                        &nbsp;
+                                 <div class="txtline"></div>
+                                        <div class="clearfix">
+                                            <br>
+                                        </div>
+                                        &nbsp;
+                                    </div>
+                                    <div id="contractorspermits" style="display: none" data-bind=" visible: $root.internalemployeepermitModel().PersonalPermits().permittype() == 'contractor', loadingWhen: $root.viewModelHelper.isLoading">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"> Contractors:</label>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Indicate the Area of Construction</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <div class="row ">
+                                                            <div class="radio-list">
+                                                                <div data-bind="foreach: $root.portentrypassapplicationreferencedata().AreaOfConstruction">
+                                                                    <div class="col-md-3">
+                                                                        <input name="UserType116" type="radio" class="radio-inline" data-bind=" checkedValue: SubCatCode, checked: $root.internalemployeepermitModel().PersonalPermits().ConstructionArea, click: $parent.toggleAssociationrediobutton14, enable: $root.IsCodeEnable"><label data-bind="    text: SubCatName"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">
+                                            <br>
+                                        </div>
+                                        &nbsp;
+                                 <div class="txtline"></div>
+                                        <div class="clearfix">
+                                            <br>
+                                        </div>
+                                        &nbsp;
+                                 
+                                    </div>*@
+                                    <div id="permanentpermits" style="display: none" data-bind=" visible: $root.internalemployeepermitModel().PersonalPermits().permittype() == 'permanent', loadingWhen: $root.viewModelHelper.isLoading">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2"> Permanent Permits:</label>
+                                                    <div class="col-md-2 radio-list" data-bind="with: PersonalPermits">
+                                                        <div>
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="Attend" value="Y" data-bind="checked: PermanentPermits, enable: $root.IsCodeEnable">Yes</label>&nbsp;&nbsp;
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="Attend" value="N" data-bind="checked: PermanentPermits, enable: $root.IsCodeEnable">No</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <div class="col-md-2"></div>
+                                                <div class="col-md-10">
+                                                    (Permanent Permits will only be issued to persons who are permanently employed, with the Security controlled / restricted area within the boundaries of the NPA owned/managed by  the Port, on a permanent basis)
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-2">Reason for Application:<span class="required">*</span> </label>
+                                                <div class="col-md-8 " data-bind="with: PersonalPermits">
+                                                    <textarea name="" class="form-control" data-bind="value: Reason, enable: $root.IsCodeEnable" maxlength="2000"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="form-group D6">
+                            <fieldset>
+                                <legend>Upload Documents <span class="required">*</span> </legend>
+                                <div class="row" data-bind=" visible: $parent.IsCodeEnable">
+                                    <div class="fileupload-buttonbar">
+                                        <div class="form-group">
+                                            <fieldset>
+                                                <legend>Upload Documents <span class="required">*</span> </legend>
+                                                <div class="col-md-12">
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-6">
+                                                            <select name="documents" id="selUploadDocs1" class="form-control" data-bind="options: $root.portentrypassapplicationreferencedata().PermitDocumentTypes, optionsText: 'SubCatName', optionsValue: 'SubCatCode', value: $root.internalemployeepermitModel().selectedDocumentsType, optionsCaption: 'Choose....'">
+                                                            </select>
+                                                            <span id="spanmultiplepfileToUpload11" class="validationError" data-bind="visible: $parent.ismultiplepfileToUpload"></span>
+                                                        </div>
+
+                                                        <span class="btn btn-xs green fileinput-button">
+                                                            <i class="fa fa-plus"></i>
+                                                            <span>Browse
+                                                            </span>
+                                                            <input type="file" name="files[]" id="fileToUpload1" multiple>
+                                                        </span>
+                                                        <button type="button" data-bind="click: $parent.multipleuploadFile " class="btn  btn-xs blue start">
+                                                            <i class="fa fa-upload" data-bind=" enable: $parent.IsCodeEnable"></i>
+                                                            <span>Upload
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" data-bind="visible: $parent.ismultiplepfileToUpload">
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            &nbsp;&nbsp; <span id="spanmultiplepfileToUpload12" class="validationError" data-bind="visible: $parent.ismultiplepfileToUpload"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-advance">
+                                            <thead>
+                                                <tr>
+                                                    <th class="bg-dark">Document Category</th>
+                                                    <th class="bg-dark">Document Name</th>
+                                                    <th class="bg-dark"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody data-bind="foreach: PermitRequestDocuments">
+                                                <tr>
+                                                    <td data-bind="text: DocumentName"></td>
+                                                    <td><a data-bind="text: FileName, attr: { href: '/FileDownload/InternalEmployeePermitdocuments/' + DocumentID() }"></a></td>
+                                                    <td class="NeedToHide"><a href="#" class="btn default btn-xs red" data-bind="click: $root.multipleDeleteDocument, visible: $root.IsCodeEnable"><i class="fa fa-trash-o"></i>Delete</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                &nbsp;
+                        <div class="btns-group form-actions fluid">
+                            <button type="button" class="btn green" data-bind="click: $parent.saveportentrypassapplication, visible: $parent.IsCodeEnable">Save</button>
+                            <button type="button" class="btn blue" data-bind="click: $parent.Reset, visible: $parent.IsCodeEnable">Reset</button>
+                            <button type="button" class="btn red" data-bind="click: $parent.CancelInternalEmployee">Cancel</button>
+                        </div>
+                            </fieldset>
+                            <div class="clearfix">
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

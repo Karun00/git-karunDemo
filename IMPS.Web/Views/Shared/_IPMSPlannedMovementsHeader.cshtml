@@ -1,0 +1,161 @@
+﻿<style>
+    .validationE {
+        background: #d45252;
+        border-radius: 3px 3px 3px 3px;
+        color: white;
+        margin: -5px 0 0 0px;
+        font-size: 10px;
+        padding: 0px 6px;
+        z-index: 999;
+        position: fixed;
+        white-space: nowrap;
+        right: auto;
+    }
+
+    .validationError {
+        background: #d45252;
+        border-radius: 3px 3px 3px 3px;
+        color: white;
+        margin: -5px 0 0 0px;
+        font-size: 10px;
+        padding: 0px 6px;
+        z-index: 999;
+        position: absolute;
+        white-space: nowrap;
+        left: auto;
+    }
+
+    .dropdown-menu.extended li:first-child a {
+        border-bottom: 0px !important;
+    }
+
+    .validationError1 {
+        position: relative;
+    }
+
+    .validationError1 {
+        position: relative;
+    }
+
+
+
+    .modal-dialog {
+        margin: 15% 40%;
+        width: 350px;
+    }
+
+    .navbar-nav > li > a {
+        padding-top: 9px;
+    }
+
+    .header .navbar-nav > li.dropdown.user .dropdown-toggle {
+        padding: 10px 4px 6px 9px;
+    }
+
+    .header .navbar-nav > li.dropdown, .header .navbar-nav > li.dropdown > a {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+</style>
+
+
+
+@{
+    var IsFirstTimeLogin = "N";
+
+    if (!string.IsNullOrEmpty(ViewBag.IsFirstTimeLogin))
+    {
+        IsFirstTimeLogin = ViewBag.IsFirstTimeLogin;
+
+    }
+}
+
+
+<header class="header navbar navbar-inverse navbar-fixed-top">
+    <div class="header-inner" id="Header">
+
+        <span class="name">Integrated Port Management System</span>
+
+        <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <img src="/Content/Images/menu-toggler.png" alt="">
+        </a>
+        <ul class="nav navbar-nav pull-right">
+
+            @if (Request.IsAuthenticated && IsFirstTimeLogin == "N")
+            {                                 
+                <li class="dropdown" id="header_notification_bar">
+                    <a href="Dashboard">
+                        <i class="fa fa-home"></i>
+                        Home
+                    </a>
+
+                </li>
+            }
+
+            <li class="dropdown user">
+
+                @if (Request.IsAuthenticated)
+                { 
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <img alt="" src="@Url.Content("~/Content/Images/avatar1_small.jpg")"/>
+                        <span class="username" id="loginusername">@Html.Encode(User.Identity.Name)</span>
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="@Url.Action("DashBoardConfiguration", "UserPreference")"><i class="fa fa-tasks"></i>Dashboard Configuration</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="trigger_fullscreen"><i class="fa fa-move"></i>Full Screen</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ChangePassword", "Account")"><i class="fa fa-tasks"></i>Change Password</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Logout", "Account")"><i class="fa fa-key"></i>Log Out</a>
+                        </li>
+
+                    </ul>
+                }
+                else
+                {
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown" id="header_notification_bar">
+                            <a href="@Url.Action("Login", "Account")">
+                                <i class="fa fa-home"></i>Home
+                            </a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="fa fa-compass"></i>About Us &nbsp; &nbsp;</a>
+                            <ul class="dropdown-menu extended notification">
+                                <li>
+                                    <p>About Us</p>
+                                </li>
+                                <li>
+                                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 250px;">
+                                        <ul class="dropdown-menu-list scroller" style="height: 250px; overflow: hidden; width: auto;">
+                                            <li>Content to be finalized....
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+
+                }
+
+            </li>
+        </ul>
+    </div>
+</header>
+<div class="clearfix">
+</div>
+
+
+
+
+

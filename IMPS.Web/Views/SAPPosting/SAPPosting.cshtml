@@ -1,0 +1,647 @@
+﻿@model IPMS.Domain.ValueObjects.PrivilegeVO
+
+@{    
+    ViewBag.Title = "SAPPosting";
+    Layout = "~/Views/Shared/_IPMSLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/Scripts/Application/Model/SAPPostingModel.js"></script>
+    <script src="~/Scripts/Application/ViewModel/SAPPostingViewModel.js"></script>
+}
+
+@section ko_apply
+{
+
+var viewModel = new IPMSROOT.SAPPostingViewModel();
+   
+ko.applyBindingsWithValidation(viewModel, $("#SAPPosting")[0], { insertMessages: false, messagesOnModified: false, grouping: { deep: true }});
+}
+
+
+<!-- BEGIN CONTENT -->
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="page-title"><span id="spnTitile"></span></h3>
+        <ul class="page-breadcrumb breadcrumb"></ul>
+    </div>
+</div>
+<div id="SAPPosting">
+    <div data-bind="visible: viewMode() == 'Form', template: { name: 'Form-template' }"></div>
+    <div data-bind="visible: viewMode() == 'Form1', template: { name: 'Form-template1' }"></div>
+</div>
+<div class="clearfix"></div>
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <script id="customMessageTemplate" type="text/html">
+            <span class="validationError" data-bind='validationMessage: field'></span>
+        </script>
+        <script type="text/html" id="Form-template">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: sapPostingModel">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend>SAP Posting Details</legend>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        VCN:                                                    
+                                                    </label>
+                                                    <div class="col-md-6 ">
+                                                        <div class="form-control">
+                                                            <input id="VCN" name="VCN" data-bind="kendoAutoComplete: {
+    dataTextField: 'VCN', minLength: 1, pageSize: 1
+    , dataSource: {
+        serverFiltering: true,
+        transport: {
+            read: { url: '/api/SAPPosting', dataType: 'json' }
+        }, schema: {
+            data: function (data) { return data; }, total: function (data) {
+                return data.length;
+            }
+        },
+    }, select: $root.VCNSelect
+}, value: VCN" />
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div class="col-md-6">
+                                                        <div class="btns-group form-actions fluid">
+                                                            <button type="submit" class="btn green" data-bind="click: $parent.GetData">Get Data</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div class="col-md-6">
+                                                        <div class="btns-group form-actions fluid">
+                                                            <button type="submit" class="btn green" data-bind="click: $parent.Reset">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-body" data-bind="with: sapPostingModel">
+                            <div class="form-group">
+                                <div id="stack1" class="modal fade" tabindex="-1" data-width="400">
+                                    <div class="modal-dialog" style="width: 500px;">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                <div class="scroller" style="height: 225px" data-always-visible="1" data-rail-visible1="1">
+                                                    <fieldset>
+                                                        <legend id="spnTitile1">SAP Invoice</legend>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group1">
+                                                                    <label class="control-label col-md-3">
+                                                                        SAP Invoice:                                                       
+                                                                    </label>
+                                                                    <div class="col-md-9">
+                                                                        <div class="input-icon">
+                                                                            <textarea class="form-control" rows="8" id="description" style="text-transform: capitalize;" maxlength="500" data-bind="value: SAPInvoice"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="btns-group form-actions fluid">
+                                                                <button type="submit" class="btn green" data-bind="click: $parent.SaveSapInvoice">Save</button>
+                                                                <button type="submit" class="btn red" data-bind="click: $parent.CancelSAPInvoice">Cancel</button>
+                                                            </div>
+                                                        </div>
+
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                     <div class="form-body" data-bind="with: sapPostingModel">
+                            <div class="form-group">
+                                <div id="stack2" class="modal fade" tabindex="-1" data-width="800">
+                                    <div class="modal-dialog" style="width: 900px;">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                <div class="scroller" style="height: 400px" data-always-visible="1" data-rail-visible1="1">
+                                                    <fieldset>
+                                                        <legend id="spnTitile1">SAP Invoice Response</legend>
+                                                      <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">VCN:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="VCN" data-bind="text: VCN"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">MarineOrder:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="SAPReferenceNo" data-bind="text: SAPReferenceNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>                                                            
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">BillingDocNo:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="BillingDocNo" data-bind="text: BillingDocNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">OrderNo:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="OrderNo" data-bind="text: OrderNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">ItemNo:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="ItemNo" data-bind="text: ItemNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">MaterialNo:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="MaterialNo" data-bind="text: MaterialNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">Service:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="Service" data-bind="text: Service"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">UOM:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="UOM" data-bind="text: UOM"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">Qunatity:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="Qunatity" data-bind="text: Qunatity"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">TarifF:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="TarifF" data-bind="text: TarifF"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">TarifF2:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="TarifF2" data-bind="text: TarifF2"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Amount:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="Amount" data-bind="text: Amount"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">VAT:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="VAT" data-bind="text: VAT"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">NetAmount:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="NetAmount" data-bind="text: NetAmount"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">SalesOrgNo:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="SalesOrgNo" data-bind="text: SalesOrgNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">AgentName:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="AgentName" data-bind="text: AgentName"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">Address:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="Address" data-bind="text: Address"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">TelephoneNo:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="TelephoneNo" data-bind="text: TelephoneNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">FaxNo:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="FaxNo" data-bind="text: FaxNo"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Account:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="AccountID" data-bind="text: Account"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">VesselID:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="VesselID" data-bind="text: VesselID"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">VesselName:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="VesselName" data-bind="text: VesselName"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">VesselTonnage:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="VesselTonnage" data-bind="text: VesselTonnage"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">VesselCapacity:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="VesselCapacity" data-bind="text: VesselCapacity"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">VesselLength:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="VesselLength" data-bind="text: VesselLength"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">ArrivalID:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="ArrivalID" data-bind="text: ArrivalID"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                       <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">ArrivalDate:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="ArrivalDate" data-bind="text: ArrivalDate"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">Arrivaltime:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="Arrivaltime" data-bind="text: Arrivaltime"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">DepartureDate:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="DepartureDate" data-bind="text: DepartureDate"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">DepartureTime:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="DepartureTime" data-bind="text: DepartureTime"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                         <div class="form-group row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">VoyageIn:</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="VoyageIn" data-bind="text: VoyageIn"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-6">VoyageOut:</label>
+                                                                    <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="VoyageOut" data-bind="text: VoyageOut"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">ESubscription:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="ESubscription" data-bind="text: ESubscription"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-5">NetValue:</label>
+                                                                    <div class="col-md-5 control-label">
+                                                                        <label class="col-md-12 displaytxt" id="NetValue" data-bind="text: NetValue"></label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div data-bind="kendoGrid: {
+            data: SAPPostingList,
+            groupable: false,
+            sortable: true,
+            scrollable: true,
+            filterable: { extra: false, operators: { string: { startswith: 'Starts with', eq: 'Is equal to', neq: 'Is not equal to', contains: 'Contains', doesnotcontain: 'Does not Contain' }, number: { eq: 'Is equal to', neq: 'Is not equal to' } } },
+            rowTemplate: 'rowTmpl',
+            pageable: { pageSize: 10, pageSizes: 10 },
+            useKOTemplates: true, columns: [{ field: 'ItemSort', title: 'Message Type', width: '140px', filterable: true }
+                      , { field: 'ReceavedARRNOSort', title: 'SAP Arrival No.', width: '120px', filterable: true }
+                     , { field: 'MarineAccNoSort', title: 'SAP Vessel No.', width: '120px', filterable: true }
+                      , { field: 'ReceivedMarineOrderNoSort', title: 'Marine Order No.', width: '100px', filterable: true }
+                       , { field: 'RevenueAgentAccNoSort', title: 'Agent Account No.', width: '100px', filterable: true }
+                       , { field: 'StatusSort', title: 'Status', width: '120px', filterable: true }
+                       , { field: 'RemarksSort', title: 'Remarks', width: '120px', filterable: true },
+                      { title: 'Actions',width: '140px',  filterable: false }]
+
+            }">
+                    </div>
+                    <script id="rowTmpl" type="text/html">
+                        <tr>
+                              <td><span data-bind="text: Item"></span></td>
+                               <td><span data-bind="text: ReceavedARRNO"></span></td>
+                               <td><span data-bind="text: MarineAccNo"></span></td>
+                               <td><span data-bind="text: ReceivedMarineOrderNo"></span></td>
+                               <td><span data-bind="text: RevenueAgentAccNo"></span></td>
+                               <td><span data-bind="text: Status"></span></td>
+                               <td><span data-bind="text: Remarks"></span></td>
+                               <td>   
+                            <div class="nowrap">
+                                 <a class="button gbtngreen" data-bind="click: $root.AddPosting,  visible:AddPending">Add<i class="fa fa-plus"></i></a>
+                                 <a href="#" data-bind="click: $parent.ViewPosting,  visible:ViewPending" title="View"><i class="fa fa-eye"></i></a>
+                                 <a class="button gbtngreen" data-bind="click: $root.UpdateMarinePosting,  visible:MarineUpdatePending">Update<i class="fa fa-plus"></i></a>
+                                <a href="#" data-bind="click: $parent.SAPInvoiceSelect,  visible:SAPInvoiceView" title="SAPInvoice"><i class="fa fa-file-text"></i></a>
+                              <a href="#" data-bind="click: $parent.RePosting, visible: Resposting" title="Repost">Repost</a>
+                               @* <a href="#" data-bind="click: $parent.InvoiceResponseSelect,  visible:InvoiceResponseView" title="InvoiceResponse"><i class="fa fa-ticket"></i></a>*@
+                            </div>
+                            </td>
+                        </tr>
+                    </script>
+                </form>
+
+        
+
+            </div>
+      
+
+              
+
+        </script>
+<script type="text/html" id="Form-template1">
+            <div class="portlet portlet-body form" data-bind="loadingWhen: $root.viewModelHelper.isLoading">
+                <form action="#" id="form_sample_1" class="form-horizontal">
+                    <div class="form-wizard" data-bind='validationOptions: { messageTemplate: "customMessageTemplate" }'>
+                        <div class="form-body" data-bind="with: sapPostingModel">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <fieldset>
+                                        <legend id="spnTitile10"></legend>
+                                          <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-6">VCN:</label>
+                                                        <div class="col-md-6">
+                                                            <div class="col-md-6 control-label">
+                                                                <label class="col-md-12 displaytxt" style="text-transform: capitalize;" data-bind="text: VCN"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                         <div id="ReasonID" class="form-group">
+                                            <div class="row"><div class="col-md-6">
+                                                         <div class="form-group">
+                                                                    <label class="control-label col-md-6"> Reason For Visit Of Arrival :</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="ReasonForVisit" data-bind="text: ReasonForVisit"></label>
+                                                                    </div>
+                                                                </div>
+                                            </div></div>
+                                            <div class="row"> <div class="col-md-6">
+                                                         <div class="form-group">
+                                                                    <label class="control-label col-md-6">Vessel Type :</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="VesselType" data-bind="text: VesselType"></label>
+                                                                    </div>
+                                                                </div>
+                                            </div></div>
+                                            <div class="row"> <div class="col-md-6">
+                                                         <div class="form-group">
+                                                                    <label class="control-label col-md-6">SAP Vessel No :</label>
+                                                                 <div class="col-md-5 control-label" >
+                                                                        <label class="col-md-12 displaytxt" id="VesselType" data-bind="text: MarineAccNo"></label>
+                                                                    </div>
+                                                                </div>
+                                            </div></div>
+                                           <div class="row"> <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Reason For Visit:
+                                                        <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">                                                        
+                                                            <input id="Reason" name="Reason" title="Reason" data-bind="kendoDropDownList: { data:  $root.sapPostingReferenceData().Reasons, value: Reason, dataTextField: 'SubCatName', dataValueField: 'SubCatCode', optionLabel: 'Choose', enable: $parent.IsReasonEnable }, event: { change: $parent.ReasonChange } " />
+                                                            <span id="sapanreason" class="validationError" data-bind="validationMessage: Reason"></span>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div></div>
+                                        </div>
+                                       @* <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Account No.:       
+                                                        <span class="required">*</span>                                                
+                                                    </label>
+                                                    <div class="col-md-6">                                                        
+                                                            <input id="Account" name="Account" title="Account" data-bind="kendoDropDownList: { data: $parent.AccountList,  value: AccountNo, dataTextField: 'AccountNo', dataValueField: 'AccountNo', optionLabel: 'Choose', enable: $parent.IsReasonEnable }" />
+                                                          <span id="spanaccount" class="validationError" data-bind="validationMessage: AccountNo"></span>                                
+                                                   </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                        @*<div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                        Status:
+                                                    	<span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" id="Status" name="name" maxlength="15" data-required="1" class="form-control" data-bind="value: PostingStatus, enable: $parent.editableView, event: { keypress: $parent.validationHelper.ValidateAlphaNumericWithSpaces }">
+                                                          <span id="spanstatus" class="validationError" data-bind="validationMessage: PostingStatus"></span>  
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">Message Type:</label>
+                                                    <div class="col-md-6">
+                                                       <input type="text" id="Reason" name="code" maxlength="10" autofocus="autofocus" class="form-control" data-bind="value: MessageType, enable: $parent.IsCodeEnable, event: { keypress: $parent.validationHelper.ValidateAlphaNumeric } ">                                                       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             <div class="col-md-6">
+                                                <div class="form-group">                                                    
+                                                    <div class="col-md-6">
+                                                      <button type="submit" id="GenerateXML" class="btn green" value="POST VAL" data-bind="click: $parent.GenerateXML, enable: $parent.IsGenerateEnable">Generate XML</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-6">
+                                                       XML Message:@*<span class="required"></span>*@
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                     <textarea class="form-control" rows="15" id="description" style ="text-transform: capitalize;" data-bind="value: TransmitData, enable: $parent.editableView"></textarea>
+                                                   
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
+                                        <br>
+                                    </fieldset>
+                                </div>
+                            </div>
+                              <div class="btns-group form-actions fluid">
+                                <button type="submit" id="Save" class="btn green" value="POST VAL" data-bind="click: $parent.SaveSAPPosting, visible: $parent.IsSave, enable: $parent.IsSaveUpdateDisabled">Save</button>
+                                <button type="submit" class="btn red" data-bind="click: $parent.Cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                 
+                </form>
+            </div>
+        </script>
+
+
+    </div>
+</div>
